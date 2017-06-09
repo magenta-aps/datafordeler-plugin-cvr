@@ -10,6 +10,4 @@ import javax.persistence.Table;
 @javax.persistence.Entity
 @Table(name="cvr_industry_effect")
 public class IndustryEffect extends Effect<IndustryRegistration, IndustryEffect, IndustryData> {
-    // Each effect has an effectFrom and an effectTo timestamp, both java.time.OffsetDateTime, with setters
-    // Also, a collection of CompanyData instances
 }

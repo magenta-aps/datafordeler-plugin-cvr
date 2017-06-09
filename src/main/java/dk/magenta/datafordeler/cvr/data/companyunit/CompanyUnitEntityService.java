@@ -1,4 +1,4 @@
-package dk.magenta.datafordeler.cvr.data.productionunit;
+package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import dk.magenta.datafordeler.core.fapi.FapiService;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import javax.ws.rs.Path;
 @Path("")
 @Component
 @WebService
-public class ProductionUnitEntityService extends FapiService<ProductionUnitEntity, ProductionUnitQuery> {
+public class CompanyUnitEntityService extends FapiService<CompanyUnitEntity, CompanyUnitQuery> {
 
     @Override
     public int getVersion() {
@@ -21,17 +21,17 @@ public class ProductionUnitEntityService extends FapiService<ProductionUnitEntit
 
     @Override
     public String getServiceName() {
-        return "productionunit";
+        return "company";
     }
 
     @Override
-    protected Class<ProductionUnitEntity> getEntityClass() {
-        return ProductionUnitEntity.class;
+    protected Class<CompanyUnitEntity> getEntityClass() {
+        return CompanyUnitEntity.class;
     }
 
     @Override
-    protected ProductionUnitQuery getEmptyQuery() {
-        return new ProductionUnitQuery();
+    protected CompanyUnitQuery getEmptyQuery() {
+        return new CompanyUnitQuery();
     }
 
 }
