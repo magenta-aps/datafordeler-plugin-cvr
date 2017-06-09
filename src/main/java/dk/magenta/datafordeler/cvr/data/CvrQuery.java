@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Created by lars on 19-05-17.
  */
-public abstract class CvrQuery extends Query {
+public abstract class CvrQuery<E extends Entity> extends Query<E> {
 
     public static final String SOMECOMMONDATA = "someCommonData";
 
@@ -37,8 +37,4 @@ public abstract class CvrQuery extends Query {
     public void setFromParameters(ListHashMap<String, String> listHashMap) {
         this.setSomeCommonData(listHashMap.getFirst(SOMECOMMONDATA));
     }
-
-    @Override
-    public abstract Class<? extends Entity> getEntityClass();
-
 }

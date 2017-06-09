@@ -1,4 +1,4 @@
-package dk.magenta.datafordeler.cvr.data.productionunit;
+package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import dk.magenta.datafordeler.core.database.Registration;
@@ -15,42 +15,42 @@ import java.net.URI;
  * Created by lars on 16-05-17.
  */
 @Component
-public class ProductionUnitEntityManager extends CvrEntityManager {
+public class CompanyUnitEntityManager extends CvrEntityManager {
 
     @Autowired
-    private ProductionUnitEntityService productionUnitEntityService;
+    private CompanyUnitEntityService companyUnitEntityService;
 
-    public ProductionUnitEntityManager() {
-        this.managedEntityClass = ProductionUnitEntity.class;
-        this.managedEntityReferenceClass = ProductionUnitEntityReference.class;
-        this.managedRegistrationClass = ProductionUnitRegistration.class;
-        this.managedRegistrationReferenceClass = ProductionUnitRegistrationReference.class;
+    public CompanyUnitEntityManager() {
+        this.managedEntityClass = CompanyUnitEntity.class;
+        this.managedEntityReferenceClass = CompanyUnitEntityReference.class;
+        this.managedRegistrationClass = CompanyUnitRegistration.class;
+        this.managedRegistrationReferenceClass = CompanyUnitRegistrationReference.class;
     }
 
     @Override
     protected String getBaseName() {
-        return "productionunit";
+        return "company";
     }
 
     @Override
     public FapiService getEntityService() {
-        return this.productionUnitEntityService;
+        return this.companyUnitEntityService;
     }
 
     @Override
     public String getSchema() {
-        return ProductionUnitEntity.schema;
+        return CompanyUnitEntity.schema;
     }
 
     @Override
     public Registration parseRegistration(JsonNode jsonNode) throws ParseException {
-        // Parse a Jackson JsonNode into an instance of CompanyRegistration. Make note of our superclasses as you read this
+        // Parse a Jackson JsonNode into an instance of CompanyRegistration.
         return null;
     }
 
     @Override
     protected RegistrationReference createRegistrationReference(URI uri) {
-        return new ProductionUnitRegistrationReference(uri);
+        return new CompanyUnitRegistrationReference(uri);
     }
 
 }
