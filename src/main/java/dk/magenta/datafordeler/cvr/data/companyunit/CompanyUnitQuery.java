@@ -1,4 +1,4 @@
-package dk.magenta.datafordeler.cvr.data.productionunit;
+package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import dk.magenta.datafordeler.core.database.Entity;
 import dk.magenta.datafordeler.core.fapi.QueryField;
@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Created by lars on 19-05-17.
  */
-public class ProductionUnitQuery extends CvrQuery {
+public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
 
     public static final String CVRNUMBER = "cvrnumber";
 
@@ -40,8 +40,8 @@ public class ProductionUnitQuery extends CvrQuery {
     }
 
     @Override
-    public Class<? extends Entity> getEntityClass() {
-        return ProductionUnitEntity.class;
+    public Class<CompanyUnitEntity> getEntityClass() {
+        return CompanyUnitEntity.class;
     }
 
 }

@@ -1,6 +1,5 @@
 package dk.magenta.datafordeler.cvr.data.industry;
 
-import dk.magenta.datafordeler.core.database.Entity;
 import dk.magenta.datafordeler.core.fapi.QueryField;
 import dk.magenta.datafordeler.core.util.ListHashMap;
 import dk.magenta.datafordeler.cvr.data.CvrQuery;
@@ -11,36 +10,50 @@ import java.util.Map;
 /**
  * Created by lars on 19-05-17.
  */
-public class IndustryQuery extends CvrQuery {
+public class IndustryQuery extends CvrQuery<IndustryEntity> {
 
-    public static final String CVRNUMBER = "cvrnumber";
+    public static final String CODE = "code";
+    public static final String TEXT = "text";
+
+    @QueryField(type = QueryField.FieldType.INT)
+    private String code;
 
     @QueryField(type = QueryField.FieldType.STRING)
-    private String cvrNumber;
+    private String text;
 
-    public String getCvrNumber() {
-        return cvrNumber;
+    public String getCode() {
+        return code;
     }
 
-    public void setCvrNumber(String cvrNumber) {
-        this.cvrNumber = cvrNumber;
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     @Override
     public Map<String, Object> getSearchParameters() {
         HashMap<String, Object> map = new HashMap<>(super.getSearchParameters());
-        map.put(CVRNUMBER, this.cvrNumber);
+        map.put(CODE, this.code);
+        map.put(TEXT, this.text);
         return map;
     }
 
     @Override
     public void setFromParameters(ListHashMap<String, String> listHashMap) {
         super.setFromParameters(listHashMap);
-        this.setCvrNumber(listHashMap.getFirst(CVRNUMBER));
+        this.setCode(listHashMap.getFirst(CODE));
+        this.setText(listHashMap.getFirst(TEXT));
     }
 
     @Override
-    public Class<? extends Entity> getEntityClass() {
+    public Class<IndustryEntity> getEntityClass() {
         return IndustryEntity.class;
     }
 

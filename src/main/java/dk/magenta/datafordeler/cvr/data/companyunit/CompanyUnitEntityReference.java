@@ -1,4 +1,4 @@
-package dk.magenta.datafordeler.cvr.data.productionunit;
+package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.EntityReference;
@@ -10,10 +10,10 @@ import java.util.UUID;
 /**
  * Created by lars on 16-05-17.
  */
-public class ProductionUnitEntityReference extends EntityReference<ProductionUnitEntity, ProductionUnitRegistrationReference> {
+public class CompanyUnitEntityReference extends EntityReference<CompanyUnitEntity, CompanyUnitRegistrationReference> {
     @Override
-    public Class<ProductionUnitEntity> getEntityClass() {
-        return ProductionUnitEntity.class;
+    public Class<CompanyUnitEntity> getEntityClass() {
+        return CompanyUnitEntity.class;
     }
 
     @JsonProperty
@@ -29,7 +29,7 @@ public class ProductionUnitEntityReference extends EntityReference<ProductionUni
     }
 
     @JsonProperty("registreringer")
-    public void setRegistrations(List<ProductionUnitRegistrationReference> registrations) {
-        this.registrationReferences = new ArrayList<ProductionUnitRegistrationReference>(registrations);
+    public void setRegistrations(List<CompanyUnitRegistrationReference> registrations) {
+        this.registrationReferences = new ArrayList<CompanyUnitRegistrationReference>(registrations);
     }
 }

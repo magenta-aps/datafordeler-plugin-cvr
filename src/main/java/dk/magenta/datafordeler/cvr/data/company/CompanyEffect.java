@@ -9,7 +9,7 @@ import javax.persistence.Table;
  */
 @javax.persistence.Entity
 @Table(name="cvr_company_effect")
-public class CompanyEffect extends Effect<CompanyRegistration, CompanyEffect, CompanyData> {
+public class CompanyEffect extends Effect<CompanyRegistration, CompanyEffect, CompanyMainData> {
     // Each effect has an effectFrom and an effectTo timestamp, both java.time.OffsetDateTime, with setters
     // Also, a collection of CompanyData instances
 }
