@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Created by lars on 19-05-17.
  */
-public class CompanyQuery extends CvrQuery {
+public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     public static final String CVRNUMBER = "cvrnumber";
 
@@ -40,7 +40,7 @@ public class CompanyQuery extends CvrQuery {
     }
 
     @Override
-    public Class<? extends Entity> getEntityClass() {
+    public Class<CompanyEntity> getEntityClass() {
         return CompanyEntity.class;
     }
 

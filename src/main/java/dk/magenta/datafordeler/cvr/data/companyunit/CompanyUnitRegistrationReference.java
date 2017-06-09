@@ -1,4 +1,4 @@
-package dk.magenta.datafordeler.cvr.data.productionunit;
+package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.RegistrationReference;
@@ -8,18 +8,18 @@ import java.net.URI;
 /**
  * Created by lars on 16-05-17.
  */
-public class ProductionUnitRegistrationReference implements RegistrationReference {
+public class CompanyUnitRegistrationReference implements RegistrationReference {
 
     @JsonProperty("checksum")
     public String checksum;
 
     private URI uri;
 
-    public ProductionUnitRegistrationReference(String checksum) {
+    public CompanyUnitRegistrationReference(String checksum) {
         this.checksum = checksum;
     }
 
-    public ProductionUnitRegistrationReference(URI uri) {
+    public CompanyUnitRegistrationReference(URI uri) {
         this.uri = uri;
     }
 

@@ -1,15 +1,14 @@
-package dk.magenta.datafordeler.cvr.data.participant;
+package dk.magenta.datafordeler.cvr.data.company;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.Identification;
-import dk.magenta.datafordeler.cvr.data.CvrData;
+import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
+import dk.magenta.datafordeler.cvr.data.embeddable.CompanySharedData;
 
-import javax.persistence.Column;
-import javax.persistence.Index;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,12 +16,8 @@ import java.util.Map;
  * Created by lars on 16-05-17.
  */
 @javax.persistence.Entity
-@Table(name="cvr_participant_data", indexes = {
-        @Index(name = "cvrNumber", columnList = "cvrNumber"),
-        @Index(name = "type", columnList = "type"),
-        @Index(name = "role", columnList = "role"),
-        @Index(name = "status", columnList = "status")})
-public class ParticipantData extends CvrData<ParticipantEffect, ParticipantData> {
+@Table(name="cvr_company_data", indexes = {@Index(name = "cvrNumber", columnList = "cvrNumber")})
+public class CompanyMainData extends CompanyData {
 
     /**
      * Add entity-specific attributes here
@@ -32,26 +27,35 @@ public class ParticipantData extends CvrData<ParticipantEffect, ParticipantData>
     @XmlElement
     private String cvrNumber;
 
+    /**
+     * Embed common attributes
+     */
+    private CompanySharedData companySharedData;
+
+
+    @OneToMany
+    @JsonProperty(value = "enheder")
+    @XmlElement(name = "enheder")
+    private Collection<CompanyUnitEntity> units;
+
+
     @Column
-    @JsonProperty
-    @XmlElement
-    private Identification companyUnit;
+    @JsonProperty(value = "hovedenhed")
+    @XmlElement(name = "hovedenhed")
+    private CompanyUnitEntity primaryUnit;
 
-
-    @ManyToOne
-    @JsonProperty
-    @XmlElement
-    private ParticipantType type;
+    // CompanyInfo
 
     @ManyToOne
-    @JsonProperty
-    @XmlElement
-    private ParticipantRole role;
+    @JsonProperty(value = "form")
+    @XmlElement(name = "form")
+    private CompanyForm form;
 
-    @ManyToOne
-    @JsonProperty
-    @XmlElement
-    private ParticipantStatus status;
+
+    // creditInformation
+
+
+    // companyParticipantRelations
 
 
     /**
@@ -60,8 +64,9 @@ public class ParticipantData extends CvrData<ParticipantEffect, ParticipantData>
      */
     @Override
     public Map<String, Object> asMap() {
-        HashMap<String, Object> map = new HashMap<>(super.asMap());
+        HashMap<String, Object> map = new HashMap<>();
         map.put("cvrNumber", this.cvrNumber);
+        map.putAll(this.companySharedData.asMap());
         return map;
     }
 
@@ -73,7 +78,7 @@ public class ParticipantData extends CvrData<ParticipantEffect, ParticipantData>
     @JsonIgnore
     public HashMap<String, Identification> getReferences() {
         HashMap<String, Identification> references = super.getReferences();
-        references.put("companyUnit", this.companyUnit);
+        references.putAll(this.companySharedData.getReferences());
         return references;
     }
 
@@ -84,8 +89,6 @@ public class ParticipantData extends CvrData<ParticipantEffect, ParticipantData>
     @Override
     public void updateReferences(HashMap<String, Identification> references) {
         super.updateReferences(references);
-        if (references.containsKey("companyUnit")) {
-            this.companyUnit = references.get("companyUnit");
-        }
+        this.companySharedData.updateReferences(references);
     }
 }
