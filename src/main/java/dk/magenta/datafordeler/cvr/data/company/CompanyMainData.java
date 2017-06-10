@@ -38,11 +38,12 @@ public class CompanyMainData extends CompanyData {
     @XmlElement(name = "enheder")
     private Collection<CompanyUnitEntity> units;
 
-
+/*
     @Column
     @JsonProperty(value = "hovedenhed")
     @XmlElement(name = "hovedenhed")
     private CompanyUnitEntity primaryUnit;
+    */
 
     // CompanyInfo
 
@@ -56,6 +57,9 @@ public class CompanyMainData extends CompanyData {
 
 
     // companyParticipantRelations
+
+
+
 
 
     /**
