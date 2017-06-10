@@ -25,6 +25,11 @@ public class CompanyIndustryData extends CompanyData {
     @XmlElement
     private boolean isPrimary;
 
+    @Column
+    @JsonProperty
+    @XmlElement
+    private short index;
+
     /**
      * Return a map of attributes, including those from the superclass
      * @return
@@ -34,6 +39,7 @@ public class CompanyIndustryData extends CompanyData {
         HashMap<String, Object> map = new HashMap<>();
         map.put("industry", this.industry);
         map.put("isPrimary", this.isPrimary);
+        map.put("index", this.index);
         return map;
     }
 
