@@ -17,13 +17,25 @@ import java.util.Map;
 /**
  * Created by lars on 16-05-17.
  */
-@Embeddable
-public abstract class CompanySingleTextData extends CompanyData {
+@Table(name = "cvr_company_text")
+public class CompanyTextData extends CompanyData {
+
+    public enum Type {
+        NAME,
+        EMAIL,
+        PHONE,
+        FAX
+    }
 
     @Column
     private String text;
 
-    protected abstract String getFieldName();
+    @Column
+    private Type type;
+
+    public String getFieldName() {
+        return this.type.name();
+    }
 
     @JsonAnyGetter
     public Map<String, Object> getFields() {
