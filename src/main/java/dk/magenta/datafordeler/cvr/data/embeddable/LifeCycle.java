@@ -1,7 +1,5 @@
 package dk.magenta.datafordeler.cvr.data.embeddable;
 
-import dk.magenta.databroker.util.Util;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Date;
@@ -35,7 +33,7 @@ public class LifeCycle {
         this.endDate = endDate;
     }
 
-
+/*
     public boolean equals(Object otherObject) {
         if (otherObject == null || otherObject.getClass() != LifeCycle.class) {
             return false;
@@ -45,5 +43,5 @@ public class LifeCycle {
     public boolean equals(LifeCycle otherLifecycle) {
         return Util.compare(this.startDate, otherLifecycle.getStartDate()) &&
                 Util.compare(this.endDate, otherLifecycle.getEndDate());
-    }
+    }*/
 }
