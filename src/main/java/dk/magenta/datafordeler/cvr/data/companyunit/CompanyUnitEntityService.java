@@ -21,7 +21,7 @@ public class CompanyUnitEntityService extends FapiService<CompanyUnitEntity, Com
 
     @Override
     public String getServiceName() {
-        return "company";
+        return "companyunit";
     }
 
     @Override

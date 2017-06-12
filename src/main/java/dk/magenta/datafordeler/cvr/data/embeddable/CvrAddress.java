@@ -1,13 +1,5 @@
 package dk.magenta.datafordeler.cvr.data.embeddable;
 
-import dk.magenta.databroker.dawa.model.SearchParameters;
-import dk.magenta.databroker.dawa.model.enhedsadresser.EnhedsAdresseEntity;
-import dk.magenta.databroker.register.RepositoryUtil;
-import dk.magenta.databroker.register.conditions.Condition;
-import dk.magenta.databroker.register.conditions.ConditionList;
-import dk.magenta.databroker.util.Util;
-import org.json.JSONObject;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
@@ -232,7 +224,7 @@ public class CvrAddress {
     public void setDescriptor(String descriptor) {
         this.descriptor = descriptor;
     }
-
+/*
     @ManyToOne
     // Relation to EnhedsAdresseEntity, if one was found
     private EnhedsAdresseEntity enhedsAdresse;
@@ -353,5 +345,5 @@ public class CvrAddress {
                 Util.compare(this.sideOrDoor, otherCvrAddress.getSideOrDoor()) &&
                 Util.compare(this.validFrom, otherCvrAddress.getValidFrom());
     }
-
+*/
 }

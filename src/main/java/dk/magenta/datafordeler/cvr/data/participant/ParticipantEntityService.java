@@ -21,7 +21,7 @@ public class ParticipantEntityService extends FapiService<ParticipantEntity, Par
 
     @Override
     public String getServiceName() {
-        return "company";
+        return "participant";
     }
 
     @Override
