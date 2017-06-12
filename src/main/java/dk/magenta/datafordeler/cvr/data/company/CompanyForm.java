@@ -29,7 +29,6 @@ public class CompanyForm extends UnversionedEntity {
 
     //----------------------------------------------------
 
-    @Id
     @Column(nullable = false, unique = true)
     private int code;
 

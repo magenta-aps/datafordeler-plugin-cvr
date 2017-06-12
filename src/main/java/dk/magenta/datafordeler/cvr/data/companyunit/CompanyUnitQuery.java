@@ -28,14 +28,13 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
 
     @Override
     public Map<String, Object> getSearchParameters() {
-        HashMap<String, Object> map = new HashMap<>(super.getSearchParameters());
+        HashMap<String, Object> map = new HashMap<>();
         map.put(CVRNUMBER, this.cvrNumber);
         return map;
     }
 
     @Override
     public void setFromParameters(ListHashMap<String, String> listHashMap) {
-        super.setFromParameters(listHashMap);
         this.setCvrNumber(listHashMap.getFirst(CVRNUMBER));
     }
 

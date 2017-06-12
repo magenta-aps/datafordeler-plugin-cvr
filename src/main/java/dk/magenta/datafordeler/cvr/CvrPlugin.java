@@ -5,6 +5,9 @@ import dk.magenta.datafordeler.core.plugin.Plugin;
 import dk.magenta.datafordeler.core.plugin.RegisterManager;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfigurationManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntityManager;
+import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntityManager;
+import dk.magenta.datafordeler.cvr.data.industry.IndustryEntityManager;
+import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,10 +28,22 @@ public class CvrPlugin extends Plugin {
     @Autowired
     private CompanyEntityManager companyEntityManager;
 
+    @Autowired
+    private CompanyUnitEntityManager companyUnitEntityManager;
+
+    @Autowired
+    private IndustryEntityManager industryEntityManager;
+
+    @Autowired
+    private ParticipantEntityManager participantEntityManager;
+
 
     @PostConstruct
     public void init() {
         this.registerManager.addEntityManager(this.companyEntityManager);
+        this.registerManager.addEntityManager(this.companyUnitEntityManager);
+        this.registerManager.addEntityManager(this.industryEntityManager);
+        this.registerManager.addEntityManager(this.participantEntityManager);
     }
 
     @Override
