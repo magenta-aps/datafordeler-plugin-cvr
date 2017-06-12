@@ -39,7 +39,7 @@ public class IndustryQuery extends CvrQuery<IndustryEntity> {
 
     @Override
     public Map<String, Object> getSearchParameters() {
-        HashMap<String, Object> map = new HashMap<>(super.getSearchParameters());
+        HashMap<String, Object> map = new HashMap<>();
         map.put(CODE, this.code);
         map.put(TEXT, this.text);
         return map;
@@ -47,7 +47,6 @@ public class IndustryQuery extends CvrQuery<IndustryEntity> {
 
     @Override
     public void setFromParameters(ListHashMap<String, String> listHashMap) {
-        super.setFromParameters(listHashMap);
         this.setCode(listHashMap.getFirst(CODE));
         this.setText(listHashMap.getFirst(TEXT));
     }

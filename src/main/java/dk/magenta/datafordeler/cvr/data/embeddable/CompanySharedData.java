@@ -21,12 +21,14 @@ public class CompanySharedData {
     @OneToMany
     @JsonProperty(value = "deltagere")
     @XmlElement(name = "deltagere")
+    @Embedded
     private Collection<ParticipantEntity> participants;
 
 
     @Column
     @JsonProperty(value = "advertProtection")
     @XmlElement(name = "advertProtection")
+    @Embedded
     private boolean advertProtection;
 
     @JsonIgnore

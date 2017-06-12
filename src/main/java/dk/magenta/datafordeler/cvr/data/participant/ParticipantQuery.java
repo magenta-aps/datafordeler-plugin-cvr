@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Created by lars on 19-05-17.
  */
-public class ParticipantQuery extends CvrQuery {
+public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
 
     public static final String CVRNUMBER = "cvrnumber";
 
@@ -28,19 +28,18 @@ public class ParticipantQuery extends CvrQuery {
 
     @Override
     public Map<String, Object> getSearchParameters() {
-        HashMap<String, Object> map = new HashMap<>(super.getSearchParameters());
+        HashMap<String, Object> map = new HashMap<>();
         map.put(CVRNUMBER, this.cvrNumber);
         return map;
     }
 
     @Override
     public void setFromParameters(ListHashMap<String, String> listHashMap) {
-        super.setFromParameters(listHashMap);
         this.setCvrNumber(listHashMap.getFirst(CVRNUMBER));
     }
 
     @Override
-    public Class<? extends Entity> getEntityClass() {
+    public Class<ParticipantEntity> getEntityClass() {
         return ParticipantEntity.class;
     }
 

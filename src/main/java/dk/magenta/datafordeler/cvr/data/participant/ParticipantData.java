@@ -18,10 +18,10 @@ import java.util.Map;
  */
 @javax.persistence.Entity
 @Table(name="cvr_participant_data", indexes = {
-        @Index(name = "cvrNumber", columnList = "cvrNumber"),
+        @Index(name = "cvrNumber", columnList = "cvrNumber")/*,
         @Index(name = "type", columnList = "type"),
         @Index(name = "role", columnList = "role"),
-        @Index(name = "status", columnList = "status")})
+        @Index(name = "status", columnList = "status")*/})
 public class ParticipantData extends CvrData<ParticipantEffect, ParticipantData> {
 
     /**
@@ -32,12 +32,12 @@ public class ParticipantData extends CvrData<ParticipantEffect, ParticipantData>
     @XmlElement
     private String cvrNumber;
 
-    @Column
+    @ManyToOne
     @JsonProperty
     @XmlElement
     private Identification companyUnit;
 
-
+/*
     @ManyToOne
     @JsonProperty
     @XmlElement
@@ -52,7 +52,7 @@ public class ParticipantData extends CvrData<ParticipantEffect, ParticipantData>
     @JsonProperty
     @XmlElement
     private ParticipantStatus status;
-
+*/
 
     /**
      * Return a map of attributes, including those from the superclass
@@ -60,7 +60,7 @@ public class ParticipantData extends CvrData<ParticipantEffect, ParticipantData>
      */
     @Override
     public Map<String, Object> asMap() {
-        HashMap<String, Object> map = new HashMap<>(super.asMap());
+        HashMap<String, Object> map = new HashMap<>();
         map.put("cvrNumber", this.cvrNumber);
         return map;
     }

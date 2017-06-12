@@ -29,7 +29,7 @@ public class CompanyUnitEntityManager extends CvrEntityManager {
 
     @Override
     protected String getBaseName() {
-        return "company";
+        return "companyunit";
     }
 
     @Override
