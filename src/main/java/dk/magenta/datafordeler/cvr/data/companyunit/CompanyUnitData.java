@@ -19,7 +19,7 @@ import java.util.Map;
  */
 @javax.persistence.Entity
 @Table(name="cvr_companyunit_data", indexes = {
-        @Index(name = "company", columnList = "company"),
+        @Index(name = "company", columnList = "company_id"),
         @Index(name = "pNumber", columnList = "pNumber"),
         @Index(name = "isPrimary", columnList = "isPrimary")})
 public class CompanyUnitData extends CvrData<CompanyUnitEffect, CompanyUnitData> {
@@ -45,7 +45,7 @@ public class CompanyUnitData extends CvrData<CompanyUnitEffect, CompanyUnitData>
     /**
      * Embed common attributes
      */
-    private CompanySharedData companySharedData;
+    //private CompanySharedData companySharedData;
 
     /**
      * Return a map of attributes, including those from the superclass
@@ -56,7 +56,7 @@ public class CompanyUnitData extends CvrData<CompanyUnitEffect, CompanyUnitData>
         HashMap<String, Object> map = new HashMap<>();
         map.put("pNumber", this.pNumber);
         map.put("isPrimary", this.isPrimary);
-        map.putAll(this.companySharedData.asMap());
+        //map.putAll(this.companySharedData.asMap());
         return map;
     }
 
@@ -68,7 +68,7 @@ public class CompanyUnitData extends CvrData<CompanyUnitEffect, CompanyUnitData>
     @JsonIgnore
     public HashMap<String, Identification> getReferences() {
         HashMap<String, Identification> references = super.getReferences();
-        references.putAll(this.companySharedData.getReferences());
+        //references.putAll(this.companySharedData.getReferences());
         return references;
     }
 
@@ -79,7 +79,7 @@ public class CompanyUnitData extends CvrData<CompanyUnitEffect, CompanyUnitData>
     @Override
     public void updateReferences(HashMap<String, Identification> references) {
         super.updateReferences(references);
-        this.companySharedData.updateReferences(references);
+        //this.companySharedData.updateReferences(references);
     }
 
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
 import dk.magenta.datafordeler.cvr.data.embeddable.CompanySharedData;
+import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
@@ -19,6 +20,10 @@ import java.util.Map;
 @Table(name="cvr_company_data", indexes = {@Index(name = "cvrNumber", columnList = "cvrNumber")})
 public class CompanyMainData extends CompanyData {
 
+    public CompanyMainData() {
+        //this.companySharedData = new CompanySharedData();
+    }
+
     /**
      * Add entity-specific attributes here
      */
@@ -27,10 +32,18 @@ public class CompanyMainData extends CompanyData {
     @XmlElement
     private String cvrNumber;
 
+    public String getCvrNumber() {
+        return cvrNumber;
+    }
+
+    public void setCvrNumber(String cvrNumber) {
+        this.cvrNumber = cvrNumber;
+    }
+
     /**
      * Embed common attributes
      */
-    private CompanySharedData companySharedData;
+    //private CompanySharedData companySharedData;
 
 
     @OneToMany
@@ -52,6 +65,13 @@ public class CompanyMainData extends CompanyData {
     @XmlElement(name = "form")
     private CompanyForm form;
 
+    public CompanyForm getForm() {
+        return form;
+    }
+
+    public void setForm(CompanyForm form) {
+        this.form = form;
+    }
 
     // creditInformation
 
@@ -59,6 +79,16 @@ public class CompanyMainData extends CompanyData {
     // companyParticipantRelations
 
 
+    @OneToMany
+    @JsonProperty(value = "deltagere")
+    @XmlElement(name = "deltagere")
+    private Collection<ParticipantEntity> participants;
+
+
+    @Column
+    @JsonProperty(value = "advertProtection")
+    @XmlElement(name = "advertProtection")
+    private boolean advertProtection;
 
 
 
@@ -70,7 +100,9 @@ public class CompanyMainData extends CompanyData {
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("cvrNumber", this.cvrNumber);
-        map.putAll(this.companySharedData.asMap());
+        //map.putAll(this.companySharedData.asMap());
+        map.put("participants", this.participants);
+        map.put("advertProtection", this.advertProtection);
         return map;
     }
 
@@ -82,7 +114,7 @@ public class CompanyMainData extends CompanyData {
     @JsonIgnore
     public HashMap<String, Identification> getReferences() {
         HashMap<String, Identification> references = super.getReferences();
-        references.putAll(this.companySharedData.getReferences());
+        //references.putAll(this.companySharedData.getReferences());
         return references;
     }
 
@@ -93,6 +125,6 @@ public class CompanyMainData extends CompanyData {
     @Override
     public void updateReferences(HashMap<String, Identification> references) {
         super.updateReferences(references);
-        this.companySharedData.updateReferences(references);
+        //this.companySharedData.updateReferences(references);
     }
 }

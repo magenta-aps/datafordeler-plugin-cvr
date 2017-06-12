@@ -33,7 +33,7 @@ public class IndustryData extends CvrData<IndustryEffect, IndustryData> {
      */
     @Override
     public Map<String, Object> asMap() {
-        HashMap<String, Object> map = new HashMap<>(super.asMap());
+        HashMap<String, Object> map = new HashMap<>();
         map.put("code", this.code);
         map.put("text", this.text);
         return map;
