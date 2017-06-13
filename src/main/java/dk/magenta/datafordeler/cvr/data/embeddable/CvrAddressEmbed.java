@@ -9,7 +9,7 @@ import java.util.Date;
  * Created by jubk on 03-03-2015.
  */
 @Embeddable
-public class CvrAddress {
+public class CvrAddressEmbed {
     @Column
     // "gyldigFra": "date",
     private Date validFrom;

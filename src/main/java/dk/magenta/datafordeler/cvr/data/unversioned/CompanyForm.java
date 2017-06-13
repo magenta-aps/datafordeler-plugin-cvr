@@ -1,6 +1,7 @@
-package dk.magenta.datafordeler.cvr.data.company;
+package dk.magenta.datafordeler.cvr.data.unversioned;
 
-import dk.magenta.datafordeler.cvr.data.UnversionedEntity;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.cvr.data.unversioned.UnversionedEntity;
 
 import javax.persistence.*;
 
@@ -16,6 +17,7 @@ public class CompanyForm extends UnversionedEntity {
 
     //----------------------------------------------------
 
+    @JsonProperty
     @Column(nullable = true, unique = true)
     private String name;
 
@@ -29,6 +31,7 @@ public class CompanyForm extends UnversionedEntity {
 
     //----------------------------------------------------
 
+    @JsonProperty
     @Column(nullable = false, unique = true)
     private int code;
 
@@ -40,6 +43,7 @@ public class CompanyForm extends UnversionedEntity {
         this.code = code;
     }
 
+    @JsonProperty
     @Column
     private String responsibleDatasource;
 
