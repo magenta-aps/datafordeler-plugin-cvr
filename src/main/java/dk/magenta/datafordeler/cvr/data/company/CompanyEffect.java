@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.data.company;
 
 import dk.magenta.datafordeler.core.database.Effect;
 
+import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.time.OffsetDateTime;
 import java.time.temporal.TemporalAccessor;
@@ -9,9 +10,9 @@ import java.time.temporal.TemporalAccessor;
 /**
  * Created by lars on 16-05-17.
  */
-@javax.persistence.Entity
+@Entity
 @Table(name="cvr_company_effect")
-public class CompanyEffect extends Effect<CompanyRegistration, CompanyEffect, CompanyData> {
+public class CompanyEffect extends Effect<CompanyRegistration, CompanyEffect, CompanyBaseData> {
     public CompanyEffect() {
     }
 

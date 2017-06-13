@@ -1,4 +1,4 @@
-package dk.magenta.datafordeler.cvr.data;
+package dk.magenta.datafordeler.cvr.data.unversioned;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;

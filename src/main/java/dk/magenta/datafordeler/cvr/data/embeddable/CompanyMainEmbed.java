@@ -1,14 +1,12 @@
-package dk.magenta.datafordeler.cvr.data.company;
+package dk.magenta.datafordeler.cvr.data.embeddable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.Identification;
-import dk.magenta.datafordeler.cvr.data.DetailData;
-import dk.magenta.datafordeler.cvr.data.embeddable.QuarterlyEmployeeNumbersEmbed;
-import dk.magenta.datafordeler.cvr.data.embeddable.YearlyEmployeeNumbersEmbed;
-import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
+import dk.magenta.datafordeler.cvr.data.CvrData;
+import dk.magenta.datafordeler.cvr.data.company.CompanyEffect;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
-import dk.magenta.datafordeler.cvr.data.embeddable.LifeCycleEmbed;
+import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
@@ -19,12 +17,10 @@ import java.util.Map;
 /**
  * Created by lars on 16-05-17.
  */
-@Entity
-@Table(name="cvr_company_data")
-public class CompanyMainData extends DetailData {
+@Embeddable
+public class CompanyMainEmbed extends CvrData<CompanyEffect, CompanyMainEmbed> {
 
-    public CompanyMainData() {
-        //this.companySharedData = new CompanySharedData();
+    public CompanyMainEmbed() {
     }
 
     /**
@@ -107,7 +103,7 @@ public class CompanyMainData extends DetailData {
      * Return a map of attributes, including those from the superclass
      * @return
      */
-    //@Override
+    @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("advertProtection", this.advertProtection);
@@ -126,21 +122,20 @@ public class CompanyMainData extends DetailData {
      * Return a map of references (omit this method if there are no references in the class)
      * @return
      */
-    //@Override
+    @Override
     @JsonIgnore
     public HashMap<String, Identification> getReferences() {
-        //HashMap<String, Identification> references = super.getReferences();
-        //return references;
-        return new HashMap<>();
+        HashMap<String, Identification> references = super.getReferences();
+        return references;
     }
 
     /**
      * Update this object from a map of references (omit this method if there are no references in the class)
      * @return
      */
-    //@Override
+    @Override
     public void updateReferences(HashMap<String, Identification> references) {
-        //super.updateReferences(references);
+        super.updateReferences(references);
         //this.companySharedData.updateReferences(references);
     }
 }

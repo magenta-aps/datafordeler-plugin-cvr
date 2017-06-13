@@ -1,9 +1,14 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import dk.magenta.datafordeler.core.database.Entity;
 
+import javax.persistence.Column;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Created by lars on 16-05-17.
@@ -15,4 +20,16 @@ public class CompanyEntity extends Entity<CompanyEntity, CompanyRegistration> {
     @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="type")
     public static final String schema = "Company";
 
+    @Column
+    private int cvrNumber;
+
+    @JsonProperty
+    @XmlElement
+    public int getCvrNumber() {
+        return cvrNumber;
+    }
+
+    public void setCvrNumber(int cvrNumber) {
+        this.cvrNumber = cvrNumber;
+    }
 }

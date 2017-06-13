@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
 import dk.magenta.datafordeler.core.database.Entity;
+import dk.magenta.datafordeler.core.fapi.ParameterMap;
 import dk.magenta.datafordeler.core.fapi.QueryField;
 import dk.magenta.datafordeler.core.util.ListHashMap;
 import dk.magenta.datafordeler.cvr.data.CvrQuery;
@@ -34,8 +35,8 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
     }
 
     @Override
-    public void setFromParameters(ListHashMap<String, String> listHashMap) {
-        this.setCvrNumber(listHashMap.getFirst(CVRNUMBER));
+    public void setFromParameters(ParameterMap parameters) {
+        this.setCvrNumber(parameters.getFirst(CVRNUMBER));
     }
 
     @Override

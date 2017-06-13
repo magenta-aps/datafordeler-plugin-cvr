@@ -1,26 +1,29 @@
-package dk.magenta.datafordeler.cvr.data.company;
+package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dk.magenta.datafordeler.cvr.data.DetailData;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.cvr.data.CvrData;
+import dk.magenta.datafordeler.cvr.data.company.CompanyEffect;
 import dk.magenta.datafordeler.cvr.data.embeddable.CompanyTextEmbed;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Map;
 
 /**
  * Created by lars on 16-05-17.
  */
 @Entity
-@Table(name = "cvr_company_text")
-public class CompanyTextData extends DetailData {
+@Table(name = "cvr_companyunit_text")
+public class CompanyUnitTextData extends DatabaseEntry {
 
     private CompanyTextEmbed companyText = new CompanyTextEmbed();
 
-    public CompanyTextData() {
+    public CompanyUnitTextData() {
     }
 
-    public CompanyTextData(CompanyTextEmbed.Type type) {
+    public CompanyUnitTextData(CompanyTextEmbed.Type type) {
         this.companyText.setType(type);
     }
 
@@ -28,6 +31,11 @@ public class CompanyTextData extends DetailData {
     public Map<String, Object> asMap() {
         return this.companyText.asMap();
     }
+
+    /*@JsonAnySetter
+    public void setFields(Map<String, Object> fields) {
+        this.companyText.setFields(fields);
+    }*/
 
     public String getText() {
         return this.companyText.getText();
@@ -44,11 +52,6 @@ public class CompanyTextData extends DetailData {
     public void setType(CompanyTextEmbed.Type type) {
         this.companyText.setType(type);
     }
-
-    /*@JsonAnySetter
-    public void setFields(Map<String, Object> fields) {
-        this.companyText.setFields(fields);
-    }*/
 
     /**
      * Return a map of attributes, including those from the superclass
