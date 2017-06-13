@@ -1,7 +1,7 @@
 package dk.magenta.datafordeler.cvr.data.participant;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dk.magenta.datafordeler.cvr.data.UnversionedEntity;
+import dk.magenta.datafordeler.cvr.data.unversioned.UnversionedEntity;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;

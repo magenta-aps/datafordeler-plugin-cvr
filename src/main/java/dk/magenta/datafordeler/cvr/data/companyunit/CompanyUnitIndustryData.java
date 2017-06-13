@@ -1,6 +1,8 @@
-package dk.magenta.datafordeler.cvr.data.company;
+package dk.magenta.datafordeler.cvr.data.companyunit;
 
-import dk.magenta.datafordeler.cvr.data.DetailData;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.cvr.data.CvrData;
+import dk.magenta.datafordeler.cvr.data.company.CompanyEffect;
 import dk.magenta.datafordeler.cvr.data.embeddable.IndustryEmbed;
 
 import javax.persistence.Entity;
@@ -11,8 +13,8 @@ import java.util.Map;
  * Created by lars on 09-06-17.
  */
 @Entity
-@Table(name="cvr_company_industry")
-public class CompanyIndustryData extends DetailData {
+@Table(name="cvr_companyunit_industry")
+public class CompanyUnitIndustryData extends DatabaseEntry {
 
     private IndustryEmbed industry;
 
@@ -20,7 +22,7 @@ public class CompanyIndustryData extends DetailData {
      * Return a map of attributes, including those from the superclass
      * @return
      */
-    @Override
+    //@Override
     public Map<String, Object> asMap() {
         return this.industry.asMap();
     }

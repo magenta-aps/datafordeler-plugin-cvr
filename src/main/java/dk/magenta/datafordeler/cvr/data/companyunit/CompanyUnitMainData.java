@@ -1,14 +1,16 @@
-package dk.magenta.datafordeler.cvr.data.company;
+package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Identification;
-import dk.magenta.datafordeler.cvr.data.DetailData;
+import dk.magenta.datafordeler.cvr.data.CvrData;
+import dk.magenta.datafordeler.cvr.data.company.CompanyEffect;
+import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
+import dk.magenta.datafordeler.cvr.data.embeddable.LifeCycleEmbed;
 import dk.magenta.datafordeler.cvr.data.embeddable.QuarterlyEmployeeNumbersEmbed;
 import dk.magenta.datafordeler.cvr.data.embeddable.YearlyEmployeeNumbersEmbed;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
-import dk.magenta.datafordeler.cvr.data.embeddable.LifeCycleEmbed;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
@@ -20,10 +22,10 @@ import java.util.Map;
  * Created by lars on 16-05-17.
  */
 @Entity
-@Table(name="cvr_company_data")
-public class CompanyMainData extends DetailData {
+@Table(name="cvr_companyunit_data")
+public class CompanyUnitMainData extends DatabaseEntry {
 
-    public CompanyMainData() {
+    public CompanyUnitMainData() {
         //this.companySharedData = new CompanySharedData();
     }
 
@@ -33,11 +35,21 @@ public class CompanyMainData extends DetailData {
     //private CompanySharedData companySharedData;
 
 
+    @ManyToOne
+    @JsonProperty
+    @XmlElement
+    private CompanyEntity company;
+
+    @Column
+    @JsonProperty
+    @XmlElement
+    private boolean isPrimary;
+/*
     @OneToMany
     @JsonProperty(value = "enheder")
     @XmlElement(name = "enheder")
     private Collection<CompanyUnitEntity> units;
-
+*/
 /*
     @Column
     @JsonProperty(value = "hovedenhed")
