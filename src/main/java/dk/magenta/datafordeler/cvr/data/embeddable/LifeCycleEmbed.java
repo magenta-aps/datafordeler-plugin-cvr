@@ -2,34 +2,35 @@ package dk.magenta.datafordeler.cvr.data.embeddable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.time.OffsetDateTime;
 import java.util.Date;
 
 /**
  * Created by jubk on 04-03-2015.
  */
 @Embeddable
-public class LifeCycle {
+public class LifeCycleEmbed {
     @Column(nullable = true)
-    private Date startDate;
+    private OffsetDateTime startDate;
 
-    public Date getStartDate() {
+    public OffsetDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(OffsetDateTime startDate) {
         this.startDate = startDate;
     }
 
     //----------------------------------------------------
 
     @Column(nullable = true)
-    private Date endDate;
+    private OffsetDateTime endDate;
 
-    public Date getEndDate() {
+    public OffsetDateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(OffsetDateTime endDate) {
         this.endDate = endDate;
     }
 

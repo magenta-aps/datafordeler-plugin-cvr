@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.data.participant;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DataItem;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.cvr.data.CvrData;
 
@@ -22,7 +23,7 @@ import java.util.Map;
         @Index(name = "type", columnList = "type"),
         @Index(name = "role", columnList = "role"),
         @Index(name = "status", columnList = "status")*/})
-public class ParticipantData extends CvrData<ParticipantEffect, ParticipantData> {
+public class ParticipantData extends DataItem<ParticipantEffect, ParticipantData> {
 
     /**
      * Add entity-specific attributes here
