@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
@@ -17,6 +18,7 @@ public abstract class DetailData extends DatabaseEntry {
 
     public abstract Map<String, Object> asMap();
 
+    @JsonIgnore
     public HashMap<String, Identification> getReferences() {
         return new HashMap<>();
     }
