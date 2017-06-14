@@ -22,17 +22,20 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         if (this.mainData != null) {
             map.putAll(this.mainData.asMap());
         }
+        if (this.formData != null) {
+            map.putAll(this.formData.asMap());
+        }
         if (this.primaryIndustryData != null) {
-            map.putAll(this.primaryIndustryData.asMap());
+            map.put("primaryIndustry", this.primaryIndustryData.getIndustry());
         }
         if (this.secondaryIndustryData1 != null) {
-            map.putAll(this.secondaryIndustryData1.asMap());
+            map.put("secondaryIndustry1", this.secondaryIndustryData1.getIndustry());
         }
         if (this.secondaryIndustryData2 != null) {
-            map.putAll(this.secondaryIndustryData2.asMap());
+            map.put("secondaryIndustry2", this.secondaryIndustryData2.getIndustry());
         }
         if (this.secondaryIndustryData3 != null) {
-            map.putAll(this.secondaryIndustryData3.asMap());
+            map.put("secondaryIndustry3", this.secondaryIndustryData3.getIndustry());
         }
         if (this.nameData != null) {
             map.putAll(this.nameData.asMap());
@@ -52,6 +55,9 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private CompanyMainData mainData;
+
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private CompanyFormData formData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private CompanyIndustryData primaryIndustryData;
@@ -109,28 +115,35 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         return this.secondaryIndustryData3;
     }
 
-    public CompanyTextData getNameData() {
+    public CompanyFormData obtainFormData() {
+        if (this.formData == null) {
+            this.formData = new CompanyFormData();
+        }
+        return this.formData;
+    }
+
+    public CompanyTextData obtainNameData() {
         if (this.nameData == null) {
             this.nameData = new CompanyTextData(CompanyTextData.Type.NAME);
         }
         return this.nameData;
     }
 
-    public CompanyTextData getPhoneData() {
+    public CompanyTextData obtainPhoneData() {
         if (this.phoneData == null) {
             this.phoneData = new CompanyTextData(CompanyTextData.Type.PHONE);
         }
         return this.phoneData;
     }
 
-    public CompanyTextData getEmailData() {
+    public CompanyTextData obtainEmailData() {
         if (this.emailData == null) {
             this.emailData = new CompanyTextData(CompanyTextData.Type.EMAIL);
         }
         return this.emailData;
     }
 
-    public CompanyTextData getFaxData() {
+    public CompanyTextData obtainFaxData() {
         if (this.faxData == null) {
             this.faxData = new CompanyTextData(CompanyTextData.Type.FAX);
         }

@@ -2,6 +2,8 @@ package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import dk.magenta.datafordeler.core.database.DataItem;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
+import dk.magenta.datafordeler.cvr.data.company.CompanyIndustryData;
+import dk.magenta.datafordeler.cvr.data.company.CompanyTextData;
 
 import javax.persistence.*;
 import java.util.HashMap;
@@ -21,16 +23,16 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
             map.putAll(this.mainData.asMap());
         }
         if (this.primaryIndustryData != null) {
-            map.putAll(this.primaryIndustryData.asMap());
+            map.put("primaryIndustry", this.primaryIndustryData.getIndustry());
         }
         if (this.secondaryIndustryData1 != null) {
-            map.putAll(this.secondaryIndustryData1.asMap());
+            map.put("secondaryIndustry1", this.secondaryIndustryData1.getIndustry());
         }
         if (this.secondaryIndustryData2 != null) {
-            map.putAll(this.secondaryIndustryData2.asMap());
+            map.put("secondaryIndustry2", this.secondaryIndustryData2.getIndustry());
         }
         if (this.secondaryIndustryData3 != null) {
-            map.putAll(this.secondaryIndustryData3.asMap());
+            map.put("secondaryIndustry3", this.secondaryIndustryData3.getIndustry());
         }
         if (this.nameData != null) {
             map.putAll(this.nameData.asMap());
@@ -51,28 +53,28 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
     private CompanyUnitMainData mainData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyUnitIndustryData primaryIndustryData;
+    private CompanyIndustryData primaryIndustryData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyUnitIndustryData secondaryIndustryData1;
+    private CompanyIndustryData secondaryIndustryData1;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyUnitIndustryData secondaryIndustryData2;
+    private CompanyIndustryData secondaryIndustryData2;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyUnitIndustryData secondaryIndustryData3;
+    private CompanyIndustryData secondaryIndustryData3;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyUnitTextData nameData;
+    private CompanyTextData nameData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyUnitTextData phoneData;
+    private CompanyTextData phoneData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyUnitTextData emailData;
+    private CompanyTextData emailData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyUnitTextData faxData;
+    private CompanyTextData faxData;
 
     public CompanyUnitMainData getMainData() {
         if (this.mainData == null) {
@@ -81,55 +83,55 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         return this.mainData;
     }
 
-    public CompanyUnitIndustryData obtainPrimaryIndustryData() {
+    public CompanyIndustryData obtainPrimaryIndustryData() {
         if (this.primaryIndustryData == null) {
-            this.primaryIndustryData = new CompanyUnitIndustryData(true);
+            this.primaryIndustryData = new CompanyIndustryData(true);
         }
         return this.primaryIndustryData;
     }
-    public CompanyUnitIndustryData obtainSecondaryIndustryData1() {
+    public CompanyIndustryData obtainSecondaryIndustryData1() {
         if (this.secondaryIndustryData1 == null) {
-            this.secondaryIndustryData1 = new CompanyUnitIndustryData(false);
+            this.secondaryIndustryData1 = new CompanyIndustryData(false);
         }
         return this.secondaryIndustryData1;
     }
-    public CompanyUnitIndustryData obtainSecondaryIndustryData2() {
+    public CompanyIndustryData obtainSecondaryIndustryData2() {
         if (this.secondaryIndustryData2 == null) {
-            this.secondaryIndustryData2 = new CompanyUnitIndustryData(false);
+            this.secondaryIndustryData2 = new CompanyIndustryData(false);
         }
         return this.secondaryIndustryData2;
     }
-    public CompanyUnitIndustryData obtainSecondaryIndustryData3() {
+    public CompanyIndustryData obtainSecondaryIndustryData3() {
         if (this.secondaryIndustryData3 == null) {
-            this.secondaryIndustryData3 = new CompanyUnitIndustryData(false);
+            this.secondaryIndustryData3 = new CompanyIndustryData(false);
         }
         return this.secondaryIndustryData3;
     }
 
-    public CompanyUnitTextData getNameData() {
+    public CompanyTextData getNameData() {
         if (this.nameData == null) {
-            this.nameData = new CompanyUnitTextData(CompanyUnitTextData.Type.NAME);
+            this.nameData = new CompanyTextData(CompanyTextData.Type.NAME);
         }
         return this.nameData;
     }
 
-    public CompanyUnitTextData getPhoneData() {
+    public CompanyTextData getPhoneData() {
         if (this.phoneData == null) {
-            this.phoneData = new CompanyUnitTextData(CompanyUnitTextData.Type.PHONE);
+            this.phoneData = new CompanyTextData(CompanyTextData.Type.PHONE);
         }
         return this.phoneData;
     }
 
-    public CompanyUnitTextData getEmailData() {
+    public CompanyTextData getEmailData() {
         if (this.emailData == null) {
-            this.emailData = new CompanyUnitTextData(CompanyUnitTextData.Type.EMAIL);
+            this.emailData = new CompanyTextData(CompanyTextData.Type.EMAIL);
         }
         return this.emailData;
     }
 
-    public CompanyUnitTextData getFaxData() {
+    public CompanyTextData getFaxData() {
         if (this.faxData == null) {
-            this.faxData = new CompanyUnitTextData(CompanyUnitTextData.Type.FAX);
+            this.faxData = new CompanyTextData(CompanyTextData.Type.FAX);
         }
         return this.faxData;
     }
