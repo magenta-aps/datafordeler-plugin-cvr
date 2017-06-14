@@ -13,7 +13,6 @@ import dk.magenta.datafordeler.cvr.data.companyunit.*;
 import dk.magenta.datafordeler.cvr.data.embeddable.LifeCycleEmbed;
 import dk.magenta.datafordeler.cvr.data.embeddable.QuarterlyEmployeeNumbersEmbed;
 import dk.magenta.datafordeler.cvr.data.embeddable.YearlyEmployeeNumbersEmbed;
-import dk.magenta.datafordeler.cvr.data.industry.IndustryEntity;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 import org.hibernate.Session;
@@ -26,7 +25,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.OffsetDateTime;
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -54,23 +52,27 @@ public class ModelTest {
         company.setCvrNumber(12345678);
 
         CompanyRegistration registration = new CompanyRegistration(OffsetDateTime.parse("2017-01-01T00:00:00+00:00"), OffsetDateTime.parse("2018-01-01T00:00:00+00:00"), 1);
-        CompanyEffect effect = new CompanyEffect(registration, OffsetDateTime.parse("2017-07-01T00:00:00+00:00"), null);
+        CompanyEffect effect1 = new CompanyEffect(registration, OffsetDateTime.parse("2017-07-01T00:00:00+00:00"), null);
+        CompanyEffect effect2 = new CompanyEffect(registration, OffsetDateTime.parse("2017-08-01T00:00:00+00:00"), null);
 
-        CompanyBaseData companyData = new CompanyBaseData();
-        companyData.addEffect(effect);
+        CompanyBaseData companyData1 = new CompanyBaseData();
+        companyData1.addEffect(effect1);
 
-        CompanyMainData mainData = companyData.getMainData();
+        CompanyBaseData companyData2 = new CompanyBaseData();
+        companyData2.addEffect(effect2);
+
+        CompanyMainData mainData = companyData1.getMainData();
 
         LifeCycleEmbed lifeCycle = mainData.obtainLifeCycle();
         lifeCycle.setStartDate(OffsetDateTime.parse("2000-01-01T00:00:00+00:00"));
 
         mainData.setAdvertProtection(true);
 
-        CompanyTextData nameData = companyData.getNameData();
+        CompanyTextData nameData = companyData1.obtainNameData();
         nameData.setText("Some company name");
         nameData.setType(CompanyTextData.Type.NAME);
 
-        CompanyIndustryData primaryIndustryData = companyData.obtainPrimaryIndustryData();
+        CompanyIndustryData primaryIndustryData = companyData2.obtainPrimaryIndustryData();
         Industry primaryIndustry = queryManager.getItem(session, Industry.class, Collections.singletonMap("code", 123456));
         if (primaryIndustry == null) {
             primaryIndustry = new Industry();
@@ -82,15 +84,15 @@ public class ModelTest {
 
 
 
-        CompanyTextData phoneData = companyData.getPhoneData();
+        CompanyTextData phoneData = companyData1.obtainPhoneData();
         phoneData.setType(CompanyTextData.Type.PHONE);
         phoneData.setText("87654321");
 
-        CompanyTextData faxData = companyData.getFaxData();
+        CompanyTextData faxData = companyData1.obtainFaxData();
         faxData.setType(CompanyTextData.Type.FAX);
         faxData.setText("11112222");
 
-        CompanyTextData emailData = companyData.getEmailData();
+        CompanyTextData emailData = companyData1.obtainEmailData();
         emailData.setType(CompanyTextData.Type.EMAIL);
         emailData.setText("test@example.com");
 
@@ -99,11 +101,12 @@ public class ModelTest {
         if (companyForm == null) {
             companyForm = new CompanyForm();
             companyForm.setCode(123);
+            companyForm.setName("A/S");
+            companyForm.setResponsibleDatasource("E&S");
+            session.saveOrUpdate(companyForm);
         }
-
-        companyForm.setName("A/S");
-        companyForm.setResponsibleDatasource("E&S");
-        mainData.setForm(companyForm);
+        CompanyFormData formData = companyData1.obtainFormData();
+        formData.setForm(companyForm);
 
         YearlyEmployeeNumbersEmbed yearlyEmployeeNumbers = mainData.obtainYearlyEmployeeNumbers();
         yearlyEmployeeNumbers.setYear(2017);
@@ -128,7 +131,6 @@ public class ModelTest {
 
         Transaction transaction = session.beginTransaction();
 
-        session.saveOrUpdate(companyForm);
 
         try {
             queryManager.saveRegistration(session, company, registration);
@@ -169,11 +171,11 @@ public class ModelTest {
         lifeCycle.setStartDate(OffsetDateTime.parse("2000-01-01T00:00:00+00:00"));
         mainData.setLifeCycle(lifeCycle);
 
-        CompanyUnitTextData nameData = companyUnitData.getNameData();
+        CompanyTextData nameData = companyUnitData.getNameData();
         nameData.setText("Some company name");
-        nameData.setType(CompanyUnitTextData.Type.NAME);
+        nameData.setType(CompanyTextData.Type.NAME);
 
-        CompanyUnitIndustryData primaryIndustryData = companyUnitData.obtainPrimaryIndustryData();
+        CompanyIndustryData primaryIndustryData = companyUnitData.obtainPrimaryIndustryData();
         Industry primaryIndustry = queryManager.getItem(session, Industry.class, Collections.singletonMap("code", 123456));
         if (primaryIndustry == null) {
             primaryIndustry = new Industry();
@@ -183,16 +185,16 @@ public class ModelTest {
         }
         primaryIndustryData.setIndustry(primaryIndustry);
 
-        CompanyUnitTextData phoneData = companyUnitData.getPhoneData();
-        phoneData.setType(CompanyUnitTextData.Type.PHONE);
+        CompanyTextData phoneData = companyUnitData.getPhoneData();
+        phoneData.setType(CompanyTextData.Type.PHONE);
         phoneData.setText("87654321");
 
-        CompanyUnitTextData faxData = companyUnitData.getFaxData();
-        faxData.setType(CompanyUnitTextData.Type.FAX);
+        CompanyTextData faxData = companyUnitData.getFaxData();
+        faxData.setType(CompanyTextData.Type.FAX);
         faxData.setText("11112222");
 
-        CompanyUnitTextData emailData = companyUnitData.getEmailData();
-        emailData.setType(CompanyUnitTextData.Type.EMAIL);
+        CompanyTextData emailData = companyUnitData.getEmailData();
+        emailData.setType(CompanyTextData.Type.EMAIL);
         emailData.setText("test@example.com");
 
         CompanyForm companyForm = queryManager.getItem(session, CompanyForm.class, Collections.singletonMap("code", 123));
