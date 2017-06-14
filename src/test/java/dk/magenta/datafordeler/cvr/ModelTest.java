@@ -23,6 +23,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -43,6 +45,7 @@ public class ModelTest {
 
     @Test
     public void testCompany() throws DataFordelerException, JsonProcessingException {
+        Session session = sessionManager.getSessionFactory().openSession();
         Identification identification = new Identification(UUID.randomUUID(), "test");
         CompanyEntity company = new CompanyEntity();
         company.setIdentification(identification);
@@ -77,8 +80,13 @@ public class ModelTest {
         emailData.setType(CompanyTextData.Type.EMAIL);
         emailData.setText("test@example.com");
 
-        CompanyForm companyForm = new CompanyForm();
-        companyForm.setCode(111);
+
+        CompanyForm companyForm = queryManager.getItem(session, CompanyForm.class, Collections.singletonMap("code", 123));
+        if (companyForm == null) {
+            companyForm = new CompanyForm();
+            companyForm.setCode(123);
+        }
+
         companyForm.setName("A/S");
         companyForm.setResponsibleDatasource("E&S");
         mainData.setForm(companyForm);
@@ -104,7 +112,6 @@ public class ModelTest {
         quarterlyEmployeeNumbers.setQuarterlyIncludingOwnersHigh(2);
 
 
-        Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
 
         session.saveOrUpdate(companyForm);
@@ -125,6 +132,7 @@ public class ModelTest {
 
     @Test
     public void testCompanyUnit() throws DataFordelerException, JsonProcessingException {
+        Session session = sessionManager.getSessionFactory().openSession();
         Identification companyIdentification = new Identification(UUID.randomUUID(), "test");
         CompanyEntity company = new CompanyEntity();
         company.setIdentification(companyIdentification);
@@ -163,9 +171,12 @@ public class ModelTest {
         emailData.setType(CompanyUnitTextData.Type.EMAIL);
         emailData.setText("test@example.com");
 
-        CompanyForm companyForm = new CompanyForm();
-        companyForm.setCode(123);
-        companyForm.setName("Ltd.");
+        CompanyForm companyForm = queryManager.getItem(session, CompanyForm.class, Collections.singletonMap("code", 123));
+        if (companyForm == null) {
+            companyForm = new CompanyForm();
+            companyForm.setCode(123);
+        }
+        companyForm.setName("A/S");
         companyForm.setResponsibleDatasource("E&S");
         mainData.setForm(companyForm);
 
@@ -189,7 +200,6 @@ public class ModelTest {
         quarterlyEmployeeNumbers.setQuarterlyIncludingOwnersHigh(2);
 
 
-        Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
 
         session.saveOrUpdate(companyForm);
