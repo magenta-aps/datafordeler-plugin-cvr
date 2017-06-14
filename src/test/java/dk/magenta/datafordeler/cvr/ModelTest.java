@@ -10,7 +10,6 @@ import dk.magenta.datafordeler.cvr.data.company.*;
 import dk.magenta.datafordeler.cvr.data.company.CompanyMainData;
 import dk.magenta.datafordeler.cvr.data.company.CompanyTextData;
 import dk.magenta.datafordeler.cvr.data.companyunit.*;
-import dk.magenta.datafordeler.cvr.data.embeddable.CompanyTextEmbed;
 import dk.magenta.datafordeler.cvr.data.embeddable.LifeCycleEmbed;
 import dk.magenta.datafordeler.cvr.data.embeddable.QuarterlyEmployeeNumbersEmbed;
 import dk.magenta.datafordeler.cvr.data.embeddable.YearlyEmployeeNumbersEmbed;
@@ -64,18 +63,18 @@ public class ModelTest {
 
         CompanyTextData nameData = companyData.getNameData();
         nameData.setText("Some company name");
-        nameData.setType(CompanyTextEmbed.Type.NAME);
+        nameData.setType(CompanyTextData.Type.NAME);
 
         CompanyTextData phoneData = companyData.getPhoneData();
-        phoneData.setType(CompanyTextEmbed.Type.PHONE);
+        phoneData.setType(CompanyTextData.Type.PHONE);
         phoneData.setText("87654321");
 
         CompanyTextData faxData = companyData.getFaxData();
-        faxData.setType(CompanyTextEmbed.Type.FAX);
+        faxData.setType(CompanyTextData.Type.FAX);
         faxData.setText("11112222");
 
         CompanyTextData emailData = companyData.getEmailData();
-        emailData.setType(CompanyTextEmbed.Type.EMAIL);
+        emailData.setType(CompanyTextData.Type.EMAIL);
         emailData.setText("test@example.com");
 
         CompanyForm companyForm = new CompanyForm();
@@ -150,18 +149,18 @@ public class ModelTest {
 
         CompanyUnitTextData nameData = companyUnitData.getNameData();
         nameData.setText("Some company name");
-        nameData.setType(CompanyTextEmbed.Type.NAME);
+        nameData.setType(CompanyUnitTextData.Type.NAME);
 
         CompanyUnitTextData phoneData = companyUnitData.getPhoneData();
-        phoneData.setType(CompanyTextEmbed.Type.PHONE);
+        phoneData.setType(CompanyUnitTextData.Type.PHONE);
         phoneData.setText("87654321");
 
         CompanyUnitTextData faxData = companyUnitData.getFaxData();
-        faxData.setType(CompanyTextEmbed.Type.FAX);
+        faxData.setType(CompanyUnitTextData.Type.FAX);
         faxData.setText("11112222");
 
         CompanyUnitTextData emailData = companyUnitData.getEmailData();
-        emailData.setType(CompanyTextEmbed.Type.EMAIL);
+        emailData.setType(CompanyUnitTextData.Type.EMAIL);
         emailData.setText("test@example.com");
 
         CompanyForm companyForm = new CompanyForm();
