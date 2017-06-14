@@ -1,5 +1,7 @@
 package dk.magenta.datafordeler.cvr.data.embeddable;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
@@ -10,6 +12,7 @@ import java.util.Date;
  * Created by jubk on 04-03-2015.
  */
 @Embeddable
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LifeCycleEmbed {
 
     @Column(nullable = true)

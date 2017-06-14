@@ -9,7 +9,7 @@ import javax.persistence.*;
  * Created by lars on 26-01-15.
  */
 @Entity
-@Table(name = "cvr_company_form", indexes = {@Index(name = "code", columnList = "code")})
+@Table(name = "cvr_form", indexes = {@Index(name = "code", columnList = "code")})
 public class CompanyForm extends UnversionedEntity {
 
     public CompanyForm() {

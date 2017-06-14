@@ -8,7 +8,6 @@ import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
 import dk.magenta.datafordeler.cvr.data.embeddable.LifeCycleEmbed;
 import dk.magenta.datafordeler.cvr.data.embeddable.QuarterlyEmployeeNumbersEmbed;
 import dk.magenta.datafordeler.cvr.data.embeddable.YearlyEmployeeNumbersEmbed;
-import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
@@ -37,7 +36,6 @@ public class CompanyMainData extends DetailData {
     @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("form", this.form);
         map.put("lifeCycle", this.lifeCycle);
         map.put("advertProtection", this.advertProtection);
         if (this.yearlyEmployeeNumbers != null) {
@@ -74,24 +72,6 @@ public class CompanyMainData extends DetailData {
     @JsonProperty(value = "enheder")
     @XmlElement(name = "enheder")
     private Collection<CompanyUnitEntity> units;
-
-
-
-    @ManyToOne
-    @JsonProperty(value = "form")
-    @XmlElement(name = "form")
-    private CompanyForm form;
-
-    public CompanyForm obtainForm() {
-        if (this.form == null) {
-            this.form = new CompanyForm();
-        }
-        return this.form;
-    }
-
-    public void setForm(CompanyForm form) {
-        this.form = form;
-    }
 
 
 
