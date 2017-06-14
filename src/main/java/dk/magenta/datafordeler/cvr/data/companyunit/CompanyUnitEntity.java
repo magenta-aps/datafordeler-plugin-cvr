@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.data.companyunit;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import dk.magenta.datafordeler.core.database.Entity;
@@ -7,6 +8,7 @@ import dk.magenta.datafordeler.core.database.Entity;
 import javax.persistence.Column;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Created by lars on 16-05-17.
@@ -23,6 +25,8 @@ public class CompanyUnitEntity extends Entity<CompanyUnitEntity, CompanyUnitRegi
     @XmlElement
     private int pNumber;
 
+    @JsonProperty(value = "pNumber")
+    @XmlElement(name = "pNumber")
     public int getPNumber() {
         return pNumber;
     }
