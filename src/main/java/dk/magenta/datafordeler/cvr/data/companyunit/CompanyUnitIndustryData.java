@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.data.companyunit;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.cvr.data.DetailData;
 import dk.magenta.datafordeler.cvr.data.industry.IndustryEntity;
+import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,26 +20,50 @@ import java.util.Map;
 @Table(name="cvr_company_industry")
 public class CompanyUnitIndustryData extends DetailData {
 
+
+    public CompanyUnitIndustryData() {
+        this(false);
+    }
+    public CompanyUnitIndustryData(boolean isPrimary) {
+        this.isPrimary = isPrimary;
+    }
+
+
+
     @ManyToOne
     @JsonProperty
     @XmlElement
-    private IndustryEntity industry;
+    private Industry industry;
+
+    public Industry getIndustry() {
+        return this.industry;
+    }
+
+    public void setIndustry(Industry industry) {
+        this.industry = industry;
+    }
+
+
 
     @Column
     @JsonProperty
     @XmlElement
     private boolean isPrimary;
 
-    @Column
-    @JsonProperty
-    @XmlElement
-    private short index;
+    public boolean isPrimary() {
+        return this.isPrimary;
+    }
+
+    public void setPrimary(boolean primary) {
+        this.isPrimary = primary;
+    }
+
+
 
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("industry", this.industry);
         map.put("isPrimary", this.isPrimary);
-        map.put("index", this.index);
         return map;
     }
 
