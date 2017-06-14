@@ -7,7 +7,7 @@ import javax.persistence.Embeddable;
  * Created by jubk on 03-03-2015.
  */
 @Embeddable
-public class QuarterlyEmployeeNumbersEmbed {
+public class QuarterlyEmployeeNumbersEmbed extends EmployeeNumbersEmbed {
 
     @Column(name = "quarterlyEmployeesYear")
     private int year;
@@ -55,6 +55,9 @@ public class QuarterlyEmployeeNumbersEmbed {
     }
 
     public void setQuarterlyEmployeesLow(int quarterlyEmployeesLow) {
+        if (this.quarterlyEmployeesHigh != 0) {
+            this.checkBounds(quarterlyEmployeesLow, this.quarterlyEmployeesHigh);
+        }
         this.quarterlyEmployeesLow = quarterlyEmployeesLow;
     }
 
@@ -63,6 +66,9 @@ public class QuarterlyEmployeeNumbersEmbed {
     }
 
     public void setQuarterlyEmployeesHigh(int quarterlyEmployeesHigh) {
+        if (this.quarterlyEmployeesLow != 0) {
+            this.checkBounds(this.quarterlyEmployeesLow, quarterlyEmployeesHigh);
+        }
         this.quarterlyEmployeesHigh = quarterlyEmployeesHigh;
     }
 
@@ -71,6 +77,9 @@ public class QuarterlyEmployeeNumbersEmbed {
     }
 
     public void setQuarterlyFullTimeEquivalentLow(int quarterlyFullTimeEquivalentLow) {
+        if (this.quarterlyFullTimeEquivalentHigh != 0) {
+            this.checkBounds(quarterlyFullTimeEquivalentLow, this.quarterlyFullTimeEquivalentHigh);
+        }
         this.quarterlyFullTimeEquivalentLow = quarterlyFullTimeEquivalentLow;
     }
 
@@ -79,6 +88,9 @@ public class QuarterlyEmployeeNumbersEmbed {
     }
 
     public void setQuarterlyFullTimeEquivalentHigh(int quarterlyFullTimeEquivalentHigh) {
+        if (this.quarterlyFullTimeEquivalentLow != 0) {
+            this.checkBounds(this.quarterlyFullTimeEquivalentLow, quarterlyFullTimeEquivalentHigh);
+        }
         this.quarterlyFullTimeEquivalentHigh = quarterlyFullTimeEquivalentHigh;
     }
 
@@ -87,6 +99,9 @@ public class QuarterlyEmployeeNumbersEmbed {
     }
 
     public void setQuarterlyIncludingOwnersLow(int quarterlyIncludingOwnersLow) {
+        if (this.quarterlyIncludingOwnersHigh != 0) {
+            this.checkBounds(quarterlyIncludingOwnersLow, this.quarterlyIncludingOwnersHigh);
+        }
         this.quarterlyIncludingOwnersLow = quarterlyIncludingOwnersLow;
     }
 
@@ -95,6 +110,9 @@ public class QuarterlyEmployeeNumbersEmbed {
     }
 
     public void setQuarterlyIncludingOwnersHigh(int quarterlyIncludingOwnersHigh) {
+        if (this.quarterlyIncludingOwnersLow != 0) {
+            this.checkBounds(this.quarterlyIncludingOwnersLow, quarterlyIncludingOwnersHigh);
+        }
         this.quarterlyIncludingOwnersHigh = quarterlyIncludingOwnersHigh;
     }
 
