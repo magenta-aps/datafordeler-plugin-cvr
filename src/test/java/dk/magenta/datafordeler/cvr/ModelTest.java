@@ -13,7 +13,9 @@ import dk.magenta.datafordeler.cvr.data.companyunit.*;
 import dk.magenta.datafordeler.cvr.data.embeddable.LifeCycleEmbed;
 import dk.magenta.datafordeler.cvr.data.embeddable.QuarterlyEmployeeNumbersEmbed;
 import dk.magenta.datafordeler.cvr.data.embeddable.YearlyEmployeeNumbersEmbed;
+import dk.magenta.datafordeler.cvr.data.industry.IndustryEntity;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
+import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.junit.Test;
@@ -67,6 +69,18 @@ public class ModelTest {
         CompanyTextData nameData = companyData.getNameData();
         nameData.setText("Some company name");
         nameData.setType(CompanyTextData.Type.NAME);
+
+        CompanyIndustryData primaryIndustryData = companyData.obtainPrimaryIndustryData();
+        Industry primaryIndustry = queryManager.getItem(session, Industry.class, Collections.singletonMap("code", 123456));
+        if (primaryIndustry == null) {
+            primaryIndustry = new Industry();
+            primaryIndustry.setCode(123456);
+            primaryIndustry.setText("It company");
+            session.saveOrUpdate(primaryIndustry);
+        }
+        primaryIndustryData.setIndustry(primaryIndustry);
+
+
 
         CompanyTextData phoneData = companyData.getPhoneData();
         phoneData.setType(CompanyTextData.Type.PHONE);
@@ -158,6 +172,16 @@ public class ModelTest {
         CompanyUnitTextData nameData = companyUnitData.getNameData();
         nameData.setText("Some company name");
         nameData.setType(CompanyUnitTextData.Type.NAME);
+
+        CompanyUnitIndustryData primaryIndustryData = companyUnitData.obtainPrimaryIndustryData();
+        Industry primaryIndustry = queryManager.getItem(session, Industry.class, Collections.singletonMap("code", 123456));
+        if (primaryIndustry == null) {
+            primaryIndustry = new Industry();
+            primaryIndustry.setCode(123456);
+            primaryIndustry.setText("It company");
+            session.saveOrUpdate(primaryIndustry);
+        }
+        primaryIndustryData.setIndustry(primaryIndustry);
 
         CompanyUnitTextData phoneData = companyUnitData.getPhoneData();
         phoneData.setType(CompanyUnitTextData.Type.PHONE);

@@ -2,14 +2,10 @@ package dk.magenta.datafordeler.cvr.data.company;
 
 import dk.magenta.datafordeler.core.database.DataItem;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
-import dk.magenta.datafordeler.cvr.data.CvrData;
-import dk.magenta.datafordeler.cvr.data.embeddable.*;
 
 import javax.persistence.*;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by lars on 12-06-17.
@@ -26,8 +22,17 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         if (this.mainData != null) {
             map.putAll(this.mainData.asMap());
         }
-        if (this.industryData != null) {
-            map.putAll(this.industryData.asMap());
+        if (this.primaryIndustryData != null) {
+            map.putAll(this.primaryIndustryData.asMap());
+        }
+        if (this.secondaryIndustryData1 != null) {
+            map.putAll(this.secondaryIndustryData1.asMap());
+        }
+        if (this.secondaryIndustryData2 != null) {
+            map.putAll(this.secondaryIndustryData2.asMap());
+        }
+        if (this.secondaryIndustryData3 != null) {
+            map.putAll(this.secondaryIndustryData3.asMap());
         }
         if (this.nameData != null) {
             map.putAll(this.nameData.asMap());
@@ -49,7 +54,16 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     private CompanyMainData mainData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyIndustryData industryData;
+    private CompanyIndustryData primaryIndustryData;
+
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private CompanyIndustryData secondaryIndustryData1;
+
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private CompanyIndustryData secondaryIndustryData2;
+
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private CompanyIndustryData secondaryIndustryData3;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private CompanyTextData nameData;
@@ -70,11 +84,29 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         return this.mainData;
     }
 
-    public CompanyIndustryData getIndustryData() {
-        if (this.industryData == null) {
-            this.industryData = new CompanyIndustryData();
+    public CompanyIndustryData obtainPrimaryIndustryData() {
+        if (this.primaryIndustryData == null) {
+            this.primaryIndustryData = new CompanyIndustryData(true);
         }
-        return this.industryData;
+        return this.primaryIndustryData;
+    }
+    public CompanyIndustryData obtainSecondaryIndustryData1() {
+        if (this.secondaryIndustryData1 == null) {
+            this.secondaryIndustryData1 = new CompanyIndustryData(false);
+        }
+        return this.secondaryIndustryData1;
+    }
+    public CompanyIndustryData obtainSecondaryIndustryData2() {
+        if (this.secondaryIndustryData2 == null) {
+            this.secondaryIndustryData2 = new CompanyIndustryData(false);
+        }
+        return this.secondaryIndustryData2;
+    }
+    public CompanyIndustryData obtainSecondaryIndustryData3() {
+        if (this.secondaryIndustryData3 == null) {
+            this.secondaryIndustryData3 = new CompanyIndustryData(false);
+        }
+        return this.secondaryIndustryData3;
     }
 
     public CompanyTextData getNameData() {
@@ -111,8 +143,17 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         if (this.mainData != null) {
             lookupDefinition.putAll("mainData", this.mainData.databaseFields());
         }
-        if (this.industryData != null) {
-            lookupDefinition.putAll("industryData", this.industryData.databaseFields());
+        if (this.primaryIndustryData != null) {
+            lookupDefinition.putAll("primaryIndustryData", this.primaryIndustryData.databaseFields());
+        }
+        if (this.secondaryIndustryData1 != null) {
+            lookupDefinition.putAll("secondaryIndustryData1", this.secondaryIndustryData1.databaseFields());
+        }
+        if (this.secondaryIndustryData2 != null) {
+            lookupDefinition.putAll("secondaryIndustryData2", this.secondaryIndustryData2.databaseFields());
+        }
+        if (this.secondaryIndustryData3 != null) {
+            lookupDefinition.putAll("secondaryIndustryData3", this.secondaryIndustryData3.databaseFields());
         }
         if (this.nameData != null) {
             lookupDefinition.putAll("nameData", this.nameData.databaseFields());
