@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Created by jubk on 03-03-2015.
@@ -15,30 +16,6 @@ public class YearlyEmployeeNumbersEmbed extends EmployeeNumbersEmbed {
     @Column(name = "yearlyEmployeesYear")
     private int year;
 
-    @JsonIgnore
-    @Column(name = "yearlyEmployeesLow")
-    private int yearlyEmployeesLow;
-
-    @JsonIgnore
-    @Column(name = "yearlyEmployeesHigh")
-    private int yearlyEmployeesHigh;
-
-    @JsonIgnore
-    @Column(name = "yearlyEmployeesFullTimeEquivalentLow")
-    private int yearlyFullTimeEquivalentLow;
-
-    @JsonIgnore
-    @Column(name = "yearlyEmployeesFullTimeEquivalentHigh")
-    private int yearlyFullTimeEquivalentHigh;
-
-    @JsonIgnore
-    @Column(name = "yearlyEmployeesIncludingOwnersLow")
-    private int yearlyIncludingOwnersLow;
-
-    @JsonIgnore
-    @Column(name = "yearlyEmployeesIncludingOwnersHigh")
-    private int yearlyIncludingOwnersHigh;
-
     public int getYear() {
         return year;
     }
@@ -47,10 +24,11 @@ public class YearlyEmployeeNumbersEmbed extends EmployeeNumbersEmbed {
         this.year = year;
     }
 
-    @JsonProperty
-    public String getYearlyEmployeesInterval() {
-        return this.formatInterval(this.yearlyEmployeesLow, this.yearlyEmployeesHigh);
-    }
+
+
+    @JsonIgnore
+    @Column(name = "yearlyEmployeesLow")
+    private int yearlyEmployeesLow;
 
     public int getYearlyEmployeesLow() {
         return yearlyEmployeesLow;
@@ -62,6 +40,12 @@ public class YearlyEmployeeNumbersEmbed extends EmployeeNumbersEmbed {
         }
         this.yearlyEmployeesLow = yearlyEmployeesLow;
     }
+
+
+
+    @JsonIgnore
+    @Column(name = "yearlyEmployeesHigh")
+    private int yearlyEmployeesHigh;
 
     public int getYearlyEmployeesHigh() {
         return yearlyEmployeesHigh;
@@ -75,9 +59,16 @@ public class YearlyEmployeeNumbersEmbed extends EmployeeNumbersEmbed {
     }
 
     @JsonProperty
-    public String getYearlyFullTimeEquivalentInterval() {
-        return this.formatInterval(this.yearlyFullTimeEquivalentLow, this.yearlyFullTimeEquivalentHigh);
+    public String getYearlyEmployeesInterval() {
+        return this.formatInterval(this.yearlyEmployeesLow, this.yearlyEmployeesHigh);
     }
+
+
+
+    @JsonIgnore
+    @XmlTransient
+    @Column(name = "yearlyEmployeesFullTimeEquivalentLow")
+    private int yearlyFullTimeEquivalentLow;
 
     public int getYearlyFullTimeEquivalentLow() {
         return yearlyFullTimeEquivalentLow;
@@ -89,6 +80,13 @@ public class YearlyEmployeeNumbersEmbed extends EmployeeNumbersEmbed {
         }
         this.yearlyFullTimeEquivalentLow = yearlyFullTimeEquivalentLow;
     }
+
+
+
+    @JsonIgnore
+    @XmlTransient
+    @Column(name = "yearlyEmployeesFullTimeEquivalentHigh")
+    private int yearlyFullTimeEquivalentHigh;
 
     public int getYearlyFullTimeEquivalentHigh() {
         return yearlyFullTimeEquivalentHigh;
@@ -102,9 +100,17 @@ public class YearlyEmployeeNumbersEmbed extends EmployeeNumbersEmbed {
     }
 
     @JsonProperty
-    public String getYearlyIncludingOwnersInterval() {
-        return this.formatInterval(this.yearlyIncludingOwnersLow, this.yearlyIncludingOwnersHigh);
+    public String getYearlyFullTimeEquivalentInterval() {
+        return this.formatInterval(this.yearlyFullTimeEquivalentLow, this.yearlyFullTimeEquivalentHigh);
     }
+
+
+
+
+    @JsonIgnore
+    @XmlTransient
+    @Column(name = "yearlyEmployeesIncludingOwnersLow")
+    private int yearlyIncludingOwnersLow;
 
     public int getYearlyIncludingOwnersLow() {
         return yearlyIncludingOwnersLow;
@@ -117,6 +123,13 @@ public class YearlyEmployeeNumbersEmbed extends EmployeeNumbersEmbed {
         this.yearlyIncludingOwnersLow = yearlyIncludingOwnersLow;
     }
 
+
+
+    @JsonIgnore
+    @XmlTransient
+    @Column(name = "yearlyEmployeesIncludingOwnersHigh")
+    private int yearlyIncludingOwnersHigh;
+
     public int getYearlyIncludingOwnersHigh() {
         return yearlyIncludingOwnersHigh;
     }
@@ -127,4 +140,10 @@ public class YearlyEmployeeNumbersEmbed extends EmployeeNumbersEmbed {
         }
         this.yearlyIncludingOwnersHigh = yearlyIncludingOwnersHigh;
     }
+
+    @JsonProperty
+    public String getYearlyIncludingOwnersInterval() {
+        return this.formatInterval(this.yearlyIncludingOwnersLow, this.yearlyIncludingOwnersHigh);
+    }
+
 }
