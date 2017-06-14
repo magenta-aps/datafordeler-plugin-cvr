@@ -56,9 +56,11 @@ public class ModelTest {
         companyData.addEffect(effect);
 
         CompanyMainData mainData = companyData.getMainData();
-        LifeCycleEmbed lifeCycle = new LifeCycleEmbed();
+
+        LifeCycleEmbed lifeCycle = mainData.obtainLifeCycle();
         lifeCycle.setStartDate(OffsetDateTime.parse("2000-01-01T00:00:00+00:00"));
-        mainData.setLifeCycle(lifeCycle);
+
+        mainData.setAdvertProtection(true);
 
         CompanyTextData nameData = companyData.getNameData();
         nameData.setText("Some company name");
@@ -77,8 +79,8 @@ public class ModelTest {
         emailData.setText("test@example.com");
 
         CompanyForm companyForm = new CompanyForm();
-        companyForm.setCode(123);
-        companyForm.setName("Ltd.");
+        companyForm.setCode(111);
+        companyForm.setName("A/S");
         companyForm.setResponsibleDatasource("E&S");
         mainData.setForm(companyForm);
 
@@ -124,12 +126,14 @@ public class ModelTest {
 
     @Test
     public void testCompanyUnit() throws DataFordelerException, JsonProcessingException {
-        Identification identification = new Identification(UUID.randomUUID(), "test");
+        Identification companyIdentification = new Identification(UUID.randomUUID(), "test");
         CompanyEntity company = new CompanyEntity();
-        company.setIdentification(identification);
+        company.setIdentification(companyIdentification);
         company.setCvrNumber(12345678);
 
+        Identification companyUnitIdentification = new Identification(UUID.randomUUID(), "test");
         CompanyUnitEntity companyUnit = new CompanyUnitEntity();
+        companyUnit.setIdentification(companyUnitIdentification);
         companyUnit.setPNumber(11223344);
 
         CompanyUnitRegistration registration = new CompanyUnitRegistration(OffsetDateTime.parse("2017-01-01T00:00:00+00:00"), OffsetDateTime.parse("2018-01-01T00:00:00+00:00"), 1);

@@ -12,7 +12,7 @@ import javax.persistence.MappedSuperclass;
  * Created by lars on 19-05-17.
  */
 //@Entity
-    @MappedSuperclass
+@MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class CvrData<V extends Effect, D extends DataItem> extends DataItem<V, D> {
 }
