@@ -79,28 +79,28 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
 
     public CompanyTextData getNameData() {
         if (this.nameData == null) {
-            this.nameData = new CompanyTextData(CompanyTextEmbed.Type.NAME);
+            this.nameData = new CompanyTextData(CompanyTextData.Type.NAME);
         }
         return this.nameData;
     }
 
     public CompanyTextData getPhoneData() {
         if (this.phoneData == null) {
-            this.phoneData = new CompanyTextData(CompanyTextEmbed.Type.PHONE);
+            this.phoneData = new CompanyTextData(CompanyTextData.Type.PHONE);
         }
         return this.phoneData;
     }
 
     public CompanyTextData getEmailData() {
         if (this.emailData == null) {
-            this.emailData = new CompanyTextData(CompanyTextEmbed.Type.EMAIL);
+            this.emailData = new CompanyTextData(CompanyTextData.Type.EMAIL);
         }
         return this.emailData;
     }
 
     public CompanyTextData getFaxData() {
         if (this.faxData == null) {
-            this.faxData = new CompanyTextData(CompanyTextEmbed.Type.FAX);
+            this.faxData = new CompanyTextData(CompanyTextData.Type.FAX);
         }
         return this.faxData;
     }

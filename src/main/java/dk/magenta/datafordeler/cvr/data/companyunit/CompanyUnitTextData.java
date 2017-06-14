@@ -3,7 +3,6 @@ package dk.magenta.datafordeler.cvr.data.companyunit;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dk.magenta.datafordeler.cvr.data.DetailData;
-import dk.magenta.datafordeler.cvr.data.embeddable.CompanyTextEmbed;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,7 +27,7 @@ public class CompanyUnitTextData extends DetailData {
     public CompanyUnitTextData() {
     }
 
-    public CompanyUnitTextData(CompanyTextEmbed.Type type) {
+    public CompanyUnitTextData(Type type) {
         this.setType(type);
     }
 
@@ -38,7 +37,7 @@ public class CompanyUnitTextData extends DetailData {
 
     @Column
     @JsonIgnore
-    private CompanyTextEmbed.Type type;
+    private Type type;
 
     public String getFieldName() {
         return this.type.name().toLowerCase();
@@ -71,11 +70,11 @@ public class CompanyUnitTextData extends DetailData {
         this.text = text;
     }
 
-    public CompanyTextEmbed.Type getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(CompanyTextEmbed.Type type) {
+    public void setType(Type type) {
         this.type = type;
     }
 

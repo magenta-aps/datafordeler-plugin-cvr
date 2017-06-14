@@ -118,6 +118,8 @@ public class CompanyUnitMainData extends DetailData {
     }
 
 
+
+    @Embedded
     private LifeCycleEmbed lifeCycle;
 
     public LifeCycleEmbed obtainLifeCycle() {
@@ -133,10 +135,7 @@ public class CompanyUnitMainData extends DetailData {
 
 
 
-
-
-
-
+    @Embedded
     private YearlyEmployeeNumbersEmbed yearlyEmployeeNumbers;
 
     public YearlyEmployeeNumbersEmbed obtainYearlyEmployeeNumbers() {
@@ -151,6 +150,8 @@ public class CompanyUnitMainData extends DetailData {
     }
 
 
+
+    @Embedded
     private QuarterlyEmployeeNumbersEmbed quarterlyEmployeeNumbers;
 
     public QuarterlyEmployeeNumbersEmbed obtainQuarterlyEmployeeNumbers() {
