@@ -1,7 +1,7 @@
 package dk.magenta.datafordeler.cvr.data.industry;
 
+import dk.magenta.datafordeler.core.fapi.ParameterMap;
 import dk.magenta.datafordeler.core.fapi.QueryField;
-import dk.magenta.datafordeler.core.util.ListHashMap;
 import dk.magenta.datafordeler.cvr.data.CvrQuery;
 
 import java.util.HashMap;
@@ -46,9 +46,9 @@ public class IndustryQuery extends CvrQuery<IndustryEntity> {
     }
 
     @Override
-    public void setFromParameters(ListHashMap<String, String> listHashMap) {
-        this.setCode(listHashMap.getFirst(CODE));
-        this.setText(listHashMap.getFirst(TEXT));
+    public void setFromParameters(ParameterMap parameters) {
+        this.setCode(parameters.getFirst(CODE));
+        this.setText(parameters.getFirst(TEXT));
     }
 
     @Override

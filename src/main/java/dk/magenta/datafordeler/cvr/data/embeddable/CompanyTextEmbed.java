@@ -40,11 +40,6 @@ public class CompanyTextEmbed {
         return fields;
     }
 
-    /*@JsonAnySetter
-    public void setFields(Map<String, Object> fields) {
-        this.text = (String) fields.get(this.getFieldName());
-    }*/
-
     public String getText() {
         return text;
     }

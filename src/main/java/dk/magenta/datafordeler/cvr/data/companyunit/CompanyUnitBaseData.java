@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import dk.magenta.datafordeler.core.database.DataItem;
+import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.cvr.data.CvrData;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEffect;
 import dk.magenta.datafordeler.cvr.data.embeddable.CompanyTextEmbed;
@@ -99,4 +100,29 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         }
         return this.faxData;
     }
+
+    @Override
+    public LookupDefinition getLookupDefinition() {
+        LookupDefinition lookupDefinition = new LookupDefinition();
+        if (this.mainData != null) {
+            lookupDefinition.putAll("mainData", this.mainData.databaseFields());
+        }
+        if (this.industryData != null) {
+            lookupDefinition.putAll("industryData", this.industryData.databaseFields());
+        }
+        if (this.nameData != null) {
+            lookupDefinition.putAll("nameData", this.nameData.databaseFields());
+        }
+        if (this.phoneData != null) {
+            lookupDefinition.putAll("phoneData", this.phoneData.databaseFields());
+        }
+        if (this.emailData != null) {
+            lookupDefinition.putAll("emailData", this.emailData.databaseFields());
+        }
+        if (this.faxData != null) {
+            lookupDefinition.putAll("faxData", this.faxData.databaseFields());
+        }
+        return lookupDefinition;
+    }
+
 }
