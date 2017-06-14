@@ -18,7 +18,7 @@ import java.util.Map;
  * Created by lars on 16-05-17.
  */
 @Embeddable
-public class CompanyMainEmbed extends CvrData<CompanyEffect, CompanyMainEmbed> {
+public class CompanyMainEmbed {
 
     public CompanyMainEmbed() {
     }
@@ -29,92 +29,25 @@ public class CompanyMainEmbed extends CvrData<CompanyEffect, CompanyMainEmbed> {
     //private CompanySharedData companySharedData;
 
 
-    @OneToMany
-    @JsonProperty(value = "enheder")
-    @XmlElement(name = "enheder")
-    private Collection<CompanyUnitEntity> units;
-
-/*
-    @Column
-    @JsonProperty(value = "hovedenhed")
-    @XmlElement(name = "hovedenhed")
-    private CompanyUnitEntity primaryUnit;
-    */
 
 
-    @Embedded
-    private LifeCycleEmbed lifeCycle;
 
-    public LifeCycleEmbed getLifeCycle() {
-        return lifeCycle;
-    }
-
-    public void setLifeCycle(LifeCycleEmbed lifeCycle) {
-        this.lifeCycle = lifeCycle;
-    }
-
-    // CompanyInfo
-
-    @ManyToOne
-    @JsonProperty(value = "form")
-    @XmlElement(name = "form")
-    private CompanyForm form;
-
-    public CompanyForm getForm() {
-        return form;
-    }
-
-    public void setForm(CompanyForm form) {
-        this.form = form;
-    }
-
-    // creditInformation
-
-
-    // companyParticipantRelations
-
-    // participants
-
-    @Column
-    @JsonProperty(value = "advertProtection")
-    @XmlElement(name = "advertProtection")
-    private boolean advertProtection;
-
-
-    private YearlyEmployeeNumbersEmbed yearlyEmployeeNumbers;
-
-    public YearlyEmployeeNumbersEmbed obtainYearlyEmployeeNumbers() {
-        if (this.yearlyEmployeeNumbers == null) {
-            this.yearlyEmployeeNumbers = new YearlyEmployeeNumbersEmbed();
-        }
-        return this.yearlyEmployeeNumbers;
-    }
-
-    private QuarterlyEmployeeNumbersEmbed quarterlyEmployeeNumbers;
-
-    public QuarterlyEmployeeNumbersEmbed obtainQuarterlyEmployeeNumbers() {
-        if (this.quarterlyEmployeeNumbers == null) {
-            this.quarterlyEmployeeNumbers = new QuarterlyEmployeeNumbersEmbed();
-        }
-        return this.quarterlyEmployeeNumbers;
-    }
 
     /**
      * Return a map of attributes, including those from the superclass
      * @return
      */
-    @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("advertProtection", this.advertProtection);
-        map.put("lifeCycle", this.lifeCycle);
-        map.put("form", this.form);
-        if (this.yearlyEmployeeNumbers != null) {
-            map.put("yearlyEmployeeNumbers", yearlyEmployeeNumbers);
-        }
-        if (this.quarterlyEmployeeNumbers != null) {
-            map.put("quarterlyEmployeeNumbers", quarterlyEmployeeNumbers);
-        }
+        //map.put("advertProtection", this.advertProtection);
+        //map.put("lifeCycle", this.lifeCycle);
+        //map.put("form", this.form);
+//        if (this.yearlyEmployeeNumbers != null) {
+//            map.put("yearlyEmployeeNumbers", yearlyEmployeeNumbers);
+//        }
+//        if (this.quarterlyEmployeeNumbers != null) {
+//            map.put("quarterlyEmployeeNumbers", quarterlyEmployeeNumbers);
+//        }
         return map;
     }
 
@@ -122,20 +55,15 @@ public class CompanyMainEmbed extends CvrData<CompanyEffect, CompanyMainEmbed> {
      * Return a map of references (omit this method if there are no references in the class)
      * @return
      */
-    @Override
     @JsonIgnore
     public HashMap<String, Identification> getReferences() {
-        HashMap<String, Identification> references = super.getReferences();
-        return references;
+        return new HashMap<String, Identification>();
     }
 
     /**
      * Update this object from a map of references (omit this method if there are no references in the class)
      * @return
      */
-    @Override
     public void updateReferences(HashMap<String, Identification> references) {
-        super.updateReferences(references);
-        //this.companySharedData.updateReferences(references);
     }
 }
