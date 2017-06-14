@@ -95,7 +95,6 @@ public class CompanyMainData extends DetailData {
 
 
 
-
     @Column(name="advertProtection")
     @JsonProperty(value = "advertProtection")
     @XmlElement(name = "advertProtection")
@@ -110,6 +109,8 @@ public class CompanyMainData extends DetailData {
     }
 
 
+
+    @Embedded
     private LifeCycleEmbed lifeCycle;
 
     public LifeCycleEmbed obtainLifeCycle() {
@@ -125,10 +126,7 @@ public class CompanyMainData extends DetailData {
 
 
 
-
-
-
-
+    @Embedded
     private YearlyEmployeeNumbersEmbed yearlyEmployeeNumbers;
 
     public YearlyEmployeeNumbersEmbed obtainYearlyEmployeeNumbers() {
@@ -143,6 +141,8 @@ public class CompanyMainData extends DetailData {
     }
 
 
+
+    @Embedded
     private QuarterlyEmployeeNumbersEmbed quarterlyEmployeeNumbers;
 
     public QuarterlyEmployeeNumbersEmbed obtainQuarterlyEmployeeNumbers() {

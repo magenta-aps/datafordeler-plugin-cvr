@@ -2,9 +2,6 @@ package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import dk.magenta.datafordeler.core.database.DataItem;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
-import dk.magenta.datafordeler.cvr.data.CvrData;
-import dk.magenta.datafordeler.cvr.data.company.CompanyEffect;
-import dk.magenta.datafordeler.cvr.data.embeddable.CompanyTextEmbed;
 
 import javax.persistence.*;
 import java.util.HashMap;
@@ -75,28 +72,28 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
 
     public CompanyUnitTextData getNameData() {
         if (this.nameData == null) {
-            this.nameData = new CompanyUnitTextData(CompanyTextEmbed.Type.NAME);
+            this.nameData = new CompanyUnitTextData(CompanyUnitTextData.Type.NAME);
         }
         return this.nameData;
     }
 
     public CompanyUnitTextData getPhoneData() {
         if (this.phoneData == null) {
-            this.phoneData = new CompanyUnitTextData(CompanyTextEmbed.Type.PHONE);
+            this.phoneData = new CompanyUnitTextData(CompanyUnitTextData.Type.PHONE);
         }
         return this.phoneData;
     }
 
     public CompanyUnitTextData getEmailData() {
         if (this.emailData == null) {
-            this.emailData = new CompanyUnitTextData(CompanyTextEmbed.Type.EMAIL);
+            this.emailData = new CompanyUnitTextData(CompanyUnitTextData.Type.EMAIL);
         }
         return this.emailData;
     }
 
     public CompanyUnitTextData getFaxData() {
         if (this.faxData == null) {
-            this.faxData = new CompanyUnitTextData(CompanyTextEmbed.Type.FAX);
+            this.faxData = new CompanyUnitTextData(CompanyUnitTextData.Type.FAX);
         }
         return this.faxData;
     }

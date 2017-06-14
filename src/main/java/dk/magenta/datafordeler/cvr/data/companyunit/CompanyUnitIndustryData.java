@@ -2,7 +2,6 @@ package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.cvr.data.DetailData;
-import dk.magenta.datafordeler.cvr.data.embeddable.IndustryEmbed;
 import dk.magenta.datafordeler.cvr.data.industry.IndustryEntity;
 
 import javax.persistence.Column;
