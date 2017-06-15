@@ -6,7 +6,9 @@ import dk.magenta.datafordeler.cvr.data.company.*;
 
 import javax.persistence.*;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by lars on 12-06-17.
@@ -15,57 +17,6 @@ import java.util.Map;
 @Table(name="cvr_companyunit_basedata")
 //@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnitBaseData> {
-    @Override
-    public Map<String, Object> asMap() {
-        HashMap<String, Object> map = new HashMap<>();
-        if (this.lifecycleData != null) {
-            map.put("lifecycle", this.lifecycleData.asMap());
-        }
-        if (this.advertProtectionData != null) {
-            map.put("advertProtection", this.advertProtectionData.getData());
-        }
-        if (this.locationAddressData != null) {
-            map.put("locationAddress", this.locationAddressData.getAddress());
-        }
-        if (this.postalAddressData != null) {
-            map.put("postalAddress", this.postalAddressData.getAddress());
-        }
-
-        if (this.yearlyEmployeeNumbersData != null) {
-            map.put("yearlyEmployeeNumbers", this.yearlyEmployeeNumbersData);
-        }
-        if (this.quarterlyEmployeeNumbersData != null) {
-            map.put("quarterlyEmployeeNumbers", this.quarterlyEmployeeNumbersData);
-        }
-        if (this.primaryIndustryData != null) {
-            map.put("primaryIndustry", this.primaryIndustryData.getIndustry());
-        }
-        if (this.secondaryIndustryData1 != null) {
-            map.put("secondaryIndustry1", this.secondaryIndustryData1.getIndustry());
-        }
-        if (this.secondaryIndustryData2 != null) {
-            map.put("secondaryIndustry2", this.secondaryIndustryData2.getIndustry());
-        }
-        if (this.secondaryIndustryData3 != null) {
-            map.put("secondaryIndustry3", this.secondaryIndustryData3.getIndustry());
-        }
-        if (this.nameData != null) {
-            map.putAll(this.nameData.asMap());
-        }
-        if (this.phoneData != null) {
-            map.putAll(this.phoneData.asMap());
-        }
-        if (this.emailData != null) {
-            map.putAll(this.emailData.asMap());
-        }
-        if (this.faxData != null) {
-            map.putAll(this.faxData.asMap());
-        }
-        if (this.isPrimaryData != null) {
-            map.putAll(this.isPrimaryData.asMap());
-        }
-        return map;
-    }
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private CompanyLifecycleData lifecycleData;
@@ -78,7 +29,6 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private CompanyAddressData postalAddressData;
-
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private CompanyYearlyEmployeeNumbersData yearlyEmployeeNumbersData;
@@ -113,6 +63,69 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private CompanyBooleanData isPrimaryData;
 
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private CompanyUnitCvrData companyData;
+
+    @ManyToMany(mappedBy = "companyUnitBases")
+    private Set<CompanyParticipantLink> participantData = new HashSet<>();
+
+
+    @Override
+    public Map<String, Object> asMap() {
+        HashMap<String, Object> map = new HashMap<>();
+        if (this.lifecycleData != null) {
+            map.put("lifecycle", this.lifecycleData.asMap());
+        }
+        if (this.advertProtectionData != null) {
+            map.put("advertProtection", this.advertProtectionData.getData());
+        }
+        if (this.locationAddressData != null) {
+            map.put("locationAddress", this.locationAddressData.getAddress());
+        }
+        if (this.postalAddressData != null) {
+            map.put("postalAddress", this.postalAddressData.getAddress());
+        }
+        if (this.yearlyEmployeeNumbersData != null) {
+            map.put("yearlyEmployeeNumbers", this.yearlyEmployeeNumbersData);
+        }
+        if (this.quarterlyEmployeeNumbersData != null) {
+            map.put("quarterlyEmployeeNumbers", this.quarterlyEmployeeNumbersData);
+        }
+        if (this.primaryIndustryData != null) {
+            map.put("primaryIndustry", this.primaryIndustryData.getIndustry());
+        }
+        if (this.secondaryIndustryData1 != null) {
+            map.put("secondaryIndustry1", this.secondaryIndustryData1.getIndustry());
+        }
+        if (this.secondaryIndustryData2 != null) {
+            map.put("secondaryIndustry2", this.secondaryIndustryData2.getIndustry());
+        }
+        if (this.secondaryIndustryData3 != null) {
+            map.put("secondaryIndustry3", this.secondaryIndustryData3.getIndustry());
+        }
+        if (this.nameData != null) {
+            map.putAll(this.nameData.asMap());
+        }
+        if (this.phoneData != null) {
+            map.putAll(this.phoneData.asMap());
+        }
+        if (this.emailData != null) {
+            map.putAll(this.emailData.asMap());
+        }
+        if (this.faxData != null) {
+            map.putAll(this.faxData.asMap());
+        }
+        if (this.isPrimaryData != null) {
+            map.putAll(this.isPrimaryData.asMap());
+        }
+        if (this.companyData != null) {
+            map.put("company", this.companyData);
+        }
+        if (this.participantData != null && !this.participantData.isEmpty()) {
+            map.put("participants", this.participantData);
+        }
+        return map;
+    }
 
     public CompanyLifecycleData obtainLifecycleData() {
         if (this.lifecycleData == null) {
@@ -210,6 +223,15 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         }
         return this.isPrimaryData;
     }
+    public CompanyUnitCvrData getCompanyData() {
+        if (this.companyData == null) {
+            this.companyData = new CompanyUnitCvrData();
+        }
+        return this.companyData;
+    }
+    public void addParticipant(CompanyParticipantLink participantLink) {
+        this.participantData.add(participantLink);
+    }
 
     @Override
     public LookupDefinition getLookupDefinition() {
@@ -255,6 +277,9 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         }
         if (this.isPrimaryData != null) {
             lookupDefinition.putAll("isPrimaryData", this.isPrimaryData.databaseFields());
+        }
+        if (this.companyData != null) {
+            lookupDefinition.putAll("companyData", this.companyData.databaseFields());
         }
         return lookupDefinition;
     }

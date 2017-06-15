@@ -9,8 +9,6 @@ import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.cvr.data.company.*;
 import dk.magenta.datafordeler.cvr.data.company.CompanyTextData;
 import dk.magenta.datafordeler.cvr.data.companyunit.*;
-import dk.magenta.datafordeler.cvr.data.embeddable.QuarterlyEmployeeNumbersEmbed;
-import dk.magenta.datafordeler.cvr.data.embeddable.YearlyEmployeeNumbersEmbed;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
@@ -186,6 +184,28 @@ public class ModelTest {
         quarterlyEmployeeNumbers.setIncludingOwnersHigh(2);
 
 
+        CompanyParticipantLink participantLink = queryManager.getItem(session, CompanyParticipantLink.class, Collections.singletonMap("data", 44446666));
+        if (participantLink == null) {
+            participantLink = new CompanyParticipantLink();
+            participantLink.setData(44446666);
+            session.saveOrUpdate(participantLink);
+        }
+        companyData1.addParticipant(participantLink);
+
+
+        CompanyUnitLink unitLink = queryManager.getItem(session, CompanyUnitLink.class, Collections.singletonMap("pNumber", 314159265));
+        if (unitLink == null) {
+            unitLink = new CompanyUnitLink();
+            unitLink.setpNumber(314159265);
+            session.saveOrUpdate(unitLink);
+        }
+
+        CompanyEffect effect3 = new CompanyEffect(registration, OffsetDateTime.parse("2017-09-01T00:00:00+00:00"), null);
+        CompanyBaseData companyData3 = new CompanyBaseData();
+        companyData3.addEffect(effect3);
+        companyData3.addCompanyUnit(unitLink);
+
+
         Transaction transaction = session.beginTransaction();
 
 
@@ -231,11 +251,15 @@ public class ModelTest {
 
 
 
-
-
         CompanyTextData nameData = companyUnitData.getNameData();
-        nameData.setData("Some company name");
+        nameData.setData("Some company unit name");
         nameData.setType(CompanyTextData.Type.NAME);
+
+
+        CompanyUnitCvrData companyData = companyUnitData.getCompanyData();
+        companyData.setData(12345678);
+
+
 
         Municipality municipality = queryManager.getItem(session, Municipality.class, Collections.singletonMap("code", 101));
         if (municipality == null) {
@@ -309,6 +333,13 @@ public class ModelTest {
         CompanyBooleanData isPrimaryData = companyUnitData.getIsPrimaryData();
         isPrimaryData.setData(true);
 
+        CompanyParticipantLink participantLink = queryManager.getItem(session, CompanyParticipantLink.class, Collections.singletonMap("data", 44446666));
+        if (participantLink == null) {
+            participantLink = new CompanyParticipantLink();
+            participantLink.setData(44446666);
+            session.saveOrUpdate(participantLink);
+        }
+        companyUnitData.addParticipant(participantLink);
 
         Transaction transaction = session.beginTransaction();
 
