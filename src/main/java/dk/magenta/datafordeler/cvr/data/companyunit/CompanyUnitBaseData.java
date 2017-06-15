@@ -236,17 +236,17 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         this.faxData.setData(fax);
     }
 
-    public CompanyBooleanData getIsPrimaryData() {
+    public void setIsPrimary(boolean isPrimary) {
         if (this.isPrimaryData == null) {
             this.isPrimaryData = new CompanyBooleanData(CompanyBooleanData.Type.IS_PRIMARY_UNIT);
         }
-        return this.isPrimaryData;
+        this.isPrimaryData.setData(isPrimary);
     }
-    public CompanyUnitCvrData getCompanyData() {
+    public void setCompanyCvr(int cvrNumber) {
         if (this.companyData == null) {
             this.companyData = new CompanyUnitCvrData();
         }
-        return this.companyData;
+        this.companyData.setData(cvrNumber);
     }
     public void addParticipant(CompanyParticipantLink participantLink) {
         this.participantData.add(participantLink);
