@@ -218,19 +218,14 @@ public class ModelTest {
         CompanyUnitBaseData companyUnitData = new CompanyUnitBaseData();
         companyUnitData.addEffect(effect);
 
-        CompanyBooleanData companyUnitIsPrimaryData = companyUnitData.getIsPrimaryData();
-        companyUnitIsPrimaryData.setData(true);
-
+        companyUnitData.setIsPrimary(true);
 
         companyUnitData.setLifecycleStartDate(OffsetDateTime.parse("2000-01-01T00:00:00+00:00"));
 
 
 
         companyUnitData.setName("Some company unit name");
-
-
-        CompanyUnitCvrData companyData = companyUnitData.getCompanyData();
-        companyData.setData(12345678);
+        companyUnitData.setCompanyCvr(12345678);
 
 
 
@@ -277,9 +272,6 @@ public class ModelTest {
         companyUnitData.setYearlyEmployeeNumbers(2017,1,2,1,2,1,2);
 
         companyUnitData.setQuarterlyEmployeeNumbers(2017,2,1,1,1,1,1,1);
-
-        CompanyBooleanData isPrimaryData = companyUnitData.getIsPrimaryData();
-        isPrimaryData.setData(true);
 
         CompanyParticipantLink participantLink = queryManager.getItem(session, CompanyParticipantLink.class, Collections.singletonMap("data", 44446666));
         if (participantLink == null) {
