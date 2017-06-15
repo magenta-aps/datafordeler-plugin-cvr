@@ -36,8 +36,6 @@ public class CompanyMainData extends DetailData {
     @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("lifeCycle", this.lifeCycle);
-        map.put("advertProtection", this.advertProtection);
         if (this.yearlyEmployeeNumbers != null) {
             map.put("yearlyEmployeeNumbers", yearlyEmployeeNumbers);
         }
@@ -75,34 +73,6 @@ public class CompanyMainData extends DetailData {
 
 
 
-    @Column(name="advertProtection")
-    @JsonProperty(value = "advertProtection")
-    @XmlElement(name = "advertProtection")
-    private boolean advertProtection;
-
-    public boolean isAdvertProtection() {
-        return this.advertProtection;
-    }
-
-    public void setAdvertProtection(boolean advertProtection) {
-        this.advertProtection = advertProtection;
-    }
-
-
-
-    @Embedded
-    private LifeCycleEmbed lifeCycle;
-
-    public LifeCycleEmbed obtainLifeCycle() {
-        if (this.lifeCycle == null) {
-            this.lifeCycle = new LifeCycleEmbed();
-        }
-        return this.lifeCycle;
-    }
-
-    public void setLifeCycle(LifeCycleEmbed lifeCycle) {
-        this.lifeCycle = lifeCycle;
-    }
 
 
 

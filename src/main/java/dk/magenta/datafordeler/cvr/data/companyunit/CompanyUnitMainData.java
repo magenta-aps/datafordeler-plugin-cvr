@@ -5,10 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.cvr.data.DetailData;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
-import dk.magenta.datafordeler.cvr.data.embeddable.LifeCycleEmbed;
 import dk.magenta.datafordeler.cvr.data.embeddable.QuarterlyEmployeeNumbersEmbed;
 import dk.magenta.datafordeler.cvr.data.embeddable.YearlyEmployeeNumbersEmbed;
-import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
@@ -36,9 +34,6 @@ public class CompanyUnitMainData extends DetailData {
     @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("form", this.form);
-        map.put("lifeCycle", this.lifeCycle);
-        map.put("advertProtection", this.advertProtection);
         if (this.yearlyEmployeeNumbers != null) {
             map.put("yearlyEmployeeNumbers", yearlyEmployeeNumbers);
         }
@@ -72,11 +67,6 @@ public class CompanyUnitMainData extends DetailData {
     @XmlElement
     private CompanyEntity company;
 
-    @Column
-    @JsonProperty
-    @XmlElement
-    private boolean isPrimary;
-
     @OneToMany
     @JsonProperty(value = "enheder")
     @XmlElement(name = "enheder")
@@ -84,54 +74,6 @@ public class CompanyUnitMainData extends DetailData {
 
     
 
-    @ManyToOne
-    @JsonProperty(value = "form")
-    @XmlElement(name = "form")
-    private CompanyForm form;
-
-    public CompanyForm obtainForm() {
-        if (this.form == null) {
-            this.form = new CompanyForm();
-        }
-        return this.form;
-    }
-
-    public void setForm(CompanyForm form) {
-        this.form = form;
-    }
-
-    // participants
-
-
-
-    @Column(name="advertProtection")
-    @JsonProperty(value = "advertProtection")
-    @XmlElement(name = "advertProtection")
-    private boolean advertProtection;
-
-    public boolean hasAdvertProtection() {
-        return this.advertProtection;
-    }
-
-    public void setAdvertProtection(boolean advertProtection) {
-        this.advertProtection = advertProtection;
-    }
-
-
-
-    @Embedded
-    private LifeCycleEmbed lifeCycle;
-
-    public LifeCycleEmbed obtainLifeCycle() {
-        if (this.lifeCycle == null) {
-            this.lifeCycle = new LifeCycleEmbed();
-        }
-        return this.lifeCycle;
-    }
-
-    public void setLifeCycle(LifeCycleEmbed lifeCycle) {
-        this.lifeCycle = lifeCycle;
-    }
 
 
 
