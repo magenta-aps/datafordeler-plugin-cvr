@@ -7,10 +7,8 @@ import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.cvr.data.company.*;
-import dk.magenta.datafordeler.cvr.data.company.CompanyMainData;
 import dk.magenta.datafordeler.cvr.data.company.CompanyTextData;
 import dk.magenta.datafordeler.cvr.data.companyunit.*;
-import dk.magenta.datafordeler.cvr.data.embeddable.LifeCycleEmbed;
 import dk.magenta.datafordeler.cvr.data.embeddable.QuarterlyEmployeeNumbersEmbed;
 import dk.magenta.datafordeler.cvr.data.embeddable.YearlyEmployeeNumbersEmbed;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
@@ -28,7 +26,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -64,8 +61,6 @@ public class ModelTest {
 
         CompanyBaseData companyData2 = new CompanyBaseData();
         companyData2.addEffect(effect2);
-
-        CompanyMainData mainData = companyData1.getMainData();
 
         CompanyLifecycleData lifecycleData = companyData1.obtainLifecycleData();
         lifecycleData.setStartDate(OffsetDateTime.parse("2000-01-01T00:00:00+00:00"));
@@ -170,25 +165,25 @@ public class ModelTest {
         CompanyFormData formData = companyData1.obtainFormData();
         formData.setForm(companyForm);
 
-        YearlyEmployeeNumbersEmbed yearlyEmployeeNumbers = mainData.obtainYearlyEmployeeNumbers();
+        CompanyYearlyEmployeeNumbersData yearlyEmployeeNumbers = companyData1.obtainYearlyEmployeeNumbersData();
         yearlyEmployeeNumbers.setYear(2017);
-        yearlyEmployeeNumbers.setYearlyEmployeesLow(1);
-        yearlyEmployeeNumbers.setYearlyEmployeesHigh(2);
-        yearlyEmployeeNumbers.setYearlyFullTimeEquivalentLow(1);
-        yearlyEmployeeNumbers.setYearlyFullTimeEquivalentHigh(2);
-        yearlyEmployeeNumbers.setYearlyIncludingOwnersLow(1);
-        yearlyEmployeeNumbers.setYearlyIncludingOwnersHigh(2);
+        yearlyEmployeeNumbers.setEmployeesLow(1);
+        yearlyEmployeeNumbers.setEmployeesHigh(2);
+        yearlyEmployeeNumbers.setFullTimeEquivalentLow(1);
+        yearlyEmployeeNumbers.setFullTimeEquivalentHigh(2);
+        yearlyEmployeeNumbers.setIncludingOwnersLow(1);
+        yearlyEmployeeNumbers.setIncludingOwnersHigh(2);
 
 
-        QuarterlyEmployeeNumbersEmbed quarterlyEmployeeNumbers = mainData.obtainQuarterlyEmployeeNumbers();
+        CompanyQuarterlyEmployeeNumbersData quarterlyEmployeeNumbers = companyData1.obtainQuarterlyEmployeeNumbersData();
         quarterlyEmployeeNumbers.setYear(2017);
         quarterlyEmployeeNumbers.setQuarter(2);
-        quarterlyEmployeeNumbers.setQuarterlyEmployeesLow(1);
-        quarterlyEmployeeNumbers.setQuarterlyEmployeesHigh(2);
-        quarterlyEmployeeNumbers.setQuarterlyFullTimeEquivalentLow(1);
-        quarterlyEmployeeNumbers.setQuarterlyFullTimeEquivalentHigh(2);
-        quarterlyEmployeeNumbers.setQuarterlyIncludingOwnersLow(1);
-        quarterlyEmployeeNumbers.setQuarterlyIncludingOwnersHigh(2);
+        quarterlyEmployeeNumbers.setEmployeesLow(1);
+        quarterlyEmployeeNumbers.setEmployeesHigh(2);
+        quarterlyEmployeeNumbers.setFullTimeEquivalentLow(1);
+        quarterlyEmployeeNumbers.setFullTimeEquivalentHigh(2);
+        quarterlyEmployeeNumbers.setIncludingOwnersLow(1);
+        quarterlyEmployeeNumbers.setIncludingOwnersHigh(2);
 
 
         Transaction transaction = session.beginTransaction();
@@ -235,9 +230,7 @@ public class ModelTest {
         lifecycleData.setStartDate(OffsetDateTime.parse("2000-01-01T00:00:00+00:00"));
 
 
-        CompanyUnitMainData mainData = companyUnitData.getMainData();
 
-        
 
 
         CompanyTextData nameData = companyUnitData.getNameData();
@@ -294,24 +287,24 @@ public class ModelTest {
         emailData.setType(CompanyTextData.Type.EMAIL);
         emailData.setData("test@example.com");
 
-        YearlyEmployeeNumbersEmbed yearlyEmployeeNumbers = mainData.obtainYearlyEmployeeNumbers();
+        CompanyYearlyEmployeeNumbersData yearlyEmployeeNumbers = companyUnitData.obtainYearlyEmployeeNumbersData();
         yearlyEmployeeNumbers.setYear(2017);
-        yearlyEmployeeNumbers.setYearlyEmployeesLow(1);
-        yearlyEmployeeNumbers.setYearlyEmployeesHigh(2);
-        yearlyEmployeeNumbers.setYearlyFullTimeEquivalentLow(1);
-        yearlyEmployeeNumbers.setYearlyFullTimeEquivalentHigh(2);
-        yearlyEmployeeNumbers.setYearlyIncludingOwnersLow(1);
-        yearlyEmployeeNumbers.setYearlyIncludingOwnersHigh(2);
+        yearlyEmployeeNumbers.setEmployeesLow(1);
+        yearlyEmployeeNumbers.setEmployeesHigh(2);
+        yearlyEmployeeNumbers.setFullTimeEquivalentLow(1);
+        yearlyEmployeeNumbers.setFullTimeEquivalentHigh(2);
+        yearlyEmployeeNumbers.setIncludingOwnersLow(1);
+        yearlyEmployeeNumbers.setIncludingOwnersHigh(2);
 
-        QuarterlyEmployeeNumbersEmbed quarterlyEmployeeNumbers = mainData.obtainQuarterlyEmployeeNumbers();
+        CompanyQuarterlyEmployeeNumbersData quarterlyEmployeeNumbers = companyUnitData.obtainQuarterlyEmployeeNumbersData();
         quarterlyEmployeeNumbers.setYear(2017);
         quarterlyEmployeeNumbers.setQuarter(2);
-        quarterlyEmployeeNumbers.setQuarterlyEmployeesLow(1);
-        quarterlyEmployeeNumbers.setQuarterlyEmployeesHigh(2);
-        quarterlyEmployeeNumbers.setQuarterlyFullTimeEquivalentLow(1);
-        quarterlyEmployeeNumbers.setQuarterlyFullTimeEquivalentHigh(2);
-        quarterlyEmployeeNumbers.setQuarterlyIncludingOwnersLow(1);
-        quarterlyEmployeeNumbers.setQuarterlyIncludingOwnersHigh(2);
+        quarterlyEmployeeNumbers.setEmployeesLow(1);
+        quarterlyEmployeeNumbers.setEmployeesHigh(1);
+        quarterlyEmployeeNumbers.setFullTimeEquivalentLow(1);
+        quarterlyEmployeeNumbers.setFullTimeEquivalentHigh(1);
+        quarterlyEmployeeNumbers.setIncludingOwnersLow(1);
+        quarterlyEmployeeNumbers.setIncludingOwnersHigh(1);
 
         CompanyBooleanData isPrimaryData = companyUnitData.getIsPrimaryData();
         isPrimaryData.setData(true);
