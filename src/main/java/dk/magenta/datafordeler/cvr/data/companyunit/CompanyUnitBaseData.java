@@ -3,8 +3,11 @@ package dk.magenta.datafordeler.cvr.data.companyunit;
 import dk.magenta.datafordeler.core.database.DataItem;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.cvr.data.company.*;
+import dk.magenta.datafordeler.cvr.data.unversioned.Address;
+import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 
 import javax.persistence.*;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -15,7 +18,6 @@ import java.util.Set;
  */
 @Entity
 @Table(name="cvr_companyunit_basedata")
-//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnitBaseData> {
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
@@ -127,94 +129,111 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         return map;
     }
 
-    public CompanyLifecycleData obtainLifecycleData() {
+    public void setLifecycleStartDate(OffsetDateTime startDate) {
         if (this.lifecycleData == null) {
             this.lifecycleData = new CompanyLifecycleData();
         }
-        return this.lifecycleData;
+        this.lifecycleData.setStartDate(startDate);
     }
-    public CompanyBooleanData obtainAdvertProtectionData() {
+    public void setLifecycleEndDate(OffsetDateTime endDate) {
+        if (this.lifecycleData == null) {
+            this.lifecycleData = new CompanyLifecycleData();
+        }
+        this.lifecycleData.setEndDate(endDate);
+    }
+    public void setAdvertProtection(boolean advertProtection) {
         if (this.advertProtectionData == null) {
             this.advertProtectionData = new CompanyBooleanData(CompanyBooleanData.Type.ADVERT_PROTECTION);
         }
-        return this.advertProtectionData;
+        this.advertProtectionData.setData(advertProtection);
     }
-    public CompanyAddressData obtainLocationAddressData() {
+    public void setLocationAddress(Address address) {
         if (this.locationAddressData == null) {
             this.locationAddressData = new CompanyAddressData();
         }
-        return this.locationAddressData;
+        this.locationAddressData.setAddress(address);
     }
-    public CompanyAddressData obtainPostalAddressData() {
+    public void setPostalAddress(Address address) {
         if (this.postalAddressData == null) {
             this.postalAddressData = new CompanyAddressData();
         }
-        return this.postalAddressData;
+        this.postalAddressData.setAddress(address);
     }
 
-    public CompanyYearlyEmployeeNumbersData obtainYearlyEmployeeNumbersData() {
+    public void setYearlyEmployeeNumbers(int year, int employeesLow, int employeesHigh, int fulltimeEquivalentLow, int fulltimeEquivalentHigh, int includingOwnersLow, int includingOwnersHigh) {
         if (this.yearlyEmployeeNumbersData == null) {
             this.yearlyEmployeeNumbersData = new CompanyYearlyEmployeeNumbersData();
         }
-        return this.yearlyEmployeeNumbersData;
+        this.yearlyEmployeeNumbersData.setYear(year);
+        this.yearlyEmployeeNumbersData.setEmployeesLow(employeesLow);
+        this.yearlyEmployeeNumbersData.setEmployeesHigh(employeesHigh);
+        this.yearlyEmployeeNumbersData.setFullTimeEquivalentLow(fulltimeEquivalentLow);
+        this.yearlyEmployeeNumbersData.setFullTimeEquivalentHigh(fulltimeEquivalentHigh);
+        this.yearlyEmployeeNumbersData.setIncludingOwnersLow(includingOwnersLow);
+        this.yearlyEmployeeNumbersData.setIncludingOwnersHigh(includingOwnersHigh);
     }
-    public CompanyQuarterlyEmployeeNumbersData obtainQuarterlyEmployeeNumbersData() {
+    public void setQuarterlyEmployeeNumbers(int year, int quarter, int employeesLow, int employeesHigh, int fulltimeEquivalentLow, int fulltimeEquivalentHigh, int includingOwnersLow, int includingOwnersHigh) {
         if (this.quarterlyEmployeeNumbersData == null) {
             this.quarterlyEmployeeNumbersData = new CompanyQuarterlyEmployeeNumbersData();
         }
-        return this.quarterlyEmployeeNumbersData;
+        this.quarterlyEmployeeNumbersData.setYear(year);
+        this.quarterlyEmployeeNumbersData.setQuarter(quarter);
+        this.quarterlyEmployeeNumbersData.setEmployeesLow(employeesLow);
+        this.quarterlyEmployeeNumbersData.setEmployeesHigh(employeesHigh);
+        this.quarterlyEmployeeNumbersData.setFullTimeEquivalentLow(fulltimeEquivalentLow);
+        this.quarterlyEmployeeNumbersData.setFullTimeEquivalentHigh(fulltimeEquivalentHigh);
+        this.quarterlyEmployeeNumbersData.setIncludingOwnersLow(includingOwnersLow);
+        this.quarterlyEmployeeNumbersData.setIncludingOwnersHigh(includingOwnersHigh);
     }
-    public CompanyIndustryData obtainPrimaryIndustryData() {
+
+    public void setPrimaryIndustry(Industry industry) {
         if (this.primaryIndustryData == null) {
             this.primaryIndustryData = new CompanyIndustryData(true);
         }
-        return this.primaryIndustryData;
+        this.primaryIndustryData.setIndustry(industry);
     }
-    public CompanyIndustryData obtainSecondaryIndustryData1() {
+    public void setSecondaryIndustry1(Industry industry) {
         if (this.secondaryIndustryData1 == null) {
             this.secondaryIndustryData1 = new CompanyIndustryData(false);
         }
-        return this.secondaryIndustryData1;
+        this.secondaryIndustryData1.setIndustry(industry);
     }
-    public CompanyIndustryData obtainSecondaryIndustryData2() {
+    public void setSecondaryIndustry2(Industry industry) {
         if (this.secondaryIndustryData2 == null) {
             this.secondaryIndustryData2 = new CompanyIndustryData(false);
         }
-        return this.secondaryIndustryData2;
+        this.secondaryIndustryData2.setIndustry(industry);
     }
-    public CompanyIndustryData obtainSecondaryIndustryData3() {
+    public void setSecondaryIndustry3(Industry industry) {
         if (this.secondaryIndustryData3 == null) {
             this.secondaryIndustryData3 = new CompanyIndustryData(false);
         }
-        return this.secondaryIndustryData3;
+        this.secondaryIndustryData3.setIndustry(industry);
     }
 
-    public CompanyTextData getNameData() {
+    public void setName(String name) {
         if (this.nameData == null) {
             this.nameData = new CompanyTextData(CompanyTextData.Type.NAME);
         }
-        return this.nameData;
+        this.nameData.setData(name);
     }
-
-    public CompanyTextData getPhoneData() {
+    public void setPhone(String phone) {
         if (this.phoneData == null) {
             this.phoneData = new CompanyTextData(CompanyTextData.Type.PHONE);
         }
-        return this.phoneData;
+        this.phoneData.setData(phone);
     }
-
-    public CompanyTextData getEmailData() {
+    public void setEmail(String email) {
         if (this.emailData == null) {
             this.emailData = new CompanyTextData(CompanyTextData.Type.EMAIL);
         }
-        return this.emailData;
+        this.emailData.setData(email);
     }
-
-    public CompanyTextData getFaxData() {
+    public void setFax(String fax) {
         if (this.faxData == null) {
             this.faxData = new CompanyTextData(CompanyTextData.Type.FAX);
         }
-        return this.faxData;
+        this.faxData.setData(fax);
     }
 
     public CompanyBooleanData getIsPrimaryData() {

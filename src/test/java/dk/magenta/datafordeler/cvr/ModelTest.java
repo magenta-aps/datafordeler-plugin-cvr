@@ -60,18 +60,14 @@ public class ModelTest {
         CompanyBaseData companyData2 = new CompanyBaseData();
         companyData2.addEffect(effect2);
 
-        CompanyLifecycleData lifecycleData = companyData1.obtainLifecycleData();
-        lifecycleData.setStartDate(OffsetDateTime.parse("2000-01-01T00:00:00+00:00"));
+        companyData1.setLifecycleStartDate(OffsetDateTime.parse("2000-01-01T00:00:00+00:00"));
 
 
-        CompanyBooleanData advertProtectionData = companyData1.obtainAdvertProtectionData();
-        advertProtectionData.setData(true);
+        companyData1.setAdvertProtection(true);
 
-        CompanyTextData nameData = companyData1.obtainNameData();
-        nameData.setData("Some company name");
+        companyData1.setName("Some company name");
 
 
-        CompanyAddressData locationAddressData = companyData1.obtainLocationAddressData();
 
         Municipality municipality = queryManager.getItem(session, Municipality.class, Collections.singletonMap("code", 101));
         if (municipality == null) {
@@ -95,11 +91,10 @@ public class ModelTest {
             locationAddress.setMunicipality(municipality);
             session.saveOrUpdate(locationAddress);
         }
-        locationAddressData.setAddress(locationAddress);
+        companyData1.setLocationAddress(locationAddress);
 
 
 
-        CompanyAddressData postalAddressData = companyData1.obtainPostalAddressData();
         HashMap<String, Object> addressData2 = new HashMap<>();
         addressData2.put("roadName", "HelloWorldRoad");
         addressData2.put("roadCode", 5678);
@@ -114,10 +109,9 @@ public class ModelTest {
             postalAddress.setMunicipality(municipality);
             session.saveOrUpdate(postalAddress);
         }
-        postalAddressData.setAddress(postalAddress);
+        companyData1.setPostalAddress(postalAddress);
 
 
-        CompanyIndustryData primaryIndustryData = companyData2.obtainPrimaryIndustryData();
         Industry primaryIndustry = queryManager.getItem(session, Industry.class, Collections.singletonMap("code", 123456));
         if (primaryIndustry == null) {
             primaryIndustry = new Industry();
@@ -125,10 +119,9 @@ public class ModelTest {
             primaryIndustry.setText("It company");
             session.saveOrUpdate(primaryIndustry);
         }
-        primaryIndustryData.setIndustry(primaryIndustry);
+        companyData2.setPrimaryIndustry(primaryIndustry);
 
 
-        CompanyIndustryData secondaryIndustryData1 = companyData2.obtainSecondaryIndustryData1();
         Industry secondaryIndustry1 = queryManager.getItem(session, Industry.class, Collections.singletonMap("code", 112358));
         if (secondaryIndustry1 == null) {
             secondaryIndustry1 = new Industry();
@@ -136,21 +129,11 @@ public class ModelTest {
             secondaryIndustry1.setText("Psychiatric institution");
             session.saveOrUpdate(secondaryIndustry1);
         }
-        secondaryIndustryData1.setIndustry(secondaryIndustry1);
+        companyData2.setSecondaryIndustry1(secondaryIndustry1);
 
-
-
-        CompanyTextData phoneData = companyData1.obtainPhoneData();
-        phoneData.setType(CompanyTextData.Type.PHONE);
-        phoneData.setData("87654321");
-
-        CompanyTextData faxData = companyData1.obtainFaxData();
-        faxData.setType(CompanyTextData.Type.FAX);
-        faxData.setData("11112222");
-
-        CompanyTextData emailData = companyData1.obtainEmailData();
-        emailData.setType(CompanyTextData.Type.EMAIL);
-        emailData.setData("test@example.com");
+        companyData1.setPhone("87654321");
+        companyData1.setFax("11112222");
+        companyData1.setEmail("test@example.com");
 
         CompanyForm companyForm = queryManager.getItem(session, CompanyForm.class, Collections.singletonMap("code", 123));
         if (companyForm == null) {
@@ -160,28 +143,11 @@ public class ModelTest {
             companyForm.setResponsibleDatasource("E&S");
             session.saveOrUpdate(companyForm);
         }
-        CompanyFormData formData = companyData1.obtainFormData();
-        formData.setForm(companyForm);
+        companyData1.setForm(companyForm);
 
-        CompanyYearlyEmployeeNumbersData yearlyEmployeeNumbers = companyData1.obtainYearlyEmployeeNumbersData();
-        yearlyEmployeeNumbers.setYear(2017);
-        yearlyEmployeeNumbers.setEmployeesLow(1);
-        yearlyEmployeeNumbers.setEmployeesHigh(2);
-        yearlyEmployeeNumbers.setFullTimeEquivalentLow(1);
-        yearlyEmployeeNumbers.setFullTimeEquivalentHigh(2);
-        yearlyEmployeeNumbers.setIncludingOwnersLow(1);
-        yearlyEmployeeNumbers.setIncludingOwnersHigh(2);
+        companyData1.setYearlyEmployeeNumbers(2017,1,2,1,2,1,2);
 
-
-        CompanyQuarterlyEmployeeNumbersData quarterlyEmployeeNumbers = companyData1.obtainQuarterlyEmployeeNumbersData();
-        quarterlyEmployeeNumbers.setYear(2017);
-        quarterlyEmployeeNumbers.setQuarter(2);
-        quarterlyEmployeeNumbers.setEmployeesLow(1);
-        quarterlyEmployeeNumbers.setEmployeesHigh(2);
-        quarterlyEmployeeNumbers.setFullTimeEquivalentLow(1);
-        quarterlyEmployeeNumbers.setFullTimeEquivalentHigh(2);
-        quarterlyEmployeeNumbers.setIncludingOwnersLow(1);
-        quarterlyEmployeeNumbers.setIncludingOwnersHigh(2);
+        companyData1.setQuarterlyEmployeeNumbers(2017,2,1,2,1,2,1,2);
 
 
         CompanyParticipantLink participantLink = queryManager.getItem(session, CompanyParticipantLink.class, Collections.singletonMap("data", 44446666));
@@ -256,14 +222,11 @@ public class ModelTest {
         companyUnitIsPrimaryData.setData(true);
 
 
-        CompanyLifecycleData lifecycleData = companyUnitData.obtainLifecycleData();
-        lifecycleData.setStartDate(OffsetDateTime.parse("2000-01-01T00:00:00+00:00"));
+        companyUnitData.setLifecycleStartDate(OffsetDateTime.parse("2000-01-01T00:00:00+00:00"));
 
 
 
-        CompanyTextData nameData = companyUnitData.getNameData();
-        nameData.setData("Some company unit name");
-        nameData.setType(CompanyTextData.Type.NAME);
+        companyUnitData.setName("Some company unit name");
 
 
         CompanyUnitCvrData companyData = companyUnitData.getCompanyData();
@@ -294,12 +257,9 @@ public class ModelTest {
             session.saveOrUpdate(locationAddress);
         }
 
-        CompanyAddressData locationAddressData = companyUnitData.obtainLocationAddressData();
-        locationAddressData.setAddress(locationAddress);
+        companyUnitData.setLocationAddress(locationAddress);
 
 
-
-        CompanyIndustryData primaryIndustryData = companyUnitData.obtainPrimaryIndustryData();
         Industry primaryIndustry = queryManager.getItem(session, Industry.class, Collections.singletonMap("code", 123456));
         if (primaryIndustry == null) {
             primaryIndustry = new Industry();
@@ -307,38 +267,16 @@ public class ModelTest {
             primaryIndustry.setText("It company");
             session.saveOrUpdate(primaryIndustry);
         }
-        primaryIndustryData.setIndustry(primaryIndustry);
+        companyUnitData.setPrimaryIndustry(primaryIndustry);
 
-        CompanyTextData phoneData = companyUnitData.getPhoneData();
-        phoneData.setType(CompanyTextData.Type.PHONE);
-        phoneData.setData("87654321");
 
-        CompanyTextData faxData = companyUnitData.getFaxData();
-        faxData.setType(CompanyTextData.Type.FAX);
-        faxData.setData("11112222");
+        companyUnitData.setPhone("87654321");
+        companyUnitData.setFax("11112222");
+        companyUnitData.setEmail("test@example.com");
 
-        CompanyTextData emailData = companyUnitData.getEmailData();
-        emailData.setType(CompanyTextData.Type.EMAIL);
-        emailData.setData("test@example.com");
+        companyUnitData.setYearlyEmployeeNumbers(2017,1,2,1,2,1,2);
 
-        CompanyYearlyEmployeeNumbersData yearlyEmployeeNumbers = companyUnitData.obtainYearlyEmployeeNumbersData();
-        yearlyEmployeeNumbers.setYear(2017);
-        yearlyEmployeeNumbers.setEmployeesLow(1);
-        yearlyEmployeeNumbers.setEmployeesHigh(2);
-        yearlyEmployeeNumbers.setFullTimeEquivalentLow(1);
-        yearlyEmployeeNumbers.setFullTimeEquivalentHigh(2);
-        yearlyEmployeeNumbers.setIncludingOwnersLow(1);
-        yearlyEmployeeNumbers.setIncludingOwnersHigh(2);
-
-        CompanyQuarterlyEmployeeNumbersData quarterlyEmployeeNumbers = companyUnitData.obtainQuarterlyEmployeeNumbersData();
-        quarterlyEmployeeNumbers.setYear(2017);
-        quarterlyEmployeeNumbers.setQuarter(2);
-        quarterlyEmployeeNumbers.setEmployeesLow(1);
-        quarterlyEmployeeNumbers.setEmployeesHigh(1);
-        quarterlyEmployeeNumbers.setFullTimeEquivalentLow(1);
-        quarterlyEmployeeNumbers.setFullTimeEquivalentHigh(1);
-        quarterlyEmployeeNumbers.setIncludingOwnersLow(1);
-        quarterlyEmployeeNumbers.setIncludingOwnersHigh(1);
+        companyUnitData.setQuarterlyEmployeeNumbers(2017,2,1,1,1,1,1,1);
 
         CompanyBooleanData isPrimaryData = companyUnitData.getIsPrimaryData();
         isPrimaryData.setData(true);
