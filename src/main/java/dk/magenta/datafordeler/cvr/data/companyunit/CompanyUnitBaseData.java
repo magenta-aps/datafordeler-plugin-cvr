@@ -2,8 +2,7 @@ package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import dk.magenta.datafordeler.core.database.DataItem;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
-import dk.magenta.datafordeler.cvr.data.company.CompanyIndustryData;
-import dk.magenta.datafordeler.cvr.data.company.CompanyTextData;
+import dk.magenta.datafordeler.cvr.data.company.*;
 
 import javax.persistence.*;
 import java.util.HashMap;
@@ -21,6 +20,18 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         HashMap<String, Object> map = new HashMap<>();
         if (this.mainData != null) {
             map.putAll(this.mainData.asMap());
+        }
+        if (this.lifecycleData != null) {
+            map.put("lifecycle", this.lifecycleData.asMap());
+        }
+        if (this.advertProtectionData != null) {
+            map.put("advertProtection", this.advertProtectionData.getData());
+        }
+        if (this.locationAddressData != null) {
+            map.put("locationAddress", this.locationAddressData.getAddress());
+        }
+        if (this.postalAddressData != null) {
+            map.put("postalAddress", this.postalAddressData.getAddress());
         }
         if (this.primaryIndustryData != null) {
             map.put("primaryIndustry", this.primaryIndustryData.getIndustry());
@@ -46,11 +57,26 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         if (this.faxData != null) {
             map.putAll(this.faxData.asMap());
         }
+        if (this.isPrimaryData != null) {
+            map.putAll(this.isPrimaryData.asMap());
+        }
         return map;
     }
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private CompanyUnitMainData mainData;
+
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private CompanyLifecycleData lifecycleData;
+
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private CompanyBooleanData advertProtectionData;
+
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private CompanyAddressData locationAddressData;
+
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private CompanyAddressData postalAddressData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private CompanyIndustryData primaryIndustryData;
@@ -76,6 +102,9 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private CompanyTextData faxData;
 
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private CompanyBooleanData isPrimaryData;
+
     public CompanyUnitMainData getMainData() {
         if (this.mainData == null) {
             this.mainData = new CompanyUnitMainData();
@@ -83,6 +112,30 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         return this.mainData;
     }
 
+    public CompanyLifecycleData obtainLifecycleData() {
+        if (this.lifecycleData == null) {
+            this.lifecycleData = new CompanyLifecycleData();
+        }
+        return this.lifecycleData;
+    }
+    public CompanyBooleanData obtainAdvertProtectionData() {
+        if (this.advertProtectionData == null) {
+            this.advertProtectionData = new CompanyBooleanData(CompanyBooleanData.Type.ADVERT_PROTECTION);
+        }
+        return this.advertProtectionData;
+    }
+    public CompanyAddressData obtainLocationAddressData() {
+        if (this.locationAddressData == null) {
+            this.locationAddressData = new CompanyAddressData();
+        }
+        return this.locationAddressData;
+    }
+    public CompanyAddressData obtainPostalAddressData() {
+        if (this.postalAddressData == null) {
+            this.postalAddressData = new CompanyAddressData();
+        }
+        return this.postalAddressData;
+    }
     public CompanyIndustryData obtainPrimaryIndustryData() {
         if (this.primaryIndustryData == null) {
             this.primaryIndustryData = new CompanyIndustryData(true);
@@ -136,11 +189,21 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         return this.faxData;
     }
 
+    public CompanyBooleanData getIsPrimaryData() {
+        if (this.isPrimaryData == null) {
+            this.isPrimaryData = new CompanyBooleanData(CompanyBooleanData.Type.IS_PRIMARY_UNIT);
+        }
+        return this.isPrimaryData;
+    }
+
     @Override
     public LookupDefinition getLookupDefinition() {
         LookupDefinition lookupDefinition = new LookupDefinition();
         if (this.mainData != null) {
             lookupDefinition.putAll("mainData", this.mainData.databaseFields());
+        }
+        if (this.lifecycleData != null) {
+            lookupDefinition.putAll("lifecycleData", this.lifecycleData.databaseFields());
         }
         if (this.primaryIndustryData != null) {
             lookupDefinition.putAll("primaryIndustryData", this.primaryIndustryData.databaseFields());
@@ -165,6 +228,9 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         }
         if (this.faxData != null) {
             lookupDefinition.putAll("faxData", this.faxData.databaseFields());
+        }
+        if (this.isPrimaryData != null) {
+            lookupDefinition.putAll("isPrimaryData", this.isPrimaryData.databaseFields());
         }
         return lookupDefinition;
     }

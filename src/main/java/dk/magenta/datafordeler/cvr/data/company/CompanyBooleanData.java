@@ -11,20 +11,18 @@ import java.util.Map;
  * Created by lars on 16-05-17.
  */
 @Entity
-@Table(name = "cvr_company_text")
-public class CompanyTextData extends CompanySingleData<String> {
+@Table(name = "cvr_company_boolean")
+public class CompanyBooleanData extends CompanySingleData<Boolean> {
 
     public enum Type {
-        NAME,
-        EMAIL,
-        PHONE,
-        FAX
+        ADVERT_PROTECTION,
+        IS_PRIMARY_UNIT,
     }
 
-    public CompanyTextData() {
+    public CompanyBooleanData() {
     }
 
-    public CompanyTextData(Type type) {
+    public CompanyBooleanData(Type type) {
         this.setType(type);
     }
 
