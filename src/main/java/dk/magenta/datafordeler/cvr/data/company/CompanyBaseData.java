@@ -246,7 +246,6 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         this.faxData.setData(fax);
     }
 
-
     public void addCompanyUnit(CompanyUnitLink unitLink) {
         this.unitData.add(unitLink);
     }
