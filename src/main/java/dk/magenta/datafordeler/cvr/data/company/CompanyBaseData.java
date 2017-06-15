@@ -75,7 +75,7 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
         if (this.formData != null) {
-            map.putAll(this.formData.asMap());
+            map.put("form", this.formData.getForm());
         }
         if (this.lifecycleData != null) {
             map.put("lifecycle", this.lifecycleData.asMap());
@@ -108,16 +108,16 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
             map.put("secondaryIndustry3", this.secondaryIndustryData3.getIndustry());
         }
         if (this.nameData != null) {
-            map.putAll(this.nameData.asMap());
+            map.put("name", this.nameData.getData());
         }
         if (this.phoneData != null) {
-            map.putAll(this.phoneData.asMap());
+            map.put("phone", this.phoneData.getData());
         }
         if (this.emailData != null) {
-            map.putAll(this.emailData.asMap());
+            map.put("email", this.emailData.getData());
         }
         if (this.faxData != null) {
-            map.putAll(this.faxData.asMap());
+            map.put("fax", this.faxData.getData());
         }
         if (this.unitData != null && !this.unitData.isEmpty()) {
             map.put("units", this.unitData);
