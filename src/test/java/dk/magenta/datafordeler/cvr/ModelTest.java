@@ -200,6 +200,16 @@ public class ModelTest {
             session.saveOrUpdate(unitLink);
         }
 
+
+
+        CompanyCreditData creditData = queryManager.getItem(session, CompanyCreditData.class, Collections.singletonMap("data", "Creditcategory: 3"));
+        if (creditData == null) {
+            creditData = new CompanyCreditData();
+            creditData.setData("Creditcategory: 3");
+            session.saveOrUpdate(creditData);
+        }
+        companyData1.addCreditData(creditData);
+
         CompanyEffect effect3 = new CompanyEffect(registration, OffsetDateTime.parse("2017-09-01T00:00:00+00:00"), null);
         CompanyBaseData companyData3 = new CompanyBaseData();
         companyData3.addEffect(effect3);

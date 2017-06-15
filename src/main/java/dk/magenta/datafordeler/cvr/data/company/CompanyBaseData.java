@@ -67,6 +67,9 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     @ManyToMany(mappedBy = "companyBases")
     private Set<CompanyParticipantLink> participantData = new HashSet<>();
 
+    @ManyToMany(mappedBy = "companyBases")
+    private Set<CompanyCreditData> creditData = new HashSet<>();
+
 
     @Override
     public Map<String, Object> asMap() {
@@ -121,6 +124,9 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         }
         if (this.participantData != null && !this.participantData.isEmpty()) {
             map.put("participants", this.participantData);
+        }
+        if (this.creditData != null && !this.creditData.isEmpty()) {
+            map.put("credit", this.creditData);
         }
         return map;
     }
@@ -223,6 +229,9 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     }
     public void addParticipant(CompanyParticipantLink participantLink) {
         this.participantData.add(participantLink);
+    }
+    public void addCreditData(CompanyCreditData creditData) {
+        this.creditData.add(creditData);
     }
 
     @Override
