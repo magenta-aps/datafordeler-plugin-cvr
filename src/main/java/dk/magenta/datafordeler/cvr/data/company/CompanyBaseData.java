@@ -25,6 +25,18 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         if (this.formData != null) {
             map.putAll(this.formData.asMap());
         }
+        if (this.lifecycleData != null) {
+            map.put("lifecycle", this.lifecycleData.asMap());
+        }
+        if (this.advertProtectionData != null) {
+            map.put("advertProtection", this.advertProtectionData.getData());
+        }
+        if (this.locationAddressData != null) {
+            map.put("locationAddress", this.locationAddressData.getAddress());
+        }
+        if (this.postalAddressData != null) {
+            map.put("postalAddress", this.postalAddressData.getAddress());
+        }
         if (this.primaryIndustryData != null) {
             map.put("primaryIndustry", this.primaryIndustryData.getIndustry());
         }
@@ -60,6 +72,18 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     private CompanyFormData formData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private CompanyLifecycleData lifecycleData;
+
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private CompanyBooleanData advertProtectionData;
+
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private CompanyAddressData locationAddressData;
+
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private CompanyAddressData postalAddressData;
+
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
     private CompanyIndustryData primaryIndustryData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
@@ -89,6 +113,36 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         }
         return this.mainData;
     }
+    public CompanyFormData obtainFormData() {
+        if (this.formData == null) {
+            this.formData = new CompanyFormData();
+        }
+        return this.formData;
+    }
+    public CompanyLifecycleData obtainLifecycleData() {
+        if (this.lifecycleData == null) {
+            this.lifecycleData = new CompanyLifecycleData();
+        }
+        return this.lifecycleData;
+    }
+    public CompanyBooleanData obtainAdvertProtectionData() {
+        if (this.advertProtectionData == null) {
+            this.advertProtectionData = new CompanyBooleanData(CompanyBooleanData.Type.ADVERT_PROTECTION);
+        }
+        return this.advertProtectionData;
+    }
+    public CompanyAddressData obtainLocationAddressData() {
+        if (this.locationAddressData == null) {
+            this.locationAddressData = new CompanyAddressData();
+        }
+        return this.locationAddressData;
+    }
+    public CompanyAddressData obtainPostalAddressData() {
+        if (this.postalAddressData == null) {
+            this.postalAddressData = new CompanyAddressData();
+        }
+        return this.postalAddressData;
+    }
 
     public CompanyIndustryData obtainPrimaryIndustryData() {
         if (this.primaryIndustryData == null) {
@@ -115,12 +169,6 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         return this.secondaryIndustryData3;
     }
 
-    public CompanyFormData obtainFormData() {
-        if (this.formData == null) {
-            this.formData = new CompanyFormData();
-        }
-        return this.formData;
-    }
 
     public CompanyTextData obtainNameData() {
         if (this.nameData == null) {
@@ -155,6 +203,15 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         LookupDefinition lookupDefinition = new LookupDefinition();
         if (this.mainData != null) {
             lookupDefinition.putAll("mainData", this.mainData.databaseFields());
+        }
+        if (this.lifecycleData != null) {
+            lookupDefinition.putAll("lifecycleData", this.lifecycleData.databaseFields());
+        }
+        if (this.locationAddressData != null) {
+            lookupDefinition.putAll("locationAddressData", this.locationAddressData.databaseFields());
+        }
+        if (this.postalAddressData != null) {
+            lookupDefinition.putAll("postalAddressData", this.postalAddressData.databaseFields());
         }
         if (this.primaryIndustryData != null) {
             lookupDefinition.putAll("primaryIndustryData", this.primaryIndustryData.databaseFields());
