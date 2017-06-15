@@ -19,9 +19,6 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
-        if (this.mainData != null) {
-            map.putAll(this.mainData.asMap());
-        }
         if (this.formData != null) {
             map.putAll(this.formData.asMap());
         }
@@ -37,6 +34,16 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         if (this.postalAddressData != null) {
             map.put("postalAddress", this.postalAddressData.getAddress());
         }
+
+
+        if (this.yearlyEmployeeNumbersData != null) {
+            map.put("yearlyEmployeeNumbers", this.yearlyEmployeeNumbersData);
+        }
+        if (this.quarterlyEmployeeNumbersData != null) {
+            map.put("quarterlyEmployeeNumbers", this.quarterlyEmployeeNumbersData);
+        }
+
+
         if (this.primaryIndustryData != null) {
             map.put("primaryIndustry", this.primaryIndustryData.getIndustry());
         }
@@ -66,9 +73,6 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
 
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyMainData mainData;
-
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
     private CompanyFormData formData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
@@ -82,6 +86,15 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private CompanyAddressData postalAddressData;
+
+
+
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private CompanyYearlyEmployeeNumbersData yearlyEmployeeNumbersData;
+
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private CompanyQuarterlyEmployeeNumbersData quarterlyEmployeeNumbersData;
+
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private CompanyIndustryData primaryIndustryData;
@@ -107,12 +120,6 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private CompanyTextData faxData;
 
-    public CompanyMainData getMainData() {
-        if (this.mainData == null) {
-            this.mainData = new CompanyMainData();
-        }
-        return this.mainData;
-    }
     public CompanyFormData obtainFormData() {
         if (this.formData == null) {
             this.formData = new CompanyFormData();
@@ -143,6 +150,21 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         }
         return this.postalAddressData;
     }
+
+
+    public CompanyYearlyEmployeeNumbersData obtainYearlyEmployeeNumbersData() {
+        if (this.yearlyEmployeeNumbersData == null) {
+            this.yearlyEmployeeNumbersData = new CompanyYearlyEmployeeNumbersData();
+        }
+        return this.yearlyEmployeeNumbersData;
+    }
+    public CompanyQuarterlyEmployeeNumbersData obtainQuarterlyEmployeeNumbersData() {
+        if (this.quarterlyEmployeeNumbersData == null) {
+            this.quarterlyEmployeeNumbersData = new CompanyQuarterlyEmployeeNumbersData();
+        }
+        return this.quarterlyEmployeeNumbersData;
+    }
+
 
     public CompanyIndustryData obtainPrimaryIndustryData() {
         if (this.primaryIndustryData == null) {
@@ -201,9 +223,7 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     @Override
     public LookupDefinition getLookupDefinition() {
         LookupDefinition lookupDefinition = new LookupDefinition();
-        if (this.mainData != null) {
-            lookupDefinition.putAll("mainData", this.mainData.databaseFields());
-        }
+
         if (this.lifecycleData != null) {
             lookupDefinition.putAll("lifecycleData", this.lifecycleData.databaseFields());
         }
@@ -212,6 +232,12 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         }
         if (this.postalAddressData != null) {
             lookupDefinition.putAll("postalAddressData", this.postalAddressData.databaseFields());
+        }
+        if (this.yearlyEmployeeNumbersData != null) {
+            lookupDefinition.putAll("yearlyEmployeeNumbersData", this.yearlyEmployeeNumbersData.databaseFields());
+        }
+        if (this.quarterlyEmployeeNumbersData != null) {
+            lookupDefinition.putAll("quarterlyEmployeeNumbersData", this.quarterlyEmployeeNumbersData.databaseFields());
         }
         if (this.primaryIndustryData != null) {
             lookupDefinition.putAll("primaryIndustryData", this.primaryIndustryData.databaseFields());
