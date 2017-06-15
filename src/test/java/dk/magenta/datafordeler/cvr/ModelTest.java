@@ -7,7 +7,6 @@ import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.cvr.data.company.*;
-import dk.magenta.datafordeler.cvr.data.company.CompanyTextData;
 import dk.magenta.datafordeler.cvr.data.companyunit.*;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
