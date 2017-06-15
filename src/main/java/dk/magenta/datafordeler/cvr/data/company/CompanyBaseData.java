@@ -263,6 +263,12 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         if (this.lifecycleData != null) {
             lookupDefinition.putAll("lifecycleData", this.lifecycleData.databaseFields());
         }
+        if (this.formData != null) {
+            lookupDefinition.putAll("formData", this.formData.databaseFields());
+        }
+        if (this.advertProtectionData != null) {
+            lookupDefinition.putAll("advertProtectionData", this.advertProtectionData.databaseFields());
+        }
         if (this.locationAddressData != null) {
             lookupDefinition.putAll("locationAddressData", this.locationAddressData.databaseFields());
         }
