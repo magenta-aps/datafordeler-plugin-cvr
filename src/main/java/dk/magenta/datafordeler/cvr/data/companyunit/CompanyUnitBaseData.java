@@ -104,19 +104,19 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
             map.put("secondaryIndustry3", this.secondaryIndustryData3.getIndustry());
         }
         if (this.nameData != null) {
-            map.putAll(this.nameData.asMap());
+            map.put("name", this.nameData.getData());
         }
         if (this.phoneData != null) {
-            map.putAll(this.phoneData.asMap());
+            map.put("phone", this.phoneData.getData());
         }
         if (this.emailData != null) {
-            map.putAll(this.emailData.asMap());
+            map.put("email", this.emailData.getData());
         }
         if (this.faxData != null) {
-            map.putAll(this.faxData.asMap());
+            map.put("fax", this.faxData.getData());
         }
         if (this.isPrimaryData != null) {
-            map.putAll(this.isPrimaryData.asMap());
+            map.put("isPrimary", this.isPrimaryData.getData());
         }
         if (this.companyData != null) {
             map.put("company", this.companyData);
