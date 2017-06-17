@@ -4,16 +4,19 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dk.magenta.datafordeler.cvr.data.shared.CompanySingleData;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.*;
 
 /**
  * Created by lars on 16-05-17.
  */
 @Entity
-@Table(name = "cvr_company_credit")
+@Table(name = "cvr_company_credit", indexes = {
+        @Index(name = "data", columnList = "data"),
+},
+uniqueConstraints = {
+        @UniqueConstraint(name = "data", columnNames = "data")
+})
 public class CompanyCreditData extends CompanySingleData<String> {
 
     public CompanyCreditData() {

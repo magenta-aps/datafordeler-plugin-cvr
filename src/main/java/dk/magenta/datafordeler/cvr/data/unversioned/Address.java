@@ -10,7 +10,10 @@ import javax.xml.bind.annotation.XmlElement;
  * Created by lars on 14-06-17.
  */
 @Entity
-@Table(name = "cvr_address")
+@Table(name = "cvr_address", indexes = {
+        @Index(name = "roadCode", columnList = "roadCode"),
+        @Index(name = "roadName", columnList = "roadName")
+})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Address extends UnversionedEntity {
 
