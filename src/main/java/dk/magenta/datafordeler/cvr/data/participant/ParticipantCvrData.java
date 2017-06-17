@@ -1,4 +1,4 @@
-package dk.magenta.datafordeler.cvr.data.companyunit;
+package dk.magenta.datafordeler.cvr.data.participant;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -14,12 +14,12 @@ import java.util.Map;
  */
 @Entity
 @Table(name = "cvr_companyunit_company")
-public class CompanyUnitCvrData extends CompanySingleData<Integer> {
+public class ParticipantCvrData extends CompanySingleData<Integer> {
 
-    public CompanyUnitCvrData() {
+    public ParticipantCvrData() {
     }
 
-    public CompanyUnitCvrData(int cvr) {
+    public ParticipantCvrData(int cvr) {
         this.setData(cvr);
     }
 
