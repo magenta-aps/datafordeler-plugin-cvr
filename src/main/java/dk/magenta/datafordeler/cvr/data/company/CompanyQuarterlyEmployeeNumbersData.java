@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.HashMap;
@@ -14,7 +15,10 @@ import java.util.Map;
  * Created by lars on 15-06-17.
  */
 @Entity
-@Table(name = "cvr_company_quarterly_employees")
+@Table(name = "cvr_company_quarterly_employees", indexes = {
+        @Index(name = "year", columnList = "year"),
+        @Index(name = "quarter", columnList = "quarter")
+})
 public class CompanyQuarterlyEmployeeNumbersData extends CompanyEmployeeNumbersData {
 
 

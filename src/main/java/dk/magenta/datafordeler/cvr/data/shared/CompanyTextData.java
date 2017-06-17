@@ -11,7 +11,10 @@ import java.util.Map;
  * Created by lars on 16-05-17.
  */
 @Entity
-@Table(name = "cvr_company_text")
+@Table(name = "cvr_company_text", indexes = {
+        @Index(name = "type", columnList = "type"),
+        @Index(name = "data", columnList = "type, data")
+})
 public class CompanyTextData extends CompanySingleData<String> {
 
     public enum Type {
