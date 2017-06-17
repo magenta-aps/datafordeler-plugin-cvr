@@ -2,12 +2,14 @@ package dk.magenta.datafordeler.cvr;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.scenario.effect.Offset;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.cvr.data.company.*;
 import dk.magenta.datafordeler.cvr.data.companyunit.*;
+import dk.magenta.datafordeler.cvr.data.participant.*;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
@@ -296,5 +298,59 @@ public class ModelTest {
         System.out.println("--------------------------------------");
         System.out.println(objectMapper.writeValueAsString(companyUnit));
         System.out.println("--------------------------------------");
+    }
+
+    @Test
+    public void testParticipant() throws DataFordelerException, JsonProcessingException {
+        Session session = sessionManager.getSessionFactory().openSession();
+
+        Identification identification = new Identification(UUID.randomUUID(), "test");
+        ParticipantEntity participant = new ParticipantEntity();
+        participant.setIdentification(identification);
+
+        participant.setParticipantNumber(12345);
+
+        ParticipantRegistration registration = new ParticipantRegistration(OffsetDateTime.parse("2017-07-01T00:00:00Z"), null, 1);
+
+        ParticipantEffect effect = new ParticipantEffect(registration, OffsetDateTime.parse("2017-01-01T00:00:00Z"), null);
+
+        ParticipantBaseData participantBaseData = new ParticipantBaseData();
+        participantBaseData.addEffect(effect);
+        participantBaseData.setCvrNumber(12345678);
+        participantBaseData.setName("Mickey Mouse");
+
+        ParticipantType type = queryManager.getItem(session, ParticipantType.class, Collections.singletonMap("name", "Person"));
+        if (type == null) {
+            type = new ParticipantType();
+            type.setName("Person");
+            session.saveOrUpdate(type);
+        }
+
+        participantBaseData.setType(type);
+
+        ParticipantRole role = queryManager.getItem(session, ParticipantRole.class, Collections.singletonMap("name", "CEO"));
+        if (role == null) {
+            role = new ParticipantRole();
+            role.setName("CEO");
+            session.saveOrUpdate(role);
+        }
+
+        participantBaseData.setRole(role);
+
+        ParticipantStatus status = queryManager.getItem(session, ParticipantStatus.class, Collections.singletonMap("name", "Deceased"));
+        if (status == null) {
+            status = new ParticipantStatus();
+            status.setName("Deceased");
+            session.saveOrUpdate(status);
+        }
+
+        participantBaseData.setStatus(status);
+
+        queryManager.saveRegistration(session, participant, registration);
+
+        System.out.println("--------------------------------------");
+        System.out.println(objectMapper.writeValueAsString(participant));
+        System.out.println("--------------------------------------");
+
     }
 }
