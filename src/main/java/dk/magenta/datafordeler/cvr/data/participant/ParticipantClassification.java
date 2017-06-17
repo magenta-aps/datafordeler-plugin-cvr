@@ -14,9 +14,9 @@ import java.util.Map;
  * Created by lars on 09-06-17.
  */
 @MappedSuperclass
-public class ParticipantClassification extends UnversionedEntity {
+public abstract class ParticipantClassification extends UnversionedEntity {
 
-    @Column
+    @Column(unique = true)
     @JsonProperty
     @XmlElement
     private String name;

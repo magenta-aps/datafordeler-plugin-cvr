@@ -12,7 +12,9 @@ import javax.persistence.Table;
  * Created by lars on 26-01-15.
  */
 @Entity
-@Table(name = "cvr_municipality", indexes = {@Index(name = "code", columnList = "code")})
+@Table(name = "cvr_municipality", indexes = {
+        @Index(name = "code", columnList = "code")
+})
 public class Municipality extends UnversionedEntity {
 
 

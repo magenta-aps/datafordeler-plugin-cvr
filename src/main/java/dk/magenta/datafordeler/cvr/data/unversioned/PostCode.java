@@ -11,7 +11,9 @@ import javax.persistence.Table;
  * Created by lars on 26-01-15.
  */
 @Entity
-@Table(name = "cvr_postcode", indexes = {@Index(name = "code", columnList = "code")})
+@Table(name = "cvr_postcode", indexes = {
+        @Index(name = "code", columnList = "code")
+})
 public class PostCode extends UnversionedEntity {
 
 

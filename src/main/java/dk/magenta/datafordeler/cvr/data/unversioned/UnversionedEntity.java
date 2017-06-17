@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * Created by lars on 09-06-17.
  */
 @MappedSuperclass
-public class UnversionedEntity extends DatabaseEntry {
+public abstract class UnversionedEntity extends DatabaseEntry {
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore

@@ -12,11 +12,7 @@ import java.util.Map;
  * Created by lars on 16-05-17.
  */
 @javax.persistence.Entity
-@Table(name="cvr_participant_data", indexes = {
-        /*@Index(name = "cvrNumber", columnList = "cvrNumber"),
-        @Index(name = "type", columnList = "type"),
-        @Index(name = "role", columnList = "role"),
-        @Index(name = "status", columnList = "status")*/})
+@Table(name="cvr_participant_data")
 public class ParticipantBaseData extends DataItem<ParticipantEffect, ParticipantBaseData> {
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
