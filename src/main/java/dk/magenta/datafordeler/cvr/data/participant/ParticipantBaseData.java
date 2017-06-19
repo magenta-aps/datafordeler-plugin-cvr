@@ -77,6 +77,7 @@ public class ParticipantBaseData extends DataItem<ParticipantEffect, Participant
     @Override
     public LookupDefinition getLookupDefinition() {
         LookupDefinition lookupDefinition = new LookupDefinition();
+        lookupDefinition.setMatchNulls(true);
         if (this.nameData != null) {
             lookupDefinition.putAll("nameData", this.nameData.databaseFields());
         }

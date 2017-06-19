@@ -44,4 +44,9 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
         return CompanyUnitEntity.class;
     }
 
+    @Override
+    public Class getDataClass() {
+        return CompanyUnitBaseData.class;
+    }
+
 }
