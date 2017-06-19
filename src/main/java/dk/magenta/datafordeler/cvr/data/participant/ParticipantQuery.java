@@ -42,4 +42,9 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
         return ParticipantEntity.class;
     }
 
+    @Override
+    public Class getDataClass() {
+        return ParticipantBaseData.class;
+    }
+
 }
