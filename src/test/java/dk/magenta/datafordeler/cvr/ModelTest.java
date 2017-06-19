@@ -16,6 +16,7 @@ import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -49,7 +51,7 @@ public class ModelTest {
         Identification identification = new Identification(UUID.randomUUID(), "test");
         CompanyEntity company = new CompanyEntity();
         company.setIdentification(identification);
-        company.setCvrNumber(12345678);
+        company.setCvrNumber(78975790);
 
         CompanyRegistration registration = new CompanyRegistration(OffsetDateTime.parse("2017-01-01T00:00:00+00:00"), OffsetDateTime.parse("2018-01-01T00:00:00+00:00"), 1);
         CompanyEffect effect1 = new CompanyEffect(registration, OffsetDateTime.parse("2017-07-01T00:00:00+00:00"), null);
@@ -182,9 +184,7 @@ public class ModelTest {
         companyData3.addEffect(effect3);
         companyData3.addCompanyUnit(unitLink);
 
-
         Transaction transaction = session.beginTransaction();
-
 
         try {
             queryManager.saveRegistration(session, company, registration);
@@ -195,9 +195,40 @@ public class ModelTest {
             session.close();
         }
 
+        session = sessionManager.getSessionFactory().openSession();
+        CompanyQuery companyQuery = new CompanyQuery();
+        companyQuery.setName("Some company name");
+        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
+
+        companyQuery = new CompanyQuery();
+        companyQuery.setCvrNumber("78975790");
+        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
+
+        companyQuery = new CompanyQuery();
+        companyQuery.setFormCode(123);
+        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
+
+        companyQuery = new CompanyQuery();
+        companyQuery.setPhone("87654321");
+        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
+
+        companyQuery = new CompanyQuery();
+        companyQuery.setFax("11112222");
+        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
+
+        companyQuery = new CompanyQuery();
+        companyQuery.setEmail("test@example.com");
+        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
+
+
         System.out.println("--------------------------------------");
         System.out.println(objectMapper.writeValueAsString(company));
         System.out.println("--------------------------------------");
+
+        transaction = session.beginTransaction();
+        session.delete(session.merge(company));
+        transaction.commit();
+        session.close();
     }
 
     @Test
@@ -206,7 +237,7 @@ public class ModelTest {
         Identification companyIdentification = new Identification(UUID.randomUUID(), "test");
         CompanyEntity company = new CompanyEntity();
         company.setIdentification(companyIdentification);
-        company.setCvrNumber(12345678);
+        company.setCvrNumber(24681012);
 
         Identification companyUnitIdentification = new Identification(UUID.randomUUID(), "test");
         CompanyUnitEntity companyUnit = new CompanyUnitEntity();
@@ -226,7 +257,7 @@ public class ModelTest {
 
 
         companyUnitData.setName("Some company unit name");
-        companyUnitData.setCompanyCvr(12345678);
+        companyUnitData.setCompanyCvr(24681012);
 
 
 
@@ -298,6 +329,13 @@ public class ModelTest {
         System.out.println("--------------------------------------");
         System.out.println(objectMapper.writeValueAsString(companyUnit));
         System.out.println("--------------------------------------");
+
+        session = sessionManager.getSessionFactory().openSession();
+        transaction = session.beginTransaction();
+        session.delete(company);
+        session.delete(companyUnit);
+        transaction.commit();
+        session.close();
     }
 
     @Test
@@ -316,7 +354,7 @@ public class ModelTest {
 
         ParticipantBaseData participantBaseData = new ParticipantBaseData();
         participantBaseData.addEffect(effect);
-        participantBaseData.setCvrNumber(12345678);
+        participantBaseData.setCvrNumber(3691218);
         participantBaseData.setName("Mickey Mouse");
 
         ParticipantType type = queryManager.getItem(session, ParticipantType.class, Collections.singletonMap("name", "Person"));
