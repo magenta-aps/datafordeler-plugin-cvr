@@ -2,9 +2,7 @@ package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import dk.magenta.datafordeler.core.database.DataItem;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
-import dk.magenta.datafordeler.cvr.data.company.*;
-import dk.magenta.datafordeler.cvr.data.shared.CompanyBooleanData;
-import dk.magenta.datafordeler.cvr.data.shared.CompanyTextData;
+import dk.magenta.datafordeler.cvr.data.shared.*;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 

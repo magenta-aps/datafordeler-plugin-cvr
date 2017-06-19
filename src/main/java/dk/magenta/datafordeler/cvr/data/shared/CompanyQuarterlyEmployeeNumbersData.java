@@ -1,4 +1,4 @@
-package dk.magenta.datafordeler.cvr.data.company;
+package dk.magenta.datafordeler.cvr.data.shared;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -13,10 +13,11 @@ import java.util.Map;
  * Created by lars on 15-06-17.
  */
 @Entity
-@Table(name = "cvr_company_yearly_employees", indexes = {
-        @Index(name = "year", columnList = "year")
+@Table(name = "cvr_company_quarterly_employees", indexes = {
+        @Index(name = "year", columnList = "year"),
+        @Index(name = "quarter", columnList = "quarter")
 })
-public class CompanyYearlyEmployeeNumbersData extends CompanyEmployeeNumbersData {
+public class CompanyQuarterlyEmployeeNumbersData extends CompanyEmployeeNumbersData {
 
 
     @Column(name = "year")
@@ -32,10 +33,25 @@ public class CompanyYearlyEmployeeNumbersData extends CompanyEmployeeNumbersData
 
 
 
+    @Column(name = "quarter")
+    private int quarter;
+
+    public int getQuarter() {
+        return quarter;
+    }
+
+    public void setQuarter(int quarter) {
+        this.quarter = quarter;
+    }
+
+
+
+
     @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>(super.asMap());
         map.put("year", this.year);
+        map.put("quarter", this.quarter);
         return map;
     }
 
@@ -47,6 +63,7 @@ public class CompanyYearlyEmployeeNumbersData extends CompanyEmployeeNumbersData
     public Map<String, Object> databaseFields() {
         HashMap<String, Object> map = new HashMap<>(super.databaseFields());
         map.put("year", this.year);
+        map.put("quarter", this.quarter);
         return map;
     }
 }

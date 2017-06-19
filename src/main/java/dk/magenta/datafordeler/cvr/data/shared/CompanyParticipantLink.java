@@ -1,6 +1,7 @@
-package dk.magenta.datafordeler.cvr.data.company;
+package dk.magenta.datafordeler.cvr.data.shared;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.shared.CompanySingleData;
 
