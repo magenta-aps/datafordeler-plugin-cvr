@@ -1,6 +1,9 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
+import dk.magenta.datafordeler.core.exception.AccessDeniedException;
+import dk.magenta.datafordeler.core.exception.AccessRequiredException;
 import dk.magenta.datafordeler.core.fapi.FapiService;
+import dk.magenta.datafordeler.core.user.DafoUserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.jws.WebService;
@@ -27,6 +30,11 @@ public class CompanyEntityService extends FapiService<CompanyEntity, CompanyQuer
     @Override
     protected Class<CompanyEntity> getEntityClass() {
         return CompanyEntity.class;
+    }
+
+    @Override
+    protected void checkAccess(DafoUserDetails dafoUserDetails) throws AccessDeniedException, AccessRequiredException {
+
     }
 
     @Override

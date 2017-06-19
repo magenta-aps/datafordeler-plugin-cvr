@@ -260,6 +260,7 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     @Override
     public LookupDefinition getLookupDefinition() {
         LookupDefinition lookupDefinition = new LookupDefinition();
+        lookupDefinition.setMatchNulls(true);
 
         if (this.lifecycleData != null) {
             lookupDefinition.putAll("lifecycleData", this.lifecycleData.databaseFields());
