@@ -148,29 +148,9 @@ public class CompanyRecord {
 
     @JsonProperty(value = "attributter")
     public List<CompanyAttributeRecord> attributeRecords;
-    /*
 
-
-        for (JsonNode companyStatusNode : jsonNode.get("virksomhedsstatus")) {
-            records.add(new CompanyStatusRecord(companyStatusNode));
-        }
-        for (JsonNode companyFormNode : jsonNode.get("virksomhedsform")) {
-            records.add(new CompanyFormRecord(companyFormNode));
-        }
-        for (JsonNode yearlyNumbersNode : jsonNode.get("aarsbeskaeftigelse")) {
-            records.add(new CompanyYearlyNumbersRecord(yearlyNumbersNode));
-        }
-        for (JsonNode quarterlyNumbersNode : jsonNode.get("kvartalsbeskaeftigelse")) {
-            records.add(new CompanyQuarterlyNumbersRecord(quarterlyNumbersNode));
-        }
-        for (JsonNode monthlyNumbersNode : jsonNode.get("maanedsbeskaeftigelse")) {
-            records.add(new CompanyMonthlyNumbersRecord(monthlyNumbersNode));
-        }
-        for (JsonNode attributeNode : jsonNode.get("attributter")) {
-            for (JsonNode valueNode : attributeNode.get("vaerdier")) {
-                records.add(new CompanyAttributeRecord(attributeNode, valueNode));
-            }
-        }*/
+    @JsonProperty(value = "penheder")
+    public List<CompanyUnitLinkRecord> unitLinkRecords;
 
 
 
@@ -197,6 +177,7 @@ public class CompanyRecord {
         for (CompanyAttributeRecord attributeRecord : this.attributeRecords) {
             list.addAll(attributeRecord.getValues());
         }
+        list.addAll(this.unitLinkRecords);
         return list;
     }
 }
