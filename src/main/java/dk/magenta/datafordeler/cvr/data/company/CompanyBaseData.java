@@ -88,6 +88,9 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     @ManyToMany(mappedBy = "companyBases")
     private Set<CompanyCreditData> creditData = new HashSet<>();
 
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<CompanyAttributeData> attributeData = new HashSet<>();
+
 
     @Override
     public Map<String, Object> asMap() {
@@ -157,6 +160,9 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         }
         if (this.creditData != null && !this.creditData.isEmpty()) {
             map.put("credit", this.creditData);
+        }
+        if (this.attributeData != null && !this.attributeData.isEmpty()) {
+            map.put("attributes", this.attributeData);
         }
         return map;
     }
@@ -328,6 +334,17 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     }
     public void addCreditData(CompanyCreditData creditData) {
         this.creditData.add(creditData);
+    }
+    public void addAttribute(String type, String valueType, String value, int sequenceNumber) {
+        CompanyAttributeData attributeData = new CompanyAttributeData();
+        attributeData.setType(type);
+        attributeData.setValueType(valueType);
+        attributeData.setValue(value);
+        attributeData.setSequenceNumber(sequenceNumber);
+        this.addAttribute(attributeData);
+    }
+    public void addAttribute(CompanyAttributeData attributeData) {
+        this.attributeData.add(attributeData);
     }
 
     @Override

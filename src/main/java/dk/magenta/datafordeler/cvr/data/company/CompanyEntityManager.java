@@ -136,6 +136,11 @@ public class CompanyEntityManager extends CvrEntityManager {
         for (JsonNode monthlyNumbersNode : jsonNode.get("maanedsbeskaeftigelse")) {
             records.add(new CompanyMonthlyNumbersRecord(monthlyNumbersNode));
         }
+        for (JsonNode attributeNode : jsonNode.get("attributter")) {
+            for (JsonNode valueNode : attributeNode.get("vaerdier")) {
+                records.add(new CompanyAttributeRecord(attributeNode, valueNode));
+            }
+        }
 
 
         ListHashMap<OffsetDateTime, CompanyRecord> ajourRecords = new ListHashMap<>();
@@ -173,13 +178,13 @@ public class CompanyEntityManager extends CvrEntityManager {
 
                 CompanyEffect effect = registration.getEffect(record.getValidFrom(), record.getValidTo());
                 if (effect == null) {
-                    System.out.println("did not find effect on "+record.getValidFrom()+", "+record.getValidTo()+", creating new");
+                    //System.out.println("did not find effect on "+record.getValidFrom()+", "+record.getValidTo()+", creating new");
                     effect = new CompanyEffect(registration, record.getValidFrom(), record.getValidTo());
                 } else {
-                    System.out.println("found effect on "+record.getValidFrom()+", "+record.getValidTo()+", reusing");
+                    //System.out.println("found effect on "+record.getValidFrom()+", "+record.getValidTo()+", reusing");
                 }
 
-                System.out.println("DATAITEMS COUNT: "+effect.getDataItems().size());
+                //System.out.println("DATAITEMS COUNT: "+effect.getDataItems().size());
 
                 //CompanyBaseData baseData = new CompanyBaseData();
                 if (effect.getDataItems().isEmpty()) {
@@ -193,12 +198,12 @@ public class CompanyEntityManager extends CvrEntityManager {
             }
             lastRegistration = registration;
 
-            /*try {
+            try {
                 System.out.println(getObjectMapper().writeValueAsString(registration));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
-            System.out.println("==========================================================");*/
+            System.out.println("==========================================================");
         }
         //System.out.println(company.getRegistrations());
         transaction.commit();
@@ -548,6 +553,25 @@ public class CompanyEntityManager extends CvrEntityManager {
                     fulltimeEquivalent.getValue(),
                     includingOwners.getKey(),
                     includingOwners.getValue()
+            );
+        }
+    }
+
+    private class CompanyAttributeRecord extends CompanyRecord {
+
+        private JsonNode attributeNode;
+        public CompanyAttributeRecord(JsonNode attributeNode, JsonNode valueNode) {
+            super(valueNode);
+            this.attributeNode = attributeNode;
+        }
+
+        @Override
+        public void populateCompanyBaseData(CompanyBaseData baseData, Session session) {
+            baseData.addAttribute(
+                    this.attributeNode.get("type").asText(),
+                    this.attributeNode.get("vaerditype").asText(),
+                    this.getData().get("vaerdi").asText(),
+                    this.attributeNode.get("sekvensnr").asInt()
             );
         }
     }
