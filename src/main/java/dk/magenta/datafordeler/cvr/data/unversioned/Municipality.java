@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.data.unversioned;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -15,11 +16,12 @@ import javax.persistence.Table;
 @Table(name = "cvr_municipality", indexes = {
         @Index(name = "code", columnList = "code")
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Municipality extends UnversionedEntity {
 
 
 
-    @JsonProperty
+    @JsonProperty(value = "kommuneKode")
     @Column(nullable = false, unique = true)
     private int code;
 
@@ -33,7 +35,7 @@ public class Municipality extends UnversionedEntity {
 
 
 
-    @JsonProperty
+    @JsonProperty(value = "kommuneNavn")
     @Column(nullable = false, unique = true)
     private String text;
 
