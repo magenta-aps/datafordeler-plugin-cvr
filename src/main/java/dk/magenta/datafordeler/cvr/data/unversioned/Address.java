@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import javax.print.DocFlavor;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
@@ -17,8 +18,24 @@ import javax.xml.bind.annotation.XmlElement;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Address extends UnversionedEntity {
 
-    @JsonProperty
-    @XmlElement
+
+    @JsonProperty(value = "adresseId")
+    @XmlElement(name = "adresseId")
+    @Column
+    private String addressId;
+
+    public String getAddressId() {
+        return this.addressId;
+    }
+
+    public void setAddressId(String addressId) {
+        this.addressId = addressId;
+    }
+
+
+
+    @JsonProperty(value = "vejkode")
+    @XmlElement(name = "vejkode")
     @Column
     private int roadCode;
 
@@ -32,8 +49,23 @@ public class Address extends UnversionedEntity {
 
 
 
-    @JsonProperty
-    @XmlElement
+    @JsonProperty(value = "bynavn")
+    @XmlElement(name = "bynavn")
+    @Column
+    private String cityName;
+
+    public String getCityName() {
+        return this.cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+
+
+
+    @JsonProperty(value = "vejnavn")
+    @XmlElement(name = "vejnavn")
     @Column
     private String roadName;
 
@@ -47,8 +79,8 @@ public class Address extends UnversionedEntity {
 
 
 
-    @JsonProperty
-    @XmlElement
+    @JsonProperty(value = "husnummerFra")
+    @XmlElement(name = "husnummerFra")
     @Column
     private int houseNumberFrom;
 
@@ -62,8 +94,8 @@ public class Address extends UnversionedEntity {
 
 
 
-    @JsonProperty
-    @XmlElement
+    @JsonProperty(value = "husnummerTil")
+    @XmlElement(name = "husnummerTil")
     @Column
     private int houseNumberTo;
 
@@ -77,8 +109,8 @@ public class Address extends UnversionedEntity {
 
 
 
-    @JsonProperty
-    @XmlElement
+    @JsonProperty(value = "bogstavFra")
+    @XmlElement(name = "bogstavFra")
     @Column
     private String letterFrom;
 
@@ -92,8 +124,8 @@ public class Address extends UnversionedEntity {
 
 
 
-    @JsonProperty
-    @XmlElement
+    @JsonProperty(value = "bogstavTil")
+    @XmlElement(name = "bogstavTil")
     @Column
     private String letterTo;
 
@@ -107,8 +139,8 @@ public class Address extends UnversionedEntity {
 
 
 
-    @JsonProperty
-    @XmlElement
+    @JsonProperty(value = "etage")
+    @XmlElement(name = "etage")
     @Column
     private int floor;
 
@@ -122,8 +154,8 @@ public class Address extends UnversionedEntity {
 
 
 
-    @JsonProperty
-    @XmlElement
+    @JsonProperty(value = "sidedoer")
+    @XmlElement(name = "sidedoer")
     @Column
     private String door;
 
@@ -137,8 +169,8 @@ public class Address extends UnversionedEntity {
 
 
 
-    @JsonProperty
-    @XmlElement
+    @JsonProperty(value = "kommune")
+    @XmlElement(name = "kommune")
     @ManyToOne
     private Municipality municipality;
 
@@ -152,8 +184,8 @@ public class Address extends UnversionedEntity {
 
 
 
-    @JsonProperty
-    @XmlElement
+    @JsonProperty(value = "postnummer")
+    @XmlElement(name = "postnummer")
     @ManyToOne
     private PostCode postCode;
 
@@ -165,10 +197,41 @@ public class Address extends UnversionedEntity {
         this.postCode = postCode;
     }
 
+    @JsonProperty(value = "postnummer")
+    public void setPostCode(int code) {
+        if (this.postCode == null) {
+            this.postCode = new PostCode();
+        }
+        this.postCode.setCode(code);
+    }
+
+    @JsonProperty("postdistrikt")
+    public void setPostDistrict(String district) {
+        if (this.postCode == null) {
+            this.postCode = new PostCode();
+        }
+        this.postCode.setText(district);
+    }
 
 
-    @JsonProperty
-    @XmlElement
+
+    @JsonProperty(value = "postboks")
+    @XmlElement(name = "postboks")
+    @Column
+    private int postBox;
+
+    public int getPostBox() {
+        return this.postBox;
+    }
+
+    public void setPostBox(int postBox) {
+        this.postBox = postBox;
+    }
+
+
+
+    @JsonProperty(value = "conavn")
+    @XmlElement(name = "conavn")
     @Column
     private String coName;
 
@@ -178,5 +241,50 @@ public class Address extends UnversionedEntity {
 
     public void setCoName(String coName) {
         this.coName = coName;
+    }
+
+
+
+    @JsonProperty(value = "landekode")
+    @XmlElement(name = "landekode")
+    @Column
+    private String countryCode;
+
+    public String getCountryCode() {
+        return this.countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
+
+
+
+    @JsonProperty(value = "fritekst")
+    @XmlElement(name = "fritekst")
+    @Column
+    private String freeText;
+
+    public String getFreeText() {
+        return this.freeText;
+    }
+
+    public void setFreeText(String freeText) {
+        this.freeText = freeText;
+    }
+
+
+
+    @JsonProperty(value = "sidstValideret")
+    @XmlElement(name = "sidstValideret")
+    @Column
+    private String lastValidated;
+
+    public String getLastValidated() {
+        return this.lastValidated;
+    }
+
+    public void setLastValidated(String lastValidated) {
+        this.lastValidated = lastValidated;
     }
 }

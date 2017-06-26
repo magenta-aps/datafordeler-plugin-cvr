@@ -27,17 +27,19 @@ public abstract class CompanyEmployeeNumbersData extends DetailData {
     @JsonIgnore
     @XmlTransient
     @Column(name = "employeesLow")
-    private int employeesLow;
+    private Integer employeesLow;
 
     public int getEmployeesLow() {
         return employeesLow;
     }
 
-    public void setEmployeesLow(int employeesLow) {
-        if (this.employeesHigh != 0) {
-            this.checkBounds(employeesLow, this.employeesHigh);
+    public void setEmployeesLow(Integer employeesLow) {
+        if (employeesLow != null) {
+            if (this.employeesHigh != null) {
+                this.checkBounds(employeesLow, this.employeesHigh);
+            }
+            this.employeesLow = employeesLow;
         }
-        this.employeesLow = employeesLow;
     }
 
 
@@ -45,17 +47,19 @@ public abstract class CompanyEmployeeNumbersData extends DetailData {
     @JsonIgnore
     @XmlTransient
     @Column(name = "employeesHigh")
-    private int employeesHigh;
+    private Integer employeesHigh;
 
     public int getEmployeesHigh() {
         return employeesHigh;
     }
 
-    public void setEmployeesHigh(int employeesHigh) {
-        if (this.employeesLow != 0) {
-            this.checkBounds(this.employeesLow, employeesHigh);
+    public void setEmployeesHigh(Integer employeesHigh) {
+        if (employeesHigh != null) {
+            if (this.employeesLow != null) {
+                this.checkBounds(this.employeesLow, employeesHigh);
+            }
+            this.employeesHigh = employeesHigh;
         }
-        this.employeesHigh = employeesHigh;
     }
 
     @JsonProperty
@@ -67,17 +71,19 @@ public abstract class CompanyEmployeeNumbersData extends DetailData {
     @JsonIgnore
     @XmlTransient
     @Column(name = "fullTimeEquivalentLow")
-    private int fullTimeEquivalentLow;
+    private Integer fullTimeEquivalentLow;
 
     public int getFullTimeEquivalentLow() {
         return fullTimeEquivalentLow;
     }
 
-    public void setFullTimeEquivalentLow(int fullTimeEquivalentLow) {
-        if (this.fullTimeEquivalentHigh != 0) {
-            this.checkBounds(fullTimeEquivalentLow, this.fullTimeEquivalentHigh);
+    public void setFullTimeEquivalentLow(Integer fullTimeEquivalentLow) {
+        if (fullTimeEquivalentLow != null) {
+            if (this.fullTimeEquivalentHigh != null) {
+                this.checkBounds(fullTimeEquivalentLow, this.fullTimeEquivalentHigh);
+            }
+            this.fullTimeEquivalentLow = fullTimeEquivalentLow;
         }
-        this.fullTimeEquivalentLow = fullTimeEquivalentLow;
     }
 
 
@@ -85,17 +91,19 @@ public abstract class CompanyEmployeeNumbersData extends DetailData {
     @JsonIgnore
     @XmlTransient
     @Column(name = "fullTimeEquivalentHigh")
-    private int fullTimeEquivalentHigh;
+    private Integer fullTimeEquivalentHigh;
 
     public int getFullTimeEquivalentHigh() {
         return fullTimeEquivalentHigh;
     }
 
-    public void setFullTimeEquivalentHigh(int fullTimeEquivalentHigh) {
-        if (this.fullTimeEquivalentLow != 0) {
-            this.checkBounds(this.fullTimeEquivalentLow, fullTimeEquivalentHigh);
+    public void setFullTimeEquivalentHigh(Integer fullTimeEquivalentHigh) {
+        if (fullTimeEquivalentHigh != null) {
+            if (this.fullTimeEquivalentLow != null) {
+                this.checkBounds(this.fullTimeEquivalentLow, fullTimeEquivalentHigh);
+            }
+            this.fullTimeEquivalentHigh = fullTimeEquivalentHigh;
         }
-        this.fullTimeEquivalentHigh = fullTimeEquivalentHigh;
     }
 
     @JsonProperty
@@ -107,17 +115,19 @@ public abstract class CompanyEmployeeNumbersData extends DetailData {
     @JsonIgnore
     @XmlTransient
     @Column(name = "includingOwnersLow")
-    private int includingOwnersLow;
+    private Integer includingOwnersLow;
 
     public int getIncludingOwnersLow() {
         return includingOwnersLow;
     }
 
-    public void setIncludingOwnersLow(int includingOwnersLow) {
-        if (this.includingOwnersHigh != 0) {
-            this.checkBounds(includingOwnersLow, this.includingOwnersHigh);
+    public void setIncludingOwnersLow(Integer includingOwnersLow) {
+        if (includingOwnersLow != null) {
+            if (this.includingOwnersHigh != null) {
+                this.checkBounds(includingOwnersLow, this.includingOwnersHigh);
+            }
+            this.includingOwnersLow = includingOwnersLow;
         }
-        this.includingOwnersLow = includingOwnersLow;
     }
 
 
@@ -125,17 +135,19 @@ public abstract class CompanyEmployeeNumbersData extends DetailData {
     @JsonIgnore
     @XmlTransient
     @Column(name = "includingOwnersHigh")
-    private int includingOwnersHigh;
+    private Integer includingOwnersHigh;
 
     public int getIncludingOwnersHigh() {
         return includingOwnersHigh;
     }
 
-    public void setIncludingOwnersHigh(int includingOwnersHigh) {
-        if (this.includingOwnersLow != 0) {
-            this.checkBounds(this.includingOwnersLow, includingOwnersHigh);
+    public void setIncludingOwnersHigh(Integer includingOwnersHigh) {
+        if (includingOwnersHigh != null) {
+            if (this.includingOwnersLow != null) {
+                this.checkBounds(this.includingOwnersLow, includingOwnersHigh);
+            }
+            this.includingOwnersHigh = includingOwnersHigh;
         }
-        this.includingOwnersHigh = includingOwnersHigh;
     }
 
     @JsonProperty
@@ -180,7 +192,10 @@ public abstract class CompanyEmployeeNumbersData extends DetailData {
         }
     }
 
-    protected String formatInterval(int low, int high) {
+    protected String formatInterval(Integer low, Integer high) {
+        if (low == null || high == null) {
+            return null;
+        }
         if (low == high) {
             return Integer.toString(low);
         }

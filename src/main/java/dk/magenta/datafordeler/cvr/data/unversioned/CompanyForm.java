@@ -1,9 +1,11 @@
 package dk.magenta.datafordeler.cvr.data.unversioned;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dk.magenta.datafordeler.cvr.data.unversioned.UnversionedEntity;
+import dk.magenta.datafordeler.core.database.QueryManager;
+import org.hibernate.Session;
 
 import javax.persistence.*;
+import java.util.Collections;
 
 /**
  * Created by lars on 26-01-15.
@@ -19,14 +21,28 @@ public class CompanyForm extends UnversionedEntity {
 
     @JsonProperty
     @Column(nullable = true, unique = true)
-    private String name;
+    private String shortDescription;
 
-    public String getName() {
-        return name;
+    public String getShortDescription() {
+        return shortDescription;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    //----------------------------------------------------
+
+    @JsonProperty
+    @Column(nullable = true, unique = true)
+    private String longDescription;
+
+    public String getLongDescription() {
+        return this.longDescription;
+    }
+
+    public void setLongDescription(String longDescription) {
+        this.longDescription = longDescription;
     }
 
     //----------------------------------------------------
@@ -56,17 +72,17 @@ public class CompanyForm extends UnversionedEntity {
     }
 
     //----------------------------------------------------
-/*
-    public boolean equals(Object otherObject) {
-        if (otherObject == null || otherObject.getClass() != CompanyFormEntity.class) {
-            return false;
+
+    public static CompanyForm getForm(int code, String shortDescription, String longDescription, QueryManager queryManager, Session session) {
+        CompanyForm form = queryManager.getItem(session, CompanyForm.class, Collections.singletonMap("code", code));
+        if (form == null) {
+            form = new CompanyForm();
+            form.setCode(code);
+            form.setShortDescription(shortDescription);
+            form.setLongDescription(longDescription);
+            session.save(form);
         }
-        return this.equals((CompanyFormEntity) otherObject);
+        return form;
     }
 
-    public boolean equals(CompanyFormEntity otherCompanyFormEntity) {
-        return this.code == otherCompanyFormEntity.getCode() &&
-                Util.compare(this.name, otherCompanyFormEntity.getName()) &&
-                Util.compare(this.responsibleDatasource, otherCompanyFormEntity.getResponsibleDatasource());
-    }*/
 }

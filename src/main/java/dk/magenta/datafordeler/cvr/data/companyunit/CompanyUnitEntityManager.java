@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.util.List;
 
 /**
  * Created by lars on 16-05-17.
@@ -43,7 +44,7 @@ public class CompanyUnitEntityManager extends CvrEntityManager {
     }
 
     @Override
-    public Registration parseRegistration(JsonNode jsonNode) throws ParseException {
+    public List<Registration> parseRegistration(JsonNode jsonNode) throws ParseException {
         // Parse a Jackson JsonNode into an instance of CompanyRegistration.
         return null;
     }
