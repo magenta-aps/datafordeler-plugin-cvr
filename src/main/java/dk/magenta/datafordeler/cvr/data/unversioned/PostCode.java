@@ -17,8 +17,7 @@ import javax.persistence.Table;
 public class PostCode extends UnversionedEntity {
 
 
-
-    @JsonProperty
+    @JsonProperty(value = "postnummer")
     @Column(nullable = false, unique = true)
     private int code;
 
@@ -32,7 +31,7 @@ public class PostCode extends UnversionedEntity {
 
 
 
-    @JsonProperty
+    @JsonProperty(value = "postdistrikt")
     @Column
     private String text;
 

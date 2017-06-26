@@ -26,7 +26,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -134,23 +133,23 @@ public class ModelTest {
         }
         companyData2.setSecondaryIndustry1(secondaryIndustry1);
 
-        companyData1.setPhone("87654321");
-        companyData1.setFax("11112222");
-        companyData1.setEmail("test@example.com");
+        companyData1.setPhone("87654321", false);
+        companyData1.setFax("11112222", false);
+        companyData1.setEmail("test@example.com", false);
 
         CompanyForm companyForm = queryManager.getItem(session, CompanyForm.class, Collections.singletonMap("code", 123));
         if (companyForm == null) {
             companyForm = new CompanyForm();
             companyForm.setCode(123);
-            companyForm.setName("A/S");
+            companyForm.setShortDescription("A/S");
             companyForm.setResponsibleDatasource("E&S");
             session.saveOrUpdate(companyForm);
         }
         companyData1.setForm(companyForm);
 
-        companyData1.setYearlyEmployeeNumbers(2017,1,2,1,2,1,2);
+        companyData1.addYearlyEmployeeNumbers(2017,1,2,1,2,1,2);
 
-        companyData1.setQuarterlyEmployeeNumbers(2017,2,1,2,1,2,1,2);
+        companyData1.addQuarterlyEmployeeNumbers(2017,2,1,2,1,2,1,2);
 
 
         CompanyParticipantLink participantLink = queryManager.getItem(session, CompanyParticipantLink.class, Collections.singletonMap("data", 44446666));
