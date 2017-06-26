@@ -73,13 +73,14 @@ public class CompanyForm extends UnversionedEntity {
 
     //----------------------------------------------------
 
-    public static CompanyForm getForm(int code, String shortDescription, String longDescription, QueryManager queryManager, Session session) {
+    public static CompanyForm getForm(int code, String shortDescription, String longDescription, String responsibleDatasource, QueryManager queryManager, Session session) {
         CompanyForm form = queryManager.getItem(session, CompanyForm.class, Collections.singletonMap("code", code));
         if (form == null) {
             form = new CompanyForm();
             form.setCode(code);
             form.setShortDescription(shortDescription);
             form.setLongDescription(longDescription);
+            form.setResponsibleDatasource(responsibleDatasource);
             session.save(form);
         }
         return form;
