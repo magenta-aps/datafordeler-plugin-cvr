@@ -27,10 +27,10 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
     private CompanyBooleanData advertProtectionData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyAddressData locationAddressData;
+    private AddressData locationAddressData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyAddressData postalAddressData;
+    private AddressData postalAddressData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private CompanyYearlyEmployeeNumbersData yearlyEmployeeNumbersData;
@@ -149,13 +149,13 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
     }
     public void setLocationAddress(Address address) {
         if (this.locationAddressData == null) {
-            this.locationAddressData = new CompanyAddressData();
+            this.locationAddressData = new AddressData();
         }
         this.locationAddressData.setAddress(address);
     }
     public void setPostalAddress(Address address) {
         if (this.postalAddressData == null) {
-            this.postalAddressData = new CompanyAddressData();
+            this.postalAddressData = new AddressData();
         }
         this.postalAddressData.setAddress(address);
     }

@@ -62,12 +62,11 @@ public class CompanyEntityManager extends CvrEntityManager {
 
     @Override
     public List<Registration> parseRegistration(JsonNode jsonNode) throws ParseException {
+        ArrayList<Registration> registrations = new ArrayList<>();
         Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         System.out.println("Parse jsonNode");
         jsonNode = this.unwrap(jsonNode);
-
-        HashMap<OffsetDateTime, CompanyRegistration> registrations = new HashMap<>();
 
         CompanyEntity company = new CompanyEntity(UUID.randomUUID(), "cvr", jsonNode.get("cvrNummer").asInt());
         CompanyRecord companyRecord;
@@ -77,14 +76,11 @@ public class CompanyEntityManager extends CvrEntityManager {
             e.printStackTrace();
             return null;
         }
-        List<CompanyBaseRecord> records = companyRecord.getAll();
+        List<BaseRecord> records = companyRecord.getAll();
 
-
-
-
-        ListHashMap<OffsetDateTime, CompanyBaseRecord> ajourRecords = new ListHashMap<>();
+        ListHashMap<OffsetDateTime, BaseRecord> ajourRecords = new ListHashMap<>();
         TreeSet<OffsetDateTime> sortedTimestamps = new TreeSet<>();
-        for (CompanyBaseRecord record : records) {
+        for (BaseRecord record : records) {
             System.out.println("record: "+record);
             OffsetDateTime registrationFrom = record.getLastUpdated();
             ajourRecords.add(registrationFrom, record);
@@ -112,20 +108,12 @@ public class CompanyEntityManager extends CvrEntityManager {
                 }
             }
 
-            for (CompanyBaseRecord record : ajourRecords.get(registrationFrom)) {
-                //CompanyRegistration registration = registrations.computeIfAbsent(record.getLastUpdated(), k -> new CompanyRegistration());
-
+            for (BaseRecord record : ajourRecords.get(registrationFrom)) {
                 CompanyEffect effect = registration.getEffect(record.getValidFrom(), record.getValidTo());
                 if (effect == null) {
-                    //System.out.println("did not find effect on "+record.getValidFrom()+", "+record.getValidTo()+", creating new");
                     effect = new CompanyEffect(registration, record.getValidFrom(), record.getValidTo());
-                } else {
-                    //System.out.println("found effect on "+record.getValidFrom()+", "+record.getValidTo()+", reusing");
                 }
 
-                //System.out.println("DATAITEMS COUNT: "+effect.getDataItems().size());
-
-                //CompanyBaseData baseData = new CompanyBaseData();
                 if (effect.getDataItems().isEmpty()) {
                     CompanyBaseData baseData = new CompanyBaseData();
                     baseData.addEffect(effect);
@@ -136,6 +124,7 @@ public class CompanyEntityManager extends CvrEntityManager {
                 }
             }
             lastRegistration = registration;
+            registrations.add(registration);
 
             try {
                 System.out.println(getObjectMapper().writeValueAsString(registration));
@@ -147,7 +136,7 @@ public class CompanyEntityManager extends CvrEntityManager {
         //System.out.println(company.getRegistrations());
         transaction.commit();
         session.close();
-        return null;
+        return registrations;
     }
 
 
@@ -160,6 +149,5 @@ public class CompanyEntityManager extends CvrEntityManager {
         }
         return jsonNode;
     }
-
 
 }

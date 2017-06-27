@@ -15,7 +15,7 @@ import java.util.Map;
  */
 @Entity
 @Table(name = "cvr_company_attributes")
-public class CompanyAttributeData extends DetailData {
+public class AttributeData extends DetailData {
 
     @JsonProperty
     @XmlElement
