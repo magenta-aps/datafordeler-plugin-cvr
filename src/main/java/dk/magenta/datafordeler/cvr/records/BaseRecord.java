@@ -8,7 +8,7 @@ import org.hibernate.Session;
 /**
  * Created by lars on 26-06-17.
  */
-public abstract class CompanyBaseRecord extends BaseRecord {
+public abstract class BaseRecord extends CvrRecord {
     public abstract void populateCompanyBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session);
-    public void populateParticipantBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {}
+    public abstract void populateParticipantBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session);
 }

@@ -32,10 +32,10 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     private CompanyBooleanData advertProtectionData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyAddressData locationAddressData;
+    private AddressData locationAddressData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyAddressData postalAddressData;
+    private AddressData postalAddressData;
 
     @OneToMany(cascade = CascadeType.ALL)
     @OrderBy(value = "year asc")
@@ -89,7 +89,7 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     private Set<CompanyCreditData> creditData = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<CompanyAttributeData> attributeData = new HashSet<>();
+    private Set<AttributeData> attributeData = new HashSet<>();
 
 
     @Override
@@ -200,13 +200,13 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     }
     public void setLocationAddress(Address address) {
         if (this.locationAddressData == null) {
-            this.locationAddressData = new CompanyAddressData();
+            this.locationAddressData = new AddressData();
         }
         this.locationAddressData.setAddress(address);
     }
     public void setPostalAddress(Address address) {
         if (this.postalAddressData == null) {
-            this.postalAddressData = new CompanyAddressData();
+            this.postalAddressData = new AddressData();
         }
         this.postalAddressData.setAddress(address);
     }
@@ -336,14 +336,14 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         this.creditData.add(creditData);
     }
     public void addAttribute(String type, String valueType, String value, int sequenceNumber) {
-        CompanyAttributeData attributeData = new CompanyAttributeData();
+        AttributeData attributeData = new AttributeData();
         attributeData.setType(type);
         attributeData.setValueType(valueType);
         attributeData.setValue(value);
         attributeData.setSequenceNumber(sequenceNumber);
         this.addAttribute(attributeData);
     }
-    public void addAttribute(CompanyAttributeData attributeData) {
+    public void addAttribute(AttributeData attributeData) {
         this.attributeData.add(attributeData);
     }
 

@@ -4,17 +4,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
+import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import org.hibernate.Session;
 
 /**
  * Created by lars on 26-06-17.
  */
-public class CompanyAddressRecord extends CompanyBaseRecord {
+public class AddressRecord extends BaseRecord {
 
     public enum Type {
         LOCATION,
-        POSTAL
+        POSTAL,
+        BUSINESS
     }
 
     @JsonUnwrapped
@@ -35,6 +37,21 @@ public class CompanyAddressRecord extends CompanyBaseRecord {
                 break;
             case POSTAL:
                 baseData.setPostalAddress(this.address);
+                break;
+        }
+    }
+
+    @Override
+    public void populateParticipantBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
+        switch (this.type) {
+            case LOCATION:
+                baseData.setLocationAddress(this.address);
+                break;
+            case POSTAL:
+                baseData.setPostalAddress(this.address);
+                break;
+            case BUSINESS:
+                baseData.setBusinessAddress(this.address);
                 break;
         }
     }
