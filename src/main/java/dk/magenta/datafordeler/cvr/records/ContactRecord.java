@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
+import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import org.hibernate.Session;
 
 /**
  * Created by lars on 26-06-17.
  */
-public class CompanyContactRecord extends CompanyBaseRecord {
+public class ContactRecord extends BaseRecord {
 
     public enum Type {
         PHONE,
@@ -49,6 +50,21 @@ public class CompanyContactRecord extends CompanyBaseRecord {
                 break;
             case MANDATORY_EMAIL:
                 baseData.setMandatoryEmail(this.contactInfo, this.secret);
+                break;
+        }
+    }
+
+    @Override
+    public void populateParticipantBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
+        switch (this.type) {
+            case PHONE:
+                baseData.setPhone(this.contactInfo, this.secret);
+                break;
+            case FAX:
+                baseData.setFax(this.contactInfo, this.secret);
+                break;
+            case EMAIL:
+                baseData.setEmail(this.contactInfo, this.secret);
                 break;
         }
     }

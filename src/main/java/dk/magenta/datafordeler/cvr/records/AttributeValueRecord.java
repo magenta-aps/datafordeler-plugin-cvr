@@ -4,21 +4,21 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.shared.CompanyAttributeData;
+import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import org.hibernate.Session;
 
 /**
  * Created by lars on 26-06-17.
  */
-public class CompanyAttributeValueRecord extends CompanyBaseRecord {
+public class AttributeValueRecord extends BaseRecord {
 
     @JsonProperty(value = "vaerdi")
     private String value;
 
     @JsonIgnore
-    private CompanyAttributeRecord parent;
+    private AttributeRecord parent;
 
-    public void setParent(CompanyAttributeRecord parent) {
+    public void setParent(AttributeRecord parent) {
         this.parent = parent;
     }
 
@@ -30,5 +30,15 @@ public class CompanyAttributeValueRecord extends CompanyBaseRecord {
                 this.value,
                 this.parent.getSequenceNumber()
         );
+    }
+
+    @Override
+    public void populateParticipantBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
+        /*baseData.addAttribute(
+                this.parent.getType(),
+                this.parent.getValueType(),
+                this.value,
+                this.parent.getSequenceNumber()
+        );*/
     }
 }

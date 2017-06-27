@@ -2,7 +2,6 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.jaxrs.json.annotation.JSONP;
 import javafx.util.Pair;
 
 import java.time.LocalDate;

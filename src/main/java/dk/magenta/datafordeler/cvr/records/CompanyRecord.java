@@ -13,74 +13,74 @@ import java.util.List;
 public class CompanyRecord {
 
     @JsonProperty(value = "navne")
-    public List<CompanyNameRecord> names;
+    public List<NameRecord> names;
 
     @JsonProperty(value = "beliggenhedsadresse")
-    public List<CompanyAddressRecord> locationAddresses;
+    public List<AddressRecord> locationAddresses;
 
-    public void setLocationAddresses(List<CompanyAddressRecord> locationAddresses) {
-        for (CompanyAddressRecord record : locationAddresses) {
-            record.setType(CompanyAddressRecord.Type.LOCATION);
+    public void setLocationAddresses(List<AddressRecord> locationAddresses) {
+        for (AddressRecord record : locationAddresses) {
+            record.setType(AddressRecord.Type.LOCATION);
         }
         this.locationAddresses = locationAddresses;
     }
 
     @JsonProperty(value = "postadresse")
-    public List<CompanyAddressRecord> postalAddresses;
+    public List<AddressRecord> postalAddresses;
 
-    public void setPostalAddresses(List<CompanyAddressRecord> postalAddresses) {
-        for (CompanyAddressRecord record : postalAddresses) {
-            record.setType(CompanyAddressRecord.Type.POSTAL);
+    public void setPostalAddresses(List<AddressRecord> postalAddresses) {
+        for (AddressRecord record : postalAddresses) {
+            record.setType(AddressRecord.Type.POSTAL);
         }
         this.postalAddresses = postalAddresses;
     }
 
     @JsonProperty(value = "telefonNummer")
-    public List<CompanyContactRecord> phoneRecords;
+    public List<ContactRecord> phoneRecords;
 
-    public void setPhoneRecords(List<CompanyContactRecord> phoneRecords) {
-        for (CompanyContactRecord record : phoneRecords) {
-            record.setType(CompanyContactRecord.Type.PHONE);
+    public void setPhoneRecords(List<ContactRecord> phoneRecords) {
+        for (ContactRecord record : phoneRecords) {
+            record.setType(ContactRecord.Type.PHONE);
         }
         this.phoneRecords = phoneRecords;
     }
 
     @JsonProperty(value = "telefaxNummer")
-    public List<CompanyContactRecord> faxRecords;
+    public List<ContactRecord> faxRecords;
 
-    public void setFaxRecords(List<CompanyContactRecord> faxRecords) {
-        for (CompanyContactRecord record : faxRecords) {
-            record.setType(CompanyContactRecord.Type.FAX);
+    public void setFaxRecords(List<ContactRecord> faxRecords) {
+        for (ContactRecord record : faxRecords) {
+            record.setType(ContactRecord.Type.FAX);
         }
         this.faxRecords = faxRecords;
     }
 
     @JsonProperty(value = "elektroniskPost")
-    public List<CompanyContactRecord> emailRecords;
+    public List<ContactRecord> emailRecords;
 
-    public void setEmailRecords(List<CompanyContactRecord> emailRecords) {
-        for (CompanyContactRecord record : emailRecords) {
-            record.setType(CompanyContactRecord.Type.EMAIL);
+    public void setEmailRecords(List<ContactRecord> emailRecords) {
+        for (ContactRecord record : emailRecords) {
+            record.setType(ContactRecord.Type.EMAIL);
         }
         this.emailRecords = emailRecords;
     }
 
     @JsonProperty(value = "hjemmeside")
-    public List<CompanyContactRecord> homepageRecords;
+    public List<ContactRecord> homepageRecords;
 
-    public void setHomepageRecords(List<CompanyContactRecord> homepageRecords) {
-        for (CompanyContactRecord record : homepageRecords) {
-            record.setType(CompanyContactRecord.Type.HOMEPAGE);
+    public void setHomepageRecords(List<ContactRecord> homepageRecords) {
+        for (ContactRecord record : homepageRecords) {
+            record.setType(ContactRecord.Type.HOMEPAGE);
         }
         this.homepageRecords = homepageRecords;
     }
 
     @JsonProperty(value = "obligatoriskEmail")
-    public List<CompanyContactRecord> mandatoryEmailRecords;
+    public List<ContactRecord> mandatoryEmailRecords;
 
-    public void setMandatoryEmailRecords(List<CompanyContactRecord> mandatoryEmailRecords) {
-        for (CompanyContactRecord record : mandatoryEmailRecords) {
-            record.setType(CompanyContactRecord.Type.MANDATORY_EMAIL);
+    public void setMandatoryEmailRecords(List<ContactRecord> mandatoryEmailRecords) {
+        for (ContactRecord record : mandatoryEmailRecords) {
+            record.setType(ContactRecord.Type.MANDATORY_EMAIL);
         }
         this.mandatoryEmailRecords = mandatoryEmailRecords;
     }
@@ -146,15 +146,15 @@ public class CompanyRecord {
     public List<CompanyMonthlyNumbersRecord> monthlyNumbersRecords;
 
     @JsonProperty(value = "attributter")
-    public List<CompanyAttributeRecord> attributeRecords;
+    public List<AttributeRecord> attributeRecords;
 
     @JsonProperty(value = "penheder")
     public List<CompanyUnitLinkRecord> unitLinkRecords;
 
 
 
-    public List<CompanyBaseRecord> getAll() {
-        ArrayList<CompanyBaseRecord> list = new ArrayList<>();
+    public List<BaseRecord> getAll() {
+        ArrayList<BaseRecord> list = new ArrayList<>();
         list.addAll(this.names);
         list.addAll(this.locationAddresses);
         list.addAll(this.postalAddresses);
@@ -173,7 +173,7 @@ public class CompanyRecord {
         list.addAll(this.yearlyNumbersRecords);
         list.addAll(this.quarterlyNumbersRecords);
         list.addAll(this.monthlyNumbersRecords);
-        for (CompanyAttributeRecord attributeRecord : this.attributeRecords) {
+        for (AttributeRecord attributeRecord : this.attributeRecords) {
             list.addAll(attributeRecord.getValues());
         }
         list.addAll(this.unitLinkRecords);

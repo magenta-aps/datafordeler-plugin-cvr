@@ -7,6 +7,7 @@ import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.core.plugin.EntityManager;
 import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
+import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,19 +37,32 @@ public class ParseTest {
     private static HashMap<String, String> schemaMap = new HashMap<>();
     static {
         schemaMap.put("virksomhed", CompanyEntity.schema);
+        schemaMap.put("deltager", ParticipantEntity.schema);
     }
 
     @Test
-    public void testParseFile() throws IOException, ParseException {
-        InputStream input = ParseTest.class.getResourceAsStream("/magenta.json");
+    public void testParseCompanyFile() throws IOException, ParseException {
+        InputStream input = ParseTest.class.getResourceAsStream("/company.json");
         JsonNode root = objectMapper.readTree(input);
         JsonNode itemList = root.get("hits").get("hits");
         Assert.assertTrue(itemList.isArray());
         for (JsonNode item : itemList) {
-            System.out.println(item.get("_id"));
             String type = item.get("_type").asText();
             EntityManager entityManager = plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
             List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"));
+        }
+    }
+
+    @Test
+    public void testParseParticipantFile() throws IOException, ParseException {
+        InputStream input = ParseTest.class.getResourceAsStream("/person.json");
+        JsonNode root = objectMapper.readTree(input);
+        JsonNode itemList = root.get("hits").get("hits");
+        Assert.assertTrue(itemList.isArray());
+        for (JsonNode item : itemList) {
+            String type = item.get("_type").asText();
+            EntityManager entityManager = plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
+            List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson"));
         }
     }
 

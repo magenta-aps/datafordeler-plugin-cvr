@@ -341,11 +341,7 @@ public class ModelTest {
     public void testParticipant() throws DataFordelerException, JsonProcessingException {
         Session session = sessionManager.getSessionFactory().openSession();
 
-        Identification identification = new Identification(UUID.randomUUID(), "test");
-        ParticipantEntity participant = new ParticipantEntity();
-        participant.setIdentification(identification);
-
-        participant.setParticipantNumber(12345);
+        ParticipantEntity participant = new ParticipantEntity(UUID.randomUUID(), "test", 12345);
 
         ParticipantRegistration registration = new ParticipantRegistration(OffsetDateTime.parse("2017-07-01T00:00:00Z"), null, 1);
 

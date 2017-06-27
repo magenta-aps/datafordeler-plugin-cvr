@@ -16,7 +16,7 @@ import java.util.Map;
  */
 @Entity
 @Table(name="cvr_company_address")
-public class CompanyAddressData extends DetailData {
+public class AddressData extends DetailData {
 
     @ManyToOne
     @JsonProperty
