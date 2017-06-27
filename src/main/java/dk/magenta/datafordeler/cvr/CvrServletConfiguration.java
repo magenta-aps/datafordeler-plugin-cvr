@@ -2,9 +2,12 @@ package dk.magenta.datafordeler.cvr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import dk.magenta.datafordeler.core.exception.InvalidServiceOwnerDefinitionException;
 import dk.magenta.datafordeler.core.fapi.ServletConfiguration;
 import dk.magenta.datafordeler.core.plugin.Plugin;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.ws.config.annotation.EnableWs;
 
@@ -41,7 +44,17 @@ public class CvrServletConfiguration extends ServletConfiguration {
 
     @Override
     protected String getServiceOwner() {
-        return "gladdreg";
+        return "cvr";
+    }
+
+    @Bean
+    public ServletRegistrationBean cvrServlet() {
+        try {
+            return this.dispatcherServlet();
+        } catch (InvalidServiceOwnerDefinitionException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
 
