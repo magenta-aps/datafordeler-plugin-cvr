@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.data.company;
 import dk.magenta.datafordeler.core.database.Registration;
 
 import javax.persistence.Table;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.temporal.TemporalAccessor;
 
