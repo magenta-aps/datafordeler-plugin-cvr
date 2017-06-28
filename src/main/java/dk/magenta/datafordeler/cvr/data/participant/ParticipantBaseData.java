@@ -7,6 +7,8 @@ import dk.magenta.datafordeler.cvr.data.shared.AddressData;
 import dk.magenta.datafordeler.cvr.data.shared.CompanyContactData;
 import dk.magenta.datafordeler.cvr.data.shared.CompanyTextData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
 
 import javax.persistence.*;
 import java.util.HashMap;
@@ -210,5 +212,10 @@ public class ParticipantBaseData extends DataItem<ParticipantEffect, Participant
         }
 
         return lookupDefinition;
+    }
+
+
+    public void forceLoad(Session session) {
+        Hibernate.initialize(this.attributeData);
     }
 }
