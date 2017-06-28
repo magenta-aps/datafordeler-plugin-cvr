@@ -2,11 +2,13 @@ package dk.magenta.datafordeler.cvr.data.company;
 
 import dk.magenta.datafordeler.core.database.DataItem;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
+import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.cvr.data.shared.*;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyStatus;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
+import org.hibernate.Session;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
@@ -405,5 +407,4 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         }
         return lookupDefinition;
     }
-
 }

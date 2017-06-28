@@ -45,4 +45,9 @@ public class CompanyStatus extends UnversionedEntity {
         return status;
     }
 
+
+    public void save(Session session) {
+        session.saveOrUpdate(this);
+    }
+
 }

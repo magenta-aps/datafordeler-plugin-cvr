@@ -3,11 +3,14 @@ package dk.magenta.datafordeler.cvr.data.unversioned;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.QueryManager;
+import org.hibernate.Session;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import java.util.Collections;
 
 /**
  * Created by lars on 26-01-15.
@@ -18,8 +21,6 @@ import javax.persistence.Table;
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Municipality extends UnversionedEntity {
-
-
 
     @JsonProperty(value = "kommuneKode")
     @Column(nullable = false, unique = true)
@@ -47,4 +48,19 @@ public class Municipality extends UnversionedEntity {
         this.text = text;
     }
 
+
+    public static Municipality getMunicipality(int code, String text, QueryManager queryManager, Session session) {
+        Municipality municipality = queryManager.getItem(session, Municipality.class, Collections.singletonMap("code", code));
+        if (municipality == null) {
+            municipality = new Municipality();
+            municipality.setCode(code);
+            municipality.setText(text);
+            session.save(municipality);
+        }
+        return municipality;
+    }
+
+    public static Municipality getMunicipality(Municipality old, QueryManager queryManager, Session session) {
+        return getMunicipality(old.getCode(), old.getText(), queryManager, session);
+    }
 }

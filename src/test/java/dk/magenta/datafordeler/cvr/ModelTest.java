@@ -71,13 +71,7 @@ public class ModelTest {
 
 
 
-        Municipality municipality = queryManager.getItem(session, Municipality.class, Collections.singletonMap("code", 101));
-        if (municipality == null) {
-            municipality = new Municipality();
-            municipality.setCode(101);
-            municipality.setText("Copenhagen");
-            session.saveOrUpdate(municipality);
-        }
+        Municipality municipality = Municipality.getMunicipality(101, "Copenhagen", queryManager, session);
 
         HashMap<String, Object> addressData1 = new HashMap<>();
         addressData1.put("roadName", "FoobarRoad");

@@ -6,6 +6,8 @@ import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
+import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
+import dk.magenta.datafordeler.cvr.data.unversioned.PostCode;
 import org.hibernate.Session;
 
 /**
@@ -31,6 +33,7 @@ public class AddressRecord extends BaseRecord {
 
     @Override
     public void populateCompanyBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
+        this.normalizeAddress(queryManager, session);
         switch (this.type) {
             case LOCATION:
                 baseData.setLocationAddress(this.address);
@@ -43,6 +46,7 @@ public class AddressRecord extends BaseRecord {
 
     @Override
     public void populateParticipantBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
+        this.normalizeAddress(queryManager, session);
         switch (this.type) {
             case LOCATION:
                 baseData.setLocationAddress(this.address);
@@ -53,6 +57,19 @@ public class AddressRecord extends BaseRecord {
             case BUSINESS:
                 baseData.setBusinessAddress(this.address);
                 break;
+        }
+    }
+
+    private void normalizeAddress(QueryManager queryManager, Session session) {
+        if (this.address != null) {
+            Municipality oldMunicipality = this.address.getMunicipality();
+            if (oldMunicipality != null) {
+                this.address.setMunicipality(Municipality.getMunicipality(oldMunicipality, queryManager, session));
+            }
+            PostCode oldPostCode = this.address.getPostCode();
+            if (oldPostCode != null) {
+                this.address.setPostCode(PostCode.getPostcode(oldPostCode, queryManager, session));
+            }
         }
     }
 }

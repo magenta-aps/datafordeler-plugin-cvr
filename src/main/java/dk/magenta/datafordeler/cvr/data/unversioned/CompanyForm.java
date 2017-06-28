@@ -86,4 +86,7 @@ public class CompanyForm extends UnversionedEntity {
         return form;
     }
 
+    public static CompanyForm getForm(CompanyForm oldForm, QueryManager queryManager, Session session) {
+        return getForm(oldForm.getCode(), oldForm.getShortDescription(), oldForm.getLongDescription(), oldForm.getResponsibleDatasource(), queryManager, session);
+    }
 }
