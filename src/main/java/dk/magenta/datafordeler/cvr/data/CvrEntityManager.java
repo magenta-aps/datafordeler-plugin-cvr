@@ -2,14 +2,13 @@ package dk.magenta.datafordeler.cvr.data;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.magenta.datafordeler.core.database.EntityReference;
+import dk.magenta.datafordeler.core.database.Registration;
 import dk.magenta.datafordeler.core.database.RegistrationReference;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
+import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.core.exception.WrongSubclassException;
 import dk.magenta.datafordeler.core.io.Receipt;
-import dk.magenta.datafordeler.core.plugin.Communicator;
-import dk.magenta.datafordeler.core.plugin.EntityManager;
-import dk.magenta.datafordeler.core.plugin.HttpCommunicator;
-import dk.magenta.datafordeler.core.plugin.RegisterManager;
+import dk.magenta.datafordeler.core.plugin.*;
 import dk.magenta.datafordeler.core.util.ItemInputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,6 +22,8 @@ import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * Created by lars on 29-05-17.
@@ -33,7 +34,7 @@ public abstract class CvrEntityManager extends EntityManager {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private HttpCommunicator commonFetcher;
+    private ScanScrollCommunicator commonFetcher;
 
     protected Logger log = LogManager.getLogger(this.getClass().getSimpleName());
 
@@ -42,7 +43,7 @@ public abstract class CvrEntityManager extends EntityManager {
     protected abstract String getBaseName();
 
     public CvrEntityManager() {
-        this.commonFetcher = new HttpCommunicator();
+        this.commonFetcher = new ScanScrollCommunicator("Magenta_CVR_I_SKYEN", "20ce0f61-3f04-43ec-8119-3a67384e269c");
         this.handledURISubstrings = new ArrayList<>();
     }
 
@@ -124,6 +125,12 @@ public abstract class CvrEntityManager extends EntityManager {
     @Override
     protected Logger getLog() {
         return this.log;
+    }
+
+    @Override
+    public List<? extends Registration> parseRegistration(InputStream registrationData) throws ParseException, IOException {
+        String dataChunk = new Scanner(registrationData, "UTF-8").useDelimiter(new String(this.commonFetcher.getDelimiter())).next();
+        return this.parseRegistration(this.getObjectMapper().readTree(dataChunk));
     }
 
 }

@@ -2,7 +2,6 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import javafx.util.Pair;
 
 import java.time.LocalDate;
 import java.util.regex.Matcher;
@@ -12,6 +11,16 @@ import java.util.regex.Pattern;
  * Created by lars on 26-06-17.
  */
 public abstract class CompanyNumbersRecord extends CompanyBaseRecord {
+
+    private static class Range {
+        public int low;
+        public int high;
+
+        public Range(int low, int high) {
+            this.low = low;
+            this.high = high;
+        }
+    }
 
     @JsonProperty(value = "antalAnsatte")
     private int employees;
@@ -24,10 +33,10 @@ public abstract class CompanyNumbersRecord extends CompanyBaseRecord {
 
     @JsonProperty(value = "intervalKodeAntalAnsatte")
     public void setEmployeeRange(String range) {
-        Pair<Integer, Integer> parsed = this.parseRange(range);
+        Range parsed = this.parseRange(range);
         if (parsed != null) {
-            this.employeeLow = parsed.getKey();
-            this.employeeHigh = parsed.getValue();
+            this.employeeLow = parsed.low;
+            this.employeeHigh = parsed.high;
         }
     }
 
@@ -52,10 +61,10 @@ public abstract class CompanyNumbersRecord extends CompanyBaseRecord {
 
     @JsonProperty(value = "intervalKodeAntalAarsvaerk")
     public void setFulltimeEquivalentRange(String range) {
-        Pair<Integer, Integer> parsed = this.parseRange(range);
+        Range parsed = this.parseRange(range);
         if (parsed != null) {
-            this.fulltimeEquivalentLow = parsed.getKey();
-            this.fulltimeEquivalentHigh = parsed.getValue();
+            this.fulltimeEquivalentLow = parsed.low;
+            this.fulltimeEquivalentHigh = parsed.high;
         }
     }
 
@@ -80,10 +89,10 @@ public abstract class CompanyNumbersRecord extends CompanyBaseRecord {
 
     @JsonProperty(value = "intervalKodeAntalInklusivEjere")
     public void setIncludingOwnersRange(String range) {
-        Pair<Integer, Integer> parsed = this.parseRange(range);
+        Range parsed = this.parseRange(range);
         if (parsed != null) {
-            this.includingOwnersLow = parsed.getKey();
-            this.includingOwnersHigh = parsed.getValue();
+            this.includingOwnersLow = parsed.low;
+            this.includingOwnersHigh = parsed.high;
         }
     }
 
@@ -96,11 +105,11 @@ public abstract class CompanyNumbersRecord extends CompanyBaseRecord {
     }
 
     private static Pattern rangePattern = Pattern.compile("^ANTAL_(\\d+)_(\\d+)$");
-    private static Pair<Integer, Integer> parseRange(String range) {
+    private static Range parseRange(String range) {
         if (range != null) {
             Matcher m = rangePattern.matcher(range);
             if (m.find()) {
-                return new Pair<>(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)));
+                return new Range(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)));
             }
         }
         return null;

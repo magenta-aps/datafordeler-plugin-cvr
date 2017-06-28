@@ -2,9 +2,12 @@ package dk.magenta.datafordeler.cvr.data.unversioned;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.QueryManager;
+import org.hibernate.Session;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
-import javax.print.DocFlavor;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
@@ -172,6 +175,7 @@ public class Address extends UnversionedEntity {
     @JsonProperty(value = "kommune")
     @XmlElement(name = "kommune")
     @ManyToOne
+    @Cascade(value = CascadeType.SAVE_UPDATE)
     private Municipality municipality;
 
     public Municipality getMunicipality() {
@@ -187,6 +191,7 @@ public class Address extends UnversionedEntity {
     @JsonProperty(value = "postnummer")
     @XmlElement(name = "postnummer")
     @ManyToOne
+    @Cascade(value = CascadeType.SAVE_UPDATE)
     private PostCode postCode;
 
     public PostCode getPostCode() {
@@ -199,18 +204,18 @@ public class Address extends UnversionedEntity {
 
     @JsonProperty(value = "postnummer")
     public void setPostCode(int code) {
-        if (this.postCode == null) {
+        /*if (this.postCode == null) {
             this.postCode = new PostCode();
         }
-        this.postCode.setCode(code);
+        this.postCode.setCode(code);*/
     }
 
     @JsonProperty("postdistrikt")
     public void setPostDistrict(String district) {
-        if (this.postCode == null) {
+        /*if (this.postCode == null) {
             this.postCode = new PostCode();
         }
-        this.postCode.setText(district);
+        this.postCode.setText(district);*/
     }
 
 
@@ -287,4 +292,5 @@ public class Address extends UnversionedEntity {
     public void setLastValidated(String lastValidated) {
         this.lastValidated = lastValidated;
     }
+
 }

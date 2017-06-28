@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.data.company;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import dk.magenta.datafordeler.core.database.*;
+import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.core.fapi.FapiService;
 import dk.magenta.datafordeler.core.util.ListHashMap;
@@ -132,6 +133,11 @@ public class CompanyEntityManager extends CvrEntityManager {
                 e.printStackTrace();
             }
             System.out.println("==========================================================");
+            try {
+                queryManager.saveRegistration(session, company, registration);
+            } catch (DataFordelerException e) {
+                e.printStackTrace();
+            }
         }
         //System.out.println(company.getRegistrations());
         transaction.commit();
