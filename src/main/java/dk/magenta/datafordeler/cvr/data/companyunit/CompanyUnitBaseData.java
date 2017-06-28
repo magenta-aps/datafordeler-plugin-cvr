@@ -5,6 +5,8 @@ import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.cvr.data.shared.*;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
@@ -302,6 +304,12 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
             lookupDefinition.putAll("companyData", this.companyData.databaseFields());
         }
         return lookupDefinition;
+    }
+
+    public void forceLoad(Session session) {
+        Hibernate.initialize(this.yearlyEmployeeNumbersData);
+        Hibernate.initialize(this.quarterlyEmployeeNumbersData);
+        Hibernate.initialize(this.participantData);
     }
 
 }

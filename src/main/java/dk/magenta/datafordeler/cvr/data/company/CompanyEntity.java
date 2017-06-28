@@ -18,7 +18,7 @@ import java.util.UUID;
 public class CompanyEntity extends Entity<CompanyEntity, CompanyRegistration> {
 
     @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="type")
-    public static final String schema = "Company";
+    public static final String schema = "virksomhed";
 
     public CompanyEntity() {
     }
