@@ -8,6 +8,7 @@ import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyStatus;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
 import javax.persistence.*;
@@ -406,5 +407,15 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
             lookupDefinition.putAll("faxData", this.faxData.databaseFields());
         }
         return lookupDefinition;
+    }
+
+    public void forceLoad(Session session) {
+        Hibernate.initialize(this.yearlyEmployeeNumbersData);
+        Hibernate.initialize(this.quarterlyEmployeeNumbersData);
+        Hibernate.initialize(this.monthlyEmployeeNumbersData);
+        Hibernate.initialize(this.unitData);
+        Hibernate.initialize(this.participantData);
+        Hibernate.initialize(this.creditData);
+        Hibernate.initialize(this.attributeData);
     }
 }

@@ -6,6 +6,7 @@ import dk.magenta.datafordeler.core.database.*;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.core.fapi.FapiService;
+import dk.magenta.datafordeler.core.plugin.EntityManager;
 import dk.magenta.datafordeler.core.util.ListHashMap;
 import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.records.*;
@@ -62,12 +63,46 @@ public class CompanyEntityManager extends CvrEntityManager {
 
 
     @Override
-    public List<Registration> parseRegistration(JsonNode jsonNode) throws ParseException {
+    public List<? extends Registration> parseRegistration(JsonNode jsonNode) throws ParseException {
+        System.out.println("Parse jsonNode "+jsonNode);
         ArrayList<Registration> registrations = new ArrayList<>();
+
+        if (jsonNode.has("hits")) {
+            jsonNode = jsonNode.get("hits");
+            if (jsonNode.has("hits")) {
+                jsonNode = jsonNode.get("hits");
+            }
+            if (jsonNode.isArray()) {
+                // We have a list of results
+                System.out.println("We have a list of results");
+                for (JsonNode item : jsonNode) {
+                    registrations.addAll(this.parseRegistration(item));
+                }
+                return registrations;
+            }
+        }
+
+
+
+        String type = jsonNode.has("_type") ? jsonNode.get("_type").asText() : null;
+        if (type != null && !type.equals(CompanyEntity.schema)) {
+            // Wrong type. See if we have another EntityManager that can handle it
+            EntityManager otherManager = this.getRegisterManager().getEntityManager(type);
+            if (otherManager != null) {
+                System.out.println("Deferring to "+otherManager);
+                return otherManager.parseRegistration(jsonNode);
+            }
+            return null;
+        }
+
+        if (jsonNode.has("_source")) {
+            jsonNode = jsonNode.get("_source");
+        }
+        if (jsonNode.has("Vrvirksomhed")) {
+            jsonNode = jsonNode.get("Vrvirksomhed");
+        }
         Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        System.out.println("Parse jsonNode");
-        jsonNode = this.unwrap(jsonNode);
 
         CompanyEntity company = new CompanyEntity(UUID.randomUUID(), "cvr", jsonNode.get("cvrNummer").asInt());
         CompanyRecord companyRecord;
@@ -82,7 +117,6 @@ public class CompanyEntityManager extends CvrEntityManager {
         ListHashMap<OffsetDateTime, BaseRecord> ajourRecords = new ListHashMap<>();
         TreeSet<OffsetDateTime> sortedTimestamps = new TreeSet<>();
         for (BaseRecord record : records) {
-            System.out.println("record: "+record);
             OffsetDateTime registrationFrom = record.getLastUpdated();
             ajourRecords.add(registrationFrom, record);
             sortedTimestamps.add(registrationFrom);
