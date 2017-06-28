@@ -156,7 +156,7 @@ public class CvrRegisterManager extends RegisterManager {
                         // Scenario 1: one line per event
                         while ((line = dataStream.readLine()) != null) {
                             objectOutputStream.writeObject(CvrRegisterManager.this.parseLines(Collections.singletonList(line)));
-                            System.out.println("Event written");
+                            break;
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
