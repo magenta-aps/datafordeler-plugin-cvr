@@ -9,7 +9,7 @@ import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.cvr.data.company.*;
 import dk.magenta.datafordeler.cvr.data.companyunit.*;
 import dk.magenta.datafordeler.cvr.data.participant.*;
-import dk.magenta.datafordeler.cvr.data.shared.CompanyParticipantLink;
+import dk.magenta.datafordeler.cvr.data.shared.ParticipantLink;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
@@ -146,9 +146,9 @@ public class ModelTest {
         companyData1.addQuarterlyEmployeeNumbers(2017,2,1,2,1,2,1,2);
 
 
-        CompanyParticipantLink participantLink = queryManager.getItem(session, CompanyParticipantLink.class, Collections.singletonMap("data", 44446666));
+        ParticipantLink participantLink = queryManager.getItem(session, ParticipantLink.class, Collections.singletonMap("data", 44446666));
         if (participantLink == null) {
-            participantLink = new CompanyParticipantLink();
+            participantLink = new ParticipantLink();
             participantLink.setData(44446666);
             session.saveOrUpdate(participantLink);
         }
@@ -298,9 +298,9 @@ public class ModelTest {
 
         companyUnitData.addQuarterlyEmployeeNumbers(2017,2,1,1,1,1,1,1);
 
-        CompanyParticipantLink participantLink = queryManager.getItem(session, CompanyParticipantLink.class, Collections.singletonMap("data", 44446666));
+        ParticipantLink participantLink = queryManager.getItem(session, ParticipantLink.class, Collections.singletonMap("data", 44446666));
         if (participantLink == null) {
-            participantLink = new CompanyParticipantLink();
+            participantLink = new ParticipantLink();
             participantLink.setData(44446666);
             session.saveOrUpdate(participantLink);
         }

@@ -13,11 +13,10 @@ import java.util.Map;
  * Created by lars on 15-06-17.
  */
 @Entity
-@Table(name = "cvr_company_quarterly_employees", indexes = {
-        @Index(name = "year", columnList = "year"),
-        @Index(name = "quarter", columnList = "quarter")
+@Table(name = "cvr_company_yearly_employees", indexes = {
+        @Index(name = "year", columnList = "year")
 })
-public class CompanyQuarterlyEmployeeNumbersData extends CompanyEmployeeNumbersData {
+public class YearlyEmployeeNumbersData extends EmployeeNumbersData {
 
 
     @Column(name = "year")
@@ -33,25 +32,10 @@ public class CompanyQuarterlyEmployeeNumbersData extends CompanyEmployeeNumbersD
 
 
 
-    @Column(name = "quarter")
-    private int quarter;
-
-    public int getQuarter() {
-        return quarter;
-    }
-
-    public void setQuarter(int quarter) {
-        this.quarter = quarter;
-    }
-
-
-
-
     @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>(super.asMap());
         map.put("year", this.year);
-        map.put("quarter", this.quarter);
         return map;
     }
 
@@ -63,7 +47,6 @@ public class CompanyQuarterlyEmployeeNumbersData extends CompanyEmployeeNumbersD
     public Map<String, Object> databaseFields() {
         HashMap<String, Object> map = new HashMap<>(super.databaseFields());
         map.put("year", this.year);
-        map.put("quarter", this.quarter);
         return map;
     }
 }

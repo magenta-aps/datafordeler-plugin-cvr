@@ -18,7 +18,7 @@ import java.util.Map;
 @Entity
 @Table(name = "cvr_company_lifecycle")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CompanyLifecycleData extends DetailData {
+public class LifecycleData extends DetailData {
 
     @JsonProperty
     @XmlElement

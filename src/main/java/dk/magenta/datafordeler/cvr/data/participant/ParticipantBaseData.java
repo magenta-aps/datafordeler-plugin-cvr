@@ -4,8 +4,8 @@ import dk.magenta.datafordeler.core.database.DataItem;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.cvr.data.shared.AttributeData;
 import dk.magenta.datafordeler.cvr.data.shared.AddressData;
-import dk.magenta.datafordeler.cvr.data.shared.CompanyContactData;
-import dk.magenta.datafordeler.cvr.data.shared.CompanyTextData;
+import dk.magenta.datafordeler.cvr.data.shared.ContactData;
+import dk.magenta.datafordeler.cvr.data.shared.TextData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -24,16 +24,16 @@ import java.util.Set;
 public class ParticipantBaseData extends DataItem<ParticipantEffect, ParticipantBaseData> {
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyTextData nameData;
+    private TextData nameData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyContactData phoneData;
+    private ContactData phoneData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyContactData emailData;
+    private ContactData emailData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyContactData faxData;
+    private ContactData faxData;
 
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
@@ -112,27 +112,27 @@ public class ParticipantBaseData extends DataItem<ParticipantEffect, Participant
 
     public void setName(String name) {
         if (this.nameData == null) {
-            this.nameData = new CompanyTextData(CompanyTextData.Type.NAME);
+            this.nameData = new TextData(TextData.Type.NAME);
         }
         this.nameData.setData(name);
     }
     public void setPhone(String phone, boolean secret) {
         if (this.phoneData == null) {
-            this.phoneData = new CompanyContactData(CompanyContactData.Type.PHONE);
+            this.phoneData = new ContactData(ContactData.Type.PHONE);
         }
         this.phoneData.setData(phone);
         this.phoneData.setSecret(secret);
     }
     public void setEmail(String email, boolean secret) {
         if (this.emailData == null) {
-            this.emailData = new CompanyContactData(CompanyContactData.Type.EMAIL);
+            this.emailData = new ContactData(ContactData.Type.EMAIL);
         }
         this.emailData.setData(email);
         this.emailData.setSecret(secret);
     }
     public void setFax(String fax, boolean secret) {
         if (this.faxData == null) {
-            this.faxData = new CompanyContactData(CompanyContactData.Type.FAX);
+            this.faxData = new ContactData(ContactData.Type.FAX);
         }
         this.faxData.setData(fax);
         this.faxData.setSecret(secret);
