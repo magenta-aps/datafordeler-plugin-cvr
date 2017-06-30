@@ -90,9 +90,6 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     @ManyToMany(mappedBy = "companyBases")
     private Set<ParticipantLink> participantData = new HashSet<>();
 
-    @ManyToMany(mappedBy = "companyBases")
-    private Set<CompanyCreditData> creditData = new HashSet<>();
-
     @OneToMany(cascade = CascadeType.ALL)
     private Set<AttributeData> attributeData = new HashSet<>();
 
@@ -101,52 +98,52 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
         if (this.formData != null) {
-            map.put("form", this.formData.getForm());
+            map.put("virksomhedsform", this.formData.getForm());
         }
         if (this.statusData != null) {
             map.put("status", this.statusData.getStatus());
         }
         if (this.lifecycleData != null) {
-            map.put("lifecycle", this.lifecycleData.asMap());
+            map.put("livsforløb", this.lifecycleData.asMap());
         }
         if (this.advertProtectionData != null) {
-            map.put("advertProtection", this.advertProtectionData.getData());
+            map.put("reklamebeskyttelse", this.advertProtectionData.getData());
         }
         if (this.unitNumberData != null) {
-            map.put("unitNumber", this.unitNumberData.getData());
+            map.put("enhedsNummer", this.unitNumberData.getData());
         }
         if (this.locationAddressData != null) {
-            map.put("locationAddress", this.locationAddressData.getAddress());
+            map.put("beliggenhedsadresse", this.locationAddressData.getAddress());
         }
         if (this.postalAddressData != null) {
-            map.put("postalAddress", this.postalAddressData.getAddress());
+            map.put("postadresse", this.postalAddressData.getAddress());
         }
         if (this.yearlyEmployeeNumbersData != null) {
-            map.put("yearlyEmployeeNumbers", this.yearlyEmployeeNumbersData);
+            map.put("årsbeskæftigelse", this.yearlyEmployeeNumbersData);
         }
         if (this.quarterlyEmployeeNumbersData != null) {
-            map.put("quarterlyEmployeeNumbers", this.quarterlyEmployeeNumbersData);
+            map.put("kvartalsbeskæftigelse", this.quarterlyEmployeeNumbersData);
         }
         if (this.monthlyEmployeeNumbersData != null) {
-            map.put("monthlyEmployeeNumbers", this.monthlyEmployeeNumbersData);
+            map.put("månedsbeskæftigelse", this.monthlyEmployeeNumbersData);
         }
         if (this.primaryIndustryData != null) {
-            map.put("primaryIndustry", this.primaryIndustryData.getIndustry());
+            map.put("hovedbranche", this.primaryIndustryData.getIndustry());
         }
         if (this.secondaryIndustryData1 != null) {
-            map.put("secondaryIndustry1", this.secondaryIndustryData1.getIndustry());
+            map.put("bibranche1", this.secondaryIndustryData1.getIndustry());
         }
         if (this.secondaryIndustryData2 != null) {
-            map.put("secondaryIndustry2", this.secondaryIndustryData2.getIndustry());
+            map.put("bibranche2", this.secondaryIndustryData2.getIndustry());
         }
         if (this.secondaryIndustryData3 != null) {
-            map.put("secondaryIndustry3", this.secondaryIndustryData3.getIndustry());
+            map.put("bibranche3", this.secondaryIndustryData3.getIndustry());
         }
         if (this.nameData != null) {
-            map.put("name", this.nameData.getData());
+            map.put("navn", this.nameData.getData());
         }
         if (this.phoneData != null) {
-            map.put("phone", this.phoneData.getData());
+            map.put("telefon", this.phoneData);
         }
         if (this.emailData != null) {
             map.put("email", this.emailData.getData());
@@ -155,22 +152,19 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
             map.put("fax", this.faxData.getData());
         }
         if (this.homepageData != null) {
-            map.put("homepage", this.homepageData.getData());
+            map.put("hjemmeside", this.homepageData.getData());
         }
         if (this.mandatoryEmailData != null) {
-            map.put("fax", this.mandatoryEmailData.getData());
+            map.put("obligatoriskEmail", this.mandatoryEmailData.getData());
         }
         if (this.unitData != null && !this.unitData.isEmpty()) {
-            map.put("units", this.unitData);
+            map.put("enheder", this.unitData);
         }
         if (this.participantData != null && !this.participantData.isEmpty()) {
-            map.put("participants", this.participantData);
-        }
-        if (this.creditData != null && !this.creditData.isEmpty()) {
-            map.put("credit", this.creditData);
+            map.put("deltagere", this.participantData);
         }
         if (this.attributeData != null && !this.attributeData.isEmpty()) {
-            map.put("attributes", this.attributeData);
+            map.put("attributter", this.attributeData);
         }
         return map;
     }
@@ -349,9 +343,6 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     public void addParticipant(ParticipantLink participantLink) {
         this.participantData.add(participantLink);
     }
-    public void addCreditData(CompanyCreditData creditData) {
-        this.creditData.add(creditData);
-    }
     public void addAttribute(String type, String valueType, String value, int sequenceNumber) {
         AttributeData attributeData = new AttributeData();
         attributeData.setType(type);
@@ -432,7 +423,6 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         Hibernate.initialize(this.monthlyEmployeeNumbersData);
         Hibernate.initialize(this.unitData);
         Hibernate.initialize(this.participantData);
-        Hibernate.initialize(this.creditData);
         Hibernate.initialize(this.attributeData);
     }
 }

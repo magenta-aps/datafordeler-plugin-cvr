@@ -83,9 +83,9 @@ public class AddressRecord extends BaseRecord {
             if (oldMunicipality != null) {
                 this.address.setMunicipality(Municipality.getMunicipality(oldMunicipality, queryManager, session));
             }
-            PostCode oldPostCode = this.address.getPostCode();
-            if (oldPostCode != null) {
-                this.address.setPostCode(PostCode.getPostcode(oldPostCode, queryManager, session));
+            int postcode = this.address.getPostCode();
+            if (postcode != 0) {
+                this.address.setPostCodeObject(PostCode.getPostcode(postcode, this.address.getPostDistrict(), queryManager, session));
             }
         }
     }

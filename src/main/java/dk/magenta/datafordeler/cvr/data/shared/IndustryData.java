@@ -29,8 +29,6 @@ public class IndustryData extends DetailData {
 
 
     @ManyToOne
-    @JsonProperty
-    @XmlElement
     private Industry industry;
 
     public Industry getIndustry() {
@@ -44,8 +42,6 @@ public class IndustryData extends DetailData {
 
 
     @Column
-    @JsonProperty
-    @XmlElement
     private boolean isPrimary;
 
 
