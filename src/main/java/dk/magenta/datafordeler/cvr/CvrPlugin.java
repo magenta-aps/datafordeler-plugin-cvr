@@ -30,7 +30,6 @@ public class CvrPlugin extends Plugin {
     @Autowired
     private CompanyUnitEntityManager companyUnitEntityManager;
 
-
     @Autowired
     private ParticipantEntityManager participantEntityManager;
 

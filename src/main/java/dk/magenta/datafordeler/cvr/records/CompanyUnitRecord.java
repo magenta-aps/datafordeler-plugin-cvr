@@ -10,7 +10,7 @@ import java.util.List;
  * Created by lars on 26-06-17.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CompanyRecord {
+public class CompanyUnitRecord {
 
     @JsonProperty(value = "navne")
     public List<NameRecord> names;
@@ -65,26 +65,6 @@ public class CompanyRecord {
         this.emailRecords = emailRecords;
     }
 
-    @JsonProperty(value = "hjemmeside")
-    public List<ContactRecord> homepageRecords;
-
-    public void setHomepageRecords(List<ContactRecord> homepageRecords) {
-        for (ContactRecord record : homepageRecords) {
-            record.setType(ContactRecord.Type.HOMEPAGE);
-        }
-        this.homepageRecords = homepageRecords;
-    }
-
-    @JsonProperty(value = "obligatoriskEmail")
-    public List<ContactRecord> mandatoryEmailRecords;
-
-    public void setMandatoryEmailRecords(List<ContactRecord> mandatoryEmailRecords) {
-        for (ContactRecord record : mandatoryEmailRecords) {
-            record.setType(ContactRecord.Type.MANDATORY_EMAIL);
-        }
-        this.mandatoryEmailRecords = mandatoryEmailRecords;
-    }
-
     @JsonProperty(value = "livsforloeb")
     public List<LifecycleRecord> lifecycleRecords;
 
@@ -129,29 +109,29 @@ public class CompanyRecord {
         this.secondaryIndustryRecords3 = secondaryIndustryRecords;
     }
 
-    @JsonProperty(value = "virksomhedsstatus")
-    public List<CompanyStatusRecord> statusRecords;
-
-
-    @JsonProperty(value = "virksomhedsform")
-    public List<CompanyFormRecord> formRecords;
-
     @JsonProperty(value = "aarsbeskaeftigelse")
     public List<CompanyYearlyNumbersRecord> yearlyNumbersRecords;
 
     @JsonProperty(value = "kvartalsbeskaeftigelse")
     public List<CompanyQuarterlyNumbersRecord> quarterlyNumbersRecords;
 
-    @JsonProperty(value = "maanedsbeskaeftigelse")
-    public List<CompanyMonthlyNumbersRecord> monthlyNumbersRecords;
+    //@JsonProperty(value = "maanedsbeskaeftigelse")
+    //public List<CompanyMonthlyNumbersRecord> monthlyNumbersRecords;
 
     @JsonProperty(value = "attributter")
     public List<AttributeRecord> attributeRecords;
 
-    @JsonProperty(value = "penheder")
-    public List<CompanyUnitLinkRecord> unitLinkRecords;
 
-
+    // virksomhedsrelation
+    // enhedstype
+    // dataAdgang
+    // enhedsNummer
+    // reklamebeskyttet
+    // deltagerRelation
+    // virkningsAktoer
+    // brancheAnsvarskode
+    // naermesteFremtidigeDato
+    // samtId
 
     public List<BaseRecord> getAll() {
         ArrayList<BaseRecord> list = new ArrayList<>();
@@ -161,22 +141,16 @@ public class CompanyRecord {
         list.addAll(this.phoneRecords);
         list.addAll(this.faxRecords);
         list.addAll(this.emailRecords);
-        list.addAll(this.homepageRecords);
-        list.addAll(this.mandatoryEmailRecords);
         list.addAll(this.lifecycleRecords);
         list.addAll(this.mainIndustryRecords);
         list.addAll(this.secondaryIndustryRecords1);
         list.addAll(this.secondaryIndustryRecords2);
         list.addAll(this.secondaryIndustryRecords3);
-        list.addAll(this.statusRecords);
-        list.addAll(this.formRecords);
         list.addAll(this.yearlyNumbersRecords);
         list.addAll(this.quarterlyNumbersRecords);
-        list.addAll(this.monthlyNumbersRecords);
         for (AttributeRecord attributeRecord : this.attributeRecords) {
             list.addAll(attributeRecord.getValues());
         }
-        list.addAll(this.unitLinkRecords);
         return list;
     }
 }
