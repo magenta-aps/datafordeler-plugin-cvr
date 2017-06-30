@@ -20,8 +20,8 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LifecycleData extends DetailData {
 
-    @JsonProperty
-    @XmlElement
+    @JsonProperty(value = "startDato")
+    @XmlElement(name = "startDato")
     @Column(nullable = true)
     private OffsetDateTime startDate;
 
@@ -35,8 +35,8 @@ public class LifecycleData extends DetailData {
 
 
 
-    @JsonProperty
-    @XmlElement
+    @JsonProperty(value = "slutDato")
+    @XmlElement(name = "slutDato")
     @Column(nullable = true)
     private OffsetDateTime endDate;
 

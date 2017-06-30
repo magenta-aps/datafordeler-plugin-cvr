@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.data.unversioned;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Created by lars on 14-06-17.
@@ -190,33 +192,44 @@ public class Address extends UnversionedEntity {
     @XmlElement(name = "postnummer")
     @ManyToOne
     @Cascade(value = CascadeType.SAVE_UPDATE)
-    private PostCode postCode;
+    private PostCode postCodeObject;
 
-    public PostCode getPostCode() {
-        return this.postCode;
+    public PostCode getPostCodeObject() {
+        return this.postCodeObject;
     }
 
-    public void setPostCode(PostCode postCode) {
-        this.postCode = postCode;
+    public void setPostCodeObject(PostCode postCode) {
+        this.postCodeObject = postCode;
     }
+
+
+    @JsonIgnore
+    @XmlTransient
+    private int postCode;
+
+    @JsonIgnore
+    @XmlTransient
+    private String postDistrict;
 
     @JsonProperty(value = "postnummer")
     public void setPostCode(int code) {
-        /*if (this.postCode == null) {
-            this.postCode = new PostCode();
-        }
-        this.postCode.setCode(code);*/
+        this.postCode = code;
+    }
+
+    @JsonIgnore
+    public int getPostCode() {
+        return this.postCode;
     }
 
     @JsonProperty("postdistrikt")
     public void setPostDistrict(String district) {
-        /*if (this.postCode == null) {
-            this.postCode = new PostCode();
-        }
-        this.postCode.setText(district);*/
+        this.postDistrict = district;
     }
 
-
+    @JsonIgnore
+    public String getPostDistrict() {
+        return this.postDistrict;
+    }
 
     @JsonProperty(value = "postboks")
     @XmlElement(name = "postboks")
