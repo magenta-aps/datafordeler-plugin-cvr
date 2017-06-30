@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
  */
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class CompanyEmployeeNumbersData extends DetailData {
+public abstract class EmployeeNumbersData extends DetailData {
 
 
     @JsonIgnore

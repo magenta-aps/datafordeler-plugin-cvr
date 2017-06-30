@@ -20,10 +20,10 @@ import java.util.*;
 public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnitBaseData> {
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyLifecycleData lifecycleData;
+    private LifecycleData lifecycleData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyBooleanData advertProtectionData;
+    private BooleanData advertProtectionData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private AddressData locationAddressData;
@@ -33,48 +33,48 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
 
     @OneToMany(cascade = CascadeType.ALL)
     @OrderBy(value = "year asc")
-    private List<CompanyYearlyEmployeeNumbersData> yearlyEmployeeNumbersData;
+    private List<YearlyEmployeeNumbersData> yearlyEmployeeNumbersData;
 
     @OneToMany(cascade = CascadeType.ALL)
     @OrderBy(value = "year asc, quarter asc")
-    private List<CompanyQuarterlyEmployeeNumbersData> quarterlyEmployeeNumbersData;
+    private List<QuarterlyEmployeeNumbersData> quarterlyEmployeeNumbersData;
 
     @OneToMany(cascade = CascadeType.ALL)
     @OrderBy(value = "year asc, month asc")
-    private List<CompanyMonthlyEmployeeNumbersData> monthlyEmployeeNumbersData;
+    private List<MonthlyEmployeeNumbersData> monthlyEmployeeNumbersData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyIndustryData primaryIndustryData;
+    private IndustryData primaryIndustryData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyIndustryData secondaryIndustryData1;
+    private IndustryData secondaryIndustryData1;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyIndustryData secondaryIndustryData2;
+    private IndustryData secondaryIndustryData2;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyIndustryData secondaryIndustryData3;
+    private IndustryData secondaryIndustryData3;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyTextData nameData;
+    private TextData nameData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyContactData phoneData;
+    private ContactData phoneData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyContactData emailData;
+    private ContactData emailData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyContactData faxData;
+    private ContactData faxData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyBooleanData isPrimaryData;
+    private BooleanData isPrimaryData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private CompanyUnitCvrData companyData;
 
     @ManyToMany(mappedBy = "companyUnitBases")
-    private Set<CompanyParticipantLink> participantData = new HashSet<>();
+    private Set<ParticipantLink> participantData = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     private Set<AttributeData> attributeData = new HashSet<>();
@@ -145,19 +145,19 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
 
     public void setLifecycleStartDate(OffsetDateTime startDate) {
         if (this.lifecycleData == null) {
-            this.lifecycleData = new CompanyLifecycleData();
+            this.lifecycleData = new LifecycleData();
         }
         this.lifecycleData.setStartDate(startDate);
     }
     public void setLifecycleEndDate(OffsetDateTime endDate) {
         if (this.lifecycleData == null) {
-            this.lifecycleData = new CompanyLifecycleData();
+            this.lifecycleData = new LifecycleData();
         }
         this.lifecycleData.setEndDate(endDate);
     }
     public void setAdvertProtection(boolean advertProtection) {
         if (this.advertProtectionData == null) {
-            this.advertProtectionData = new CompanyBooleanData(CompanyBooleanData.Type.ADVERT_PROTECTION);
+            this.advertProtectionData = new BooleanData(BooleanData.Type.ADVERT_PROTECTION);
         }
         this.advertProtectionData.setData(advertProtection);
     }
@@ -179,7 +179,7 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
             //this.yearlyEmployeeNumbersData = new CompanyYearlyEmployeeNumbersData();
             this.yearlyEmployeeNumbersData = new ArrayList<>();
         }
-        CompanyYearlyEmployeeNumbersData yearlyEmployeeNumbersData = new CompanyYearlyEmployeeNumbersData();
+        YearlyEmployeeNumbersData yearlyEmployeeNumbersData = new YearlyEmployeeNumbersData();
         yearlyEmployeeNumbersData.setYear(year);
         yearlyEmployeeNumbersData.setEmployeesLow(employeesLow);
         yearlyEmployeeNumbersData.setEmployeesHigh(employeesHigh);
@@ -194,7 +194,7 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
             //this.quarterlyEmployeeNumbersData = new CompanyQuarterlyEmployeeNumbersData();
             this.quarterlyEmployeeNumbersData = new ArrayList<>();
         }
-        CompanyQuarterlyEmployeeNumbersData quarterlyEmployeeNumbersData = new CompanyQuarterlyEmployeeNumbersData();
+        QuarterlyEmployeeNumbersData quarterlyEmployeeNumbersData = new QuarterlyEmployeeNumbersData();
         quarterlyEmployeeNumbersData.setYear(year);
         quarterlyEmployeeNumbersData.setQuarter(quarter);
         quarterlyEmployeeNumbersData.setEmployeesLow(employeesLow);
@@ -210,7 +210,7 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
             //this.monthlyEmployeeNumbersData = new CompanyMonthlyEmployeeNumbersData();
             this.monthlyEmployeeNumbersData = new ArrayList<>();
         }
-        CompanyMonthlyEmployeeNumbersData monthlyEmployeeNumbersData = new CompanyMonthlyEmployeeNumbersData();
+        MonthlyEmployeeNumbersData monthlyEmployeeNumbersData = new MonthlyEmployeeNumbersData();
         monthlyEmployeeNumbersData.setYear(year);
         monthlyEmployeeNumbersData.setMonth(month);
         monthlyEmployeeNumbersData.setEmployeesLow(employeesLow);
@@ -224,52 +224,52 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
 
     public void setPrimaryIndustry(Industry industry) {
         if (this.primaryIndustryData == null) {
-            this.primaryIndustryData = new CompanyIndustryData(true);
+            this.primaryIndustryData = new IndustryData(true);
         }
         this.primaryIndustryData.setIndustry(industry);
     }
     public void setSecondaryIndustry1(Industry industry) {
         if (this.secondaryIndustryData1 == null) {
-            this.secondaryIndustryData1 = new CompanyIndustryData(false);
+            this.secondaryIndustryData1 = new IndustryData(false);
         }
         this.secondaryIndustryData1.setIndustry(industry);
     }
     public void setSecondaryIndustry2(Industry industry) {
         if (this.secondaryIndustryData2 == null) {
-            this.secondaryIndustryData2 = new CompanyIndustryData(false);
+            this.secondaryIndustryData2 = new IndustryData(false);
         }
         this.secondaryIndustryData2.setIndustry(industry);
     }
     public void setSecondaryIndustry3(Industry industry) {
         if (this.secondaryIndustryData3 == null) {
-            this.secondaryIndustryData3 = new CompanyIndustryData(false);
+            this.secondaryIndustryData3 = new IndustryData(false);
         }
         this.secondaryIndustryData3.setIndustry(industry);
     }
 
     public void setName(String name) {
         if (this.nameData == null) {
-            this.nameData = new CompanyTextData(CompanyTextData.Type.NAME);
+            this.nameData = new TextData(TextData.Type.NAME);
         }
         this.nameData.setData(name);
     }
     public void setPhone(String phone, boolean secret) {
         if (this.phoneData == null) {
-            this.phoneData = new CompanyContactData(CompanyContactData.Type.PHONE);
+            this.phoneData = new ContactData(ContactData.Type.PHONE);
         }
         this.phoneData.setData(phone);
         this.phoneData.setSecret(secret);
     }
     public void setEmail(String email, boolean secret) {
         if (this.emailData == null) {
-            this.emailData = new CompanyContactData(CompanyContactData.Type.EMAIL);
+            this.emailData = new ContactData(ContactData.Type.EMAIL);
         }
         this.emailData.setData(email);
         this.emailData.setSecret(secret);
     }
     public void setFax(String fax, boolean secret) {
         if (this.faxData == null) {
-            this.faxData = new CompanyContactData(CompanyContactData.Type.FAX);
+            this.faxData = new ContactData(ContactData.Type.FAX);
         }
         this.faxData.setData(fax);
         this.faxData.setSecret(secret);
@@ -277,7 +277,7 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
 
     public void setIsPrimary(boolean isPrimary) {
         if (this.isPrimaryData == null) {
-            this.isPrimaryData = new CompanyBooleanData(CompanyBooleanData.Type.IS_PRIMARY_UNIT);
+            this.isPrimaryData = new BooleanData(BooleanData.Type.IS_PRIMARY_UNIT);
         }
         this.isPrimaryData.setData(isPrimary);
     }
@@ -287,7 +287,7 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         }
         this.companyData.setData(cvrNumber);
     }
-    public void addParticipant(CompanyParticipantLink participantLink) {
+    public void addParticipant(ParticipantLink participantLink) {
         this.participantData.add(participantLink);
     }
 
