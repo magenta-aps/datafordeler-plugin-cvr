@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.company.CompanyUnitLink;
+import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import org.hibernate.Session;
 
 /**
@@ -15,9 +16,14 @@ public class CompanyUnitLinkRecord extends CompanyBaseRecord {
     private int pNumber;
 
     @Override
-    public void populateCompanyBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
         CompanyUnitLink link = new CompanyUnitLink();
         link.setpNumber(this.pNumber);
         baseData.addCompanyUnit(link);
+    }
+
+    @Override
+    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
+        // noop
     }
 }

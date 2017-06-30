@@ -145,17 +145,15 @@ public class Address extends UnversionedEntity {
     @JsonProperty(value = "etage")
     @XmlElement(name = "etage")
     @Column
-    private int floor;
+    private String floor;
 
-    public int getFloor() {
+    public String getFloor() {
         return this.floor;
     }
 
-    public void setFloor(int floor) {
+    public void setFloor(String floor) {
         this.floor = floor;
     }
-
-
 
     @JsonProperty(value = "sidedoer")
     @XmlElement(name = "sidedoer")

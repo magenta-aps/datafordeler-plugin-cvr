@@ -1,8 +1,10 @@
 package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import dk.magenta.datafordeler.core.database.Effect;
+import dk.magenta.datafordeler.cvr.data.company.CompanyRegistration;
 
 import javax.persistence.Table;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.temporal.TemporalAccessor;
 
@@ -20,7 +22,7 @@ public class CompanyUnitEffect extends Effect<CompanyUnitRegistration, CompanyUn
         super(registration, effectFrom, effectTo);
     }
 
-    public CompanyUnitEffect(CompanyUnitRegistration registration, TemporalAccessor effectFrom, TemporalAccessor effectTo) {
+    public CompanyUnitEffect(CompanyUnitRegistration registration, LocalDate effectFrom, LocalDate effectTo) {
         super(registration, effectFrom, effectTo);
     }
 

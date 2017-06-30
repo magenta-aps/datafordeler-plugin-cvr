@@ -1,10 +1,8 @@
 package dk.magenta.datafordeler.cvr.data.shared;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.cvr.data.DetailData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
-import org.hibernate.Session;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
@@ -25,7 +23,7 @@ public class AddressData extends DetailData {
     @ManyToOne
     @JsonProperty
     @XmlElement
-    @Cascade(value = CascadeType.SAVE_UPDATE)
+    @Cascade(value = CascadeType.ALL)
     private Address address;
 
     public Address getAddress() {

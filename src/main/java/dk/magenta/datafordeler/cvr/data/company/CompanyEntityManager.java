@@ -2,7 +2,10 @@ package dk.magenta.datafordeler.cvr.data.company;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import dk.magenta.datafordeler.core.database.*;
+import dk.magenta.datafordeler.core.database.QueryManager;
+import dk.magenta.datafordeler.core.database.Registration;
+import dk.magenta.datafordeler.core.database.RegistrationReference;
+import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.core.fapi.FapiService;
@@ -16,8 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
-import java.time.*;
-import java.util.*;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeSet;
+import java.util.UUID;
 
 /**
  * Created by lars on 16-05-17.
@@ -64,7 +70,6 @@ public class CompanyEntityManager extends CvrEntityManager {
 
     @Override
     public List<? extends Registration> parseRegistration(JsonNode jsonNode) throws ParseException {
-        System.out.println("Parse jsonNode "+jsonNode);
         ArrayList<Registration> registrations = new ArrayList<>();
 
         if (jsonNode.has("hits")) {
@@ -74,7 +79,6 @@ public class CompanyEntityManager extends CvrEntityManager {
             }
             if (jsonNode.isArray()) {
                 // We have a list of results
-                System.out.println("We have a list of results");
                 for (JsonNode item : jsonNode) {
                     registrations.addAll(this.parseRegistration(item));
                 }
@@ -82,14 +86,11 @@ public class CompanyEntityManager extends CvrEntityManager {
             }
         }
 
-
-
         String type = jsonNode.has("_type") ? jsonNode.get("_type").asText() : null;
         if (type != null && !type.equals(CompanyEntity.schema)) {
             // Wrong type. See if we have another EntityManager that can handle it
             EntityManager otherManager = this.getRegisterManager().getEntityManager(type);
             if (otherManager != null) {
-                System.out.println("Deferring to "+otherManager);
                 return otherManager.parseRegistration(jsonNode);
             }
             return null;
@@ -155,39 +156,24 @@ public class CompanyEntityManager extends CvrEntityManager {
                 }
                 for (CompanyBaseData baseData : effect.getDataItems()) {
                     // There really should be only one item for each effect right now
-                    record.populateCompanyBaseData(baseData, this.queryManager, session);
+                    record.populateBaseData(baseData, this.queryManager, session);
                 }
             }
             lastRegistration = registration;
             registrations.add(registration);
 
             try {
-                System.out.println(getObjectMapper().writeValueAsString(registration));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-            System.out.println("==========================================================");
-            try {
                 queryManager.saveRegistration(session, company, registration);
             } catch (DataFordelerException e) {
                 e.printStackTrace();
             }
         }
-        //System.out.println(company.getRegistrations());
+        System.out.println("created "+company.getRegistrations().size()+" registrations");
         transaction.commit();
         session.close();
         return registrations;
     }
 
 
-    private JsonNode unwrap(JsonNode jsonNode) {
-        if (jsonNode.has("_source")) {
-            jsonNode = jsonNode.get("_source");
-        }
-        if (jsonNode.has("Vrvirksomhed")) {
-            jsonNode = jsonNode.get("Vrvirksomhed");
-        }
-        return jsonNode;
-    }
 
 }

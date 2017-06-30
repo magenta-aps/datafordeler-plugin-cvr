@@ -290,13 +290,13 @@ public class ModelTest {
         companyUnitData.setPrimaryIndustry(primaryIndustry);
 
 
-        companyUnitData.setPhone("87654321");
-        companyUnitData.setFax("11112222");
-        companyUnitData.setEmail("test@example.com");
+        companyUnitData.setPhone("87654321", false);
+        companyUnitData.setFax("11112222",true);
+        companyUnitData.setEmail("test@example.com", false);
 
-        companyUnitData.setYearlyEmployeeNumbers(2017,1,2,1,2,1,2);
+        companyUnitData.addYearlyEmployeeNumbers(2017,1,2,1,2,1,2);
 
-        companyUnitData.setQuarterlyEmployeeNumbers(2017,2,1,1,1,1,1,1);
+        companyUnitData.addQuarterlyEmployeeNumbers(2017,2,1,1,1,1,1,1);
 
         CompanyParticipantLink participantLink = queryManager.getItem(session, CompanyParticipantLink.class, Collections.singletonMap("data", 44446666));
         if (participantLink == null) {
