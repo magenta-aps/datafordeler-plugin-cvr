@@ -26,6 +26,9 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
     private BooleanData advertProtectionData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private IntegerData unitNumberData;
+
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
     private AddressData locationAddressData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
@@ -88,6 +91,9 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         }
         if (this.advertProtectionData != null) {
             map.put("advertProtection", this.advertProtectionData.getData());
+        }
+        if (this.unitNumberData != null) {
+            map.put("unitNumber", this.unitNumberData.getData());
         }
         if (this.locationAddressData != null) {
             map.put("locationAddress", this.locationAddressData.getAddress());
@@ -160,6 +166,12 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
             this.advertProtectionData = new BooleanData(BooleanData.Type.ADVERT_PROTECTION);
         }
         this.advertProtectionData.setData(advertProtection);
+    }
+    public void setUnitNumber(int unitNumber) {
+        if (this.unitNumberData == null) {
+            this.unitNumberData = new IntegerData();
+        }
+        this.unitNumberData.setData(unitNumber);
     }
     public void setLocationAddress(Address address) {
         if (this.locationAddressData == null) {
@@ -312,6 +324,9 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         }
         if (this.advertProtectionData != null) {
             lookupDefinition.putAll("advertProtectionData", this.advertProtectionData.databaseFields());
+        }
+        if (this.unitNumberData != null) {
+            lookupDefinition.putAll("unitNumberData", this.unitNumberData.databaseFields());
         }
         if (this.locationAddressData != null) {
             lookupDefinition.putAll("locationAddressData", this.locationAddressData.databaseFields());

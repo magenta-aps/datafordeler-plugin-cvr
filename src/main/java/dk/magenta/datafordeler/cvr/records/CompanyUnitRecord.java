@@ -2,6 +2,11 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.QueryManager;
+import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
+import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
+import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
+import org.hibernate.Session;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +15,20 @@ import java.util.List;
  * Created by lars on 26-06-17.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CompanyUnitRecord {
+public class CompanyUnitRecord extends BaseRecord {
+
+    @JsonProperty(value = "pNummer")
+    private int pNumber;
+
+    public int getpNumber() {
+        return this.pNumber;
+    }
+
+    @JsonProperty(value = "reklamebeskyttet")
+    private boolean advertProtected;
+
+    @JsonProperty(value = "enhedsNummer")
+    private int unitNumber;
 
     @JsonProperty(value = "navne")
     public List<NameRecord> names;
@@ -152,5 +170,22 @@ public class CompanyUnitRecord {
             list.addAll(attributeRecord.getValues());
         }
         return list;
+    }
+
+
+    @Override
+    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
+        // noop
+    }
+
+    @Override
+    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
+        baseData.setAdvertProtection(this.advertProtected);
+        baseData.setUnitNumber(this.unitNumber);
+    }
+
+    @Override
+    public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
+        // noop
     }
 }
