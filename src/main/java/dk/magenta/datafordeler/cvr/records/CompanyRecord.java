@@ -203,10 +203,9 @@ public class CompanyRecord extends BaseRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyBaseData data, QueryManager queryManager, Session session) {
-        data.setAdvertProtection(this.advertProtected);
-        data.setUnitNumber(this.unitNumber);
-        data.setUnitType(this.unitType);
+    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
+        baseData.setAdvertProtection(this.advertProtected);
+        baseData.setUnitNumber(this.unitNumber);
     }
 
     @Override

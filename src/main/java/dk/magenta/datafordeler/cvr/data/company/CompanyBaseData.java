@@ -37,9 +37,6 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     private IntegerData unitNumberData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private TextData unitTypeData;
-
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
     private AddressData locationAddressData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
@@ -117,9 +114,6 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         }
         if (this.unitNumberData != null) {
             map.put("unitNumber", this.unitNumberData.getData());
-        }
-        if (this.unitTypeData != null) {
-            map.put("unitType", this.unitTypeData.getData());
         }
         if (this.locationAddressData != null) {
             map.put("locationAddress", this.locationAddressData.getAddress());
@@ -216,12 +210,6 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
             this.unitNumberData = new IntegerData();
         }
         this.unitNumberData.setData(unitNumber);
-    }
-    public void setUnitType(String unitType) {
-        if (this.unitTypeData == null) {
-            this.unitTypeData = new TextData(TextData.Type.TYPE);
-        }
-        this.unitTypeData.setData(unitType);
     }
 
 
@@ -395,9 +383,6 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         }
         if (this.unitNumberData != null) {
             lookupDefinition.putAll("unitNumberData", this.unitNumberData.databaseFields());
-        }
-        if (this.unitTypeData != null) {
-            lookupDefinition.putAll("unitTypeData", this.unitTypeData.databaseFields());
         }
         if (this.locationAddressData != null) {
             lookupDefinition.putAll("locationAddressData", this.locationAddressData.databaseFields());
