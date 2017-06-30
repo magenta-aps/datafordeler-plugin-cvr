@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
+import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import org.hibernate.Session;
 
@@ -34,7 +35,7 @@ public class ContactRecord extends BaseRecord {
     }
 
     @Override
-    public void populateCompanyBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
         switch (this.type) {
             case PHONE:
                 baseData.setPhone(this.contactInfo, this.secret);
@@ -55,7 +56,22 @@ public class ContactRecord extends BaseRecord {
     }
 
     @Override
-    public void populateParticipantBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
+        switch (this.type) {
+            case PHONE:
+                baseData.setPhone(this.contactInfo, this.secret);
+                break;
+            case FAX:
+                baseData.setFax(this.contactInfo, this.secret);
+                break;
+            case EMAIL:
+                baseData.setEmail(this.contactInfo, this.secret);
+                break;
+        }
+    }
+
+    @Override
+    public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
         switch (this.type) {
             case PHONE:
                 baseData.setPhone(this.contactInfo, this.secret);

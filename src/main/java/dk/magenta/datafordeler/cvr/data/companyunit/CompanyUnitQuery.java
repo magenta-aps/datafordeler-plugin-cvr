@@ -1,9 +1,7 @@
 package dk.magenta.datafordeler.cvr.data.companyunit;
 
-import dk.magenta.datafordeler.core.database.Entity;
 import dk.magenta.datafordeler.core.fapi.ParameterMap;
 import dk.magenta.datafordeler.core.fapi.QueryField;
-import dk.magenta.datafordeler.core.util.ListHashMap;
 import dk.magenta.datafordeler.cvr.data.CvrQuery;
 
 import java.util.HashMap;
@@ -14,29 +12,29 @@ import java.util.Map;
  */
 public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
 
-    public static final String CVRNUMBER = "cvrnumber";
+    public static final String PNUMBER = "pnumber";
 
     @QueryField(type = QueryField.FieldType.STRING)
-    private String cvrNumber;
+    private String pNumber;
 
-    public String getCvrNumber() {
-        return cvrNumber;
+    public String getpNumber() {
+        return pNumber;
     }
 
-    public void setCvrNumber(String cvrNumber) {
-        this.cvrNumber = cvrNumber;
+    public void setpNumber(String pNumber) {
+        this.pNumber = pNumber;
     }
 
     @Override
     public Map<String, Object> getSearchParameters() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put(CVRNUMBER, this.cvrNumber);
+        map.put(PNUMBER, this.pNumber);
         return map;
     }
 
     @Override
     public void setFromParameters(ParameterMap parameters) {
-        this.setCvrNumber(parameters.getFirst(CVRNUMBER));
+        this.setpNumber(parameters.getFirst(PNUMBER));
     }
 
     @Override

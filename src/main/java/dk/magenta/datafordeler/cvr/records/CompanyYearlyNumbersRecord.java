@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntityManager;
+import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import org.hibernate.Session;
 
 /**
@@ -16,7 +17,20 @@ public class CompanyYearlyNumbersRecord extends CompanyNumbersRecord {
     private int year;
 
     @Override
-    public void populateCompanyBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
+        baseData.addYearlyEmployeeNumbers(
+                this.year,
+                this.getEmployeeLow(),
+                this.getEmployeeHigh(),
+                this.getFulltimeEquivalentLow(),
+                this.getFulltimeEquivalentHigh(),
+                this.getIncludingOwnersLow(),
+                this.getIncludingOwnersHigh()
+        );
+    }
+
+    @Override
+    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
         baseData.addYearlyEmployeeNumbers(
                 this.year,
                 this.getEmployeeLow(),

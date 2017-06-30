@@ -109,10 +109,6 @@ public class CvrRegisterManager extends RegisterManager {
     }
 
     public String getPullCronSchedule() {
-        System.out.println(this);
-        System.out.println(this.configurationManager);
-        System.out.println(this.configurationManager.getConfiguration());
-        System.out.println(this.configurationManager.getConfiguration().getPullCronSchedule());
         return this.configurationManager.getConfiguration().getPullCronSchedule();
     }
 
@@ -121,7 +117,6 @@ public class CvrRegisterManager extends RegisterManager {
         ScanScrollCommunicator eventCommunicator = (ScanScrollCommunicator) this.getEventFetcher();
         //InputStream responseBody = eventCommunicator.fetch(eventInterface);
         InputStream responseBody = null;
-        System.out.println("Beginning fetch");
         try {
             responseBody = eventCommunicator.fetch(new URI(
                             "http://distribution.virk.dk/cvr-permanent/virksomhed/_search"),
@@ -132,7 +127,6 @@ public class CvrRegisterManager extends RegisterManager {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        System.out.println("Got response body");
         return this.parseEventResponse(responseBody);
     }
 
@@ -192,7 +186,6 @@ public class CvrRegisterManager extends RegisterManager {
         // Find the relevant class and parse the line into it
         String skema = CompanyEntity.schema;
         String data = s.toString();
-        System.out.println("Event: "+data);
 
         event.setDataskema(skema);
         event.setObjektData(data);

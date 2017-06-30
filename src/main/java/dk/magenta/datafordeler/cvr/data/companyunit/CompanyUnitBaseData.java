@@ -10,10 +10,7 @@ import org.hibernate.Session;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by lars on 12-06-17.
@@ -34,11 +31,17 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private AddressData postalAddressData;
 
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyYearlyEmployeeNumbersData yearlyEmployeeNumbersData;
+    @OneToMany(cascade = CascadeType.ALL)
+    @OrderBy(value = "year asc")
+    private List<CompanyYearlyEmployeeNumbersData> yearlyEmployeeNumbersData;
 
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyQuarterlyEmployeeNumbersData quarterlyEmployeeNumbersData;
+    @OneToMany(cascade = CascadeType.ALL)
+    @OrderBy(value = "year asc, quarter asc")
+    private List<CompanyQuarterlyEmployeeNumbersData> quarterlyEmployeeNumbersData;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @OrderBy(value = "year asc, month asc")
+    private List<CompanyMonthlyEmployeeNumbersData> monthlyEmployeeNumbersData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private CompanyIndustryData primaryIndustryData;
@@ -56,13 +59,13 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
     private CompanyTextData nameData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyTextData phoneData;
+    private CompanyContactData phoneData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyTextData emailData;
+    private CompanyContactData emailData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyTextData faxData;
+    private CompanyContactData faxData;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private CompanyBooleanData isPrimaryData;
@@ -72,6 +75,9 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
 
     @ManyToMany(mappedBy = "companyUnitBases")
     private Set<CompanyParticipantLink> participantData = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<AttributeData> attributeData = new HashSet<>();
 
 
     @Override
@@ -94,6 +100,9 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         }
         if (this.quarterlyEmployeeNumbersData != null) {
             map.put("quarterlyEmployeeNumbers", this.quarterlyEmployeeNumbersData);
+        }
+        if (this.monthlyEmployeeNumbersData != null) {
+            map.put("monthlyEmployeeNumbers", this.monthlyEmployeeNumbersData);
         }
         if (this.primaryIndustryData != null) {
             map.put("primaryIndustry", this.primaryIndustryData.getIndustry());
@@ -127,6 +136,9 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         }
         if (this.participantData != null && !this.participantData.isEmpty()) {
             map.put("participants", this.participantData);
+        }
+        if (this.attributeData != null && !this.attributeData.isEmpty()) {
+            map.put("attributes", this.attributeData);
         }
         return map;
     }
@@ -162,30 +174,52 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         this.postalAddressData.setAddress(address);
     }
 
-    public void setYearlyEmployeeNumbers(int year, int employeesLow, int employeesHigh, int fulltimeEquivalentLow, int fulltimeEquivalentHigh, int includingOwnersLow, int includingOwnersHigh) {
+    public void addYearlyEmployeeNumbers(int year, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) {
         if (this.yearlyEmployeeNumbersData == null) {
-            this.yearlyEmployeeNumbersData = new CompanyYearlyEmployeeNumbersData();
+            //this.yearlyEmployeeNumbersData = new CompanyYearlyEmployeeNumbersData();
+            this.yearlyEmployeeNumbersData = new ArrayList<>();
         }
-        this.yearlyEmployeeNumbersData.setYear(year);
-        this.yearlyEmployeeNumbersData.setEmployeesLow(employeesLow);
-        this.yearlyEmployeeNumbersData.setEmployeesHigh(employeesHigh);
-        this.yearlyEmployeeNumbersData.setFullTimeEquivalentLow(fulltimeEquivalentLow);
-        this.yearlyEmployeeNumbersData.setFullTimeEquivalentHigh(fulltimeEquivalentHigh);
-        this.yearlyEmployeeNumbersData.setIncludingOwnersLow(includingOwnersLow);
-        this.yearlyEmployeeNumbersData.setIncludingOwnersHigh(includingOwnersHigh);
+        CompanyYearlyEmployeeNumbersData yearlyEmployeeNumbersData = new CompanyYearlyEmployeeNumbersData();
+        yearlyEmployeeNumbersData.setYear(year);
+        yearlyEmployeeNumbersData.setEmployeesLow(employeesLow);
+        yearlyEmployeeNumbersData.setEmployeesHigh(employeesHigh);
+        yearlyEmployeeNumbersData.setFullTimeEquivalentLow(fulltimeEquivalentLow);
+        yearlyEmployeeNumbersData.setFullTimeEquivalentHigh(fulltimeEquivalentHigh);
+        yearlyEmployeeNumbersData.setIncludingOwnersLow(includingOwnersLow);
+        yearlyEmployeeNumbersData.setIncludingOwnersHigh(includingOwnersHigh);
+        this.yearlyEmployeeNumbersData.add(yearlyEmployeeNumbersData);
     }
-    public void setQuarterlyEmployeeNumbers(int year, int quarter, int employeesLow, int employeesHigh, int fulltimeEquivalentLow, int fulltimeEquivalentHigh, int includingOwnersLow, int includingOwnersHigh) {
+    public void addQuarterlyEmployeeNumbers(int year, int quarter, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) {
         if (this.quarterlyEmployeeNumbersData == null) {
-            this.quarterlyEmployeeNumbersData = new CompanyQuarterlyEmployeeNumbersData();
+            //this.quarterlyEmployeeNumbersData = new CompanyQuarterlyEmployeeNumbersData();
+            this.quarterlyEmployeeNumbersData = new ArrayList<>();
         }
-        this.quarterlyEmployeeNumbersData.setYear(year);
-        this.quarterlyEmployeeNumbersData.setQuarter(quarter);
-        this.quarterlyEmployeeNumbersData.setEmployeesLow(employeesLow);
-        this.quarterlyEmployeeNumbersData.setEmployeesHigh(employeesHigh);
-        this.quarterlyEmployeeNumbersData.setFullTimeEquivalentLow(fulltimeEquivalentLow);
-        this.quarterlyEmployeeNumbersData.setFullTimeEquivalentHigh(fulltimeEquivalentHigh);
-        this.quarterlyEmployeeNumbersData.setIncludingOwnersLow(includingOwnersLow);
-        this.quarterlyEmployeeNumbersData.setIncludingOwnersHigh(includingOwnersHigh);
+        CompanyQuarterlyEmployeeNumbersData quarterlyEmployeeNumbersData = new CompanyQuarterlyEmployeeNumbersData();
+        quarterlyEmployeeNumbersData.setYear(year);
+        quarterlyEmployeeNumbersData.setQuarter(quarter);
+        quarterlyEmployeeNumbersData.setEmployeesLow(employeesLow);
+        quarterlyEmployeeNumbersData.setEmployeesHigh(employeesHigh);
+        quarterlyEmployeeNumbersData.setFullTimeEquivalentLow(fulltimeEquivalentLow);
+        quarterlyEmployeeNumbersData.setFullTimeEquivalentHigh(fulltimeEquivalentHigh);
+        quarterlyEmployeeNumbersData.setIncludingOwnersLow(includingOwnersLow);
+        quarterlyEmployeeNumbersData.setIncludingOwnersHigh(includingOwnersHigh);
+        this.quarterlyEmployeeNumbersData.add(quarterlyEmployeeNumbersData);
+    }
+    public void addMonthlyEmployeeNumbers(int year, int month, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) {
+        if (this.monthlyEmployeeNumbersData == null) {
+            //this.monthlyEmployeeNumbersData = new CompanyMonthlyEmployeeNumbersData();
+            this.monthlyEmployeeNumbersData = new ArrayList<>();
+        }
+        CompanyMonthlyEmployeeNumbersData monthlyEmployeeNumbersData = new CompanyMonthlyEmployeeNumbersData();
+        monthlyEmployeeNumbersData.setYear(year);
+        monthlyEmployeeNumbersData.setMonth(month);
+        monthlyEmployeeNumbersData.setEmployeesLow(employeesLow);
+        monthlyEmployeeNumbersData.setEmployeesHigh(employeesHigh);
+        monthlyEmployeeNumbersData.setFullTimeEquivalentLow(fulltimeEquivalentLow);
+        monthlyEmployeeNumbersData.setFullTimeEquivalentHigh(fulltimeEquivalentHigh);
+        monthlyEmployeeNumbersData.setIncludingOwnersLow(includingOwnersLow);
+        monthlyEmployeeNumbersData.setIncludingOwnersHigh(includingOwnersHigh);
+        this.monthlyEmployeeNumbersData.add(monthlyEmployeeNumbersData);
     }
 
     public void setPrimaryIndustry(Industry industry) {
@@ -219,23 +253,26 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         }
         this.nameData.setData(name);
     }
-    public void setPhone(String phone) {
+    public void setPhone(String phone, boolean secret) {
         if (this.phoneData == null) {
-            this.phoneData = new CompanyTextData(CompanyTextData.Type.PHONE);
+            this.phoneData = new CompanyContactData(CompanyContactData.Type.PHONE);
         }
         this.phoneData.setData(phone);
+        this.phoneData.setSecret(secret);
     }
-    public void setEmail(String email) {
+    public void setEmail(String email, boolean secret) {
         if (this.emailData == null) {
-            this.emailData = new CompanyTextData(CompanyTextData.Type.EMAIL);
+            this.emailData = new CompanyContactData(CompanyContactData.Type.EMAIL);
         }
         this.emailData.setData(email);
+        this.emailData.setSecret(secret);
     }
-    public void setFax(String fax) {
+    public void setFax(String fax, boolean secret) {
         if (this.faxData == null) {
-            this.faxData = new CompanyTextData(CompanyTextData.Type.FAX);
+            this.faxData = new CompanyContactData(CompanyContactData.Type.FAX);
         }
         this.faxData.setData(fax);
+        this.faxData.setSecret(secret);
     }
 
     public void setIsPrimary(boolean isPrimary) {
@@ -254,6 +291,18 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         this.participantData.add(participantLink);
     }
 
+    public void addAttribute(String type, String valueType, String value, int sequenceNumber) {
+        AttributeData attributeData = new AttributeData();
+        attributeData.setType(type);
+        attributeData.setValueType(valueType);
+        attributeData.setValue(value);
+        attributeData.setSequenceNumber(sequenceNumber);
+        this.addAttribute(attributeData);
+    }
+    public void addAttribute(AttributeData attributeData) {
+        this.attributeData.add(attributeData);
+    }
+
     @Override
     public LookupDefinition getLookupDefinition() {
         LookupDefinition lookupDefinition = new LookupDefinition();
@@ -261,18 +310,24 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         if (this.lifecycleData != null) {
             lookupDefinition.putAll("lifecycleData", this.lifecycleData.databaseFields());
         }
+        if (this.advertProtectionData != null) {
+            lookupDefinition.putAll("advertProtectionData", this.advertProtectionData.databaseFields());
+        }
         if (this.locationAddressData != null) {
             lookupDefinition.putAll("locationAddressData", this.locationAddressData.databaseFields());
         }
         if (this.postalAddressData != null) {
             lookupDefinition.putAll("postalAddressData", this.postalAddressData.databaseFields());
         }
-        if (this.yearlyEmployeeNumbersData != null) {
+        /*if (this.yearlyEmployeeNumbersData != null) {
             lookupDefinition.putAll("yearlyEmployeeNumbersData", this.yearlyEmployeeNumbersData.databaseFields());
-        }
-        if (this.quarterlyEmployeeNumbersData != null) {
+        }*/
+        /*if (this.quarterlyEmployeeNumbersData != null) {
             lookupDefinition.putAll("quarterlyEmployeeNumbersData", this.quarterlyEmployeeNumbersData.databaseFields());
-        }
+        }*/
+        /*if (this.monthlyEmployeeNumbersData != null) {
+            lookupDefinition.putAll("monthlyEmployeeNumbersData", this.monthlyEmployeeNumbersData.databaseFields());
+        }*/
         if (this.primaryIndustryData != null) {
             lookupDefinition.putAll("primaryIndustryData", this.primaryIndustryData.databaseFields());
         }
@@ -309,7 +364,8 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
     public void forceLoad(Session session) {
         Hibernate.initialize(this.yearlyEmployeeNumbersData);
         Hibernate.initialize(this.quarterlyEmployeeNumbersData);
+        Hibernate.initialize(this.monthlyEmployeeNumbersData);
         Hibernate.initialize(this.participantData);
+        Hibernate.initialize(this.attributeData);
     }
-
 }
