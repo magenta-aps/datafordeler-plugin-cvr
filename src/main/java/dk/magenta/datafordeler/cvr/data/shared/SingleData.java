@@ -5,6 +5,8 @@ import dk.magenta.datafordeler.cvr.data.DetailData;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.xml.bind.annotation.XmlTransient;
+
 /**
  * Created by lars on 16-05-17.
  */
@@ -13,6 +15,7 @@ public abstract class SingleData<T> extends DetailData {
 
     @Column
     @JsonIgnore
+    @XmlTransient
     private T data;
 
     public T getData() {

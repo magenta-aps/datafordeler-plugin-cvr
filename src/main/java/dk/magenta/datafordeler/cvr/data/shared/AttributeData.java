@@ -17,8 +17,8 @@ import java.util.Map;
 @Table(name = "cvr_company_attributes")
 public class AttributeData extends DetailData {
 
-    @JsonProperty
-    @XmlElement
+    @JsonProperty(value = "sekvensNummer")
+    @XmlElement(name = "sekvensNummer")
     @Column
     private int sequenceNumber;
 
@@ -43,8 +43,8 @@ public class AttributeData extends DetailData {
         this.type = type;
     }
 
-    @JsonProperty
-    @XmlElement
+    @JsonProperty(value = "værditype")
+    @XmlElement(name = "værditype")
     @Column
     private String valueType;
 
@@ -56,8 +56,8 @@ public class AttributeData extends DetailData {
         this.valueType = valueType;
     }
 
-    @JsonProperty
-    @XmlElement
+    @JsonProperty(value = "værdi")
+    @XmlElement(name = "værdi")
     @Column
     private String value;
 

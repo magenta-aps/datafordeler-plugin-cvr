@@ -1,11 +1,13 @@
 package dk.magenta.datafordeler.cvr.data.shared;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +23,8 @@ public class MonthlyEmployeeNumbersData extends EmployeeNumbersData {
 
 
     @Column(name = "year")
+    @JsonProperty(value = "år")
+    @XmlElement(name = "år")
     private int year;
 
     public int getYear() {
@@ -34,6 +38,8 @@ public class MonthlyEmployeeNumbersData extends EmployeeNumbersData {
 
 
     @Column(name = "month")
+    @JsonProperty(value = "måned")
+    @XmlElement(name = "måned")
     private int month;
 
     public int getMonth() {

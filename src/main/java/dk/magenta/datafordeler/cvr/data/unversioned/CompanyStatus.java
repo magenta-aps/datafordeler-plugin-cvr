@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.Collections;
 
 /**
@@ -23,6 +24,7 @@ public class CompanyStatus extends UnversionedEntity {
     //----------------------------------------------------
 
     @JsonProperty
+    @XmlElement
     @Column(nullable = true, unique = true)
     private String status;
 

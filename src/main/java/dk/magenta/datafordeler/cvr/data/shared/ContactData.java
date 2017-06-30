@@ -1,12 +1,14 @@
 package dk.magenta.datafordeler.cvr.data.shared;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +40,7 @@ public class ContactData extends SingleData<String> {
 
     @Column
     @JsonIgnore
+    @XmlTransient
     private Type type;
 
     public Type getType() {
@@ -49,19 +52,15 @@ public class ContactData extends SingleData<String> {
     }
 
     @Column
-    @JsonIgnore
-    private String data;
-
+    @JsonProperty(value = "kontaktoplysning")
+    @XmlElement(name = "kontaktoplysning")
     public String getData() {
-        return this.data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
+        return super.getData();
     }
 
     @Column
-    @JsonIgnore
+    @JsonProperty("hemmelig")
+    @XmlElement(name = "hemmelig")
     private boolean secret;
 
     public boolean isSecret() {
@@ -72,15 +71,11 @@ public class ContactData extends SingleData<String> {
         this.secret = secret;
     }
 
-    public String getFieldName() {
-        return this.type.name().toLowerCase();
-    }
-
-    @JsonAnyGetter
     public Map<String, Object> asMap() {
         HashMap<String, Object> fields = new HashMap<>();
-        fields.put(this.getFieldName(), this.getData());
-        fields.put("secret", this.isSecret());
+        fields.put("data", this.getData());
+        fields.put("secret", this.secret);
+        fields.put("type", this.type);
         return fields;
     }
 
@@ -92,6 +87,7 @@ public class ContactData extends SingleData<String> {
     public Map<String, Object> databaseFields() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("data", this.getData());
+        map.put("secret", this.secret);
         map.put("type", this.type);
         return map;
     }
