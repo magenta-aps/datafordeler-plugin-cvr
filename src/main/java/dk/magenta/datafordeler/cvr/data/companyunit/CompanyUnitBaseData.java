@@ -1,7 +1,9 @@
 package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import dk.magenta.datafordeler.core.database.DataItem;
+import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
+import dk.magenta.datafordeler.cvr.data.DetailData;
 import dk.magenta.datafordeler.cvr.data.shared.*;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
@@ -82,6 +84,9 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
     @OneToMany(cascade = CascadeType.ALL)
     private Set<AttributeData> attributeData = new HashSet<>();
 
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<ParticipantRelationData> participantRelationData = new HashSet<>();
+
 
     @Override
     public Map<String, Object> asMap() {
@@ -145,6 +150,9 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         }
         if (this.attributeData != null && !this.attributeData.isEmpty()) {
             map.put("attributes", this.attributeData);
+        }
+        if (this.participantRelationData != null && !this.participantRelationData.isEmpty()) {
+            map.put("deltagerRelation", this.participantRelationData);
         }
         return map;
     }
@@ -315,6 +323,15 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         this.attributeData.add(attributeData);
     }
 
+    public void addParticipantRelation(Identification participant, Set<Identification> organizations) {
+        ParticipantRelationData participantRelationData = new ParticipantRelationData();
+        participantRelationData.setParticipant(participant);
+        for (Identification organization : organizations) {
+            participantRelationData.addOrganization(organization);
+        }
+        this.participantRelationData.add(participantRelationData);
+    }
+
     @Override
     public LookupDefinition getLookupDefinition() {
         LookupDefinition lookupDefinition = new LookupDefinition();
@@ -373,6 +390,9 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         if (this.companyData != null) {
             lookupDefinition.putAll("companyData", this.companyData.databaseFields());
         }
+        if (this.participantRelationData != null) {
+            lookupDefinition.putAll("participantRelationData", DetailData.listDatabaseFields(this.participantRelationData));
+        }
         return lookupDefinition;
     }
 
@@ -382,5 +402,6 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         Hibernate.initialize(this.monthlyEmployeeNumbersData);
         Hibernate.initialize(this.participantData);
         Hibernate.initialize(this.attributeData);
+        Hibernate.initialize(this.participantRelationData);
     }
 }

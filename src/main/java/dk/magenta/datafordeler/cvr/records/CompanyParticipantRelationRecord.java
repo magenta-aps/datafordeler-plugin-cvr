@@ -12,6 +12,7 @@ import org.hibernate.Session;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -30,14 +31,17 @@ public class CompanyParticipantRelationRecord extends CompanyBaseRecord {
         return this.participant.getLastUpdated();
     }
 
-    @Override
-    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
+    private Identification getParticipantIdentification(QueryManager queryManager, Session session) {
         UUID participantUUID = this.participant.generateUUID();
         Identification participantIdentification = queryManager.getIdentification(session, participantUUID);
         if (participantIdentification == null) {
             participantIdentification = new Identification(participantUUID, CvrPlugin.getDomain());
             session.save(participantIdentification);
         }
+        return participantIdentification;
+    }
+
+    private Set<Identification> getOrganizationIdentifications(QueryManager queryManager, Session session) {
         HashSet<Identification> organizationIdentifications = new HashSet<>();
         for (OrganizationRecord organizationRecord : this.organizations) {
             UUID organizationUUID = organizationRecord.generateUUID();
@@ -48,11 +52,22 @@ public class CompanyParticipantRelationRecord extends CompanyBaseRecord {
             }
             organizationIdentifications.add(organizationIdentification);
         }
-        baseData.addParticipantRelation(participantIdentification, organizationIdentifications);
+        return organizationIdentifications;
+    }
+
+    @Override
+    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
+        baseData.addParticipantRelation(
+                this.getParticipantIdentification(queryManager, session),
+                this.getOrganizationIdentifications(queryManager, session)
+        );
     }
 
     @Override
     public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
-
+        baseData.addParticipantRelation(
+                this.getParticipantIdentification(queryManager, session),
+                this.getOrganizationIdentifications(queryManager, session)
+        );
     }
 }

@@ -170,18 +170,11 @@ public class CompanyEntityManager extends CvrEntityManager {
             } catch (DataFordelerException e) {
                 e.printStackTrace();
             }
-            try {
-                System.out.println(getObjectMapper().writeValueAsString(registration));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
         }
         System.out.println("created "+company.getRegistrations().size()+" registrations");
         transaction.commit();
         session.close();
         return registrations;
     }
-
-
 
 }
