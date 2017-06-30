@@ -34,7 +34,6 @@ public class CompanyRecord extends BaseRecord {
     @JsonProperty(value = "enhedstype")
     private String unitType;
 
-
     @JsonProperty(value = "navne")
     private List<NameRecord> names;
 
@@ -174,6 +173,9 @@ public class CompanyRecord extends BaseRecord {
     @JsonProperty(value = "penheder")
     private List<CompanyUnitLinkRecord> unitLinkRecords;
 
+    @JsonProperty(value = "deltagerRelation")
+    private List<CompanyParticipantRelationRecord> participantRelationRecords;
+
     public List<BaseRecord> getAll() {
         ArrayList<BaseRecord> list = new ArrayList<>();
         list.add(this);
@@ -199,6 +201,7 @@ public class CompanyRecord extends BaseRecord {
             list.addAll(attributeRecord.getValues());
         }
         list.addAll(this.unitLinkRecords);
+        list.addAll(this.participantRelationRecords);
         return list;
     }
 

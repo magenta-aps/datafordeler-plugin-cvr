@@ -5,12 +5,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by lars on 26-06-17.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ParticipantRecord {
+
+    @JsonProperty(value = "enhedsNummer")
+    public int unitNumber;
+
+    @JsonProperty(value = "enhedstype")
+    public String unitType;
 
     @JsonProperty(value = "navne")
     public List<NameRecord> names;
@@ -94,5 +101,10 @@ public class ParticipantRecord {
             list.addAll(attributeRecord.getValues());
         }
         return list;
+    }
+
+    public UUID generateUUID() {
+        String uuidInput = "participant:"+this.unitType+"/"+this.unitNumber;
+        return UUID.nameUUIDFromBytes(uuidInput.getBytes());
     }
 }

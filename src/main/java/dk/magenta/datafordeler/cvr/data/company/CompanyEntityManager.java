@@ -11,6 +11,7 @@ import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.core.fapi.FapiService;
 import dk.magenta.datafordeler.core.plugin.EntityManager;
 import dk.magenta.datafordeler.core.util.ListHashMap;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.records.*;
 import org.hibernate.Session;
@@ -112,7 +113,7 @@ public class CompanyEntityManager extends CvrEntityManager {
             e.printStackTrace();
             return null;
         }
-        CompanyEntity company = new CompanyEntity(UUID.randomUUID(), "cvr");
+        CompanyEntity company = new CompanyEntity(UUID.randomUUID(), CvrPlugin.getDomain());
         company.setCvrNumber(companyRecord.getCvrNumber());
 
         List<BaseRecord> records = companyRecord.getAll();
@@ -180,5 +181,7 @@ public class CompanyEntityManager extends CvrEntityManager {
         session.close();
         return registrations;
     }
+
+
 
 }
