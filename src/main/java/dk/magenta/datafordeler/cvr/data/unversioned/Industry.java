@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.Collections;
 
 /**
@@ -21,7 +22,8 @@ public class Industry extends UnversionedEntity {
 
 
 
-    @JsonProperty
+    @JsonProperty(value = "branchekode")
+    @XmlElement(name = "branchekode")
     @Column(nullable = false, unique = true)
     private int code;
 
@@ -35,7 +37,8 @@ public class Industry extends UnversionedEntity {
 
 
 
-    @JsonProperty
+    @JsonProperty(value = "branchetekst")
+    @XmlElement(name = "branchetekst")
     @Column
     private String text;
 

@@ -5,6 +5,7 @@ import dk.magenta.datafordeler.core.database.QueryManager;
 import org.hibernate.Session;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.Collections;
 
 /**
@@ -19,7 +20,8 @@ public class CompanyForm extends UnversionedEntity {
 
     //----------------------------------------------------
 
-    @JsonProperty
+    @JsonProperty(value = "kortBeskrivelse")
+    @XmlElement(name = "kortBeskrivelse")
     @Column(nullable = true, unique = true)
     private String shortDescription;
 
@@ -33,7 +35,8 @@ public class CompanyForm extends UnversionedEntity {
 
     //----------------------------------------------------
 
-    @JsonProperty
+    @JsonProperty(value = "langBeskrivelse")
+    @XmlElement(name = "langBeskrivelse")
     @Column(nullable = true, unique = true)
     private String longDescription;
 
@@ -47,7 +50,8 @@ public class CompanyForm extends UnversionedEntity {
 
     //----------------------------------------------------
 
-    @JsonProperty
+    @JsonProperty(value = "virksomhedsformkode")
+    @XmlElement(name = "virksomhedsformkode")
     @Column(nullable = false, unique = true)
     private int code;
 
@@ -59,7 +63,8 @@ public class CompanyForm extends UnversionedEntity {
         this.code = code;
     }
 
-    @JsonProperty
+    @JsonProperty(value = "ansvarligDataleverandoer")
+    @XmlElement(name = "ansvarligDataleverandoer")
     @Column
     private String responsibleDatasource;
 

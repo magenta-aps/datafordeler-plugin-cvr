@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +63,8 @@ public abstract class EmployeeNumbersData extends DetailData {
         }
     }
 
-    @JsonProperty
+    @JsonProperty(value = "intervalAntalAnsatte")
+    @XmlElement(name = "intervalAntalAnsatte")
     public String getEmployeesInterval() {
         return this.formatInterval(this.employeesLow, this.employeesHigh);
     }
@@ -106,7 +108,8 @@ public abstract class EmployeeNumbersData extends DetailData {
         }
     }
 
-    @JsonProperty
+    @JsonProperty(value = "intervalAntalÅrsværk")
+    @XmlElement(name = "intervalAntalÅrsværk")
     public String getFullTimeEquivalentInterval() {
         return this.formatInterval(this.fullTimeEquivalentLow, this.fullTimeEquivalentHigh);
     }
@@ -150,7 +153,8 @@ public abstract class EmployeeNumbersData extends DetailData {
         }
     }
 
-    @JsonProperty
+    @JsonProperty(value = "intervalAntalInklusivEjere")
+    @XmlElement(name = "intervalAntalInklusivEjere")
     public String getIncludingOwnersInterval() {
         return this.formatInterval(this.includingOwnersLow, this.includingOwnersHigh);
     }
