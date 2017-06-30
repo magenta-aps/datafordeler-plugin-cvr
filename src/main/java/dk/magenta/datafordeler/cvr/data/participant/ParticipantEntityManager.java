@@ -6,6 +6,7 @@ import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.core.database.Registration;
 import dk.magenta.datafordeler.core.database.RegistrationReference;
 import dk.magenta.datafordeler.core.database.SessionManager;
+import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.core.fapi.FapiService;
 import dk.magenta.datafordeler.core.util.ListHashMap;
@@ -73,10 +74,9 @@ public class ParticipantEntityManager extends CvrEntityManager {
         ArrayList<Registration> registrations = new ArrayList<>();
         Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        System.out.println("Parse jsonNode");
         jsonNode = this.unwrap(jsonNode);
 
-        ParticipantEntity company = new ParticipantEntity(UUID.randomUUID(), "cvr", jsonNode.get("enhedsNummer").asInt());
+        ParticipantEntity participant = new ParticipantEntity(UUID.randomUUID(), "cvr", jsonNode.get("enhedsNummer").asInt());
         ParticipantRecord participantRecord;
         try {
             participantRecord = getObjectMapper().treeToValue(jsonNode, ParticipantRecord.class);
@@ -89,7 +89,6 @@ public class ParticipantEntityManager extends CvrEntityManager {
         ListHashMap<OffsetDateTime, BaseRecord> ajourRecords = new ListHashMap<>();
         TreeSet<OffsetDateTime> sortedTimestamps = new TreeSet<>();
         for (BaseRecord record : records) {
-            System.out.println("record: "+record);
             OffsetDateTime registrationFrom = record.getLastUpdated();
             ajourRecords.add(registrationFrom, record);
             sortedTimestamps.add(registrationFrom);
@@ -99,11 +98,11 @@ public class ParticipantEntityManager extends CvrEntityManager {
         for (OffsetDateTime registrationFrom : sortedTimestamps) {
 
             // Get any existing registration that matches this date, or create a new one
-            ParticipantRegistration registration = company.getRegistration(registrationFrom);
+            ParticipantRegistration registration = participant.getRegistration(registrationFrom);
             if (registration == null) {
                 registration = new ParticipantRegistration();
                 registration.setRegistrationFrom(registrationFrom);
-                registration.setEntity(company);
+                registration.setEntity(participant);
             }
 
             // Copy data over from the previous registration, by cloning all effects and point underlying dataitems to the clones as well as the originals
@@ -128,20 +127,18 @@ public class ParticipantEntityManager extends CvrEntityManager {
                 }
                 for (ParticipantBaseData baseData : effect.getDataItems()) {
                     // There really should be only one item for each effect right now
-                    record.populateParticipantBaseData(baseData, this.queryManager, session);
+                    record.populateBaseData(baseData, this.queryManager, session);
                 }
             }
             lastRegistration = registration;
             registrations.add(registration);
-
             try {
-                System.out.println(getObjectMapper().writeValueAsString(registration));
-            } catch (JsonProcessingException e) {
+                queryManager.saveRegistration(session, participant, registration);
+            } catch (DataFordelerException e) {
                 e.printStackTrace();
             }
-            System.out.println("==========================================================");
         }
-        //System.out.println(company.getRegistrations());
+        System.out.println("created "+participant.getRegistrations().size()+" registrations");
         transaction.commit();
         session.close();
         return registrations;
