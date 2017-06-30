@@ -95,8 +95,6 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     @OneToMany(cascade = CascadeType.ALL)
     private Set<AttributeData> attributeData = new HashSet<>();
 
-
-
     @OneToMany(cascade = CascadeType.ALL)
     private Set<ParticipantRelationData> participantRelationData = new HashSet<>();
 
@@ -368,7 +366,6 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     }
 
     public void addParticipantRelation(Identification participant, Set<Identification> organizations) {
-        System.out.println("adding relation "+participant);
         ParticipantRelationData participantRelationData = new ParticipantRelationData();
         participantRelationData.setParticipant(participant);
         for (Identification organization : organizations) {
@@ -449,5 +446,6 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         Hibernate.initialize(this.unitData);
         Hibernate.initialize(this.participantData);
         Hibernate.initialize(this.attributeData);
+        Hibernate.initialize(this.participantRelationData);
     }
 }

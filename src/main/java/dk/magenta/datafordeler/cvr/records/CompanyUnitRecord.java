@@ -139,6 +139,9 @@ public class CompanyUnitRecord extends BaseRecord {
     @JsonProperty(value = "attributter")
     public List<AttributeRecord> attributeRecords;
 
+    @JsonProperty(value = "deltagerRelation")
+    private List<CompanyParticipantRelationRecord> participantRelationRecords;
+
 
     // virksomhedsrelation
     // enhedstype
@@ -169,6 +172,7 @@ public class CompanyUnitRecord extends BaseRecord {
         for (AttributeRecord attributeRecord : this.attributeRecords) {
             list.addAll(attributeRecord.getValues());
         }
+        list.addAll(this.participantRelationRecords);
         return list;
     }
 
