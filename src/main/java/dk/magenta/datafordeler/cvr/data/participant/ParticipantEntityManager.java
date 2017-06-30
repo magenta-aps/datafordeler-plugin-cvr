@@ -10,6 +10,7 @@ import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.core.fapi.FapiService;
 import dk.magenta.datafordeler.core.util.ListHashMap;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.records.BaseRecord;
 import dk.magenta.datafordeler.cvr.records.ParticipantRecord;
@@ -76,7 +77,6 @@ public class ParticipantEntityManager extends CvrEntityManager {
         Transaction transaction = session.beginTransaction();
         jsonNode = this.unwrap(jsonNode);
 
-        ParticipantEntity participant = new ParticipantEntity(UUID.randomUUID(), "cvr", jsonNode.get("enhedsNummer").asInt());
         ParticipantRecord participantRecord;
         try {
             participantRecord = getObjectMapper().treeToValue(jsonNode, ParticipantRecord.class);
@@ -84,6 +84,9 @@ public class ParticipantEntityManager extends CvrEntityManager {
             e.printStackTrace();
             return null;
         }
+        ParticipantEntity participant = new ParticipantEntity(participantRecord.generateUUID(), CvrPlugin.getDomain());
+        participant.setParticipantNumber(participantRecord.unitNumber);
+
         List<BaseRecord> records = participantRecord.getAll();
 
         ListHashMap<OffsetDateTime, BaseRecord> ajourRecords = new ListHashMap<>();
