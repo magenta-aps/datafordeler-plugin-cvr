@@ -181,6 +181,4 @@ public class CompanyEntityManager extends CvrEntityManager {
         return registrations;
     }
 
-
-
 }

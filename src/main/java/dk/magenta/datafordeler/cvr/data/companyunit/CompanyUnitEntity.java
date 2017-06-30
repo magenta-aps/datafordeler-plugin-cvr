@@ -25,18 +25,12 @@ public class CompanyUnitEntity extends Entity<CompanyUnitEntity, CompanyUnitRegi
     public CompanyUnitEntity() {
     }
 
-    public CompanyUnitEntity(int pNumber) {
-        this.pNumber = pNumber;
-    }
-
-    public CompanyUnitEntity(Identification identification, int pNumber) {
+    public CompanyUnitEntity(Identification identification) {
         super(identification);
-        this.pNumber = pNumber;
     }
 
-    public CompanyUnitEntity(UUID uuid, String domain, int pNumber) {
+    public CompanyUnitEntity(UUID uuid, String domain) {
         super(uuid, domain);
-        this.pNumber = pNumber;
     }
 
     @Column

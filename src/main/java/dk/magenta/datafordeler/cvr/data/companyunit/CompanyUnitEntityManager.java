@@ -12,6 +12,7 @@ import dk.magenta.datafordeler.core.fapi.FapiService;
 import dk.magenta.datafordeler.core.plugin.EntityManager;
 import dk.magenta.datafordeler.core.util.ListHashMap;
 import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
+import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
 import dk.magenta.datafordeler.cvr.records.BaseRecord;
 import dk.magenta.datafordeler.cvr.records.CompanyUnitRecord;
 import org.hibernate.Session;
@@ -106,7 +107,6 @@ public class CompanyUnitEntityManager extends CvrEntityManager {
         Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
 
-        CompanyUnitEntity companyUnit = new CompanyUnitEntity(UUID.randomUUID(), "cvr", jsonNode.get("pNummer").asInt());
         CompanyUnitRecord companyUnitRecord;
         try {
             companyUnitRecord = getObjectMapper().treeToValue(jsonNode, CompanyUnitRecord.class);
@@ -114,6 +114,9 @@ public class CompanyUnitEntityManager extends CvrEntityManager {
             e.printStackTrace();
             return null;
         }
+        CompanyUnitEntity companyUnit = new CompanyUnitEntity(UUID.randomUUID(), "cvr");
+        companyUnit.setPNumber(companyUnitRecord.getpNumber());
+
         List<BaseRecord> records = companyUnitRecord.getAll();
 
         ListHashMap<OffsetDateTime, BaseRecord> ajourRecords = new ListHashMap<>();
@@ -168,13 +171,16 @@ public class CompanyUnitEntityManager extends CvrEntityManager {
             } catch (DataFordelerException e) {
                 e.printStackTrace();
             }
+            try {
+                System.out.println(getObjectMapper().writeValueAsString(registration));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
         }
-        System.out.println("created "+companyUnit.getRegistrations().size()+" registrations");
+        System.out.println("created " + companyUnit.getRegistrations().size() + " registrations");
         transaction.commit();
         session.close();
         return registrations;
     }
-
-
 
 }
