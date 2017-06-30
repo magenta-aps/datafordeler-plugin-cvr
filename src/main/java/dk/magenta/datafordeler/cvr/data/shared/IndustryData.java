@@ -16,7 +16,7 @@ import java.util.Map;
  * Created by lars on 09-06-17.
  */
 @Entity
-@Table(name="cvr_industry")
+@Table(name="cvr_industrylink")
 public class IndustryData extends DetailData {
 
     public IndustryData() {
