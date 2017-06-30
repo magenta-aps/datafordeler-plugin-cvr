@@ -3,7 +3,6 @@ package dk.magenta.datafordeler.cvr.data.shared;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
-import dk.magenta.datafordeler.cvr.data.shared.CompanySingleData;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
@@ -18,7 +17,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "cvr_company_participantlink")
-public class CompanyParticipantLink extends CompanySingleData<Integer> {
+public class ParticipantLink extends SingleData<Integer> {
 
     @ManyToMany
     private Set<CompanyBaseData> companyBases = new HashSet<>();

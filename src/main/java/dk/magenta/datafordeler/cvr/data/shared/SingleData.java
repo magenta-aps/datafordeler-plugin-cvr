@@ -9,7 +9,7 @@ import javax.persistence.MappedSuperclass;
  * Created by lars on 16-05-17.
  */
 @MappedSuperclass
-public abstract class CompanySingleData<T> extends DetailData {
+public abstract class SingleData<T> extends DetailData {
 
     @Column
     @JsonIgnore

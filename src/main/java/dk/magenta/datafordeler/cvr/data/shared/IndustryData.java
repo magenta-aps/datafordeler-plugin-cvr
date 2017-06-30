@@ -16,13 +16,13 @@ import java.util.Map;
  * Created by lars on 09-06-17.
  */
 @Entity
-@Table(name="cvr_company_industry")
-public class CompanyIndustryData extends DetailData {
+@Table(name="cvr_industry")
+public class IndustryData extends DetailData {
 
-    public CompanyIndustryData() {
+    public IndustryData() {
         this(false);
     }
-    public CompanyIndustryData(boolean isPrimary) {
+    public IndustryData(boolean isPrimary) {
         this.isPrimary = isPrimary;
     }
 

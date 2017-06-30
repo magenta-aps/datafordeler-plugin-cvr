@@ -2,6 +2,12 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.QueryManager;
+import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
+import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
+import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
+import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
+import org.hibernate.Session;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,13 +16,30 @@ import java.util.List;
  * Created by lars on 26-06-17.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CompanyRecord {
+public class CompanyRecord extends BaseRecord {
+
+    @JsonProperty(value = "cvrNummer")
+    private int cvrNumber;
+
+    public int getCvrNumber() {
+        return this.cvrNumber;
+    }
+
+    @JsonProperty(value = "reklamebeskyttet")
+    private boolean advertProtected;
+
+    @JsonProperty(value = "enhedsNummer")
+    private int unitNumber;
+
+    @JsonProperty(value = "enhedstype")
+    private String unitType;
+
 
     @JsonProperty(value = "navne")
-    public List<NameRecord> names;
+    private List<NameRecord> names;
 
     @JsonProperty(value = "beliggenhedsadresse")
-    public List<AddressRecord> locationAddresses;
+    private List<AddressRecord> locationAddresses;
 
     public void setLocationAddresses(List<AddressRecord> locationAddresses) {
         for (AddressRecord record : locationAddresses) {
@@ -26,7 +49,7 @@ public class CompanyRecord {
     }
 
     @JsonProperty(value = "postadresse")
-    public List<AddressRecord> postalAddresses;
+    private List<AddressRecord> postalAddresses;
 
     public void setPostalAddresses(List<AddressRecord> postalAddresses) {
         for (AddressRecord record : postalAddresses) {
@@ -36,7 +59,7 @@ public class CompanyRecord {
     }
 
     @JsonProperty(value = "telefonNummer")
-    public List<ContactRecord> phoneRecords;
+    private List<ContactRecord> phoneRecords;
 
     public void setPhoneRecords(List<ContactRecord> phoneRecords) {
         for (ContactRecord record : phoneRecords) {
@@ -46,7 +69,7 @@ public class CompanyRecord {
     }
 
     @JsonProperty(value = "telefaxNummer")
-    public List<ContactRecord> faxRecords;
+    private List<ContactRecord> faxRecords;
 
     public void setFaxRecords(List<ContactRecord> faxRecords) {
         for (ContactRecord record : faxRecords) {
@@ -56,7 +79,7 @@ public class CompanyRecord {
     }
 
     @JsonProperty(value = "elektroniskPost")
-    public List<ContactRecord> emailRecords;
+    private List<ContactRecord> emailRecords;
 
     public void setEmailRecords(List<ContactRecord> emailRecords) {
         for (ContactRecord record : emailRecords) {
@@ -66,7 +89,7 @@ public class CompanyRecord {
     }
 
     @JsonProperty(value = "hjemmeside")
-    public List<ContactRecord> homepageRecords;
+    private List<ContactRecord> homepageRecords;
 
     public void setHomepageRecords(List<ContactRecord> homepageRecords) {
         for (ContactRecord record : homepageRecords) {
@@ -76,7 +99,7 @@ public class CompanyRecord {
     }
 
     @JsonProperty(value = "obligatoriskEmail")
-    public List<ContactRecord> mandatoryEmailRecords;
+    private List<ContactRecord> mandatoryEmailRecords;
 
     public void setMandatoryEmailRecords(List<ContactRecord> mandatoryEmailRecords) {
         for (ContactRecord record : mandatoryEmailRecords) {
@@ -86,11 +109,11 @@ public class CompanyRecord {
     }
 
     @JsonProperty(value = "livsforloeb")
-    public List<LifecycleRecord> lifecycleRecords;
+    private List<LifecycleRecord> lifecycleRecords;
 
 
     @JsonProperty(value = "hovedbranche")
-    public List<CompanyIndustryRecord> mainIndustryRecords;
+    private List<CompanyIndustryRecord> mainIndustryRecords;
 
     public void setMainIndustryRecords(List<CompanyIndustryRecord> mainIndustryRecords) {
         for (CompanyIndustryRecord record : mainIndustryRecords) {
@@ -100,7 +123,7 @@ public class CompanyRecord {
     }
 
     @JsonProperty(value = "bibranche1")
-    public List<CompanyIndustryRecord> secondaryIndustryRecords1;
+    private List<CompanyIndustryRecord> secondaryIndustryRecords1;
 
     public void setSecondaryIndustryRecords1(List<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
@@ -110,7 +133,7 @@ public class CompanyRecord {
     }
 
     @JsonProperty(value = "bibranche2")
-    public List<CompanyIndustryRecord> secondaryIndustryRecords2;
+    private List<CompanyIndustryRecord> secondaryIndustryRecords2;
 
     public void setSecondaryIndustryRecords2(List<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
@@ -120,7 +143,7 @@ public class CompanyRecord {
     }
 
     @JsonProperty(value = "bibranche3")
-    public List<CompanyIndustryRecord> secondaryIndustryRecords3;
+    private List<CompanyIndustryRecord> secondaryIndustryRecords3;
 
     public void setSecondaryIndustryRecords3(List<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
@@ -130,31 +153,30 @@ public class CompanyRecord {
     }
 
     @JsonProperty(value = "virksomhedsstatus")
-    public List<CompanyStatusRecord> statusRecords;
+    private List<CompanyStatusRecord> statusRecords;
 
 
     @JsonProperty(value = "virksomhedsform")
-    public List<CompanyFormRecord> formRecords;
+    private List<CompanyFormRecord> formRecords;
 
     @JsonProperty(value = "aarsbeskaeftigelse")
-    public List<CompanyYearlyNumbersRecord> yearlyNumbersRecords;
+    private List<CompanyYearlyNumbersRecord> yearlyNumbersRecords;
 
     @JsonProperty(value = "kvartalsbeskaeftigelse")
-    public List<CompanyQuarterlyNumbersRecord> quarterlyNumbersRecords;
+    private List<CompanyQuarterlyNumbersRecord> quarterlyNumbersRecords;
 
     @JsonProperty(value = "maanedsbeskaeftigelse")
-    public List<CompanyMonthlyNumbersRecord> monthlyNumbersRecords;
+    private List<CompanyMonthlyNumbersRecord> monthlyNumbersRecords;
 
     @JsonProperty(value = "attributter")
-    public List<AttributeRecord> attributeRecords;
+    private List<AttributeRecord> attributeRecords;
 
     @JsonProperty(value = "penheder")
-    public List<CompanyUnitLinkRecord> unitLinkRecords;
-
-
+    private List<CompanyUnitLinkRecord> unitLinkRecords;
 
     public List<BaseRecord> getAll() {
         ArrayList<BaseRecord> list = new ArrayList<>();
+        list.add(this);
         list.addAll(this.names);
         list.addAll(this.locationAddresses);
         list.addAll(this.postalAddresses);
@@ -178,5 +200,22 @@ public class CompanyRecord {
         }
         list.addAll(this.unitLinkRecords);
         return list;
+    }
+
+    @Override
+    public void populateBaseData(CompanyBaseData data, QueryManager queryManager, Session session) {
+        data.setAdvertProtection(this.advertProtected);
+        data.setUnitNumber(this.unitNumber);
+        data.setUnitType(this.unitType);
+    }
+
+    @Override
+    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
+        // noop
+    }
+
+    @Override
+    public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
+        // noop
     }
 }
