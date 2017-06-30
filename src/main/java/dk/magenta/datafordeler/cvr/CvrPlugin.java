@@ -46,6 +46,10 @@ public class CvrPlugin extends Plugin {
         return "cvr";
     }
 
+    public static String getDomain() {
+        return "cvr";
+    }
+
     @Override
     public RegisterManager getRegisterManager() {
         return this.registerManager;

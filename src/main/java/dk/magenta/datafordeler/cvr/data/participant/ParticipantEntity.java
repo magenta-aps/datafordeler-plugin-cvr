@@ -20,18 +20,15 @@ public class ParticipantEntity extends Entity<ParticipantEntity, ParticipantRegi
     @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="type")
     public static final String schema = "Participant";
 
-    public ParticipantEntity(int participantNumber) {
-        this.participantNumber = participantNumber;
+    public ParticipantEntity() {
     }
 
-    public ParticipantEntity(Identification identification, int participantNumber) {
+    public ParticipantEntity(Identification identification) {
         super(identification);
-        this.participantNumber = participantNumber;
     }
 
-    public ParticipantEntity(UUID uuid, String domain, int participantNumber) {
+    public ParticipantEntity(UUID uuid, String domain) {
         super(uuid, domain);
-        this.participantNumber = participantNumber;
     }
 
     @Column(nullable = false, insertable = true, updatable = false)
