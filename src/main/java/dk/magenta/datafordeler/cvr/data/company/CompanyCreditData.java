@@ -2,7 +2,7 @@ package dk.magenta.datafordeler.cvr.data.company;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dk.magenta.datafordeler.cvr.data.shared.CompanySingleData;
+import dk.magenta.datafordeler.cvr.data.shared.SingleData;
 
 import javax.persistence.*;
 import java.util.*;
@@ -17,7 +17,7 @@ import java.util.*;
 uniqueConstraints = {
         @UniqueConstraint(name = "data", columnNames = "data")
 })
-public class CompanyCreditData extends CompanySingleData<String> {
+public class CompanyCreditData extends SingleData<String> {
 
     public CompanyCreditData() {
     }

@@ -23,18 +23,12 @@ public class CompanyEntity extends Entity<CompanyEntity, CompanyRegistration> {
     public CompanyEntity() {
     }
 
-    public CompanyEntity(int cvrNumber) {
-        this.cvrNumber = cvrNumber;
-    }
-
-    public CompanyEntity(Identification identification, int cvrNumber) {
+    public CompanyEntity(Identification identification) {
         super(identification);
-        this.cvrNumber = cvrNumber;
     }
 
-    public CompanyEntity(UUID uuid, String domain, int cvrNumber) {
+    public CompanyEntity(UUID uuid, String domain) {
         super(uuid, domain);
-        this.cvrNumber = cvrNumber;
     }
 
     @Column

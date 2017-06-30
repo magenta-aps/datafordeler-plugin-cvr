@@ -105,7 +105,6 @@ public class CompanyEntityManager extends CvrEntityManager {
         Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
 
-        CompanyEntity company = new CompanyEntity(UUID.randomUUID(), "cvr", jsonNode.get("cvrNummer").asInt());
         CompanyRecord companyRecord;
         try {
             companyRecord = getObjectMapper().treeToValue(jsonNode, CompanyRecord.class);
@@ -113,6 +112,9 @@ public class CompanyEntityManager extends CvrEntityManager {
             e.printStackTrace();
             return null;
         }
+        CompanyEntity company = new CompanyEntity(UUID.randomUUID(), "cvr");
+        company.setCvrNumber(companyRecord.getCvrNumber());
+
         List<BaseRecord> records = companyRecord.getAll();
 
         ListHashMap<OffsetDateTime, BaseRecord> ajourRecords = new ListHashMap<>();
@@ -165,6 +167,11 @@ public class CompanyEntityManager extends CvrEntityManager {
             try {
                 queryManager.saveRegistration(session, company, registration);
             } catch (DataFordelerException e) {
+                e.printStackTrace();
+            }
+            try {
+                System.out.println(getObjectMapper().writeValueAsString(registration));
+            } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
         }

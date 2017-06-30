@@ -36,10 +36,18 @@ public abstract class CvrRecord {
     }
 
     public LocalDate getValidFrom() {
-        return this.validity.getValidFrom();
+        if (this.validity != null) {
+            return this.validity.getValidFrom();
+        } else {
+            return null;
+        }
     }
 
     public LocalDate getValidTo() {
-        return this.validity.getValidTo();
+        if (this.validity != null){
+            return this.validity.getValidTo();
+        } else {
+            return null;
+        }
     }
 }

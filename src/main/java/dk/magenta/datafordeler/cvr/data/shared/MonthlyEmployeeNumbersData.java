@@ -17,7 +17,7 @@ import java.util.Map;
         @Index(name = "year", columnList = "year"),
         @Index(name = "month", columnList = "month")
 })
-public class CompanyMonthlyEmployeeNumbersData extends CompanyEmployeeNumbersData {
+public class MonthlyEmployeeNumbersData extends EmployeeNumbersData {
 
 
     @Column(name = "year")
