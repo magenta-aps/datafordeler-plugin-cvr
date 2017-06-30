@@ -4,9 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
+import dk.magenta.datafordeler.core.util.ListHashMap;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,5 +36,20 @@ public abstract class DetailData extends DatabaseEntry {
      */
     public Map<String, Object> databaseFields() {
         return this.asMap();
+    }
+
+    public static Map<String, Object> listDatabaseFields(Collection<? extends DetailData> list) {
+        ListHashMap<String, Object> map = new ListHashMap<>();
+        for (DetailData data : list) {
+            Map<String, Object> fields = data.databaseFields();
+            for (String key : fields.keySet()) {
+                map.add(key, fields.get(key));
+            }
+        }
+        HashMap<String, Object> out = new HashMap<>();
+        for (String key : map.keySet()) {
+            out.put(key, map.get(key));
+        }
+        return out;
     }
 }
