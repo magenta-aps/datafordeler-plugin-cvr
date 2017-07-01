@@ -42,6 +42,8 @@ public abstract class CvrEntityManager extends EntityManager {
 
     protected abstract String getBaseName();
 
+    protected OffsetDateTime fallbackRegistrationFrom = OffsetDateTime.MIN;
+
     public CvrEntityManager() {
         this.commonFetcher = new ScanScrollCommunicator("Magenta_CVR_I_SKYEN", "20ce0f61-3f04-43ec-8119-3a67384e269c");
         this.handledURISubstrings = new ArrayList<>();

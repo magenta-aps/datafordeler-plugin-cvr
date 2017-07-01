@@ -77,6 +77,7 @@ public class CompanyEntityManager extends CvrEntityManager {
 
     @Override
     public List<? extends Registration> parseRegistration(JsonNode jsonNode) throws ParseException {
+
         ArrayList<Registration> registrations = new ArrayList<>();
 
         if (jsonNode.has("hits")) {
@@ -128,6 +129,11 @@ public class CompanyEntityManager extends CvrEntityManager {
         TreeSet<OffsetDateTime> sortedTimestamps = new TreeSet<>();
         for (BaseRecord record : records) {
             OffsetDateTime registrationFrom = record.getLastUpdated();
+            System.out.println("registrationFrom: "+registrationFrom);
+            if (registrationFrom == null) {
+                System.out.println("falling back to default");
+                registrationFrom = this.fallbackRegistrationFrom;
+            }
             ajourRecords.add(registrationFrom, record);
             sortedTimestamps.add(registrationFrom);
         }

@@ -20,7 +20,7 @@ import java.util.UUID;
 public class CompanyUnitEntity extends Entity<CompanyUnitEntity, CompanyUnitRegistration> {
 
     @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="type")
-    public static final String schema = "CompanyUnit";
+    public static final String schema = "produktionsenhed";
 
     public CompanyUnitEntity() {
     }
