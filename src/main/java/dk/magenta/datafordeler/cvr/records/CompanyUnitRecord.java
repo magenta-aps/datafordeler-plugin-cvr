@@ -156,23 +156,53 @@ public class CompanyUnitRecord extends BaseRecord {
 
     public List<BaseRecord> getAll() {
         ArrayList<BaseRecord> list = new ArrayList<>();
-        list.addAll(this.names);
-        list.addAll(this.locationAddresses);
-        list.addAll(this.postalAddresses);
-        list.addAll(this.phoneRecords);
-        list.addAll(this.faxRecords);
-        list.addAll(this.emailRecords);
-        list.addAll(this.lifecycleRecords);
-        list.addAll(this.mainIndustryRecords);
-        list.addAll(this.secondaryIndustryRecords1);
-        list.addAll(this.secondaryIndustryRecords2);
-        list.addAll(this.secondaryIndustryRecords3);
-        list.addAll(this.yearlyNumbersRecords);
-        list.addAll(this.quarterlyNumbersRecords);
-        for (AttributeRecord attributeRecord : this.attributeRecords) {
-            list.addAll(attributeRecord.getValues());
+        if (this.names != null) {
+            list.addAll(this.names);
         }
-        list.addAll(this.participantRelationRecords);
+        if (this.locationAddresses != null) {
+            list.addAll(this.locationAddresses);
+        }
+        if (this.postalAddresses != null) {
+            list.addAll(this.postalAddresses);
+        }
+        if (this.phoneRecords != null) {
+            list.addAll(this.phoneRecords);
+        }
+        if (this.faxRecords != null) {
+            list.addAll(this.faxRecords);
+        }
+        if (this.emailRecords != null) {
+            list.addAll(this.emailRecords);
+        }
+        if (this.lifecycleRecords != null) {
+            list.addAll(this.lifecycleRecords);
+        }
+        if (this.mainIndustryRecords != null) {
+            list.addAll(this.mainIndustryRecords);
+        }
+        if (this.secondaryIndustryRecords1 != null) {
+            list.addAll(this.secondaryIndustryRecords1);
+        }
+        if (this.secondaryIndustryRecords2 != null) {
+            list.addAll(this.secondaryIndustryRecords2);
+        }
+        if (this.secondaryIndustryRecords3 != null) {
+            list.addAll(this.secondaryIndustryRecords3);
+        }
+        if (this.yearlyNumbersRecords != null) {
+            list.addAll(this.yearlyNumbersRecords);
+        }
+        if (this.quarterlyNumbersRecords != null) {
+            list.addAll(this.quarterlyNumbersRecords);
+        }
+        if (this.attributeRecords != null) {
+            for (AttributeRecord attributeRecord : this.attributeRecords) {
+                list.addAll(attributeRecord.getValues());
+            }
+        }
+        if (this.participantRelationRecords != null) {
+            list.addAll(this.participantRelationRecords);
+        }
         return list;
     }
 

@@ -98,15 +98,31 @@ public class ParticipantRecord extends BaseRecord {
     public List<BaseRecord> getAll() {
         ArrayList<BaseRecord> list = new ArrayList<>();
         list.add(this);
-        list.addAll(this.names);
-        list.addAll(this.locationAddresses);
-        list.addAll(this.postalAddresses);
-        list.addAll(this.businessAddresses);
-        list.addAll(this.phoneRecords);
-        list.addAll(this.faxRecords);
-        list.addAll(this.emailRecords);
-        for (AttributeRecord attributeRecord : this.attributeRecords) {
-            list.addAll(attributeRecord.getValues());
+        if (this.names != null) {
+            list.addAll(this.names);
+        }
+        if (this.locationAddresses != null) {
+            list.addAll(this.locationAddresses);
+        }
+        if (this.postalAddresses != null) {
+            list.addAll(this.postalAddresses);
+        }
+        if (this.businessAddresses != null) {
+            list.addAll(this.businessAddresses);
+        }
+        if (this.phoneRecords != null) {
+            list.addAll(this.phoneRecords);
+        }
+        if (this.faxRecords != null) {
+            list.addAll(this.faxRecords);
+        }
+        if (this.emailRecords != null) {
+            list.addAll(this.emailRecords);
+        }
+        if (this.attributeRecords != null) {
+            for (AttributeRecord attributeRecord : this.attributeRecords) {
+                list.addAll(attributeRecord.getValues());
+            }
         }
         return list;
     }
@@ -128,7 +144,6 @@ public class ParticipantRecord extends BaseRecord {
 
     @Override
     public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
-        System.out.println("populateBaseData "+this.unitNumber+" "+this.unitType);
         baseData.setUnitNumber(this.unitNumber);
         baseData.setType(ParticipantType.getType(this.unitType, queryManager, session));
     }

@@ -179,29 +179,71 @@ public class CompanyRecord extends BaseRecord {
     public List<BaseRecord> getAll() {
         ArrayList<BaseRecord> list = new ArrayList<>();
         list.add(this);
-        list.addAll(this.names);
-        list.addAll(this.locationAddresses);
-        list.addAll(this.postalAddresses);
-        list.addAll(this.phoneRecords);
-        list.addAll(this.faxRecords);
-        list.addAll(this.emailRecords);
-        list.addAll(this.homepageRecords);
-        list.addAll(this.mandatoryEmailRecords);
-        list.addAll(this.lifecycleRecords);
-        list.addAll(this.mainIndustryRecords);
-        list.addAll(this.secondaryIndustryRecords1);
-        list.addAll(this.secondaryIndustryRecords2);
-        list.addAll(this.secondaryIndustryRecords3);
-        list.addAll(this.statusRecords);
-        list.addAll(this.formRecords);
-        list.addAll(this.yearlyNumbersRecords);
-        list.addAll(this.quarterlyNumbersRecords);
-        list.addAll(this.monthlyNumbersRecords);
-        for (AttributeRecord attributeRecord : this.attributeRecords) {
-            list.addAll(attributeRecord.getValues());
+        if (this.names != null) {
+            list.addAll(this.names);
         }
-        list.addAll(this.unitLinkRecords);
-        list.addAll(this.participantRelationRecords);
+        if (this.locationAddresses != null) {
+            list.addAll(this.locationAddresses);
+        }
+        if (this.postalAddresses != null) {
+            list.addAll(this.postalAddresses);
+        }
+        if (this.phoneRecords != null) {
+            list.addAll(this.phoneRecords);
+        }
+        if (this.faxRecords != null) {
+            list.addAll(this.faxRecords);
+        }
+        if (this.emailRecords != null) {
+            list.addAll(this.emailRecords);
+        }
+        if (this.homepageRecords != null) {
+            list.addAll(this.homepageRecords);
+        }
+        if (this.mandatoryEmailRecords != null) {
+            list.addAll(this.mandatoryEmailRecords);
+        }
+        if (this.lifecycleRecords != null) {
+            list.addAll(this.lifecycleRecords);
+        }
+        if (this.mainIndustryRecords != null) {
+            list.addAll(this.mainIndustryRecords);
+        }
+        if (this.secondaryIndustryRecords1 != null) {
+            list.addAll(this.secondaryIndustryRecords1);
+        }
+        if (this.secondaryIndustryRecords2 != null) {
+            list.addAll(this.secondaryIndustryRecords2);
+        }
+        if (this.secondaryIndustryRecords3 != null) {
+            list.addAll(this.secondaryIndustryRecords3);
+        }
+        if (this.statusRecords != null) {
+            list.addAll(this.statusRecords);
+        }
+        if (this.formRecords != null) {
+            list.addAll(this.formRecords);
+        }
+        if (this.yearlyNumbersRecords != null) {
+            list.addAll(this.yearlyNumbersRecords);
+        }
+        if (this.quarterlyNumbersRecords != null) {
+            list.addAll(this.quarterlyNumbersRecords);
+        }
+        if (this.monthlyNumbersRecords != null) {
+            list.addAll(this.monthlyNumbersRecords);
+        }
+        if (this.attributeRecords != null) {
+            for (AttributeRecord attributeRecord : this.attributeRecords) {
+                list.addAll(attributeRecord.getValues());
+            }
+        }
+        if (this.unitLinkRecords != null) {
+            list.addAll(this.unitLinkRecords);
+        }
+        if (this.participantRelationRecords != null) {
+            list.addAll(this.participantRelationRecords);
+        }
         return list;
     }
 
