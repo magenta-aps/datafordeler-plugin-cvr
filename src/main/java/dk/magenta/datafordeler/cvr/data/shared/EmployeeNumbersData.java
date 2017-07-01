@@ -34,7 +34,7 @@ public abstract class EmployeeNumbersData extends DetailData {
         return employeesLow;
     }
 
-    public void setEmployeesLow(Integer employeesLow) {
+    public void setEmployeesLow(Integer employeesLow) throws ParseException {
         if (employeesLow != null) {
             if (this.employeesHigh != null) {
                 this.checkBounds(employeesLow, this.employeesHigh);
@@ -54,7 +54,7 @@ public abstract class EmployeeNumbersData extends DetailData {
         return employeesHigh;
     }
 
-    public void setEmployeesHigh(Integer employeesHigh) {
+    public void setEmployeesHigh(Integer employeesHigh) throws ParseException {
         if (employeesHigh != null) {
             if (this.employeesLow != null) {
                 this.checkBounds(this.employeesLow, employeesHigh);
@@ -79,7 +79,7 @@ public abstract class EmployeeNumbersData extends DetailData {
         return fullTimeEquivalentLow;
     }
 
-    public void setFullTimeEquivalentLow(Integer fullTimeEquivalentLow) {
+    public void setFullTimeEquivalentLow(Integer fullTimeEquivalentLow) throws ParseException {
         if (fullTimeEquivalentLow != null) {
             if (this.fullTimeEquivalentHigh != null) {
                 this.checkBounds(fullTimeEquivalentLow, this.fullTimeEquivalentHigh);
@@ -99,7 +99,7 @@ public abstract class EmployeeNumbersData extends DetailData {
         return fullTimeEquivalentHigh;
     }
 
-    public void setFullTimeEquivalentHigh(Integer fullTimeEquivalentHigh) {
+    public void setFullTimeEquivalentHigh(Integer fullTimeEquivalentHigh) throws ParseException {
         if (fullTimeEquivalentHigh != null) {
             if (this.fullTimeEquivalentLow != null) {
                 this.checkBounds(this.fullTimeEquivalentLow, fullTimeEquivalentHigh);
@@ -124,7 +124,7 @@ public abstract class EmployeeNumbersData extends DetailData {
         return includingOwnersLow;
     }
 
-    public void setIncludingOwnersLow(Integer includingOwnersLow) {
+    public void setIncludingOwnersLow(Integer includingOwnersLow) throws ParseException {
         if (includingOwnersLow != null) {
             if (this.includingOwnersHigh != null) {
                 this.checkBounds(includingOwnersLow, this.includingOwnersHigh);
@@ -144,7 +144,7 @@ public abstract class EmployeeNumbersData extends DetailData {
         return includingOwnersHigh;
     }
 
-    public void setIncludingOwnersHigh(Integer includingOwnersHigh) {
+    public void setIncludingOwnersHigh(Integer includingOwnersHigh) throws ParseException {
         if (includingOwnersHigh != null) {
             if (this.includingOwnersLow != null) {
                 this.checkBounds(this.includingOwnersLow, includingOwnersHigh);
@@ -187,12 +187,12 @@ public abstract class EmployeeNumbersData extends DetailData {
 
 
 
-    protected void checkBounds(int low, int high) throws InvalidClientInputException {
+    protected void checkBounds(int low, int high) throws ParseException {
         if (high < low) {
-            throw new InvalidClientInputException("Upper bound must not be less than lower bound (low: "+low+", high: "+high+")");
+            throw new ParseException("Upper bound must not be less than lower bound (low: "+low+", high: "+high+")");
         }
         if (low < 0) {
-            throw new InvalidClientInputException("Lower bound must not be less than zero (low: "+low+")");
+            throw new ParseException("Lower bound must not be less than zero (low: "+low+")");
         }
     }
 
