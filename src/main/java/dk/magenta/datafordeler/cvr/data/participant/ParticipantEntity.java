@@ -43,4 +43,9 @@ public class ParticipantEntity extends Entity<ParticipantEntity, ParticipantRegi
     public void setParticipantNumber(long participantNumber) {
         this.participantNumber = participantNumber;
     }
+
+    public static UUID generateUUID(String unitType, long unitNumber) {
+        String uuidInput = "participant:"+unitType+"/"+unitNumber;
+        return UUID.nameUUIDFromBytes(uuidInput.getBytes());
+    }
 }

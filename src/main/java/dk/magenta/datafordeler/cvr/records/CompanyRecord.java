@@ -11,6 +11,7 @@ import org.hibernate.Session;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by lars on 26-06-17.
@@ -245,6 +246,10 @@ public class CompanyRecord extends BaseRecord {
             list.addAll(this.participantRelationRecords);
         }
         return list;
+    }
+
+    public UUID generateUUID() {
+        return CompanyEntity.generateUUID(this.cvrNumber);
     }
 
     @Override
