@@ -14,6 +14,8 @@ import dk.magenta.datafordeler.cvr.CvrPlugin;
 import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.records.BaseRecord;
 import dk.magenta.datafordeler.cvr.records.ParticipantRecord;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,8 @@ public class ParticipantEntityManager extends CvrEntityManager {
 
     @Autowired
     private SessionManager sessionManager;
+
+    private Logger log = LogManager.getLogger(ParticipantEntityManager.class);
 
     public ParticipantEntityManager() {
         this.managedEntityClass = ParticipantEntity.class;
@@ -141,7 +145,7 @@ public class ParticipantEntityManager extends CvrEntityManager {
                 e.printStackTrace();
             }
         }
-        System.out.println("created "+participant.getRegistrations().size()+" registrations");
+        log.info("Created "+participant.getRegistrations().size()+" registrations");
         transaction.commit();
         session.close();
         return registrations;
