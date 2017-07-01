@@ -154,16 +154,16 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
             map.put("telefon", this.phoneData);
         }
         if (this.emailData != null) {
-            map.put("email", this.emailData.getData());
+            map.put("email", this.emailData);
         }
         if (this.faxData != null) {
-            map.put("fax", this.faxData.getData());
+            map.put("fax", this.faxData);
         }
         if (this.homepageData != null) {
-            map.put("hjemmeside", this.homepageData.getData());
+            map.put("hjemmeside", this.homepageData);
         }
         if (this.mandatoryEmailData != null) {
-            map.put("obligatoriskEmail", this.mandatoryEmailData.getData());
+            map.put("obligatoriskEmail", this.mandatoryEmailData);
         }
         if (this.unitData != null && !this.unitData.isEmpty()) {
             map.put("enheder", this.unitData);
@@ -210,7 +210,7 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         }
         this.advertProtectionData.setData(advertProtection);
     }
-    public void setUnitNumber(int unitNumber) {
+    public void setUnitNumber(long unitNumber) {
         if (this.unitNumberData == null) {
             this.unitNumberData = new IntegerData();
         }

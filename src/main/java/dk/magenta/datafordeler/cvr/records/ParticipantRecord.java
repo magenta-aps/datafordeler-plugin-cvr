@@ -2,6 +2,13 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.QueryManager;
+import dk.magenta.datafordeler.core.exception.ParseException;
+import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
+import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
+import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
+import dk.magenta.datafordeler.cvr.data.participant.ParticipantType;
+import org.hibernate.Session;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +18,10 @@ import java.util.UUID;
  * Created by lars on 26-06-17.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ParticipantRecord {
+public class ParticipantRecord extends BaseRecord {
 
     @JsonProperty(value = "enhedsNummer")
-    public int unitNumber;
+    public long unitNumber;
 
     @JsonProperty(value = "enhedstype")
     public String unitType;
@@ -90,6 +97,7 @@ public class ParticipantRecord {
 
     public List<BaseRecord> getAll() {
         ArrayList<BaseRecord> list = new ArrayList<>();
+        list.add(this);
         list.addAll(this.names);
         list.addAll(this.locationAddresses);
         list.addAll(this.postalAddresses);
@@ -106,5 +114,22 @@ public class ParticipantRecord {
     public UUID generateUUID() {
         String uuidInput = "participant:"+this.unitType+"/"+this.unitNumber;
         return UUID.nameUUIDFromBytes(uuidInput.getBytes());
+    }
+
+    @Override
+    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) throws ParseException {
+        // Noop
+    }
+
+    @Override
+    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) throws ParseException {
+        // Noop
+    }
+
+    @Override
+    public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
+        System.out.println("populateBaseData "+this.unitNumber+" "+this.unitType);
+        baseData.setUnitNumber(this.unitNumber);
+        baseData.setType(ParticipantType.getType(this.unitType, queryManager, session));
     }
 }

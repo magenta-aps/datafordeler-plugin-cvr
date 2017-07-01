@@ -15,7 +15,7 @@ import java.util.Map;
 @Table(name = "cvr_integer", indexes = {
         @Index(name = "data", columnList = "data")
 })
-public class IntegerData extends SingleData<Integer> {
+public class IntegerData extends SingleData<Long> {
 
     public IntegerData() {
     }

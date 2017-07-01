@@ -334,7 +334,6 @@ public class ModelTest {
 
         ParticipantBaseData participantBaseData = new ParticipantBaseData();
         participantBaseData.addEffect(effect);
-        participantBaseData.setCvrNumber(3691218);
         participantBaseData.setName("Mickey Mouse");
 
         ParticipantType type = queryManager.getItem(session, ParticipantType.class, Collections.singletonMap("name", "Person"));
