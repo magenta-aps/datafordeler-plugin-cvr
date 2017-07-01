@@ -123,6 +123,7 @@ public class ParticipantEntityManager extends CvrEntityManager {
             }
 
             for (BaseRecord record : ajourRecords.get(registrationFrom)) {
+                System.out.println("Record: "+record.getClass().getCanonicalName());
                 ParticipantEffect effect = registration.getEffect(record.getValidFrom(), record.getValidTo());
                 if (effect == null) {
                     effect = new ParticipantEffect(registration, record.getValidFrom(), record.getValidTo());

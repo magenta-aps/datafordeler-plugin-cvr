@@ -2,10 +2,7 @@ package dk.magenta.datafordeler.cvr.data.participant;
 
 import dk.magenta.datafordeler.core.database.DataItem;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
-import dk.magenta.datafordeler.cvr.data.shared.AttributeData;
-import dk.magenta.datafordeler.cvr.data.shared.AddressData;
-import dk.magenta.datafordeler.cvr.data.shared.ContactData;
-import dk.magenta.datafordeler.cvr.data.shared.TextData;
+import dk.magenta.datafordeler.cvr.data.shared.*;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -45,9 +42,8 @@ public class ParticipantBaseData extends DataItem<ParticipantEffect, Participant
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private AddressData businessAddressData;
 
-
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private ParticipantCvrData cvrData;
+    private IntegerData unitNumberData;
 
     @ManyToOne(optional = true)
     private ParticipantType type;
@@ -70,11 +66,14 @@ public class ParticipantBaseData extends DataItem<ParticipantEffect, Participant
     @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
+
+
+
         if (this.nameData != null) {
-            map.put("name", this.nameData.getData());
+            map.put("navn", this.nameData.getData());
         }
         if (this.phoneData != null) {
-            map.put("phone", this.phoneData.getData());
+            map.put("telefon", this.phoneData.getData());
         }
         if (this.emailData != null) {
             map.put("email", this.emailData.getData());
@@ -83,28 +82,28 @@ public class ParticipantBaseData extends DataItem<ParticipantEffect, Participant
             map.put("fax", this.faxData.getData());
         }
         if (this.locationAddressData != null) {
-            map.put("locationAddress", this.locationAddressData.getAddress());
+            map.put("beliggenhedsadresse", this.locationAddressData.getAddress());
         }
         if (this.postalAddressData != null) {
-            map.put("postalAddress", this.postalAddressData.getAddress());
+            map.put("postadresse", this.postalAddressData.getAddress());
         }
         if (this.businessAddressData != null) {
-            map.put("businessAddress", this.businessAddressData.getAddress());
+            map.put("forretningsadresse", this.businessAddressData.getAddress());
         }
-        if (this.cvrData != null) {
-            map.put("cvrNumber", this.cvrData.getData());
+        if (this.unitNumberData != null) {
+            map.put("enhedsNummer", this.unitNumberData.getData());
         }
         if (this.type != null) {
-            map.put("type", this.type.getName());
+            map.put("enhedsType", this.type.getName());
         }
         if (this.role != null) {
-            map.put("role", this.role.getName());
+            map.put("rolle", this.role.getName());
         }
         if (this.status != null) {
             map.put("status", this.status.getName());
         }
         if (this.attributeData != null && !this.attributeData.isEmpty()) {
-            map.put("attributes", this.attributeData);
+            map.put("attributter", this.attributeData);
         }
         return map;
     }
@@ -156,11 +155,11 @@ public class ParticipantBaseData extends DataItem<ParticipantEffect, Participant
         this.businessAddressData.setAddress(address);
     }
 
-    public void setCvrNumber(int cvrNumber) {
-        if (this.cvrData == null) {
-            this.cvrData = new ParticipantCvrData();
+    public void setUnitNumber(long unitNumber) {
+        if (this.unitNumberData == null) {
+            this.unitNumberData = new IntegerData();
         }
-        this.cvrData.setData(cvrNumber);
+        this.unitNumberData.setData(unitNumber);
     }
 
     public void setType(ParticipantType type) {
@@ -204,11 +203,14 @@ public class ParticipantBaseData extends DataItem<ParticipantEffect, Participant
         if (this.businessAddressData != null) {
             lookupDefinition.putAll("businessAddressData", this.businessAddressData.databaseFields());
         }
-        if (this.cvrData != null) {
-            lookupDefinition.putAll("cvrData", this.cvrData.databaseFields());
+        if (this.unitNumberData != null) {
+            lookupDefinition.putAll("unitNumberData", this.unitNumberData.databaseFields());
         }
         if (this.status != null) {
             lookupDefinition.putAll("status", this.status.databaseFields());
+        }
+        if (this.type != null) {
+            lookupDefinition.putAll("type", this.type.databaseFields());
         }
 
         return lookupDefinition;
