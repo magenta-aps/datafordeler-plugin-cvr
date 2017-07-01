@@ -32,15 +32,15 @@ public class ParticipantEntity extends Entity<ParticipantEntity, ParticipantRegi
     }
 
     @Column(nullable = false, insertable = true, updatable = false)
-    private int participantNumber;
+    private long participantNumber;
 
     @JsonProperty
     @XmlElement
-    public int getParticipantNumber() {
+    public long getParticipantNumber() {
         return this.participantNumber;
     }
 
-    public void setParticipantNumber(int participantNumber) {
+    public void setParticipantNumber(long participantNumber) {
         this.participantNumber = participantNumber;
     }
 }
