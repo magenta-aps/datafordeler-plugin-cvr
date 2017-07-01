@@ -47,4 +47,9 @@ public class CompanyUnitEntity extends Entity<CompanyUnitEntity, CompanyUnitRegi
     public void setPNumber(int pNumber) {
         this.pNumber = pNumber;
     }
+
+    public static UUID generateUUID(int pNumber) {
+        String uuidInput = "companyunit:"+pNumber;
+        return UUID.nameUUIDFromBytes(uuidInput.getBytes());
+    }
 }
