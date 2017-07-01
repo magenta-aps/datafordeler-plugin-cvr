@@ -97,6 +97,10 @@ public class ParticipantEntityManager extends CvrEntityManager {
         TreeSet<OffsetDateTime> sortedTimestamps = new TreeSet<>();
         for (BaseRecord record : records) {
             OffsetDateTime registrationFrom = record.getLastUpdated();
+            if (registrationFrom == null) {
+                System.out.println("falling back to default");
+                registrationFrom = this.fallbackRegistrationFrom;
+            }
             ajourRecords.add(registrationFrom, record);
             sortedTimestamps.add(registrationFrom);
         }
@@ -123,7 +127,6 @@ public class ParticipantEntityManager extends CvrEntityManager {
             }
 
             for (BaseRecord record : ajourRecords.get(registrationFrom)) {
-                System.out.println("Record: "+record.getClass().getCanonicalName());
                 ParticipantEffect effect = registration.getEffect(record.getValidFrom(), record.getValidTo());
                 if (effect == null) {
                     effect = new ParticipantEffect(registration, record.getValidFrom(), record.getValidTo());

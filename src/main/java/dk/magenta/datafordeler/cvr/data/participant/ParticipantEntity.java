@@ -18,7 +18,7 @@ import java.util.UUID;
 public class ParticipantEntity extends Entity<ParticipantEntity, ParticipantRegistration> {
 
     @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="type")
-    public static final String schema = "Participant";
+    public static final String schema = "deltager";
 
     public ParticipantEntity() {
     }

@@ -37,7 +37,7 @@ public class Municipality extends UnversionedEntity {
 
 
     @JsonProperty(value = "kommuneNavn")
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String text;
 
     public String getText() {
@@ -50,14 +50,18 @@ public class Municipality extends UnversionedEntity {
 
 
     public static Municipality getMunicipality(int code, String text, QueryManager queryManager, Session session) {
-        Municipality municipality = queryManager.getItem(session, Municipality.class, Collections.singletonMap("code", code));
-        if (municipality == null) {
-            municipality = new Municipality();
-            municipality.setCode(code);
-            municipality.setText(text);
-            session.save(municipality);
+        if (code != 0) {
+            Municipality municipality = queryManager.getItem(session, Municipality.class, Collections.singletonMap("code", code));
+            if (municipality == null) {
+                municipality = new Municipality();
+                municipality.setCode(code);
+                municipality.setText(text);
+                session.save(municipality);
+            }
+            return municipality;
+        } else {
+            return null;
         }
-        return municipality;
     }
 
     public static Municipality getMunicipality(Municipality old, QueryManager queryManager, Session session) {

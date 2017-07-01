@@ -3,10 +3,11 @@ package dk.magenta.datafordeler.cvr;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.exception.DataStreamException;
+import dk.magenta.datafordeler.core.exception.HttpStatusException;
 import dk.magenta.datafordeler.core.io.Event;
 import dk.magenta.datafordeler.core.plugin.*;
 import dk.magenta.datafordeler.core.util.ItemInputStream;
-import dk.magenta.datafordeler.core.util.ListHashMap;
+import dk.magenta.datafordeler.cvr.configuration.CvrConfiguration;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfigurationManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
 import org.apache.logging.log4j.LogManager;
@@ -19,11 +20,7 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.List;
-import java.util.StringJoiner;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by lars on 16-05-17.
@@ -45,13 +42,18 @@ public class CvrRegisterManager extends RegisterManager {
     private Logger log = LogManager.getLogger("CvrRegisterManager");
 
     public CvrRegisterManager() {
-        this.commonFetcher = new ScanScrollCommunicator("Magenta_CVR_I_SKYEN", "20ce0f61-3f04-43ec-8119-3a67384e269c");
+
     }
 
     @PostConstruct
     public void init() {
+        CvrConfiguration configuration = configurationManager.getConfiguration();
+        this.commonFetcher = new ScanScrollCommunicator(
+                configuration.getUsername(),
+                configuration.getPassword()
+        );
         try {
-            this.baseEndpoint = new URI(this.configurationManager.getConfiguration().getRegisterAddress());
+            this.baseEndpoint = new URI(configuration.getRegisterAddress());
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -88,7 +90,7 @@ public class CvrRegisterManager extends RegisterManager {
 
     @Override
     protected URI getEventInterface() {
-        return expandBaseURI(this.getBaseEndpoint(), "/getNewEvents");
+        return null;
     }
 
     @Override
@@ -98,14 +100,7 @@ public class CvrRegisterManager extends RegisterManager {
 
     @Override
     public URI getListChecksumInterface(String schema, OffsetDateTime from) {
-        ListHashMap<String, String> parameters = new ListHashMap<>();
-        if (schema != null) {
-            parameters.add("objectType", schema);
-        }
-        if (from != null) {
-            parameters.add("timestamp", from.format(DateTimeFormatter.ISO_DATE_TIME));
-        }
-        return expandBaseURI(this.getBaseEndpoint(), "/listChecksums", RegisterManager.joinQueryString(parameters), null);
+        return null;
     }
 
     public String getPullCronSchedule() {
@@ -113,69 +108,99 @@ public class CvrRegisterManager extends RegisterManager {
     }
 
     public ItemInputStream<Event> pullEvents(URI eventInterface) throws DataFordelerException {
-        //this.getLog().info("Pulling events from "+eventInterface);
         ScanScrollCommunicator eventCommunicator = (ScanScrollCommunicator) this.getEventFetcher();
-        //InputStream responseBody = eventCommunicator.fetch(eventInterface);
-        InputStream responseBody = null;
-        try {
-            responseBody = eventCommunicator.fetch(new URI(
-                            "http://distribution.virk.dk/cvr-permanent/virksomhed/_search"),
-                    new URI("http://distribution.virk.dk/_search/scroll"),
-                    //"{\"query\":{\"match_all\":{}},\"size\":1}"
-                    "{\"query\":{\"term\":{\"Vrvirksomhed.cvrNummer\":\"25052943\"}},\"size\":1}"
-            );
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        return this.parseEventResponse(responseBody);
-    }
 
-
-
-
-    @Override
-    protected ItemInputStream<Event> parseEventResponse(InputStream responseContent) throws DataFordelerException {
         PipedInputStream inputStream = new PipedInputStream();
-        final BufferedReader dataStream = new BufferedReader(new InputStreamReader(responseContent));
+        final PipedOutputStream outputStream;
         try {
-            final PipedOutputStream outputStream = new PipedOutputStream(inputStream);
+            outputStream = new PipedOutputStream(inputStream);
+            System.out.println("outputStream: "+outputStream);
             final ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+            System.out.println("objectOutputStream: "+objectOutputStream);
+
+
+        final List<EntityManager> entityManagers = new ArrayList<>(this.entityManagers);
+        final URI baseEndpoint = this.baseEndpoint;
+
 
             Thread t = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        String line;
 
-                        // Scenario 1: one line per event
-                        while ((line = dataStream.readLine()) != null) {
-                            objectOutputStream.writeObject(CvrRegisterManager.this.parseLines(Collections.singletonList(line)));
-                            break;
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } finally {
+                    for (EntityManager entityManager : entityManagers) {
+                        InputStream responseBody = null;
+                        String schema = entityManager.getSchema();
+
                         try {
-                            objectOutputStream.close();
-                        } catch (IOException e) {
+                            responseBody = eventCommunicator.fetch(
+                                    new URI(
+                                            baseEndpoint.getScheme(), baseEndpoint.getHost(),
+                                            "/cvr-permanent/" + schema + "/_search", ""
+                                    ),
+                                    new URI(
+                                            baseEndpoint.getScheme(), baseEndpoint.getHost(),
+                                            "/_search/scroll", ""
+                                    ),
+                                    "{\"query\":{\"match_all\":{}},\"size\":10}"
+                            );
+                        } catch (URISyntaxException e) {
                             e.printStackTrace();
+                        } catch (HttpStatusException e1) {
+                            e1.printStackTrace();
+                        } catch (DataStreamException e1) {
+                            e1.printStackTrace();
                         }
-                        try {
-                            dataStream.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        if (responseBody != null) {
+                            System.out.println("got a response body");
+
+                            final BufferedReader responseReader = new BufferedReader(new InputStreamReader(responseBody));
+                            System.out.println("inputStream: " + inputStream);
+                            System.out.println("dataStream: " + responseReader);
+
+
+                            int count = 0;
+                            try {
+                                String line;
+
+                                // One line per event
+                                while ((line = responseReader.readLine()) != null) {
+                                    System.out.println("got a response line");
+                                    objectOutputStream.writeObject(CvrRegisterManager.this.wrap(Collections.singletonList(line), schema));
+                                    count++;
+                                    break;
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } finally {
+
+                                System.out.println("Wrote " + count + " events");
+
+                                try {
+                                    responseReader.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                         }
+                    }
+                    try {
+                        objectOutputStream.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
                     }
                 }
             });
             t.start();
-            return new ItemInputStream<Event>(inputStream);
+
+            //System.out.println("There are "+entityManagerParseStreams.size()+" streams");
+            return new ItemInputStream<>(inputStream);
         } catch (IOException e) {
-            throw new DataStreamException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
-    private Event parseLines(List<String> lines) {
+    private Event wrap(List<String> lines, String schema) {
         Event event = new Event();
         event.setEventID(UUID.randomUUID().toString());
         event.setBeskedVersion("1.0");
@@ -183,12 +208,8 @@ public class CvrRegisterManager extends RegisterManager {
         for (String line : lines) {
             s.add(line);
         }
-        // Find the relevant class and parse the line into it
-        String skema = CompanyEntity.schema;
-        String data = s.toString();
-
-        event.setDataskema(skema);
-        event.setObjektData(data);
+        event.setDataskema(schema);
+        event.setObjektData(s.toString());
         return event;
     }
 
