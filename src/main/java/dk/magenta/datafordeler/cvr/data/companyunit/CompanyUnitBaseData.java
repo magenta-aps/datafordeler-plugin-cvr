@@ -93,64 +93,64 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
         if (this.lifecycleData != null) {
-            map.put("lifecycle", this.lifecycleData.asMap());
+            map.put("livsforløb", this.lifecycleData.asMap());
         }
         if (this.advertProtectionData != null) {
-            map.put("advertProtection", this.advertProtectionData.getData());
+            map.put("reklamebeskyttelse", this.advertProtectionData.getData());
         }
         if (this.unitNumberData != null) {
-            map.put("unitNumber", this.unitNumberData.getData());
+            map.put("enhedsNummer", this.unitNumberData.getData());
         }
         if (this.locationAddressData != null) {
-            map.put("locationAddress", this.locationAddressData.getAddress());
+            map.put("beliggenhedsadresse", this.locationAddressData.getAddress());
         }
         if (this.postalAddressData != null) {
-            map.put("postalAddress", this.postalAddressData.getAddress());
+            map.put("postadresse", this.postalAddressData.getAddress());
         }
         if (this.yearlyEmployeeNumbersData != null) {
-            map.put("yearlyEmployeeNumbers", this.yearlyEmployeeNumbersData);
+            map.put("årsbeskæftigelse", this.yearlyEmployeeNumbersData);
         }
         if (this.quarterlyEmployeeNumbersData != null) {
-            map.put("quarterlyEmployeeNumbers", this.quarterlyEmployeeNumbersData);
+            map.put("kvartalsbeskæftigelse", this.quarterlyEmployeeNumbersData);
         }
         if (this.monthlyEmployeeNumbersData != null) {
-            map.put("monthlyEmployeeNumbers", this.monthlyEmployeeNumbersData);
+            map.put("månedsbeskæftigelse", this.monthlyEmployeeNumbersData);
         }
         if (this.primaryIndustryData != null) {
-            map.put("primaryIndustry", this.primaryIndustryData.getIndustry());
+            map.put("hovedbranche", this.primaryIndustryData.getIndustry());
         }
         if (this.secondaryIndustryData1 != null) {
-            map.put("secondaryIndustry1", this.secondaryIndustryData1.getIndustry());
+            map.put("bibranche1", this.secondaryIndustryData1.getIndustry());
         }
         if (this.secondaryIndustryData2 != null) {
-            map.put("secondaryIndustry2", this.secondaryIndustryData2.getIndustry());
+            map.put("bibranche2", this.secondaryIndustryData2.getIndustry());
         }
         if (this.secondaryIndustryData3 != null) {
-            map.put("secondaryIndustry3", this.secondaryIndustryData3.getIndustry());
+            map.put("bibranche3", this.secondaryIndustryData3.getIndustry());
         }
         if (this.nameData != null) {
-            map.put("name", this.nameData.getData());
+            map.put("navn", this.nameData.getData());
         }
         if (this.phoneData != null) {
-            map.put("phone", this.phoneData.getData());
+            map.put("telefon", this.phoneData);
         }
         if (this.emailData != null) {
-            map.put("email", this.emailData.getData());
+            map.put("email", this.emailData);
         }
         if (this.faxData != null) {
-            map.put("fax", this.faxData.getData());
+            map.put("fax", this.faxData);
         }
         if (this.isPrimaryData != null) {
-            map.put("isPrimary", this.isPrimaryData.getData());
+            map.put("primær", this.isPrimaryData.getData());
         }
         if (this.companyData != null) {
-            map.put("company", this.companyData);
+            map.put("virksomhed", this.companyData);
         }
         if (this.participantData != null && !this.participantData.isEmpty()) {
-            map.put("participants", this.participantData);
+            map.put("deltagere", this.participantData);
         }
         if (this.attributeData != null && !this.attributeData.isEmpty()) {
-            map.put("attributes", this.attributeData);
+            map.put("attributter", this.attributeData);
         }
         if (this.participantRelationData != null && !this.participantRelationData.isEmpty()) {
             map.put("deltagerRelation", this.participantRelationData);
@@ -176,7 +176,7 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         }
         this.advertProtectionData.setData(advertProtection);
     }
-    public void setUnitNumber(int unitNumber) {
+    public void setUnitNumber(long unitNumber) {
         if (this.unitNumberData == null) {
             this.unitNumberData = new IntegerData();
         }

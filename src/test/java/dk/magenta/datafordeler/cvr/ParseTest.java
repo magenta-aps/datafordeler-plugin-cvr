@@ -41,7 +41,7 @@ public class ParseTest {
         schemaMap.put("produktionsenhed", CompanyUnitEntity.schema);
         schemaMap.put("deltager", ParticipantEntity.schema);
     }
-
+/*
     @Test
     public void testParseCompanyFile() throws IOException, ParseException {
         InputStream input = ParseTest.class.getResourceAsStream("/company.json");
@@ -52,6 +52,7 @@ public class ParseTest {
             String type = item.get("_type").asText();
             EntityManager entityManager = plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
             List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"));
+            System.out.println(objectMapper.writeValueAsString(registrations));
         }
     }
 
@@ -65,8 +66,9 @@ public class ParseTest {
             String type = item.get("_type").asText();
             EntityManager entityManager = plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
             List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("VrproduktionsEnhed"));
+            System.out.println(objectMapper.writeValueAsString(registrations));
         }
-    }
+    }*/
 
     @Test
     public void testParseParticipantFile() throws IOException, ParseException {
@@ -78,6 +80,7 @@ public class ParseTest {
             String type = item.get("_type").asText();
             EntityManager entityManager = plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
             List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson"));
+            System.out.println(objectMapper.writeValueAsString(registrations));
         }
     }
 
