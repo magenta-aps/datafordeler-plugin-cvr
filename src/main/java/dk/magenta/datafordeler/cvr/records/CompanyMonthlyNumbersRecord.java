@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import dk.magenta.datafordeler.core.database.QueryManager;
+import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntityManager;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
@@ -20,7 +21,7 @@ public class CompanyMonthlyNumbersRecord extends CompanyNumbersRecord {
     private int month;
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) throws ParseException {
         baseData.addMonthlyEmployeeNumbers(
                 this.year,
                 this.month,
@@ -34,7 +35,7 @@ public class CompanyMonthlyNumbersRecord extends CompanyNumbersRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) throws ParseException {
         baseData.addMonthlyEmployeeNumbers(
                 this.year,
                 this.month,
