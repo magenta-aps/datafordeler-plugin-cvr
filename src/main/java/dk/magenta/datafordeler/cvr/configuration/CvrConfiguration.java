@@ -22,7 +22,13 @@ public class CvrConfiguration implements Configuration {
     private String pullCronSchedule = "0 0 * * * ?";
 
     @Column
-    private String registerAddress = "http://localhost:8000";
+    private String registerAddress = "http://distribution.virk.dk";
+
+    @Column
+    private String username = "";
+
+    @Column
+    private String password = "";
 
     public String getPullCronSchedule() {
         return this.pullCronSchedule;
@@ -30,5 +36,13 @@ public class CvrConfiguration implements Configuration {
 
     public String getRegisterAddress() {
         return this.registerAddress;
+    }
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public String getPassword() {
+        return this.password;
     }
 }

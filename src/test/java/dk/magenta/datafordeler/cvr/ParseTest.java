@@ -41,7 +41,7 @@ public class ParseTest {
         schemaMap.put("produktionsenhed", CompanyUnitEntity.schema);
         schemaMap.put("deltager", ParticipantEntity.schema);
     }
-/*
+
     @Test
     public void testParseCompanyFile() throws IOException, ParseException {
         InputStream input = ParseTest.class.getResourceAsStream("/company.json");
@@ -68,7 +68,7 @@ public class ParseTest {
             List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("VrproduktionsEnhed"));
             System.out.println(objectMapper.writeValueAsString(registrations));
         }
-    }*/
+    }
 
     @Test
     public void testParseParticipantFile() throws IOException, ParseException {

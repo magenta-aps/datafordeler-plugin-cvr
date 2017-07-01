@@ -127,6 +127,10 @@ public class CompanyUnitEntityManager extends CvrEntityManager {
         TreeSet<OffsetDateTime> sortedTimestamps = new TreeSet<>();
         for (BaseRecord record : records) {
             OffsetDateTime registrationFrom = record.getLastUpdated();
+            if (registrationFrom == null) {
+                System.out.println("falling back to default");
+                registrationFrom = this.fallbackRegistrationFrom;
+            }
             ajourRecords.add(registrationFrom, record);
             sortedTimestamps.add(registrationFrom);
         }
