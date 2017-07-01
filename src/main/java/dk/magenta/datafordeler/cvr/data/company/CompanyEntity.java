@@ -43,4 +43,9 @@ public class CompanyEntity extends Entity<CompanyEntity, CompanyRegistration> {
     public void setCvrNumber(int cvrNumber) {
         this.cvrNumber = cvrNumber;
     }
+
+    public static UUID generateUUID(int cvrNumber) {
+        String uuidInput = "company:"+cvrNumber;
+        return UUID.nameUUIDFromBytes(uuidInput.getBytes());
+    }
 }

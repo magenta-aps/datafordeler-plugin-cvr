@@ -7,6 +7,7 @@ import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
+import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantType;
 import org.hibernate.Session;
 
@@ -128,8 +129,7 @@ public class ParticipantRecord extends BaseRecord {
     }
 
     public UUID generateUUID() {
-        String uuidInput = "participant:"+this.unitType+"/"+this.unitNumber;
-        return UUID.nameUUIDFromBytes(uuidInput.getBytes());
+        return ParticipantEntity.generateUUID(this.unitType, this.unitNumber);
     }
 
     @Override

@@ -5,11 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
+import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import org.hibernate.Session;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by lars on 26-06-17.
@@ -204,6 +206,11 @@ public class CompanyUnitRecord extends BaseRecord {
             list.addAll(this.participantRelationRecords);
         }
         return list;
+    }
+
+
+    public UUID generateUUID() {
+        return CompanyUnitEntity.generateUUID(this.pNumber);
     }
 
 
