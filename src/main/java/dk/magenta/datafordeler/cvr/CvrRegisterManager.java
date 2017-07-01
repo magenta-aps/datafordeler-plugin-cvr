@@ -118,10 +118,8 @@ public class CvrRegisterManager extends RegisterManager {
             final ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
             System.out.println("objectOutputStream: "+objectOutputStream);
 
-
-        final List<EntityManager> entityManagers = new ArrayList<>(this.entityManagers);
-        final URI baseEndpoint = this.baseEndpoint;
-
+            final List<EntityManager> entityManagers = new ArrayList<>(this.entityManagers);
+            final URI baseEndpoint = this.baseEndpoint;
 
             Thread t = new Thread(new Runnable() {
                 @Override
@@ -167,7 +165,6 @@ public class CvrRegisterManager extends RegisterManager {
                                     System.out.println("got a response line");
                                     objectOutputStream.writeObject(CvrRegisterManager.this.wrap(Collections.singletonList(line), schema));
                                     count++;
-                                    break;
                                 }
                             } catch (IOException e) {
                                 e.printStackTrace();
