@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.data.company;
 import dk.magenta.datafordeler.core.database.DataItem;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
+import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.cvr.data.DetailData;
 import dk.magenta.datafordeler.cvr.data.shared.*;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
@@ -232,7 +233,7 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         this.postalAddressData.setAddress(address);
     }
 
-    public void addYearlyEmployeeNumbers(int year, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) {
+    public void addYearlyEmployeeNumbers(int year, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
         if (this.yearlyEmployeeNumbersData == null) {
             //this.yearlyEmployeeNumbersData = new CompanyYearlyEmployeeNumbersData();
             this.yearlyEmployeeNumbersData = new ArrayList<>();
@@ -247,7 +248,7 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         yearlyEmployeeNumbersData.setIncludingOwnersHigh(includingOwnersHigh);
         this.yearlyEmployeeNumbersData.add(yearlyEmployeeNumbersData);
     }
-    public void addQuarterlyEmployeeNumbers(int year, int quarter, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) {
+    public void addQuarterlyEmployeeNumbers(int year, int quarter, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
         if (this.quarterlyEmployeeNumbersData == null) {
             //this.quarterlyEmployeeNumbersData = new CompanyQuarterlyEmployeeNumbersData();
             this.quarterlyEmployeeNumbersData = new ArrayList<>();
@@ -263,7 +264,7 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         quarterlyEmployeeNumbersData.setIncludingOwnersHigh(includingOwnersHigh);
         this.quarterlyEmployeeNumbersData.add(quarterlyEmployeeNumbersData);
     }
-    public void addMonthlyEmployeeNumbers(int year, int month, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) {
+    public void addMonthlyEmployeeNumbers(int year, int month, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
         if (this.monthlyEmployeeNumbersData == null) {
             //this.monthlyEmployeeNumbersData = new CompanyMonthlyEmployeeNumbersData();
             this.monthlyEmployeeNumbersData = new ArrayList<>();
