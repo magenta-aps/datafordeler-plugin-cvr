@@ -16,7 +16,7 @@ import java.util.Collections;
  */
 @Entity
 @Table(name = "cvr_industry", indexes = {
-        @Index(name = "code", columnList = "code")
+        @Index(name = "industryCode", columnList = "code")
 })
 public class Industry extends UnversionedEntity {
 

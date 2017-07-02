@@ -8,6 +8,9 @@ import javax.persistence.Table;
  * Created by lars on 09-06-17.
  */
 @Entity
-@Table(name = "cvr_participant_role", indexes = {@Index(name = "name", columnList = "name")})
+@Table(
+    name = "cvr_participant_role",
+    indexes = {@Index(name = "participantRoleName", columnList = "name")}
+)
 public class ParticipantRole extends ParticipantClassification {
 }

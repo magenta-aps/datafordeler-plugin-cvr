@@ -12,7 +12,7 @@ import java.util.*;
  */
 @Entity
 @Table(name = "cvr_company_credit", indexes = {
-        @Index(name = "data", columnList = "data"),
+        @Index(name = "companyCreditData", columnList = "data"),
 },
 uniqueConstraints = {
         @UniqueConstraint(name = "data", columnNames = "data")

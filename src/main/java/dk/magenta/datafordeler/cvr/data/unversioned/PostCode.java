@@ -15,7 +15,7 @@ import java.util.Collections;
  */
 @Entity
 @Table(name = "cvr_postcode", indexes = {
-        @Index(name = "code", columnList = "code")
+        @Index(name = "companyPostalCode", columnList = "code")
 })
 public class PostCode extends UnversionedEntity {
 
