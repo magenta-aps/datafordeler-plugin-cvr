@@ -11,7 +11,10 @@ import java.util.Map;
  * Created by lars on 16-05-17.
  */
 @Entity
-@Table(name = "cvr_company_boolean", indexes = {@Index(name = "type", columnList = "type")})
+@Table(
+    name = "cvr_company_boolean",
+    indexes = {@Index(name = "companyTypeBoolean", columnList = "type")}
+)
 public class BooleanData extends SingleData<Boolean> {
 
     public enum Type {

@@ -15,7 +15,7 @@ import java.util.Collections;
  * Created by lars on 26-01-15.
  */
 @Entity
-@Table(name = "cvr_status", indexes = {@Index(name = "status", columnList = "status")})
+@Table(name = "cvr_status", indexes = {@Index(name = "cvrStatus", columnList = "status")})
 public class CompanyStatus extends UnversionedEntity {
 
     public CompanyStatus() {

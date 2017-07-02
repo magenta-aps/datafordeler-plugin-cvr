@@ -13,7 +13,7 @@ import java.util.Map;
  */
 @Entity
 @Table(name = "cvr_integer", indexes = {
-        @Index(name = "data", columnList = "data")
+        @Index(name = "companyIntegerData", columnList = "data")
 })
 public class IntegerData extends SingleData<Long> {
 
