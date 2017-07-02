@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr;
 import dk.magenta.datafordeler.core.configuration.ConfigurationManager;
 import dk.magenta.datafordeler.core.plugin.Plugin;
 import dk.magenta.datafordeler.core.plugin.RegisterManager;
+import dk.magenta.datafordeler.core.plugin.RolesDefinition;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfigurationManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntityManager;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntityManager;
@@ -60,4 +61,8 @@ public class CvrPlugin extends Plugin {
         return this.configurationManager;
     }
 
+    @Override
+    public RolesDefinition getRolesDefinition() {
+        return new CvrRolesDefinition();
+    }
 }

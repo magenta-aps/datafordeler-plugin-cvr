@@ -12,7 +12,7 @@ import java.util.Collections;
  * Created by lars on 26-01-15.
  */
 @Entity
-@Table(name = "cvr_form", indexes = {@Index(name = "code", columnList = "code")})
+@Table(name = "cvr_form", indexes = {@Index(name = "companyFormCode", columnList = "code")})
 public class CompanyForm extends UnversionedEntity {
 
     public CompanyForm() {

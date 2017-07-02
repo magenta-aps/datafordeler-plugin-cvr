@@ -16,8 +16,8 @@ import java.util.Map;
  */
 @Entity
 @Table(name = "cvr_company_quarterly_employees", indexes = {
-        @Index(name = "year", columnList = "year"),
-        @Index(name = "quarter", columnList = "quarter")
+        @Index(name = "companyQuarterlyEmployessYear", columnList = "year"),
+        @Index(name = "companyQuarterlyEmployessQuarter", columnList = "quarter, year")
 })
 public class QuarterlyEmployeeNumbersData extends EmployeeNumbersData {
 

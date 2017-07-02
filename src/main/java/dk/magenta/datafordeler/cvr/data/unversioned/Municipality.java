@@ -17,7 +17,7 @@ import java.util.Collections;
  */
 @Entity
 @Table(name = "cvr_municipality", indexes = {
-        @Index(name = "code", columnList = "code")
+        @Index(name = "companyMunicipalityCode", columnList = "code")
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Municipality extends UnversionedEntity {
