@@ -14,7 +14,7 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
 
     public static final String CVRNUMBER = "cvrnumber";
 
-    @QueryField(type = QueryField.FieldType.STRING)
+    @QueryField(type = QueryField.FieldType.STRING, queryName = CVRNUMBER)
     private String cvrNumber;
 
     public String getCvrNumber() {
