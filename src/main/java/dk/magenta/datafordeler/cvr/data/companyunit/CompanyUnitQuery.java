@@ -14,7 +14,7 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
 
     public static final String PNUMBER = "pnumber";
 
-    @QueryField(type = QueryField.FieldType.STRING)
+    @QueryField(type = QueryField.FieldType.STRING, queryName = PNUMBER)
     private String pNumber;
 
     public String getpNumber() {
