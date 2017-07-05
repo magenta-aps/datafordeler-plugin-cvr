@@ -1,7 +1,6 @@
 package dk.magenta.datafordeler.cvr.data.unversioned;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import org.hibernate.Session;
@@ -17,45 +16,45 @@ import java.util.Collections;
  */
 @Entity
 @Table(name = "cvr_municipality", indexes = {
-        @Index(name = "companyMunicipalityCode", columnList = "code")
+        @Index(name = "companyMunicipalityCode", columnList = "kommunekode")
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Municipality extends UnversionedEntity {
 
-    @JsonProperty(value = "kommuneKode")
+    @JsonProperty(value = "kommunekode")
     @Column(nullable = false, unique = true)
-    private int code;
+    private String kommunekode;
 
-    public int getCode() {
-        return code;
+    public String getKommunekode() {
+        return kommunekode;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setKommunekode(String kommunekode) {
+        this.kommunekode = kommunekode;
     }
 
 
 
-    @JsonProperty(value = "kommuneNavn")
+    @JsonProperty(value = "kommunenavn")
     @Column(nullable = false)
-    private String text;
+    private String kommunenavn;
 
-    public String getText() {
-        return this.text;
+    public String getKommunenavn() {
+        return this.kommunenavn;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setKommunenavn(String kommunenavn) {
+        this.kommunenavn = kommunenavn;
     }
 
 
-    public static Municipality getMunicipality(int code, String text, QueryManager queryManager, Session session) {
-        if (code != 0) {
-            Municipality municipality = queryManager.getItem(session, Municipality.class, Collections.singletonMap("code", code));
+    public static Municipality getMunicipality(String kommunekode, String kommunenavn, QueryManager queryManager, Session session) {
+        if (kommunekode != null) {
+            Municipality municipality = queryManager.getItem(session, Municipality.class, Collections.singletonMap("kommunekode", kommunekode));
             if (municipality == null) {
                 municipality = new Municipality();
-                municipality.setCode(code);
-                municipality.setText(text);
+                municipality.setKommunekode(kommunekode);
+                municipality.setKommunenavn(kommunenavn);
                 session.save(municipality);
             }
             return municipality;
@@ -65,6 +64,6 @@ public class Municipality extends UnversionedEntity {
     }
 
     public static Municipality getMunicipality(Municipality old, QueryManager queryManager, Session session) {
-        return getMunicipality(old.getCode(), old.getText(), queryManager, session);
+        return getMunicipality(old.getKommunekode(), old.getKommunenavn(), queryManager, session);
     }
 }

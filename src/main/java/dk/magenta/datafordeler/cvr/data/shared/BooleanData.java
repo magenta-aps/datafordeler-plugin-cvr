@@ -18,8 +18,8 @@ import java.util.Map;
 public class BooleanData extends SingleData<Boolean> {
 
     public enum Type {
-        ADVERT_PROTECTION,
-        IS_PRIMARY_UNIT,
+        REKLAME_BESKYTTELSE,
+        ER_PRIMAER_ENHED,
     }
 
     public BooleanData() {

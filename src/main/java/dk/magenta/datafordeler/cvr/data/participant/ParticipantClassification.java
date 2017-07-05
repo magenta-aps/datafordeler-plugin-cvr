@@ -19,14 +19,14 @@ public abstract class ParticipantClassification extends UnversionedEntity {
     @Column(unique = true)
     @JsonProperty
     @XmlElement
-    private String name;
+    private String navn;
 
-    public String getName() {
-        return name;
+    public String getNavn() {
+        return navn;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNavn(String navn) {
+        this.navn = navn;
     }
 
     /**
@@ -36,7 +36,7 @@ public abstract class ParticipantClassification extends UnversionedEntity {
     @JsonIgnore
     public Map<String, Object> databaseFields() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("name", this.getName());
+        map.put("navn", this.getNavn());
         return map;
     }
 }

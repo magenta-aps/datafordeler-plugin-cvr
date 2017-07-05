@@ -74,13 +74,13 @@ public class ContactRecord extends BaseRecord {
     public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
         switch (this.type) {
             case PHONE:
-                baseData.setPhone(this.contactInfo, this.secret);
+                baseData.setTelefonnummer(this.contactInfo, this.secret);
                 break;
             case FAX:
-                baseData.setFax(this.contactInfo, this.secret);
+                baseData.setTelefaxnummer(this.contactInfo, this.secret);
                 break;
             case EMAIL:
-                baseData.setEmail(this.contactInfo, this.secret);
+                baseData.setEmailadresse(this.contactInfo, this.secret);
                 break;
         }
     }

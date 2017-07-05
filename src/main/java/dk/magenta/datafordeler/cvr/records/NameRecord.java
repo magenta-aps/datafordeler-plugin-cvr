@@ -30,6 +30,6 @@ public class NameRecord extends BaseRecord {
 
     @Override
     public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
-        baseData.setName(this.name);
+        baseData.setNavn(this.name);
     }
 }

@@ -51,12 +51,12 @@ public class Industry extends UnversionedEntity {
     }
 
 
-    public static Industry getIndustry(int code, String text, QueryManager queryManager, Session session) {
-        Industry industry = queryManager.getItem(session, Industry.class, Collections.singletonMap("code", code));
+    public static Industry getIndustry(int branchekode, String branchetekst, QueryManager queryManager, Session session) {
+        Industry industry = queryManager.getItem(session, Industry.class, Collections.singletonMap("branchekode", branchekode));
         if (industry == null) {
             industry = new Industry();
-            industry.setCode(code);
-            industry.setText(text);
+            industry.setCode(branchekode);
+            industry.setText(branchetekst);
             session.save(industry);
         }
         return industry;

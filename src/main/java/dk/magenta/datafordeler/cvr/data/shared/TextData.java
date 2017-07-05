@@ -18,10 +18,10 @@ import java.util.Map;
 public class TextData extends SingleData<String> {
 
     public enum Type {
-        NAME,
-        EMAIL,
-        PHONE,
-        FAX,
+        NAVN,
+        EMAIL_ADRESSE,
+        TELEFONNUMMER,
+        TELEFAXNUMMER,
         TYPE
     }
 

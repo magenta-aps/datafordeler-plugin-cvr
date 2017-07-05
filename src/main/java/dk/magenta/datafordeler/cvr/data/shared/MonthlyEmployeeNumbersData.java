@@ -16,38 +16,38 @@ import java.util.Map;
  */
 @Entity
 @Table(name = "cvr_company_monthly_employees", indexes = {
-        @Index(name = "companyMonthlyEmployeesYear", columnList = "year"),
-        @Index(name = "companyMonthlyEmployeesMonth", columnList = "month")
+        @Index(name = "companyMonthlyEmployeesYear", columnList = "aar"),
+        @Index(name = "companyMonthlyEmployeesMonth", columnList = "maaned")
 })
 public class MonthlyEmployeeNumbersData extends EmployeeNumbersData {
 
 
-    @Column(name = "year")
-    @JsonProperty(value = "år")
-    @XmlElement(name = "år")
-    private int year;
+    @Column(name = "aar")
+    @JsonProperty(value = "aar")
+    @XmlElement(name = "aar")
+    private int aar;
 
-    public int getYear() {
-        return year;
+    public int getAar() {
+        return aar;
     }
 
-    public void setYear(int year) {
-        this.year = year;
+    public void setAar(int aar) {
+        this.aar = aar;
     }
 
 
 
-    @Column(name = "month")
-    @JsonProperty(value = "måned")
-    @XmlElement(name = "måned")
-    private int month;
+    @Column(name = "maaned")
+    @JsonProperty(value = "maaned")
+    @XmlElement(name = "maaned")
+    private int maaned;
 
-    public int getMonth() {
-        return month;
+    public int getMaaned() {
+        return maaned;
     }
 
-    public void setMonth(int month) {
-        this.month = month;
+    public void setMaaned(int maaned) {
+        this.maaned = maaned;
     }
 
 
@@ -56,8 +56,8 @@ public class MonthlyEmployeeNumbersData extends EmployeeNumbersData {
     @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>(super.asMap());
-        map.put("year", this.year);
-        map.put("month", this.month);
+        map.put("aar", this.aar);
+        map.put("maaned", this.maaned);
         return map;
     }
 
@@ -68,8 +68,8 @@ public class MonthlyEmployeeNumbersData extends EmployeeNumbersData {
     @JsonIgnore
     public Map<String, Object> databaseFields() {
         HashMap<String, Object> map = new HashMap<>(super.databaseFields());
-        map.put("year", this.year);
-        map.put("month", this.month);
+        map.put("aar", this.aar);
+        map.put("maaned", this.maaned);
         return map;
     }
 }

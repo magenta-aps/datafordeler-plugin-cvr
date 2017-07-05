@@ -24,19 +24,19 @@ public class AddressData extends DetailData {
     @JsonProperty
     @XmlElement
     @Cascade(value = CascadeType.ALL)
-    private Address address;
+    private Address adresse;
 
-    public Address getAddress() {
-        return this.address;
+    public Address getAdresse() {
+        return this.adresse;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setAdresse(Address adresse) {
+        this.adresse = adresse;
     }
 
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("address", this.address);
+        map.put("adresse", this.adresse);
         return map;
     }
 

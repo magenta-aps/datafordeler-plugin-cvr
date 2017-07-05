@@ -5,7 +5,6 @@ import org.hibernate.Session;
 
 import javax.persistence.Entity;
 import javax.persistence.Index;
-import javax.persistence.Query;
 import javax.persistence.Table;
 import java.util.Collections;
 
@@ -16,11 +15,11 @@ import java.util.Collections;
 @Table(name = "cvr_participant_type", indexes = {@Index(name = "participantName", columnList = "name")})
 public class ParticipantType extends ParticipantClassification {
 
-    public static ParticipantType getType(String name, QueryManager queryManager, Session session) {
-        ParticipantType type = queryManager.getItem(session, ParticipantType.class, Collections.singletonMap("name", name));
+    public static ParticipantType getType(String navn, QueryManager queryManager, Session session) {
+        ParticipantType type = queryManager.getItem(session, ParticipantType.class, Collections.singletonMap("navn", navn));
         if (type == null) {
             type = new ParticipantType();
-            type.setName(name);
+            type.setNavn(navn);
             session.save(type);
         }
         return type;

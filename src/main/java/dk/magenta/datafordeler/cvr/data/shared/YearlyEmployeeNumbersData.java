@@ -16,22 +16,22 @@ import java.util.Map;
  */
 @Entity
 @Table(name = "cvr_company_yearly_employees", indexes = {
-        @Index(name = "companyYearlyEmployeesYear", columnList = "year")
+        @Index(name = "companyYearlyEmployeesYear", columnList = "aar")
 })
 public class YearlyEmployeeNumbersData extends EmployeeNumbersData {
 
 
-    @Column(name = "year")
-    @JsonProperty(value = "år")
-    @XmlElement(name = "år")
-    private int year;
+    @Column(name = "aar")
+    @JsonProperty(value = "aar")
+    @XmlElement(name = "aar")
+    private int aar;
 
-    public int getYear() {
-        return year;
+    public int getAar() {
+        return aar;
     }
 
-    public void setYear(int year) {
-        this.year = year;
+    public void setAar(int aar) {
+        this.aar = aar;
     }
 
 
@@ -39,7 +39,7 @@ public class YearlyEmployeeNumbersData extends EmployeeNumbersData {
     @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>(super.asMap());
-        map.put("year", this.year);
+        map.put("aar", this.aar);
         return map;
     }
 
@@ -50,7 +50,7 @@ public class YearlyEmployeeNumbersData extends EmployeeNumbersData {
     @JsonIgnore
     public Map<String, Object> databaseFields() {
         HashMap<String, Object> map = new HashMap<>(super.databaseFields());
-        map.put("year", this.year);
+        map.put("aar", this.aar);
         return map;
     }
 }

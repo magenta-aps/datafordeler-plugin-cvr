@@ -144,7 +144,7 @@ public class ParticipantRecord extends BaseRecord {
 
     @Override
     public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
-        baseData.setUnitNumber(this.unitNumber);
-        baseData.setType(ParticipantType.getType(this.unitType, queryManager, session));
+        baseData.setEnhedsNummer(this.unitNumber);
+        baseData.setEnhedsType(ParticipantType.getType(this.unitType, queryManager, session));
     }
 }

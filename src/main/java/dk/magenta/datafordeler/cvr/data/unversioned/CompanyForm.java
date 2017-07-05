@@ -12,7 +12,7 @@ import java.util.Collections;
  * Created by lars on 26-01-15.
  */
 @Entity
-@Table(name = "cvr_form", indexes = {@Index(name = "companyFormCode", columnList = "code")})
+@Table(name = "cvr_form", indexes = {@Index(name = "companyFormCode", columnList = "virksomhedsformkode")})
 public class CompanyForm extends UnversionedEntity {
 
     public CompanyForm() {
@@ -23,14 +23,14 @@ public class CompanyForm extends UnversionedEntity {
     @JsonProperty(value = "kortBeskrivelse")
     @XmlElement(name = "kortBeskrivelse")
     @Column(nullable = true, unique = true)
-    private String shortDescription;
+    private String kortBeskrivelse;
 
-    public String getShortDescription() {
-        return shortDescription;
+    public String getKortBeskrivelse() {
+        return kortBeskrivelse;
     }
 
-    public void setShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
+    public void setKortBeskrivelse(String kortBeskrivelse) {
+        this.kortBeskrivelse = kortBeskrivelse;
     }
 
     //----------------------------------------------------
@@ -38,14 +38,14 @@ public class CompanyForm extends UnversionedEntity {
     @JsonProperty(value = "langBeskrivelse")
     @XmlElement(name = "langBeskrivelse")
     @Column(nullable = true, unique = true)
-    private String longDescription;
+    private String langBeskrivelse;
 
-    public String getLongDescription() {
-        return this.longDescription;
+    public String getLangBeskrivelse() {
+        return this.langBeskrivelse;
     }
 
-    public void setLongDescription(String longDescription) {
-        this.longDescription = longDescription;
+    public void setLangBeskrivelse(String langBeskrivelse) {
+        this.langBeskrivelse = langBeskrivelse;
     }
 
     //----------------------------------------------------
@@ -53,45 +53,45 @@ public class CompanyForm extends UnversionedEntity {
     @JsonProperty(value = "virksomhedsformkode")
     @XmlElement(name = "virksomhedsformkode")
     @Column(nullable = false, unique = true)
-    private int code;
+    private int virksomhedsformkode;
 
-    public int getCode() {
-        return code;
+    public int getVirksomhedsformkode() {
+        return virksomhedsformkode;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setVirksomhedsformkode(int virksomhedsformkode) {
+        this.virksomhedsformkode = virksomhedsformkode;
     }
 
     @JsonProperty(value = "ansvarligDataleverandoer")
     @XmlElement(name = "ansvarligDataleverandoer")
     @Column
-    private String responsibleDatasource;
+    private String ansvarligDataleverandoer;
 
-    public String getResponsibleDatasource() {
-        return responsibleDatasource;
+    public String getAnsvarligDataleverandoer() {
+        return ansvarligDataleverandoer;
     }
 
-    public void setResponsibleDatasource(String responsibleDatasource) {
-        this.responsibleDatasource = responsibleDatasource;
+    public void setAnsvarligDataleverandoer(String ansvarligDataleverandoer) {
+        this.ansvarligDataleverandoer = ansvarligDataleverandoer;
     }
 
     //----------------------------------------------------
 
-    public static CompanyForm getForm(int code, String shortDescription, String longDescription, String responsibleDatasource, QueryManager queryManager, Session session) {
-        CompanyForm form = queryManager.getItem(session, CompanyForm.class, Collections.singletonMap("code", code));
+    public static CompanyForm getForm(int virksomhedsformkode, String kortBeskrivelse, String langBeskrivelse, String ansvarligDataleverandoer, QueryManager queryManager, Session session) {
+        CompanyForm form = queryManager.getItem(session, CompanyForm.class, Collections.singletonMap("virksomhedsformkode", virksomhedsformkode));
         if (form == null) {
             form = new CompanyForm();
-            form.setCode(code);
-            form.setShortDescription(shortDescription);
-            form.setLongDescription(longDescription);
-            form.setResponsibleDatasource(responsibleDatasource);
+            form.setVirksomhedsformkode(virksomhedsformkode);
+            form.setKortBeskrivelse(kortBeskrivelse);
+            form.setLangBeskrivelse(langBeskrivelse);
+            form.setAnsvarligDataleverandoer(ansvarligDataleverandoer);
             session.save(form);
         }
         return form;
     }
 
     public static CompanyForm getForm(CompanyForm oldForm, QueryManager queryManager, Session session) {
-        return getForm(oldForm.getCode(), oldForm.getShortDescription(), oldForm.getLongDescription(), oldForm.getResponsibleDatasource(), queryManager, session);
+        return getForm(oldForm.getVirksomhedsformkode(), oldForm.getKortBeskrivelse(), oldForm.getLangBeskrivelse(), oldForm.getAnsvarligDataleverandoer(), queryManager, session);
     }
 }

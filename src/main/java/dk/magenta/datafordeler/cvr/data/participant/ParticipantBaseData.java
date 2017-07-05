@@ -21,41 +21,41 @@ import java.util.Set;
 public class ParticipantBaseData extends DataItem<ParticipantEffect, ParticipantBaseData> {
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private TextData nameData;
+    private TextData navn;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private ContactData phoneData;
+    private ContactData telefonnummer;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private ContactData emailData;
+    private ContactData emailadresse;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private ContactData faxData;
+    private ContactData telefaxnummer;
 
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private AddressData locationAddressData;
+    private AddressData beliggenhedsadresse;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private AddressData postalAddressData;
+    private AddressData postadresse;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private AddressData businessAddressData;
+    private AddressData forretningsadresse;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private IntegerData unitNumberData;
+    private IntegerData enhedsNummer;
 
     @ManyToOne(optional = true)
-    private ParticipantType type;
+    private ParticipantType enhedsType;
 
     @ManyToOne(optional = true)
-    private ParticipantRole role;
+    private ParticipantRole rolle;
 
     @ManyToOne(optional = true)
     private ParticipantStatus status;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<AttributeData> attributeData = new HashSet<>();
+    private Set<AttributeData> attributter = new HashSet<>();
 
 
 
@@ -69,148 +69,148 @@ public class ParticipantBaseData extends DataItem<ParticipantEffect, Participant
 
 
 
-        if (this.nameData != null) {
-            map.put("navn", this.nameData.getData());
+        if (this.navn != null) {
+            map.put("navn", this.navn.getData());
         }
-        if (this.phoneData != null) {
-            map.put("telefon", this.phoneData.getData());
+        if (this.telefonnummer != null) {
+            map.put("telefonnummer", this.telefonnummer.getKontaktoplysning());
         }
-        if (this.emailData != null) {
-            map.put("email", this.emailData.getData());
+        if (this.emailadresse != null) {
+            map.put("emailadresse", this.emailadresse.getKontaktoplysning());
         }
-        if (this.faxData != null) {
-            map.put("fax", this.faxData.getData());
+        if (this.telefaxnummer != null) {
+            map.put("telefaxnummer", this.telefaxnummer.getKontaktoplysning());
         }
-        if (this.locationAddressData != null) {
-            map.put("beliggenhedsadresse", this.locationAddressData.getAddress());
+        if (this.beliggenhedsadresse != null) {
+            map.put("beliggenhedsadresse", this.beliggenhedsadresse.getAdresse());
         }
-        if (this.postalAddressData != null) {
-            map.put("postadresse", this.postalAddressData.getAddress());
+        if (this.postadresse != null) {
+            map.put("postadresse", this.postadresse.getAdresse());
         }
-        if (this.businessAddressData != null) {
-            map.put("forretningsadresse", this.businessAddressData.getAddress());
+        if (this.forretningsadresse != null) {
+            map.put("forretningsadresse", this.forretningsadresse.getAdresse());
         }
-        if (this.unitNumberData != null) {
-            map.put("enhedsNummer", this.unitNumberData.getData());
+        if (this.enhedsNummer != null) {
+            map.put("enhedsNummer", this.enhedsNummer.getData());
         }
-        if (this.type != null) {
-            map.put("enhedsType", this.type.getName());
+        if (this.enhedsType != null) {
+            map.put("enhedsType", this.enhedsType.getNavn());
         }
-        if (this.role != null) {
-            map.put("rolle", this.role.getName());
+        if (this.rolle != null) {
+            map.put("rolle", this.rolle.getNavn());
         }
         if (this.status != null) {
-            map.put("status", this.status.getName());
+            map.put("status", this.status.getNavn());
         }
-        if (this.attributeData != null && !this.attributeData.isEmpty()) {
-            map.put("attributter", this.attributeData);
+        if (this.attributter != null && !this.attributter.isEmpty()) {
+            map.put("attributter", this.attributter);
         }
         return map;
     }
 
 
-    public void setName(String name) {
-        if (this.nameData == null) {
-            this.nameData = new TextData(TextData.Type.NAME);
+    public void setNavn(String name) {
+        if (this.navn == null) {
+            this.navn = new TextData(TextData.Type.NAVN);
         }
-        this.nameData.setData(name);
+        this.navn.setData(name);
     }
-    public void setPhone(String phone, boolean secret) {
-        if (this.phoneData == null) {
-            this.phoneData = new ContactData(ContactData.Type.PHONE);
+    public void setTelefonnummer(String phone, boolean secret) {
+        if (this.telefonnummer == null) {
+            this.telefonnummer = new ContactData(ContactData.Type.TELEFONNUMMER);
         }
-        this.phoneData.setData(phone);
-        this.phoneData.setSecret(secret);
+        this.telefonnummer.setData(phone);
+        this.telefonnummer.setHemmelig(secret);
     }
-    public void setEmail(String email, boolean secret) {
-        if (this.emailData == null) {
-            this.emailData = new ContactData(ContactData.Type.EMAIL);
+    public void setEmailadresse(String email, boolean secret) {
+        if (this.emailadresse == null) {
+            this.emailadresse = new ContactData(ContactData.Type.EMAIL_ADRESSE);
         }
-        this.emailData.setData(email);
-        this.emailData.setSecret(secret);
+        this.emailadresse.setData(email);
+        this.emailadresse.setHemmelig(secret);
     }
-    public void setFax(String fax, boolean secret) {
-        if (this.faxData == null) {
-            this.faxData = new ContactData(ContactData.Type.FAX);
+    public void setTelefaxnummer(String fax, boolean secret) {
+        if (this.telefaxnummer == null) {
+            this.telefaxnummer = new ContactData(ContactData.Type.TELEFAXNUMMER);
         }
-        this.faxData.setData(fax);
-        this.faxData.setSecret(secret);
+        this.telefaxnummer.setData(fax);
+        this.telefaxnummer.setHemmelig(secret);
     }
-    public void setLocationAddress(Address address) {
-        if (this.locationAddressData == null) {
-            this.locationAddressData = new AddressData();
+    public void setBeliggenhedsadresse(Address address) {
+        if (this.beliggenhedsadresse == null) {
+            this.beliggenhedsadresse = new AddressData();
         }
-        this.locationAddressData.setAddress(address);
+        this.beliggenhedsadresse.setAdresse(address);
     }
-    public void setPostalAddress(Address address) {
-        if (this.postalAddressData == null) {
-            this.postalAddressData = new AddressData();
+    public void setPostadresse(Address address) {
+        if (this.postadresse == null) {
+            this.postadresse = new AddressData();
         }
-        this.postalAddressData.setAddress(address);
+        this.postadresse.setAdresse(address);
     }
-    public void setBusinessAddress(Address address) {
-        if (this.businessAddressData == null) {
-            this.businessAddressData = new AddressData();
+    public void setForretningsadresse(Address address) {
+        if (this.forretningsadresse == null) {
+            this.forretningsadresse = new AddressData();
         }
-        this.businessAddressData.setAddress(address);
+        this.forretningsadresse.setAdresse(address);
     }
 
-    public void setUnitNumber(long unitNumber) {
-        if (this.unitNumberData == null) {
-            this.unitNumberData = new IntegerData();
+    public void setEnhedsNummer(long unitNumber) {
+        if (this.enhedsNummer == null) {
+            this.enhedsNummer = new IntegerData();
         }
-        this.unitNumberData.setData(unitNumber);
+        this.enhedsNummer.setData(unitNumber);
     }
 
-    public void setType(ParticipantType type) {
-        this.type = type;
+    public void setEnhedsType(ParticipantType enhedsType) {
+        this.enhedsType = enhedsType;
     }
 
-    public void setRole(ParticipantRole role) {
-        this.role = role;
+    public void setRolle(ParticipantRole rolle) {
+        this.rolle = rolle;
     }
 
     public void setStatus(ParticipantStatus status) {
         this.status = status;
     }
 
-    public void addAttribute(AttributeData attributeData) {
-        this.attributeData.add(attributeData);
+    public void addAttributter(AttributeData attributeData) {
+        this.attributter.add(attributeData);
     }
 
     @Override
     public LookupDefinition getLookupDefinition() {
         LookupDefinition lookupDefinition = new LookupDefinition();
         lookupDefinition.setMatchNulls(true);
-        if (this.nameData != null) {
-            lookupDefinition.putAll("nameData", this.nameData.databaseFields());
+        if (this.navn != null) {
+            lookupDefinition.putAll("navn", this.navn.databaseFields());
         }
-        if (this.phoneData != null) {
-            lookupDefinition.putAll("phoneData", this.phoneData.databaseFields());
+        if (this.telefonnummer != null) {
+            lookupDefinition.putAll("telefonnummer", this.telefonnummer.databaseFields());
         }
-        if (this.emailData != null) {
-            lookupDefinition.putAll("emailData", this.emailData.databaseFields());
+        if (this.emailadresse != null) {
+            lookupDefinition.putAll("emailadresse", this.emailadresse.databaseFields());
         }
-        if (this.faxData != null) {
-            lookupDefinition.putAll("faxData", this.faxData.databaseFields());
+        if (this.telefaxnummer != null) {
+            lookupDefinition.putAll("telefaxnummer", this.telefaxnummer.databaseFields());
         }
-        if (this.locationAddressData != null) {
-            lookupDefinition.putAll("locationAddressData", this.locationAddressData.databaseFields());
+        if (this.beliggenhedsadresse != null) {
+            lookupDefinition.putAll("beliggenhedsadresse", this.beliggenhedsadresse.databaseFields());
         }
-        if (this.postalAddressData != null) {
-            lookupDefinition.putAll("postalAddressData", this.postalAddressData.databaseFields());
+        if (this.postadresse != null) {
+            lookupDefinition.putAll("postadresse", this.postadresse.databaseFields());
         }
-        if (this.businessAddressData != null) {
-            lookupDefinition.putAll("businessAddressData", this.businessAddressData.databaseFields());
+        if (this.forretningsadresse != null) {
+            lookupDefinition.putAll("forretningsadresse", this.forretningsadresse.databaseFields());
         }
-        if (this.unitNumberData != null) {
-            lookupDefinition.putAll("unitNumberData", this.unitNumberData.databaseFields());
+        if (this.enhedsNummer != null) {
+            lookupDefinition.putAll("enhedsNummer", this.enhedsNummer.databaseFields());
         }
         if (this.status != null) {
             lookupDefinition.putAll("status", this.status.databaseFields());
         }
-        if (this.type != null) {
-            lookupDefinition.putAll("type", this.type.databaseFields());
+        if (this.enhedsType != null) {
+            lookupDefinition.putAll("enhedsType", this.enhedsType.databaseFields());
         }
 
         return lookupDefinition;
@@ -218,6 +218,6 @@ public class ParticipantBaseData extends DataItem<ParticipantEffect, Participant
 
 
     public void forceLoad(Session session) {
-        Hibernate.initialize(this.attributeData);
+        Hibernate.initialize(this.attributter);
     }
 }

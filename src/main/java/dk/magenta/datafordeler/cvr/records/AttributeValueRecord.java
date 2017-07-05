@@ -45,7 +45,7 @@ public class AttributeValueRecord extends BaseRecord {
 
     @Override
     public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
-        /*baseData.addAttribute(
+        /*baseData.addAttributter(
                 this.parent.getType(),
                 this.parent.getValueType(),
                 this.value,
