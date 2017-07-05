@@ -23,293 +23,293 @@ import java.util.*;
 public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnitBaseData> {
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private LifecycleData lifecycleData;
+    private LifecycleData livsforloeb;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private BooleanData advertProtectionData;
+    private BooleanData reklamebeskyttelse;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private IntegerData unitNumberData;
+    private IntegerData pNummer;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private AddressData locationAddressData;
+    private AddressData beliggenhedsadresse;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private AddressData postalAddressData;
+    private AddressData postadresse;
 
     @OneToMany(cascade = CascadeType.ALL)
     @OrderBy(value = "year asc")
-    private List<YearlyEmployeeNumbersData> yearlyEmployeeNumbersData;
+    private List<YearlyEmployeeNumbersData> aarsbeskaeftigelse;
 
     @OneToMany(cascade = CascadeType.ALL)
     @OrderBy(value = "year asc, quarter asc")
-    private List<QuarterlyEmployeeNumbersData> quarterlyEmployeeNumbersData;
+    private List<QuarterlyEmployeeNumbersData> kvartalsbeskaeftigelse;
 
     @OneToMany(cascade = CascadeType.ALL)
     @OrderBy(value = "year asc, month asc")
-    private List<MonthlyEmployeeNumbersData> monthlyEmployeeNumbersData;
+    private List<MonthlyEmployeeNumbersData> maanedsbeskaeftigelse;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private IndustryData primaryIndustryData;
+    private IndustryData hovedbranche;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private IndustryData secondaryIndustryData1;
+    private IndustryData bibranche1;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private IndustryData secondaryIndustryData2;
+    private IndustryData bibranche2;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private IndustryData secondaryIndustryData3;
+    private IndustryData bibranche3;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private TextData nameData;
+    private TextData virksomhedsnavn;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private ContactData phoneData;
+    private ContactData telefonnummer;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private ContactData emailData;
+    private ContactData emailadresse;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private ContactData faxData;
+    private ContactData telefaxnummer;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private BooleanData isPrimaryData;
+    private BooleanData primaer;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyUnitCvrData companyData;
+    private CompanyUnitCvrData virksomhed;
 
     @ManyToMany(mappedBy = "companyUnitBases")
-    private Set<ParticipantLink> participantData = new HashSet<>();
+    private Set<ParticipantLink> deltagere = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<AttributeData> attributeData = new HashSet<>();
+    private Set<AttributeData> attributter = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<ParticipantRelationData> participantRelationData = new HashSet<>();
+    private Set<ParticipantRelationData> deltagerRelation = new HashSet<>();
 
 
     @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
-        if (this.lifecycleData != null) {
-            map.put("livsforløb", this.lifecycleData.asMap());
+        if (this.livsforloeb != null) {
+            map.put("livsforloeb", this.livsforloeb.asMap());
         }
-        if (this.advertProtectionData != null) {
-            map.put("reklamebeskyttelse", this.advertProtectionData.getData());
+        if (this.reklamebeskyttelse != null) {
+            map.put("reklamebeskyttelse", this.reklamebeskyttelse.getData());
         }
-        if (this.unitNumberData != null) {
-            map.put("enhedsNummer", this.unitNumberData.getData());
+        if (this.pNummer != null) {
+            map.put("pNummer", this.pNummer.getData());
         }
-        if (this.locationAddressData != null) {
-            map.put("beliggenhedsadresse", this.locationAddressData.getAddress());
+        if (this.beliggenhedsadresse != null) {
+            map.put("beliggenhedsadresse", this.beliggenhedsadresse.getAdresse());
         }
-        if (this.postalAddressData != null) {
-            map.put("postadresse", this.postalAddressData.getAddress());
+        if (this.postadresse != null) {
+            map.put("postadresse", this.postadresse.getAdresse());
         }
-        if (this.yearlyEmployeeNumbersData != null) {
-            map.put("årsbeskæftigelse", this.yearlyEmployeeNumbersData);
+        if (this.aarsbeskaeftigelse != null) {
+            map.put("aarsbeskaeftigelse", this.aarsbeskaeftigelse);
         }
-        if (this.quarterlyEmployeeNumbersData != null) {
-            map.put("kvartalsbeskæftigelse", this.quarterlyEmployeeNumbersData);
+        if (this.kvartalsbeskaeftigelse != null) {
+            map.put("kvartalsbeskaeftigelse", this.kvartalsbeskaeftigelse);
         }
-        if (this.monthlyEmployeeNumbersData != null) {
-            map.put("månedsbeskæftigelse", this.monthlyEmployeeNumbersData);
+        if (this.maanedsbeskaeftigelse != null) {
+            map.put("maanedsbeskaeftigelse", this.maanedsbeskaeftigelse);
         }
-        if (this.primaryIndustryData != null) {
-            map.put("hovedbranche", this.primaryIndustryData.getIndustry());
+        if (this.hovedbranche != null) {
+            map.put("hovedbranche", this.hovedbranche.getBranche());
         }
-        if (this.secondaryIndustryData1 != null) {
-            map.put("bibranche1", this.secondaryIndustryData1.getIndustry());
+        if (this.bibranche1 != null) {
+            map.put("bibranche1", this.bibranche1.getBranche());
         }
-        if (this.secondaryIndustryData2 != null) {
-            map.put("bibranche2", this.secondaryIndustryData2.getIndustry());
+        if (this.bibranche2 != null) {
+            map.put("bibranche2", this.bibranche2.getBranche());
         }
-        if (this.secondaryIndustryData3 != null) {
-            map.put("bibranche3", this.secondaryIndustryData3.getIndustry());
+        if (this.bibranche3 != null) {
+            map.put("bibranche3", this.bibranche3.getBranche());
         }
-        if (this.nameData != null) {
-            map.put("navn", this.nameData.getData());
+        if (this.virksomhedsnavn != null) {
+            map.put("virksomhedsnavn", this.virksomhedsnavn.getData());
         }
-        if (this.phoneData != null) {
-            map.put("telefon", this.phoneData);
+        if (this.telefonnummer != null) {
+            map.put("telefonnummer", this.telefonnummer);
         }
-        if (this.emailData != null) {
-            map.put("email", this.emailData);
+        if (this.emailadresse != null) {
+            map.put("emailadresse", this.emailadresse);
         }
-        if (this.faxData != null) {
-            map.put("fax", this.faxData);
+        if (this.telefaxnummer != null) {
+            map.put("telefaxnummer", this.telefaxnummer);
         }
-        if (this.isPrimaryData != null) {
-            map.put("primær", this.isPrimaryData.getData());
+        if (this.primaer != null) {
+            map.put("primaer", this.primaer.getData());
         }
-        if (this.companyData != null) {
-            map.put("virksomhed", this.companyData);
+        if (this.virksomhed != null) {
+            map.put("virksomhed", this.virksomhed);
         }
-        if (this.participantData != null && !this.participantData.isEmpty()) {
-            map.put("deltagere", this.participantData);
+        if (this.deltagere != null && !this.deltagere.isEmpty()) {
+            map.put("deltagere", this.deltagere);
         }
-        if (this.attributeData != null && !this.attributeData.isEmpty()) {
-            map.put("attributter", this.attributeData);
+        if (this.attributter != null && !this.attributter.isEmpty()) {
+            map.put("attributter", this.attributter);
         }
-        if (this.participantRelationData != null && !this.participantRelationData.isEmpty()) {
-            map.put("deltagerRelation", this.participantRelationData);
+        if (this.deltagerRelation != null && !this.deltagerRelation.isEmpty()) {
+            map.put("deltagerRelation", this.deltagerRelation);
         }
         return map;
     }
 
     public void setLifecycleStartDate(OffsetDateTime startDate) {
-        if (this.lifecycleData == null) {
-            this.lifecycleData = new LifecycleData();
+        if (this.livsforloeb == null) {
+            this.livsforloeb = new LifecycleData();
         }
-        this.lifecycleData.setStartDate(startDate);
+        this.livsforloeb.setStartDate(startDate);
     }
     public void setLifecycleEndDate(OffsetDateTime endDate) {
-        if (this.lifecycleData == null) {
-            this.lifecycleData = new LifecycleData();
+        if (this.livsforloeb == null) {
+            this.livsforloeb = new LifecycleData();
         }
-        this.lifecycleData.setEndDate(endDate);
+        this.livsforloeb.setEndDate(endDate);
     }
     public void setAdvertProtection(boolean advertProtection) {
-        if (this.advertProtectionData == null) {
-            this.advertProtectionData = new BooleanData(BooleanData.Type.ADVERT_PROTECTION);
+        if (this.reklamebeskyttelse == null) {
+            this.reklamebeskyttelse = new BooleanData(BooleanData.Type.REKLAME_BESKYTTELSE);
         }
-        this.advertProtectionData.setData(advertProtection);
+        this.reklamebeskyttelse.setData(advertProtection);
     }
     public void setUnitNumber(long unitNumber) {
-        if (this.unitNumberData == null) {
-            this.unitNumberData = new IntegerData();
+        if (this.pNummer == null) {
+            this.pNummer = new IntegerData();
         }
-        this.unitNumberData.setData(unitNumber);
+        this.pNummer.setData(unitNumber);
     }
     public void setLocationAddress(Address address) {
-        if (this.locationAddressData == null) {
-            this.locationAddressData = new AddressData();
+        if (this.beliggenhedsadresse == null) {
+            this.beliggenhedsadresse = new AddressData();
         }
-        this.locationAddressData.setAddress(address);
+        this.beliggenhedsadresse.setAdresse(address);
     }
     public void setPostalAddress(Address address) {
-        if (this.postalAddressData == null) {
-            this.postalAddressData = new AddressData();
+        if (this.postadresse == null) {
+            this.postadresse = new AddressData();
         }
-        this.postalAddressData.setAddress(address);
+        this.postadresse.setAdresse(address);
     }
 
     public void addYearlyEmployeeNumbers(int year, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
-        if (this.yearlyEmployeeNumbersData == null) {
-            //this.yearlyEmployeeNumbersData = new CompanyYearlyEmployeeNumbersData();
-            this.yearlyEmployeeNumbersData = new ArrayList<>();
+        if (this.aarsbeskaeftigelse == null) {
+            //this.aarsbeskaeftigelse = new CompanyYearlyEmployeeNumbersData();
+            this.aarsbeskaeftigelse = new ArrayList<>();
         }
         YearlyEmployeeNumbersData yearlyEmployeeNumbersData = new YearlyEmployeeNumbersData();
-        yearlyEmployeeNumbersData.setYear(year);
+        yearlyEmployeeNumbersData.setAar(year);
         yearlyEmployeeNumbersData.setEmployeesLow(employeesLow);
         yearlyEmployeeNumbersData.setEmployeesHigh(employeesHigh);
         yearlyEmployeeNumbersData.setFullTimeEquivalentLow(fulltimeEquivalentLow);
         yearlyEmployeeNumbersData.setFullTimeEquivalentHigh(fulltimeEquivalentHigh);
         yearlyEmployeeNumbersData.setIncludingOwnersLow(includingOwnersLow);
         yearlyEmployeeNumbersData.setIncludingOwnersHigh(includingOwnersHigh);
-        this.yearlyEmployeeNumbersData.add(yearlyEmployeeNumbersData);
+        this.aarsbeskaeftigelse.add(yearlyEmployeeNumbersData);
     }
     public void addQuarterlyEmployeeNumbers(int year, int quarter, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
-        if (this.quarterlyEmployeeNumbersData == null) {
-            //this.quarterlyEmployeeNumbersData = new CompanyQuarterlyEmployeeNumbersData();
-            this.quarterlyEmployeeNumbersData = new ArrayList<>();
+        if (this.kvartalsbeskaeftigelse == null) {
+            //this.kvartalsbeskaeftigelse = new CompanyQuarterlyEmployeeNumbersData();
+            this.kvartalsbeskaeftigelse = new ArrayList<>();
         }
         QuarterlyEmployeeNumbersData quarterlyEmployeeNumbersData = new QuarterlyEmployeeNumbersData();
-        quarterlyEmployeeNumbersData.setYear(year);
-        quarterlyEmployeeNumbersData.setQuarter(quarter);
+        quarterlyEmployeeNumbersData.setAar(year);
+        quarterlyEmployeeNumbersData.setKvartal(quarter);
         quarterlyEmployeeNumbersData.setEmployeesLow(employeesLow);
         quarterlyEmployeeNumbersData.setEmployeesHigh(employeesHigh);
         quarterlyEmployeeNumbersData.setFullTimeEquivalentLow(fulltimeEquivalentLow);
         quarterlyEmployeeNumbersData.setFullTimeEquivalentHigh(fulltimeEquivalentHigh);
         quarterlyEmployeeNumbersData.setIncludingOwnersLow(includingOwnersLow);
         quarterlyEmployeeNumbersData.setIncludingOwnersHigh(includingOwnersHigh);
-        this.quarterlyEmployeeNumbersData.add(quarterlyEmployeeNumbersData);
+        this.kvartalsbeskaeftigelse.add(quarterlyEmployeeNumbersData);
     }
     public void addMonthlyEmployeeNumbers(int year, int month, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
-        if (this.monthlyEmployeeNumbersData == null) {
-            //this.monthlyEmployeeNumbersData = new CompanyMonthlyEmployeeNumbersData();
-            this.monthlyEmployeeNumbersData = new ArrayList<>();
+        if (this.maanedsbeskaeftigelse == null) {
+            //this.maanedsbeskaeftigelse = new CompanyMonthlyEmployeeNumbersData();
+            this.maanedsbeskaeftigelse = new ArrayList<>();
         }
         MonthlyEmployeeNumbersData monthlyEmployeeNumbersData = new MonthlyEmployeeNumbersData();
-        monthlyEmployeeNumbersData.setYear(year);
-        monthlyEmployeeNumbersData.setMonth(month);
+        monthlyEmployeeNumbersData.setAar(year);
+        monthlyEmployeeNumbersData.setMaaned(month);
         monthlyEmployeeNumbersData.setEmployeesLow(employeesLow);
         monthlyEmployeeNumbersData.setEmployeesHigh(employeesHigh);
         monthlyEmployeeNumbersData.setFullTimeEquivalentLow(fulltimeEquivalentLow);
         monthlyEmployeeNumbersData.setFullTimeEquivalentHigh(fulltimeEquivalentHigh);
         monthlyEmployeeNumbersData.setIncludingOwnersLow(includingOwnersLow);
         monthlyEmployeeNumbersData.setIncludingOwnersHigh(includingOwnersHigh);
-        this.monthlyEmployeeNumbersData.add(monthlyEmployeeNumbersData);
+        this.maanedsbeskaeftigelse.add(monthlyEmployeeNumbersData);
     }
 
     public void setPrimaryIndustry(Industry industry) {
-        if (this.primaryIndustryData == null) {
-            this.primaryIndustryData = new IndustryData(true);
+        if (this.hovedbranche == null) {
+            this.hovedbranche = new IndustryData(true);
         }
-        this.primaryIndustryData.setIndustry(industry);
+        this.hovedbranche.setBranche(industry);
     }
     public void setSecondaryIndustry1(Industry industry) {
-        if (this.secondaryIndustryData1 == null) {
-            this.secondaryIndustryData1 = new IndustryData(false);
+        if (this.bibranche1 == null) {
+            this.bibranche1 = new IndustryData(false);
         }
-        this.secondaryIndustryData1.setIndustry(industry);
+        this.bibranche1.setBranche(industry);
     }
     public void setSecondaryIndustry2(Industry industry) {
-        if (this.secondaryIndustryData2 == null) {
-            this.secondaryIndustryData2 = new IndustryData(false);
+        if (this.bibranche2 == null) {
+            this.bibranche2 = new IndustryData(false);
         }
-        this.secondaryIndustryData2.setIndustry(industry);
+        this.bibranche2.setBranche(industry);
     }
     public void setSecondaryIndustry3(Industry industry) {
-        if (this.secondaryIndustryData3 == null) {
-            this.secondaryIndustryData3 = new IndustryData(false);
+        if (this.bibranche3 == null) {
+            this.bibranche3 = new IndustryData(false);
         }
-        this.secondaryIndustryData3.setIndustry(industry);
+        this.bibranche3.setBranche(industry);
     }
 
     public void setName(String name) {
-        if (this.nameData == null) {
-            this.nameData = new TextData(TextData.Type.NAME);
+        if (this.virksomhedsnavn == null) {
+            this.virksomhedsnavn = new TextData(TextData.Type.NAVN);
         }
-        this.nameData.setData(name);
+        this.virksomhedsnavn.setData(name);
     }
     public void setPhone(String phone, boolean secret) {
-        if (this.phoneData == null) {
-            this.phoneData = new ContactData(ContactData.Type.PHONE);
+        if (this.telefonnummer == null) {
+            this.telefonnummer = new ContactData(ContactData.Type.TELEFONNUMMER);
         }
-        this.phoneData.setData(phone);
-        this.phoneData.setSecret(secret);
+        this.telefonnummer.setData(phone);
+        this.telefonnummer.setHemmelig(secret);
     }
     public void setEmail(String email, boolean secret) {
-        if (this.emailData == null) {
-            this.emailData = new ContactData(ContactData.Type.EMAIL);
+        if (this.emailadresse == null) {
+            this.emailadresse = new ContactData(ContactData.Type.EMAIL_ADRESSE);
         }
-        this.emailData.setData(email);
-        this.emailData.setSecret(secret);
+        this.emailadresse.setData(email);
+        this.emailadresse.setHemmelig(secret);
     }
     public void setFax(String fax, boolean secret) {
-        if (this.faxData == null) {
-            this.faxData = new ContactData(ContactData.Type.FAX);
+        if (this.telefaxnummer == null) {
+            this.telefaxnummer = new ContactData(ContactData.Type.TELEFAXNUMMER);
         }
-        this.faxData.setData(fax);
-        this.faxData.setSecret(secret);
+        this.telefaxnummer.setData(fax);
+        this.telefaxnummer.setHemmelig(secret);
     }
 
     public void setIsPrimary(boolean isPrimary) {
-        if (this.isPrimaryData == null) {
-            this.isPrimaryData = new BooleanData(BooleanData.Type.IS_PRIMARY_UNIT);
+        if (this.primaer == null) {
+            this.primaer = new BooleanData(BooleanData.Type.ER_PRIMAER_ENHED);
         }
-        this.isPrimaryData.setData(isPrimary);
+        this.primaer.setData(isPrimary);
     }
     public void setCompanyCvr(int cvrNumber) {
-        if (this.companyData == null) {
-            this.companyData = new CompanyUnitCvrData();
+        if (this.virksomhed == null) {
+            this.virksomhed = new CompanyUnitCvrData();
         }
-        this.companyData.setData(cvrNumber);
+        this.virksomhed.setData(cvrNumber);
     }
     public void addParticipant(ParticipantLink participantLink) {
-        this.participantData.add(participantLink);
+        this.deltagere.add(participantLink);
     }
 
     public void addAttribute(String type, String valueType, String value, int sequenceNumber) {
@@ -321,88 +321,88 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         this.addAttribute(attributeData);
     }
     public void addAttribute(AttributeData attributeData) {
-        this.attributeData.add(attributeData);
+        this.attributter.add(attributeData);
     }
 
     public void addParticipantRelation(Identification participant, Set<Identification> organizations) {
         ParticipantRelationData participantRelationData = new ParticipantRelationData();
-        participantRelationData.setParticipant(participant);
+        participantRelationData.setDeltager(participant);
         for (Identification organization : organizations) {
             participantRelationData.addOrganization(organization);
         }
-        this.participantRelationData.add(participantRelationData);
+        this.deltagerRelation.add(participantRelationData);
     }
 
     @Override
     public LookupDefinition getLookupDefinition() {
         LookupDefinition lookupDefinition = new LookupDefinition();
         lookupDefinition.setMatchNulls(true);
-        if (this.lifecycleData != null) {
-            lookupDefinition.putAll("lifecycleData", this.lifecycleData.databaseFields());
+        if (this.livsforloeb != null) {
+            lookupDefinition.putAll("livsforloeb", this.livsforloeb.databaseFields());
         }
-        if (this.advertProtectionData != null) {
-            lookupDefinition.putAll("advertProtectionData", this.advertProtectionData.databaseFields());
+        if (this.reklamebeskyttelse != null) {
+            lookupDefinition.putAll("reklamebeskyttelse", this.reklamebeskyttelse.databaseFields());
         }
-        if (this.unitNumberData != null) {
-            lookupDefinition.putAll("unitNumberData", this.unitNumberData.databaseFields());
+        if (this.pNummer != null) {
+            lookupDefinition.putAll("pNummer", this.pNummer.databaseFields());
         }
-        if (this.locationAddressData != null) {
-            lookupDefinition.putAll("locationAddressData", this.locationAddressData.databaseFields());
+        if (this.beliggenhedsadresse != null) {
+            lookupDefinition.putAll("beliggenhedsadresse", this.beliggenhedsadresse.databaseFields());
         }
-        if (this.postalAddressData != null) {
-            lookupDefinition.putAll("postalAddressData", this.postalAddressData.databaseFields());
+        if (this.postadresse != null) {
+            lookupDefinition.putAll("postadresse", this.postadresse.databaseFields());
         }
-        /*if (this.yearlyEmployeeNumbersData != null) {
-            lookupDefinition.putAll("yearlyEmployeeNumbersData", this.yearlyEmployeeNumbersData.databaseFields());
+        /*if (this.aarsbeskaeftigelse != null) {
+            lookupDefinition.putAll("aarsbeskaeftigelse", this.aarsbeskaeftigelse.databaseFields());
         }*/
-        /*if (this.quarterlyEmployeeNumbersData != null) {
-            lookupDefinition.putAll("quarterlyEmployeeNumbersData", this.quarterlyEmployeeNumbersData.databaseFields());
+        /*if (this.kvartalsbeskaeftigelse != null) {
+            lookupDefinition.putAll("kvartalsbeskaeftigelse", this.kvartalsbeskaeftigelse.databaseFields());
         }*/
-        /*if (this.monthlyEmployeeNumbersData != null) {
-            lookupDefinition.putAll("monthlyEmployeeNumbersData", this.monthlyEmployeeNumbersData.databaseFields());
+        /*if (this.maanedsbeskaeftigelse != null) {
+            lookupDefinition.putAll("maanedsbeskaeftigelse", this.maanedsbeskaeftigelse.databaseFields());
         }*/
-        if (this.primaryIndustryData != null) {
-            lookupDefinition.putAll("primaryIndustryData", this.primaryIndustryData.databaseFields());
+        if (this.hovedbranche != null) {
+            lookupDefinition.putAll("hovedbranche", this.hovedbranche.databaseFields());
         }
-        if (this.secondaryIndustryData1 != null) {
-            lookupDefinition.putAll("secondaryIndustryData1", this.secondaryIndustryData1.databaseFields());
+        if (this.bibranche1 != null) {
+            lookupDefinition.putAll("bibranche1", this.bibranche1.databaseFields());
         }
-        if (this.secondaryIndustryData2 != null) {
-            lookupDefinition.putAll("secondaryIndustryData2", this.secondaryIndustryData2.databaseFields());
+        if (this.bibranche2 != null) {
+            lookupDefinition.putAll("bibranche2", this.bibranche2.databaseFields());
         }
-        if (this.secondaryIndustryData3 != null) {
-            lookupDefinition.putAll("secondaryIndustryData3", this.secondaryIndustryData3.databaseFields());
+        if (this.bibranche3 != null) {
+            lookupDefinition.putAll("bibranche3", this.bibranche3.databaseFields());
         }
-        if (this.nameData != null) {
-            lookupDefinition.putAll("nameData", this.nameData.databaseFields());
+        if (this.virksomhedsnavn != null) {
+            lookupDefinition.putAll("virksomhedsnavn", this.virksomhedsnavn.databaseFields());
         }
-        if (this.phoneData != null) {
-            lookupDefinition.putAll("phoneData", this.phoneData.databaseFields());
+        if (this.telefonnummer != null) {
+            lookupDefinition.putAll("telefonnummer", this.telefonnummer.databaseFields());
         }
-        if (this.emailData != null) {
-            lookupDefinition.putAll("emailData", this.emailData.databaseFields());
+        if (this.emailadresse != null) {
+            lookupDefinition.putAll("emailadresse", this.emailadresse.databaseFields());
         }
-        if (this.faxData != null) {
-            lookupDefinition.putAll("faxData", this.faxData.databaseFields());
+        if (this.telefaxnummer != null) {
+            lookupDefinition.putAll("telefaxnummer", this.telefaxnummer.databaseFields());
         }
-        if (this.isPrimaryData != null) {
-            lookupDefinition.putAll("isPrimaryData", this.isPrimaryData.databaseFields());
+        if (this.primaer != null) {
+            lookupDefinition.putAll("primaer", this.primaer.databaseFields());
         }
-        if (this.companyData != null) {
-            lookupDefinition.putAll("companyData", this.companyData.databaseFields());
+        if (this.virksomhed != null) {
+            lookupDefinition.putAll("virksomhed", this.virksomhed.databaseFields());
         }
-        if (this.participantRelationData != null) {
-            lookupDefinition.putAll("participantRelationData", DetailData.listDatabaseFields(this.participantRelationData));
+        if (this.deltagerRelation != null) {
+            lookupDefinition.putAll("deltagerRelation", DetailData.listDatabaseFields(this.deltagerRelation));
         }
         return lookupDefinition;
     }
 
     public void forceLoad(Session session) {
-        Hibernate.initialize(this.yearlyEmployeeNumbersData);
-        Hibernate.initialize(this.quarterlyEmployeeNumbersData);
-        Hibernate.initialize(this.monthlyEmployeeNumbersData);
-        Hibernate.initialize(this.participantData);
-        Hibernate.initialize(this.attributeData);
-        Hibernate.initialize(this.participantRelationData);
+        Hibernate.initialize(this.aarsbeskaeftigelse);
+        Hibernate.initialize(this.kvartalsbeskaeftigelse);
+        Hibernate.initialize(this.maanedsbeskaeftigelse);
+        Hibernate.initialize(this.deltagere);
+        Hibernate.initialize(this.attributter);
+        Hibernate.initialize(this.deltagerRelation);
     }
 }

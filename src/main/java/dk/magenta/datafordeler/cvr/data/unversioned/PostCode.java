@@ -15,50 +15,50 @@ import java.util.Collections;
  */
 @Entity
 @Table(name = "cvr_postcode", indexes = {
-        @Index(name = "companyPostalCode", columnList = "code")
+        @Index(name = "companyPostalCode", columnList = "postnummer")
 })
 public class PostCode extends UnversionedEntity {
 
 
     @JsonProperty(value = "postnummer")
     @Column(nullable = false, unique = true)
-    private int code;
+    private int postnummer;
 
-    public int getCode() {
-        return code;
+    public int getPostnummer() {
+        return postnummer;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setPostnummer(int postnummer) {
+        this.postnummer = postnummer;
     }
 
 
 
     @JsonProperty(value = "postdistrikt")
     @Column
-    private String text;
+    private String postdistrikt;
 
-    public String getText() {
-        return this.text;
+    public String getPostdistrikt() {
+        return this.postdistrikt;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setPostdistrikt(String postdistrikt) {
+        this.postdistrikt = postdistrikt;
     }
 
 
-    public static PostCode getPostcode(int code, String text, QueryManager queryManager, Session session) {
-        PostCode postCode = queryManager.getItem(session, PostCode.class, Collections.singletonMap("code", code));
-        if (postCode == null) {
-            postCode = new PostCode();
-            postCode.setCode(code);
-            postCode.setText(text);
-            session.save(postCode);
+    public static PostCode getPostcode(int postnummer, String postdistrikt, QueryManager queryManager, Session session) {
+        PostCode post = queryManager.getItem(session, PostCode.class, Collections.singletonMap("postnummer", postnummer));
+        if (post == null) {
+            post = new PostCode();
+            post.setPostnummer(postnummer);
+            post.setPostdistrikt(postdistrikt);
+            session.save(post);
         }
-        return postCode;
+        return post;
     }
 
     public static PostCode getPostcode(PostCode old, QueryManager queryManager, Session session) {
-        return getPostcode(old.getCode(), old.getText(), queryManager, session);
+        return getPostcode(old.getPostnummer(), old.getPostdistrikt(), queryManager, session);
     }
 }

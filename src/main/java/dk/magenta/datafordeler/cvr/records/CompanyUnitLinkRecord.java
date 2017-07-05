@@ -18,7 +18,7 @@ public class CompanyUnitLinkRecord extends CompanyBaseRecord {
     @Override
     public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
         CompanyUnitLink link = new CompanyUnitLink();
-        link.setpNumber(this.pNumber);
+        link.setpNummer(this.pNumber);
         baseData.addCompanyUnit(link);
     }
 

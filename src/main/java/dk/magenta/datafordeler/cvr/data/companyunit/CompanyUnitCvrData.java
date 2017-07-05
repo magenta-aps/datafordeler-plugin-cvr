@@ -26,7 +26,7 @@ public class CompanyUnitCvrData extends SingleData<Integer> {
     @JsonAnyGetter
     public Map<String, Object> asMap() {
         HashMap<String, Object> fields = new HashMap<>();
-        fields.put("cvrNumber", this.getData());
+        fields.put("cvrNummer", this.getData());
         return fields;
     }
 

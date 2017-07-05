@@ -71,7 +71,7 @@ public class ModelTest {
 
 
 
-        Municipality municipality = Municipality.getMunicipality(101, "Copenhagen", queryManager, session);
+        Municipality municipality = Municipality.getMunicipality("101", "Copenhagen", queryManager, session);
 
         HashMap<String, Object> addressData1 = new HashMap<>();
         addressData1.put("roadName", "FoobarRoad");
@@ -82,9 +82,9 @@ public class ModelTest {
         if (locationAddress == null) {
             locationAddress = new Address();
             locationAddress.setRoadName((String)addressData1.get("roadName"));
-            locationAddress.setRoadCode((int)addressData1.get("roadCode"));
-            locationAddress.setHouseNumberFrom((int)addressData1.get("houseNumberFrom"));
-            locationAddress.setMunicipality(municipality);
+            locationAddress.setVejkode((String)addressData1.get("roadCode"));
+            locationAddress.setHusnummerFra((String)addressData1.get("houseNumberFrom"));
+            locationAddress.setKommune(municipality);
             session.saveOrUpdate(locationAddress);
         }
         companyData1.setLocationAddress(locationAddress);
@@ -100,9 +100,9 @@ public class ModelTest {
         if (postalAddress == null) {
             postalAddress = new Address();
             postalAddress.setRoadName((String)addressData2.get("roadName"));
-            postalAddress.setRoadCode((int)addressData2.get("roadCode"));
-            postalAddress.setHouseNumberFrom((int)addressData2.get("houseNumberFrom"));
-            postalAddress.setMunicipality(municipality);
+            postalAddress.setVejkode((String)addressData2.get("roadCode"));
+            postalAddress.setHusnummerFra((String)addressData2.get("houseNumberFrom"));
+            postalAddress.setKommune(municipality);
             session.saveOrUpdate(postalAddress);
         }
         companyData1.setPostalAddress(postalAddress);
@@ -134,9 +134,9 @@ public class ModelTest {
         CompanyForm companyForm = queryManager.getItem(session, CompanyForm.class, Collections.singletonMap("code", 123));
         if (companyForm == null) {
             companyForm = new CompanyForm();
-            companyForm.setCode(123);
-            companyForm.setShortDescription("A/S");
-            companyForm.setResponsibleDatasource("E&S");
+            companyForm.setVirksomhedsformkode(123);
+            companyForm.setKortBeskrivelse("A/S");
+            companyForm.setAnsvarligDataleverandoer("E&S");
             session.saveOrUpdate(companyForm);
         }
         companyData1.setForm(companyForm);
@@ -158,7 +158,7 @@ public class ModelTest {
         CompanyUnitLink unitLink = queryManager.getItem(session, CompanyUnitLink.class, Collections.singletonMap("pNumber", 314159265));
         if (unitLink == null) {
             unitLink = new CompanyUnitLink();
-            unitLink.setpNumber(314159265);
+            unitLink.setpNummer(314159265);
             session.saveOrUpdate(unitLink);
         }
 
@@ -247,8 +247,8 @@ public class ModelTest {
         Municipality municipality = queryManager.getItem(session, Municipality.class, Collections.singletonMap("code", 101));
         if (municipality == null) {
             municipality = new Municipality();
-            municipality.setCode(101);
-            municipality.setText("Copenhagen");
+            municipality.setKommunekode("101");
+            municipality.setKommunenavn("Copenhagen");
             session.saveOrUpdate(municipality);
         }
 
@@ -261,9 +261,9 @@ public class ModelTest {
         if (locationAddress == null) {
             locationAddress = new Address();
             locationAddress.setRoadName((String)addressData1.get("roadName"));
-            locationAddress.setRoadCode((int)addressData1.get("roadCode"));
-            locationAddress.setHouseNumberFrom((int)addressData1.get("houseNumberFrom"));
-            locationAddress.setMunicipality(municipality);
+            locationAddress.setVejkode((String)addressData1.get("roadCode"));
+            locationAddress.setHusnummerFra((String)addressData1.get("houseNumberFrom"));
+            locationAddress.setKommune(municipality);
             session.saveOrUpdate(locationAddress);
         }
 
@@ -334,30 +334,30 @@ public class ModelTest {
 
         ParticipantBaseData participantBaseData = new ParticipantBaseData();
         participantBaseData.addEffect(effect);
-        participantBaseData.setName("Mickey Mouse");
+        participantBaseData.setNavn("Mickey Mouse");
 
         ParticipantType type = queryManager.getItem(session, ParticipantType.class, Collections.singletonMap("name", "Person"));
         if (type == null) {
             type = new ParticipantType();
-            type.setName("Person");
+            type.setNavn("Person");
             session.saveOrUpdate(type);
         }
 
-        participantBaseData.setType(type);
+        participantBaseData.setEnhedsType(type);
 
         ParticipantRole role = queryManager.getItem(session, ParticipantRole.class, Collections.singletonMap("name", "CEO"));
         if (role == null) {
             role = new ParticipantRole();
-            role.setName("CEO");
+            role.setNavn("CEO");
             session.saveOrUpdate(role);
         }
 
-        participantBaseData.setRole(role);
+        participantBaseData.setRolle(role);
 
         ParticipantStatus status = queryManager.getItem(session, ParticipantStatus.class, Collections.singletonMap("name", "Deceased"));
         if (status == null) {
             status = new ParticipantStatus();
-            status.setName("Deceased");
+            status.setNavn("Deceased");
             session.saveOrUpdate(status);
         }
 

@@ -66,26 +66,26 @@ public class AddressRecord extends BaseRecord {
         session.saveOrUpdate(this.address);
         switch (this.type) {
             case LOCATION:
-                baseData.setLocationAddress(this.address);
+                baseData.setBeliggenhedsadresse(this.address);
                 break;
             case POSTAL:
-                baseData.setPostalAddress(this.address);
+                baseData.setPostadresse(this.address);
                 break;
             case BUSINESS:
-                baseData.setBusinessAddress(this.address);
+                baseData.setForretningsadresse(this.address);
                 break;
         }
     }
 
     private void normalizeAddress(QueryManager queryManager, Session session) {
         if (this.address != null) {
-            Municipality oldMunicipality = this.address.getMunicipality();
+            Municipality oldMunicipality = this.address.getKommune();
             if (oldMunicipality != null) {
-                this.address.setMunicipality(Municipality.getMunicipality(oldMunicipality, queryManager, session));
+                this.address.setKommune(Municipality.getMunicipality(oldMunicipality, queryManager, session));
             }
-            int postcode = this.address.getPostCode();
+            int postcode = this.address.getPostnummer();
             if (postcode != 0) {
-                this.address.setPostCodeObject(PostCode.getPostcode(postcode, this.address.getPostDistrict(), queryManager, session));
+                this.address.setPost(PostCode.getPostcode(postcode, this.address.getPostdistrikt(), queryManager, session));
             }
         }
     }

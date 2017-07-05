@@ -16,14 +16,14 @@ import java.util.Set;
 public class CompanyUnitLink extends DetailData {
 
     @Column(insertable = true, updatable = false, nullable = false)
-    private int pNumber;
+    private int pNummer;
 
-    public int getpNumber() {
-        return this.pNumber;
+    public int getpNummer() {
+        return this.pNummer;
     }
 
-    public void setpNumber(int pNumber) {
-        this.pNumber = pNumber;
+    public void setpNummer(int pNummer) {
+        this.pNummer = pNummer;
     }
 
     @ManyToMany
@@ -31,6 +31,6 @@ public class CompanyUnitLink extends DetailData {
 
     @Override
     public Map<String, Object> asMap() {
-        return Collections.singletonMap("pNumber", this.pNumber);
+        return Collections.singletonMap("pNummer", this.pNummer);
     }
 }

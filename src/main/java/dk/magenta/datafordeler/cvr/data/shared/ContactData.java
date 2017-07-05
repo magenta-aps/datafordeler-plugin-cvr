@@ -23,12 +23,12 @@ import java.util.Map;
 public class ContactData extends SingleData<String> {
 
     public enum Type {
-        NAME,
-        EMAIL,
-        PHONE,
-        FAX,
-        HOMEPAGE,
-        MANDATORY_EMAIL
+        NAVN,
+        EMAIL_ADRESSE,
+        TELEFONNUMMER,
+        TELEFAXNUMMER,
+        HJEMMESIDE,
+        OBLIGATORISK_EMAIL_ADRESSE
     }
 
     public ContactData() {
@@ -54,27 +54,25 @@ public class ContactData extends SingleData<String> {
     @Column
     @JsonProperty(value = "kontaktoplysning")
     @XmlElement(name = "kontaktoplysning")
-    public String getData() {
-        return super.getData();
-    }
+    public String getKontaktoplysning() { return super.getData(); }
 
     @Column
     @JsonProperty("hemmelig")
     @XmlElement(name = "hemmelig")
-    private boolean secret;
+    private boolean hemmelig;
 
-    public boolean isSecret() {
-        return this.secret;
+    public boolean isHemmelig() {
+        return this.hemmelig;
     }
 
-    public void setSecret(boolean secret) {
-        this.secret = secret;
+    public void setHemmelig(boolean hemmelig) {
+        this.hemmelig = hemmelig;
     }
 
     public Map<String, Object> asMap() {
         HashMap<String, Object> fields = new HashMap<>();
-        fields.put("data", this.getData());
-        fields.put("secret", this.secret);
+        fields.put("kontaktoplysning", this.getKontaktoplysning());
+        fields.put("hemmelig", this.hemmelig);
         fields.put("type", this.type);
         return fields;
     }
@@ -86,8 +84,8 @@ public class ContactData extends SingleData<String> {
     @JsonIgnore
     public Map<String, Object> databaseFields() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("data", this.getData());
-        map.put("secret", this.secret);
+        map.put("kontaktoplysning", this.getKontaktoplysning());
+        map.put("hemmelig", this.hemmelig);
         map.put("type", this.type);
         return map;
     }

@@ -1,6 +1,5 @@
 package dk.magenta.datafordeler.cvr.data.shared;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.cvr.data.DetailData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 
@@ -8,7 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlElement;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,14 +27,14 @@ public class IndustryData extends DetailData {
 
 
     @ManyToOne
-    private Industry industry;
+    private Industry branche;
 
-    public Industry getIndustry() {
-        return this.industry;
+    public Industry getBranche() {
+        return this.branche;
     }
 
-    public void setIndustry(Industry industry) {
-        this.industry = industry;
+    public void setBranche(Industry branche) {
+        this.branche = branche;
     }
 
 
@@ -57,7 +55,7 @@ public class IndustryData extends DetailData {
 
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("industry", this.industry);
+        map.put("branche", this.branche);
         map.put("isPrimary", this.isPrimary);
         return map;
     }
