@@ -32,16 +32,16 @@ public class CompanyEntity extends Entity<CompanyEntity, CompanyRegistration> {
     }
 
     @Column
-    private int cvrNumber;
+    private int CVRNummer;
 
     @JsonProperty
     @XmlElement
-    public int getCvrNumber() {
-        return cvrNumber;
+    public int getCVRNummer() {
+        return CVRNummer;
     }
 
-    public void setCvrNumber(int cvrNumber) {
-        this.cvrNumber = cvrNumber;
+    public void setCVRNummer(int CVRNummer) {
+        this.CVRNummer = CVRNummer;
     }
 
     public static UUID generateUUID(int cvrNumber) {

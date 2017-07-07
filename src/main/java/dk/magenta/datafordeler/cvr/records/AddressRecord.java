@@ -38,7 +38,7 @@ public class AddressRecord extends BaseRecord {
         session.saveOrUpdate(this.address);
         switch (this.type) {
             case LOCATION:
-                baseData.setLocationAddress(this.address);
+                baseData.setAdresse(this.address);
                 break;
             case POSTAL:
                 baseData.setPostalAddress(this.address);
@@ -52,10 +52,10 @@ public class AddressRecord extends BaseRecord {
         session.saveOrUpdate(this.address);
         switch (this.type) {
             case LOCATION:
-                baseData.setLocationAddress(this.address);
+                baseData.setBeliggenhedsadresse(this.address);
                 break;
             case POSTAL:
-                baseData.setPostalAddress(this.address);
+                baseData.setPostadresse(this.address);
                 break;
         }
     }
@@ -81,7 +81,7 @@ public class AddressRecord extends BaseRecord {
         if (this.address != null) {
             Municipality oldMunicipality = this.address.getKommune();
             if (oldMunicipality != null) {
-                this.address.setKommune(Municipality.getMunicipality(oldMunicipality, queryManager, session));
+                this.address.setKommune(Municipality.getKommune(oldMunicipality, queryManager, session));
             }
             int postcode = this.address.getPostnummer();
             if (postcode != 0) {

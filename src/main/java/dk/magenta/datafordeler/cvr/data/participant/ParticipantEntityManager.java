@@ -26,7 +26,6 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
-import java.util.UUID;
 
 /**
  * Created by lars on 16-05-17.
@@ -89,7 +88,7 @@ public class ParticipantEntityManager extends CvrEntityManager {
             return null;
         }
         ParticipantEntity participant = new ParticipantEntity(participantRecord.generateUUID(), CvrPlugin.getDomain());
-        participant.setParticipantNumber(participantRecord.unitNumber);
+        participant.setDeltagernummer(participantRecord.unitNumber);
 
         List<BaseRecord> records = participantRecord.getAll();
 
@@ -108,20 +107,20 @@ public class ParticipantEntityManager extends CvrEntityManager {
         ParticipantRegistration lastRegistration = null;
         for (OffsetDateTime registrationFrom : sortedTimestamps) {
 
-            // Get any existing registration that matches this date, or create a new one
+            // Get any existing registrering that matches this date, or create a new one
             ParticipantRegistration registration = participant.getRegistration(registrationFrom);
             if (registration == null) {
                 registration = new ParticipantRegistration();
-                registration.setRegistrationFrom(registrationFrom);
+                registration.setRegistreringFra(registrationFrom);
                 registration.setEntity(participant);
             }
 
-            // Copy data over from the previous registration, by cloning all effects and point underlying dataitems to the clones as well as the originals
+            // Copy data over from the previous registrering, by cloning all virkninger and point underlying dataitems to the clones as well as the originals
             if (lastRegistration != null) {
-                for (ParticipantEffect originalEffect : lastRegistration.getEffects()) {
-                    ParticipantEffect newEffect = new ParticipantEffect(registration, originalEffect.getEffectFrom(), originalEffect.getEffectTo());
+                for (ParticipantEffect originalEffect : lastRegistration.getVirkninger()) {
+                    ParticipantEffect newEffect = new ParticipantEffect(registration, originalEffect.getVirkningFra(), originalEffect.getVirkningTil());
                     for (ParticipantBaseData originalData : originalEffect.getDataItems()) {
-                        originalData.addEffect(newEffect);
+                        originalData.addVirkning(newEffect);
                     }
                 }
             }
@@ -134,7 +133,7 @@ public class ParticipantEntityManager extends CvrEntityManager {
 
                 if (effect.getDataItems().isEmpty()) {
                     ParticipantBaseData baseData = new ParticipantBaseData();
-                    baseData.addEffect(effect);
+                    baseData.addVirkning(effect);
                 }
                 for (ParticipantBaseData baseData : effect.getDataItems()) {
                     // There really should be only one item for each effect right now
@@ -144,12 +143,12 @@ public class ParticipantEntityManager extends CvrEntityManager {
             lastRegistration = registration;
             registrations.add(registration);
             try {
-                queryManager.saveRegistration(session, participant, registration);
+                queryManager.saveRegistrering(session, participant, registration);
             } catch (DataFordelerException e) {
                 e.printStackTrace();
             }
         }
-        log.info("Created "+participant.getRegistrations().size()+" registrations");
+        log.info("Created "+participant.getRegistreringer().size()+" registrations");
         transaction.commit();
         session.close();
         return registrations;

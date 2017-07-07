@@ -17,10 +17,10 @@ public class CompanyIndustryRecord extends CompanyBaseRecord {
     private int index;
 
     @JsonProperty(value = "branchekode")
-    private int code;
+    private String branchekode;
 
     @JsonProperty(value = "branchetekst")
-    private String text;
+    private String branchetekst;
 
     public void setIndex(int index) {
         this.index = index;
@@ -28,38 +28,38 @@ public class CompanyIndustryRecord extends CompanyBaseRecord {
 
     @Override
     public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
-        Industry industry = Industry.getIndustry(this.code, this.text, queryManager, session);
+        Industry industry = Industry.getIndustry(this.branchekode, this.branchetekst, queryManager, session);
         switch (this.index) {
             case 0:
-                baseData.setPrimaryIndustry(industry);
+                baseData.setHovedbranche(industry);
                 break;
             case 1:
-                baseData.setSecondaryIndustry1(industry);
+                baseData.setbibranche1(industry);
                 break;
             case 2:
-                baseData.setSecondaryIndustry2(industry);
+                baseData.setBibranche2(industry);
                 break;
             case 3:
-                baseData.setSecondaryIndustry3(industry);
+                baseData.setBibranche3(industry);
                 break;
         }
     }
 
     @Override
     public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
-        Industry industry = Industry.getIndustry(this.code, this.text, queryManager, session);
+        Industry industry = Industry.getIndustry(this.branchekode, this.branchetekst, queryManager, session);
         switch (this.index) {
             case 0:
-                baseData.setPrimaryIndustry(industry);
+                baseData.setHovedbranche(industry);
                 break;
             case 1:
-                baseData.setSecondaryIndustry1(industry);
+                baseData.setBibranche1(industry);
                 break;
             case 2:
-                baseData.setSecondaryIndustry2(industry);
+                baseData.setBibranche2(industry);
                 break;
             case 3:
-                baseData.setSecondaryIndustry3(industry);
+                baseData.setBibranche3(industry);
                 break;
         }
     }

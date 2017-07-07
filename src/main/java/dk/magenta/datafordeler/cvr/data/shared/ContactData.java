@@ -18,17 +18,17 @@ import java.util.Map;
 @Entity
 @Table(name = "cvr_company_contact", indexes = {
         @Index(name = "companyContactType", columnList = "type"),
-        @Index(name = "companyContactData", columnList = "type, data")
+        @Index(name = "companyContactData", columnList = "type, vaerdi")
 })
 public class ContactData extends SingleData<String> {
 
     public enum Type {
         NAVN,
-        EMAIL_ADRESSE,
+        EMAILADRESSE,
         TELEFONNUMMER,
         TELEFAXNUMMER,
         HJEMMESIDE,
-        OBLIGATORISK_EMAIL_ADRESSE
+        OBLIGATORISK_EMAILADRESSE
     }
 
     public ContactData() {
@@ -52,11 +52,6 @@ public class ContactData extends SingleData<String> {
     }
 
     @Column
-    @JsonProperty(value = "kontaktoplysning")
-    @XmlElement(name = "kontaktoplysning")
-    public String getKontaktoplysning() { return super.getData(); }
-
-    @Column
     @JsonProperty("hemmelig")
     @XmlElement(name = "hemmelig")
     private boolean hemmelig;
@@ -71,7 +66,7 @@ public class ContactData extends SingleData<String> {
 
     public Map<String, Object> asMap() {
         HashMap<String, Object> fields = new HashMap<>();
-        fields.put("kontaktoplysning", this.getKontaktoplysning());
+        fields.put("vaerdi", this.getVaerdi());
         fields.put("hemmelig", this.hemmelig);
         fields.put("type", this.type);
         return fields;
@@ -84,7 +79,7 @@ public class ContactData extends SingleData<String> {
     @JsonIgnore
     public Map<String, Object> databaseFields() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("kontaktoplysning", this.getKontaktoplysning());
+        map.put("vaerdi", this.getVaerdi());
         map.put("hemmelig", this.hemmelig);
         map.put("type", this.type);
         return map;

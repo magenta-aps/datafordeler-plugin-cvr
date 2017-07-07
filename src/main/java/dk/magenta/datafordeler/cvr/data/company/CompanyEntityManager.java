@@ -13,7 +13,6 @@ import dk.magenta.datafordeler.core.plugin.EntityManager;
 import dk.magenta.datafordeler.core.util.ListHashMap;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
 import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntityManager;
 import dk.magenta.datafordeler.cvr.records.BaseRecord;
 import dk.magenta.datafordeler.cvr.records.CompanyRecord;
 import org.apache.logging.log4j.LogManager;
@@ -121,7 +120,7 @@ public class CompanyEntityManager extends CvrEntityManager {
             return null;
         }
         CompanyEntity company = new CompanyEntity(UUID.randomUUID(), CvrPlugin.getDomain());
-        company.setCvrNumber(companyRecord.getCvrNumber());
+        company.setCVRNummer(companyRecord.getCvrNumber());
 
         List<BaseRecord> records = companyRecord.getAll();
 
@@ -129,7 +128,7 @@ public class CompanyEntityManager extends CvrEntityManager {
         TreeSet<OffsetDateTime> sortedTimestamps = new TreeSet<>();
         for (BaseRecord record : records) {
             OffsetDateTime registrationFrom = record.getLastUpdated();
-            System.out.println("registrationFrom: "+registrationFrom);
+            System.out.println("registreringFra: "+registrationFrom);
             if (registrationFrom == null) {
                 System.out.println("falling back to default");
                 registrationFrom = this.fallbackRegistrationFrom;
@@ -141,20 +140,20 @@ public class CompanyEntityManager extends CvrEntityManager {
         CompanyRegistration lastRegistration = null;
         for (OffsetDateTime registrationFrom : sortedTimestamps) {
 
-            // Get any existing registration that matches this date, or create a new one
+            // Get any existing registrering that matches this date, or create a new one
             CompanyRegistration registration = company.getRegistration(registrationFrom);
             if (registration == null) {
                 registration = new CompanyRegistration();
-                registration.setRegistrationFrom(registrationFrom);
+                registration.setRegistreringFra(registrationFrom);
                 registration.setEntity(company);
             }
 
-            // Copy data over from the previous registration, by cloning all effects and point underlying dataitems to the clones as well as the originals
+            // Copy data over from the previous registrering, by cloning all virkninger and point underlying dataitems to the clones as well as the originals
             if (lastRegistration != null) {
-                for (CompanyEffect originalEffect : lastRegistration.getEffects()) {
-                    CompanyEffect newEffect = new CompanyEffect(registration, originalEffect.getEffectFrom(), originalEffect.getEffectTo());
+                for (CompanyEffect originalEffect : lastRegistration.getVirkninger()) {
+                    CompanyEffect newEffect = new CompanyEffect(registration, originalEffect.getVirkningFra(), originalEffect.getVirkningTil());
                     for (CompanyBaseData originalData : originalEffect.getDataItems()) {
-                        originalData.addEffect(newEffect);
+                        originalData.addVirkning(newEffect);
                     }
                 }
             }
@@ -167,7 +166,7 @@ public class CompanyEntityManager extends CvrEntityManager {
 
                 if (effect.getDataItems().isEmpty()) {
                     CompanyBaseData baseData = new CompanyBaseData();
-                    baseData.addEffect(effect);
+                    baseData.addVirkning(effect);
                 }
                 for (CompanyBaseData baseData : effect.getDataItems()) {
                     // There really should be only one item for each effect right now
@@ -178,12 +177,12 @@ public class CompanyEntityManager extends CvrEntityManager {
             registrations.add(registration);
 
             try {
-                queryManager.saveRegistration(session, company, registration);
+                queryManager.saveRegistrering(session, company, registration);
             } catch (DataFordelerException e) {
                 e.printStackTrace();
             }
         }
-        log.info("Created "+company.getRegistrations().size()+" registrations");
+        log.info("Created "+company.getRegistreringer().size()+" registrations");
         transaction.commit();
         session.close();
         return registrations;

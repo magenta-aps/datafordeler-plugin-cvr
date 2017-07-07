@@ -16,7 +16,7 @@ import java.util.Collections;
  */
 @Entity
 @Table(name = "cvr_industry", indexes = {
-        @Index(name = "industryCode", columnList = "code")
+        @Index(name = "industryCode", columnList = "branchekode")
 })
 public class Industry extends UnversionedEntity {
 
@@ -25,14 +25,14 @@ public class Industry extends UnversionedEntity {
     @JsonProperty(value = "branchekode")
     @XmlElement(name = "branchekode")
     @Column(nullable = false, unique = true)
-    private int code;
+    private String branchekode;
 
-    public int getCode() {
-        return code;
+    public String getBranchekode() {
+        return branchekode;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setBranchekode(String branchekode) {
+        this.branchekode = branchekode;
     }
 
 
@@ -40,23 +40,23 @@ public class Industry extends UnversionedEntity {
     @JsonProperty(value = "branchetekst")
     @XmlElement(name = "branchetekst")
     @Column
-    private String text;
+    private String branchetekst;
 
-    public String getText() {
-        return this.text;
+    public String getBranchetekst() {
+        return this.branchetekst;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setBranchetekst(String branchetekst) {
+        this.branchetekst = branchetekst;
     }
 
 
-    public static Industry getIndustry(int branchekode, String branchetekst, QueryManager queryManager, Session session) {
+    public static Industry getIndustry(String branchekode, String branchetekst, QueryManager queryManager, Session session) {
         Industry industry = queryManager.getItem(session, Industry.class, Collections.singletonMap("branchekode", branchekode));
         if (industry == null) {
             industry = new Industry();
-            industry.setCode(branchekode);
-            industry.setText(branchetekst);
+            industry.setBranchekode(branchekode);
+            industry.setBranchetekst(branchetekst);
             session.save(industry);
         }
         return industry;

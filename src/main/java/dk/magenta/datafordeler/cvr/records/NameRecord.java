@@ -20,12 +20,12 @@ public class NameRecord extends BaseRecord {
     }
 
     public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
-        baseData.setName(this.name);
+        baseData.setVirksomhedsnavn(this.name);
     }
 
     @Override
     public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
-        baseData.setName(this.name);
+        baseData.setVirksomhedsnavn(this.name);
     }
 
     @Override

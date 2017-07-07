@@ -40,7 +40,7 @@ public class BooleanData extends SingleData<Boolean> {
     @JsonAnyGetter
     public Map<String, Object> asMap() {
         HashMap<String, Object> fields = new HashMap<>();
-        fields.put(this.getFieldName(), this.getData());
+        fields.put(this.getFieldName(), this.getVaerdi());
         return fields;
     }
 
@@ -51,7 +51,7 @@ public class BooleanData extends SingleData<Boolean> {
     @JsonIgnore
     public Map<String, Object> databaseFields() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("data", this.getData());
+        map.put("vaerdi", this.getVaerdi());
         map.put("type", this.type);
         return map;
     }

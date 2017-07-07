@@ -25,8 +25,8 @@ public class CompanyEffect extends Effect<CompanyRegistration, CompanyEffect, Co
         super(registration, effectFrom, effectTo);
     }
 /*
-    public CompanyEffect(CompanyRegistration registration, TemporalAccessor effectFrom, TemporalAccessor effectTo) {
-        super(registration, effectFrom, effectTo);
+    public CompanyEffect(CompanyRegistration registrering, TemporalAccessor effectFrom, TemporalAccessor effectTo) {
+        super(registrering, effectFrom, effectTo);
     }
 */
 

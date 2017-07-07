@@ -23,14 +23,14 @@ public class LifecycleData extends DetailData {
     @JsonProperty(value = "startDato")
     @XmlElement(name = "startDato")
     @Column(nullable = true)
-    private OffsetDateTime startDate;
+    private OffsetDateTime startDato;
 
-    public OffsetDateTime getStartDate() {
-        return startDate;
+    public OffsetDateTime getStartDato() {
+        return startDato;
     }
 
-    public void setStartDate(OffsetDateTime startDate) {
-        this.startDate = startDate;
+    public void setStartDato(OffsetDateTime startDato) {
+        this.startDato = startDato;
     }
 
 
@@ -38,14 +38,14 @@ public class LifecycleData extends DetailData {
     @JsonProperty(value = "slutDato")
     @XmlElement(name = "slutDato")
     @Column(nullable = true)
-    private OffsetDateTime endDate;
+    private OffsetDateTime slutDato;
 
-    public OffsetDateTime getEndDate() {
-        return endDate;
+    public OffsetDateTime getSlutDato() {
+        return slutDato;
     }
 
-    public void setEndDate(OffsetDateTime endDate) {
-        this.endDate = endDate;
+    public void setSlutDato(OffsetDateTime slutDato) {
+        this.slutDato = slutDato;
     }
 
 
@@ -53,11 +53,11 @@ public class LifecycleData extends DetailData {
     @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
-        if (this.startDate != null) {
-            map.put("startDate", this.startDate);
+        if (this.startDato != null) {
+            map.put("startDato", this.startDato);
         }
-        if (this.endDate != null) {
-            map.put("endDate", this.endDate);
+        if (this.slutDato != null) {
+            map.put("slutDato", this.slutDato);
         }
         return map;
     }

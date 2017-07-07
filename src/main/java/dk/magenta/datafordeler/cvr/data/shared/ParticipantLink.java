@@ -26,12 +26,12 @@ public class ParticipantLink extends SingleData<Integer> {
     private Set<CompanyUnitBaseData> companyUnitBases = new HashSet<>();
 
     @JsonProperty
-    public int getParticipantNumber() {
-        return this.getData();
+    public int getDeltagernummer() {
+        return this.getVaerdi();
     }
 
     @Override
     public Map<String, Object> asMap() {
-        return Collections.singletonMap("participantNumber", this.getData());
+        return Collections.singletonMap("vaerdi", this.getVaerdi());
     }
 }

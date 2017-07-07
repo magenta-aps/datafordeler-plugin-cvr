@@ -12,10 +12,10 @@ import java.util.*;
  */
 @Entity
 @Table(name = "cvr_company_credit", indexes = {
-        @Index(name = "companyCreditData", columnList = "data"),
+        @Index(name = "companyCreditData", columnList = "vaerdi"),
 },
 uniqueConstraints = {
-        @UniqueConstraint(name = "data", columnNames = "data")
+        @UniqueConstraint(name = "vaerdi", columnNames = "vaerdi")
 })
 public class CompanyCreditData extends SingleData<String> {
 
@@ -27,7 +27,7 @@ public class CompanyCreditData extends SingleData<String> {
 
     @JsonAnyGetter
     public Map<String, Object> asMap() {
-        return Collections.singletonMap("text", this.getData());
+        return Collections.singletonMap("text", this.getVaerdi());
     }
 
     /**
@@ -37,7 +37,7 @@ public class CompanyCreditData extends SingleData<String> {
     @JsonIgnore
     public Map<String, Object> databaseFields() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("data", this.getData());
+        map.put("data", this.getVaerdi());
         return map;
     }
 

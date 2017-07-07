@@ -25,7 +25,7 @@ public class AttributeValueRecord extends BaseRecord {
 
     @Override
     public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
-        baseData.addAttribute(
+        baseData.addAttribut(
                 this.parent.getType(),
                 this.parent.getValueType(),
                 this.value,
@@ -35,7 +35,7 @@ public class AttributeValueRecord extends BaseRecord {
 
     @Override
     public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
-        baseData.addAttribute(
+        baseData.addAttribut(
                 this.parent.getType(),
                 this.parent.getValueType(),
                 this.value,
@@ -49,7 +49,7 @@ public class AttributeValueRecord extends BaseRecord {
                 this.parent.getType(),
                 this.parent.getValueType(),
                 this.value,
-                this.parent.getSequenceNumber()
+                this.parent.getSekvensnummer()
         );*/
     }
 }

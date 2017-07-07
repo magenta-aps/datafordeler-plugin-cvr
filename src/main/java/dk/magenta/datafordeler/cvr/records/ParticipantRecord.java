@@ -65,7 +65,7 @@ public class ParticipantRecord extends BaseRecord {
 
     public void setPhoneRecords(List<ContactRecord> phoneRecords) {
         for (ContactRecord record : phoneRecords) {
-            record.setType(ContactRecord.Type.PHONE);
+            record.setType(ContactRecord.Type.TELEFONNUMMER);
         }
         this.phoneRecords = phoneRecords;
     }
@@ -75,7 +75,7 @@ public class ParticipantRecord extends BaseRecord {
 
     public void setFaxRecords(List<ContactRecord> faxRecords) {
         for (ContactRecord record : faxRecords) {
-            record.setType(ContactRecord.Type.FAX);
+            record.setType(ContactRecord.Type.TELEFAXNUMMER);
         }
         this.faxRecords = faxRecords;
     }
@@ -85,7 +85,7 @@ public class ParticipantRecord extends BaseRecord {
 
     public void setEmailRecords(List<ContactRecord> emailRecords) {
         for (ContactRecord record : emailRecords) {
-            record.setType(ContactRecord.Type.EMAIL);
+            record.setType(ContactRecord.Type.EMAILADRESSE);
         }
         this.emailRecords = emailRecords;
     }
@@ -144,7 +144,7 @@ public class ParticipantRecord extends BaseRecord {
 
     @Override
     public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
-        baseData.setEnhedsNummer(this.unitNumber);
-        baseData.setEnhedsType(ParticipantType.getType(this.unitType, queryManager, session));
+        baseData.setEnhedsnummer(this.unitNumber);
+        baseData.setEnhedstype(ParticipantType.getType(this.unitType, queryManager, session));
     }
 }

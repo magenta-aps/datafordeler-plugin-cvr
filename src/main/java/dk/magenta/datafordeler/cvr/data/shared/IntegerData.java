@@ -13,7 +13,7 @@ import java.util.Map;
  */
 @Entity
 @Table(name = "cvr_integer", indexes = {
-        @Index(name = "companyIntegerData", columnList = "data")
+        @Index(name = "companyIntegerData", columnList = "vaerdi")
 })
 public class IntegerData extends SingleData<Long> {
 
@@ -31,7 +31,7 @@ public class IntegerData extends SingleData<Long> {
     @JsonIgnore
     public Map<String, Object> databaseFields() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("data", this.getData());
+        map.put("vaerdi", this.getVaerdi());
         return map;
     }
 

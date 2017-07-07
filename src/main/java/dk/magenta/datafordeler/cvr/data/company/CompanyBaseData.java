@@ -46,15 +46,15 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     private AddressData postadresse;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @OrderBy(value = "year asc")
+    @OrderBy(value = "aar asc")
     private List<YearlyEmployeeNumbersData> aarsbeskaeftigelse;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @OrderBy(value = "year asc, quarter asc")
+    @OrderBy(value = "aar asc, kvartal asc")
     private List<QuarterlyEmployeeNumbersData> kvartalsbeskaeftigelse;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @OrderBy(value = "year asc, month asc")
+    @OrderBy(value = "aar asc, maaned asc")
     private List<MonthlyEmployeeNumbersData> maanedsbeskaeftigelse;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
@@ -115,10 +115,10 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
             map.put("livsforloeb", this.livsforloeb.asMap());
         }
         if (this.reklamebeskyttelse != null) {
-            map.put("reklamebeskyttelse", this.reklamebeskyttelse.getData());
+            map.put("reklamebeskyttelse", this.reklamebeskyttelse.getVaerdi());
         }
         if (this.CVRNummer != null) {
-            map.put("CVRNummer", this.CVRNummer.getData());
+            map.put("CVRNummer", this.CVRNummer.getVaerdi());
         }
         if (this.beliggenhedsadresse != null) {
             map.put("beliggenhedsadresse", this.beliggenhedsadresse.getAdresse());
@@ -148,7 +148,7 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
             map.put("bibranche3", this.bibranche3.getBranche());
         }
         if (this.virksomhedsnavn != null) {
-            map.put("virksomhedsnavn", this.virksomhedsnavn.getData());
+            map.put("virksomhedsnavn", this.virksomhedsnavn.getVaerdi());
         }
         if (this.telefonnummer != null) {
             map.put("telefonnummer", this.telefonnummer);
@@ -180,7 +180,7 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         return map;
     }
 
-    public void setForm(CompanyForm form) {
+    public void setVirksomhedsform(CompanyForm form) {
         if (this.virksomhedsform == null) {
             this.virksomhedsform = new CompanyFormData();
         }
@@ -192,35 +192,35 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         }
         this.status.setStatus(status);
     }
-    public void setLifecycleStartDate(OffsetDateTime startDate) {
+    public void setLivsforloebStart(OffsetDateTime startDate) {
         if (this.livsforloeb == null) {
             this.livsforloeb = new LifecycleData();
         }
-        this.livsforloeb.setStartDate(startDate);
+        this.livsforloeb.setStartDato(startDate);
     }
-    public void setLifecycleEndDate(OffsetDateTime endDate) {
+    public void setLivsforloebSlut(OffsetDateTime endDate) {
         if (this.livsforloeb == null) {
             this.livsforloeb = new LifecycleData();
         }
-        this.livsforloeb.setEndDate(endDate);
+        this.livsforloeb.setSlutDato(endDate);
     }
-    public void setAdvertProtection(boolean advertProtection) {
+    public void setReklamebeskyttelse(boolean advertProtection) {
         if (this.reklamebeskyttelse == null) {
             this.reklamebeskyttelse = new BooleanData(BooleanData.Type.REKLAME_BESKYTTELSE);
         }
-        this.reklamebeskyttelse.setData(advertProtection);
+        this.reklamebeskyttelse.setVaerdi(advertProtection);
     }
-    public void setUnitNumber(long unitNumber) {
+    public void setCVRNummer(long unitNumber) {
         if (this.CVRNummer == null) {
             this.CVRNummer = new IntegerData();
         }
-        this.CVRNummer.setData(unitNumber);
+        this.CVRNummer.setVaerdi(unitNumber);
     }
 
 
 
 
-    public void setLocationAddress(Address address) {
+    public void setAdresse(Address address) {
         if (this.beliggenhedsadresse == null) {
             this.beliggenhedsadresse = new AddressData();
         }
@@ -233,7 +233,7 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         this.postadresse.setAdresse(address);
     }
 
-    public void addYearlyEmployeeNumbers(int year, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
+    public void addAarsbeskaeftigelse(int year, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
         if (this.aarsbeskaeftigelse == null) {
             //this.aarsbeskaeftigelse = new CompanyYearlyEmployeeNumbersData();
             this.aarsbeskaeftigelse = new ArrayList<>();
@@ -248,7 +248,7 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         yearlyEmployeeNumbersData.setIncludingOwnersHigh(includingOwnersHigh);
         this.aarsbeskaeftigelse.add(yearlyEmployeeNumbersData);
     }
-    public void addQuarterlyEmployeeNumbers(int year, int quarter, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
+    public void addKvartalsbeskaeftigelse(int year, int quarter, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
         if (this.kvartalsbeskaeftigelse == null) {
             //this.kvartalsbeskaeftigelse = new CompanyQuarterlyEmployeeNumbersData();
             this.kvartalsbeskaeftigelse = new ArrayList<>();
@@ -264,7 +264,7 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         quarterlyEmployeeNumbersData.setIncludingOwnersHigh(includingOwnersHigh);
         this.kvartalsbeskaeftigelse.add(quarterlyEmployeeNumbersData);
     }
-    public void addMonthlyEmployeeNumbers(int year, int month, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
+    public void addMaanedsbeskaeftigelse(int year, int month, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
         if (this.maanedsbeskaeftigelse == null) {
             //this.maanedsbeskaeftigelse = new CompanyMonthlyEmployeeNumbersData();
             this.maanedsbeskaeftigelse = new ArrayList<>();
@@ -281,92 +281,92 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
         this.maanedsbeskaeftigelse.add(monthlyEmployeeNumbersData);
     }
 
-    public void setPrimaryIndustry(Industry industry) {
+    public void setHovedbranche(Industry industry) {
         if (this.hovedbranche == null) {
             this.hovedbranche = new IndustryData(true);
         }
         this.hovedbranche.setBranche(industry);
     }
-    public void setSecondaryIndustry1(Industry industry) {
+    public void setbibranche1(Industry industry) {
         if (this.bibranche1 == null) {
             this.bibranche1 = new IndustryData(false);
         }
         this.bibranche1.setBranche(industry);
     }
-    public void setSecondaryIndustry2(Industry industry) {
+    public void setBibranche2(Industry industry) {
         if (this.bibranche2 == null) {
             this.bibranche2 = new IndustryData(false);
         }
         this.bibranche2.setBranche(industry);
     }
-    public void setSecondaryIndustry3(Industry industry) {
+    public void setBibranche3(Industry industry) {
         if (this.bibranche3 == null) {
             this.bibranche3 = new IndustryData(false);
         }
         this.bibranche3.setBranche(industry);
     }
 
-    public void setName(String name) {
+    public void setVirksomhedsnavn(String name) {
         if (this.virksomhedsnavn == null) {
             this.virksomhedsnavn = new TextData(TextData.Type.NAVN);
         }
-        this.virksomhedsnavn.setData(name);
+        this.virksomhedsnavn.setVaerdi(name);
     }
-    public void setPhone(String phone, boolean secret) {
+    public void setTelefonnummer(String phone, boolean secret) {
         if (this.telefonnummer == null) {
             this.telefonnummer = new ContactData(ContactData.Type.TELEFONNUMMER);
         }
-        this.telefonnummer.setData(phone);
+        this.telefonnummer.setVaerdi(phone);
         this.telefonnummer.setHemmelig(secret);
     }
-    public void setEmail(String email, boolean secret) {
+    public void setEmailadresse(String email, boolean secret) {
         if (this.emailadresse == null) {
-            this.emailadresse = new ContactData(ContactData.Type.EMAIL_ADRESSE);
+            this.emailadresse = new ContactData(ContactData.Type.EMAILADRESSE);
         }
-        this.emailadresse.setData(email);
+        this.emailadresse.setVaerdi(email);
         this.emailadresse.setHemmelig(secret);
     }
-    public void setFax(String fax, boolean secret) {
+    public void setTelefaxnummer(String fax, boolean secret) {
         if (this.telefaxnummer == null) {
             this.telefaxnummer = new ContactData(ContactData.Type.TELEFAXNUMMER);
         }
-        this.telefaxnummer.setData(fax);
+        this.telefaxnummer.setVaerdi(fax);
         this.telefaxnummer.setHemmelig(secret);
     }
-    public void setHomepage(String email, boolean secret) {
+    public void setHjemmeside(String email, boolean secret) {
         if (this.hjemmeside == null) {
             this.hjemmeside = new ContactData(ContactData.Type.HJEMMESIDE);
         }
-        this.hjemmeside.setData(email);
+        this.hjemmeside.setVaerdi(email);
         this.hjemmeside.setHemmelig(secret);
     }
-    public void setMandatoryEmail(String fax, boolean secret) {
+    public void setObligatoriskEmail(String fax, boolean secret) {
         if (this.obligatoriskEmail == null) {
-            this.obligatoriskEmail = new ContactData(ContactData.Type.OBLIGATORISK_EMAIL_ADRESSE);
+            this.obligatoriskEmail = new ContactData(ContactData.Type.OBLIGATORISK_EMAILADRESSE);
         }
-        this.obligatoriskEmail.setData(fax);
+        this.obligatoriskEmail.setVaerdi(fax);
         this.obligatoriskEmail.setHemmelig(secret);
     }
 
-    public void addCompanyUnit(CompanyUnitLink unitLink) {
-        this.enheder.add(unitLink);
+    public void addProduktionsenhed(CompanyUnitLink produktionsenhedlink) {
+        this.enheder.add(produktionsenhedlink);
     }
-    public void addParticipant(ParticipantLink participantLink) {
-        this.deltagere.add(participantLink);
+    public void addDeltager(ParticipantLink deltagerlink) {
+        this.deltagere.add(deltagerlink);
     }
-    public void addAttribute(String type, String valueType, String value, int sequenceNumber) {
+    public void addAttribut(String type, String valueType, String value, int sequenceNumber) {
         AttributeData attributeData = new AttributeData();
         attributeData.setType(type);
         attributeData.setValueType(valueType);
         attributeData.setValue(value);
         attributeData.setSequenceNumber(sequenceNumber);
-        this.addAttribute(attributeData);
+        this.addAttribut(attributeData);
     }
-    public void addAttribute(AttributeData attributeData) {
+    public void addAttribut(AttributeData attributeData) {
         this.attributter.add(attributeData);
     }
 
-    public void addParticipantRelation(Identification participant, Set<Identification> organizations) {
+    public void addDeltagerRelation(Identification participant, Set<Identification> organizations) {
         ParticipantRelationData participantRelationData = new ParticipantRelationData();
         participantRelationData.setDeltager(participant);
         for (Identification organization : organizations) {

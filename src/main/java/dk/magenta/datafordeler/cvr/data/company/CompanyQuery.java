@@ -1,10 +1,8 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
-import dk.magenta.datafordeler.core.database.Entity;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.core.fapi.ParameterMap;
 import dk.magenta.datafordeler.core.fapi.QueryField;
-import dk.magenta.datafordeler.core.util.ListHashMap;
 import dk.magenta.datafordeler.cvr.data.CvrQuery;
 
 import java.util.HashMap;
@@ -15,125 +13,125 @@ import java.util.Map;
  */
 public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
-    public static final String CVRNUMBER = "cvrnumber";
-    public static final String ADVERTPROTECTION = "advertprotection";
-    public static final String NAME = "name";
-    public static final String PHONE = "phone";
-    public static final String FAX = "fax";
-    public static final String EMAIL = "email";
-    public static final String FORM = "form";
+    public static final String CVRNUMMER = "CVRNummer";
+    public static final String REKLAMEBESKYTTELSE = "reklamebeskyttelse";
+    public static final String NAVN = "virksomhedsnavn";
+    public static final String TELEFONNUMMER = "telefonnummer";
+    public static final String TELEFAXNUMMER = "telefaxnummer";
+    public static final String EMAILADRESSE = "emailadresse";
+    public static final String VIRKSOMHEDSFORM = "virksomhedsform";
 
-    @QueryField(type = QueryField.FieldType.STRING, queryName = CVRNUMBER)
-    private String cvrNumber;
+    @QueryField(type = QueryField.FieldType.STRING, queryName = CVRNUMMER)
+    private String CVRNummer;
 
-    public String getCvrNumber() {
-        return cvrNumber;
+    public String getCVRNummer() {
+        return CVRNummer;
     }
 
-    public void setCvrNumber(String cvrNumber) {
-        this.cvrNumber = cvrNumber;
-    }
-
-
-    @QueryField(type = QueryField.FieldType.BOOLEAN, queryName = ADVERTPROTECTION)
-    private String advertProtection;
-
-    public String getAdvertProtection() {
-        return this.advertProtection;
-    }
-
-    public void setAdvertProtection(String advertProtection) {
-        this.advertProtection = advertProtection;
-    }
-
-    @QueryField(type = QueryField.FieldType.STRING, queryName = NAME)
-    private String name;
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setCVRNummer(String CVRNummer) {
+        this.CVRNummer = CVRNummer;
     }
 
 
-    @QueryField(type = QueryField.FieldType.STRING, queryName = PHONE)
-    private String phone;
+    @QueryField(type = QueryField.FieldType.STRING, queryName = REKLAMEBESKYTTELSE)
+    private String reklamebeskyttelse;
 
-    public String getPhone() {
-        return this.phone;
+    public String getReklamebeskyttelse() {
+        return this.reklamebeskyttelse;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setReklamebeskyttelse(String reklamebeskyttelse) {
+        this.reklamebeskyttelse = reklamebeskyttelse;
+    }
+
+    @QueryField(type = QueryField.FieldType.STRING, queryName = NAVN)
+    private String virksomhedsnavn;
+
+    public String getVirksomhedsnavn() {
+        return this.virksomhedsnavn;
+    }
+
+    public void setVirksomhedsnavn(String virksomhedsnavn) {
+        this.virksomhedsnavn = virksomhedsnavn;
     }
 
 
+    @QueryField(type = QueryField.FieldType.STRING, queryName = TELEFONNUMMER)
+    private String telefonnummer;
 
-    @QueryField(type = QueryField.FieldType.STRING, queryName = FAX)
-    private String fax;
-
-    public String getFax() {
-        return this.fax;
+    public String getTelefonnummer() {
+        return this.telefonnummer;
     }
 
-    public void setFax(String fax) {
-        this.fax = fax;
+    public void setTelefonnummer(String telefonnummer) {
+        this.telefonnummer = telefonnummer;
     }
 
 
 
-    @QueryField(type = QueryField.FieldType.STRING, queryName = EMAIL)
-    private String email;
+    @QueryField(type = QueryField.FieldType.STRING, queryName = TELEFAXNUMMER)
+    private String telefaxnummer;
 
-    public String getEmail() {
-        return this.email;
+    public String getTelefaxnummer() {
+        return this.telefaxnummer;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setTelefaxnummer(String telefaxnummer) {
+        this.telefaxnummer = telefaxnummer;
     }
 
 
 
-    @QueryField(type = QueryField.FieldType.INT, queryName = FORM)
-    private String formCode;
+    @QueryField(type = QueryField.FieldType.STRING, queryName = EMAILADRESSE)
+    private String emailadresse;
 
-    public String getFormCode() {
-        return this.formCode;
+    public String getEmailadresse() {
+        return this.emailadresse;
     }
 
-    public void setFormCode(String formCode) {
-        this.formCode = formCode;
+    public void setEmailadresse(String emailadresse) {
+        this.emailadresse = emailadresse;
     }
 
-    public void setFormCode(int formCode) {
-        this.setFormCode(Integer.toString(formCode));
+
+
+    @QueryField(type = QueryField.FieldType.STRING, queryName = VIRKSOMHEDSFORM)
+    private String virksomhedsform;
+
+    public String getVirksomhedsform() {
+        return this.virksomhedsform;
+    }
+
+    public void setVirksomhedsform(String virksomhedsform) {
+        this.virksomhedsform = virksomhedsform;
+    }
+
+    public void setVirksomhedsform(int virksomhedsform) {
+        this.setVirksomhedsform(Integer.toString(virksomhedsform));
     }
 
     @Override
     public Map<String, Object> getSearchParameters() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put(CVRNUMBER, this.cvrNumber);
-        map.put(ADVERTPROTECTION, this.advertProtection);
-        map.put(NAME, this.name);
-        map.put(PHONE, this.phone);
-        map.put(FAX, this.fax);
-        map.put(EMAIL, this.email);
-        map.put(FORM, this.formCode);
+        map.put(CVRNUMMER, this.CVRNummer);
+        map.put(REKLAMEBESKYTTELSE, this.reklamebeskyttelse);
+        map.put(NAVN, this.virksomhedsnavn);
+        map.put(TELEFONNUMMER, this.telefonnummer);
+        map.put(TELEFAXNUMMER, this.telefaxnummer);
+        map.put(EMAILADRESSE, this.emailadresse);
+        map.put(VIRKSOMHEDSFORM, this.virksomhedsform);
         return map;
     }
 
     @Override
     public void setFromParameters(ParameterMap parameters) {
-        this.setCvrNumber(parameters.getFirst(CVRNUMBER));
-        this.setAdvertProtection(parameters.getFirst(ADVERTPROTECTION));
-        this.setName(parameters.getFirst(NAME));
-        this.setPhone(parameters.getFirst(PHONE));
-        this.setFax(parameters.getFirst(FAX));
-        this.setEmail(parameters.getFirst(EMAIL));
-        this.setFormCode(parameters.getFirst(FORM));
+        this.setCVRNummer(parameters.getFirst(CVRNUMMER));
+        this.setReklamebeskyttelse(parameters.getFirst(REKLAMEBESKYTTELSE));
+        this.setVirksomhedsnavn(parameters.getFirst(NAVN));
+        this.setTelefonnummer(parameters.getFirst(TELEFONNUMMER));
+        this.setTelefaxnummer(parameters.getFirst(TELEFAXNUMMER));
+        this.setEmailadresse(parameters.getFirst(EMAILADRESSE));
+        this.setVirksomhedsform(parameters.getFirst(VIRKSOMHEDSFORM));
     }
 
     @Override
@@ -151,18 +149,18 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
     public LookupDefinition getLookupDefinition() {
         LookupDefinition lookupDefinition = new LookupDefinition(this);
 
-        if (this.cvrNumber != null) {
-            lookupDefinition.put(LookupDefinition.entityref + ".cvrNumber", this.cvrNumber);
+        if (this.CVRNummer != null) {
+            lookupDefinition.put(LookupDefinition.entityref + "." + CVRNUMMER, this.CVRNummer);
         }
 
         /*if (this.lifecycleData != null) {
             lookupDefinition.putAll("lifecycleData", this.lifecycleData.databaseFields());
         }*/
-        if (this.formCode != null) {
-            lookupDefinition.put("formData.form.code", this.formCode);
+        if (this.virksomhedsform != null) {
+            lookupDefinition.put(VIRKSOMHEDSFORM + "." + VIRKSOMHEDSFORM + ".virksomhedsformkode", this.virksomhedsform);
         }
-        if (this.advertProtection != null) {
-            lookupDefinition.put("advertProtectionData.data", this.advertProtection);
+        if (this.reklamebeskyttelse != null) {
+            lookupDefinition.put(REKLAMEBESKYTTELSE + ".vaerdi", this.reklamebeskyttelse);
         }
         /*if (this.locationAddressData != null) {
             lookupDefinition.putAll("locationAddressData", this.locationAddressData.databaseFields());
@@ -188,17 +186,17 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
         if (this.secondaryIndustryData3 != null) {
             lookupDefinition.putAll("secondaryIndustryData3", this.secondaryIndustryData3.databaseFields());
         }*/
-        if (this.name != null) {
-            lookupDefinition.put("nameData.data", this.name);
+        if (this.virksomhedsnavn != null) {
+            lookupDefinition.put(NAVN + ".vaerdi", this.virksomhedsnavn);
         }
-        if (this.phone != null) {
-            lookupDefinition.put("phoneData.data", this.phone);
+        if (this.telefonnummer != null) {
+            lookupDefinition.put(TELEFONNUMMER + ".vaerdi", this.telefonnummer);
         }
-        if (this.email != null) {
-            lookupDefinition.put("emailData.data", this.email);
+        if (this.emailadresse != null) {
+            lookupDefinition.put(EMAILADRESSE + ".vaerdi", this.emailadresse);
         }
-        if (this.fax != null) {
-            lookupDefinition.put("faxData.data", this.fax);
+        if (this.telefaxnummer != null) {
+            lookupDefinition.put(TELEFAXNUMMER + ".vaerdi", this.telefaxnummer);
         }
         return lookupDefinition;
     }

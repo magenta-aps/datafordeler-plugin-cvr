@@ -63,7 +63,7 @@ public class CompanyRecord extends BaseRecord {
 
     public void setPhoneRecords(List<ContactRecord> phoneRecords) {
         for (ContactRecord record : phoneRecords) {
-            record.setType(ContactRecord.Type.PHONE);
+            record.setType(ContactRecord.Type.TELEFONNUMMER);
         }
         this.phoneRecords = phoneRecords;
     }
@@ -73,7 +73,7 @@ public class CompanyRecord extends BaseRecord {
 
     public void setFaxRecords(List<ContactRecord> faxRecords) {
         for (ContactRecord record : faxRecords) {
-            record.setType(ContactRecord.Type.FAX);
+            record.setType(ContactRecord.Type.TELEFAXNUMMER);
         }
         this.faxRecords = faxRecords;
     }
@@ -83,7 +83,7 @@ public class CompanyRecord extends BaseRecord {
 
     public void setEmailRecords(List<ContactRecord> emailRecords) {
         for (ContactRecord record : emailRecords) {
-            record.setType(ContactRecord.Type.EMAIL);
+            record.setType(ContactRecord.Type.EMAILADRESSE);
         }
         this.emailRecords = emailRecords;
     }
@@ -93,7 +93,7 @@ public class CompanyRecord extends BaseRecord {
 
     public void setHomepageRecords(List<ContactRecord> homepageRecords) {
         for (ContactRecord record : homepageRecords) {
-            record.setType(ContactRecord.Type.HOMEPAGE);
+            record.setType(ContactRecord.Type.HJEMMESIDE);
         }
         this.homepageRecords = homepageRecords;
     }
@@ -103,7 +103,7 @@ public class CompanyRecord extends BaseRecord {
 
     public void setMandatoryEmailRecords(List<ContactRecord> mandatoryEmailRecords) {
         for (ContactRecord record : mandatoryEmailRecords) {
-            record.setType(ContactRecord.Type.MANDATORY_EMAIL);
+            record.setType(ContactRecord.Type.OBLIGATORISK_EMAILADRESSE);
         }
         this.mandatoryEmailRecords = mandatoryEmailRecords;
     }
@@ -254,8 +254,8 @@ public class CompanyRecord extends BaseRecord {
 
     @Override
     public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
-        baseData.setAdvertProtection(this.advertProtected);
-        baseData.setUnitNumber(this.unitNumber);
+        baseData.setReklamebeskyttelse(this.advertProtected);
+        baseData.setCVRNummer(this.unitNumber);
     }
 
     @Override

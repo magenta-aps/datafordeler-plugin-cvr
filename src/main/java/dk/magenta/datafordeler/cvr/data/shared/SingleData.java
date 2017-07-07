@@ -1,10 +1,12 @@
 package dk.magenta.datafordeler.cvr.data.shared;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.cvr.data.DetailData;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -14,16 +16,16 @@ import javax.xml.bind.annotation.XmlTransient;
 public abstract class SingleData<T> extends DetailData {
 
     @Column
-    @JsonIgnore
-    @XmlTransient
-    private T data;
+    @JsonProperty(value = "vaerdi")
+    @XmlElement(name = "vaerdi")
+    private T vaerdi;
 
-    public T getData() {
-        return this.data;
+    public T getVaerdi() {
+        return this.vaerdi;
     }
 
-    public void setData(T data) {
-        this.data = data;
+    public void setVaerdi(T vaerdi) {
+        this.vaerdi = vaerdi;
     }
 
 }

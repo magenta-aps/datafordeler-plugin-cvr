@@ -13,13 +13,13 @@ import java.util.Map;
 @Entity
 @Table(name = "cvr_text", indexes = {
         @Index(name = "companyTextType", columnList = "type"),
-        @Index(name = "companyTextData", columnList = "type, data")
+        @Index(name = "companyTextData", columnList = "type, vaerdi")
 })
 public class TextData extends SingleData<String> {
 
     public enum Type {
         NAVN,
-        EMAIL_ADRESSE,
+        EMAILADRESSE,
         TELEFONNUMMER,
         TELEFAXNUMMER,
         TYPE
@@ -43,7 +43,7 @@ public class TextData extends SingleData<String> {
     @JsonAnyGetter
     public Map<String, Object> asMap() {
         HashMap<String, Object> fields = new HashMap<>();
-        fields.put(this.getFieldName(), this.getData());
+        fields.put(this.getFieldName(), this.getVaerdi());
         return fields;
     }
 
@@ -54,7 +54,7 @@ public class TextData extends SingleData<String> {
     @JsonIgnore
     public Map<String, Object> databaseFields() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("data", this.getData());
+        map.put("vaerdi", this.getVaerdi());
         map.put("type", this.type);
         return map;
     }

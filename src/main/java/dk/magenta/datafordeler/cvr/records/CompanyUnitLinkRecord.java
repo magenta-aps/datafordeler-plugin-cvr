@@ -19,7 +19,7 @@ public class CompanyUnitLinkRecord extends CompanyBaseRecord {
     public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
         CompanyUnitLink link = new CompanyUnitLink();
         link.setpNummer(this.pNumber);
-        baseData.addCompanyUnit(link);
+        baseData.addProduktionsenhed(link);
     }
 
     @Override

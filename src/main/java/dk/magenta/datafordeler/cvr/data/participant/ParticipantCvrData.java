@@ -20,13 +20,13 @@ public class ParticipantCvrData extends SingleData<Integer> {
     }
 
     public ParticipantCvrData(int cvr) {
-        this.setData(cvr);
+        this.setVaerdi(cvr);
     }
 
     @JsonAnyGetter
     public Map<String, Object> asMap() {
         HashMap<String, Object> fields = new HashMap<>();
-        fields.put("cvrNummer", this.getData());
+        fields.put("cvrNummer", this.getVaerdi());
         return fields;
     }
 
@@ -37,7 +37,7 @@ public class ParticipantCvrData extends SingleData<Integer> {
     @JsonIgnore
     public Map<String, Object> databaseFields() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("data", this.getData());
+        map.put("data", this.getVaerdi());
         return map;
     }
 

@@ -72,7 +72,7 @@ public class AttributeData extends DetailData {
     @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("sequenceNumber", this.sequenceNumber);
+        map.put("sekvensnummer", this.sequenceNumber);
         map.put("type", this.type);
         map.put("valueType", this.valueType);
         map.put("value", this.value);

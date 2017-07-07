@@ -14,18 +14,18 @@ import org.hibernate.Session;
 public class ContactRecord extends BaseRecord {
 
     public enum Type {
-        PHONE,
-        FAX,
-        EMAIL,
-        HOMEPAGE,
-        MANDATORY_EMAIL
+        TELEFONNUMMER,
+        TELEFAXNUMMER,
+        EMAILADRESSE,
+        HJEMMESIDE,
+        OBLIGATORISK_EMAILADRESSE
     }
 
     @JsonProperty(value = "kontaktoplysning")
-    protected String contactInfo;
+    protected String kontaktoplysning;
 
     @JsonProperty(value = "hemmelig")
-    protected boolean secret;
+    protected boolean hemmelig;
 
     @JsonIgnore
     private Type type;
@@ -37,20 +37,20 @@ public class ContactRecord extends BaseRecord {
     @Override
     public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
         switch (this.type) {
-            case PHONE:
-                baseData.setPhone(this.contactInfo, this.secret);
+            case TELEFONNUMMER:
+                baseData.setTelefonnummer(this.kontaktoplysning, this.hemmelig);
                 break;
-            case FAX:
-                baseData.setFax(this.contactInfo, this.secret);
+            case TELEFAXNUMMER:
+                baseData.setTelefaxnummer(this.kontaktoplysning, this.hemmelig);
                 break;
-            case EMAIL:
-                baseData.setEmail(this.contactInfo, this.secret);
+            case EMAILADRESSE:
+                baseData.setEmailadresse(this.kontaktoplysning, this.hemmelig);
                 break;
-            case HOMEPAGE:
-                baseData.setHomepage(this.contactInfo, this.secret);
+            case HJEMMESIDE:
+                baseData.setHjemmeside(this.kontaktoplysning, this.hemmelig);
                 break;
-            case MANDATORY_EMAIL:
-                baseData.setMandatoryEmail(this.contactInfo, this.secret);
+            case OBLIGATORISK_EMAILADRESSE:
+                baseData.setObligatoriskEmail(this.kontaktoplysning, this.hemmelig);
                 break;
         }
     }
@@ -58,14 +58,14 @@ public class ContactRecord extends BaseRecord {
     @Override
     public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
         switch (this.type) {
-            case PHONE:
-                baseData.setPhone(this.contactInfo, this.secret);
+            case TELEFONNUMMER:
+                baseData.setTelefonnummer(this.kontaktoplysning, this.hemmelig);
                 break;
-            case FAX:
-                baseData.setFax(this.contactInfo, this.secret);
+            case TELEFAXNUMMER:
+                baseData.setTelefaxnummer(this.kontaktoplysning, this.hemmelig);
                 break;
-            case EMAIL:
-                baseData.setEmail(this.contactInfo, this.secret);
+            case EMAILADRESSE:
+                baseData.setEmailadresse(this.kontaktoplysning, this.hemmelig);
                 break;
         }
     }
@@ -73,14 +73,14 @@ public class ContactRecord extends BaseRecord {
     @Override
     public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
         switch (this.type) {
-            case PHONE:
-                baseData.setTelefonnummer(this.contactInfo, this.secret);
+            case TELEFONNUMMER:
+                baseData.setTelefonnummer(this.kontaktoplysning, this.hemmelig);
                 break;
-            case FAX:
-                baseData.setTelefaxnummer(this.contactInfo, this.secret);
+            case TELEFAXNUMMER:
+                baseData.setTelefaxnummer(this.kontaktoplysning, this.hemmelig);
                 break;
-            case EMAIL:
-                baseData.setEmailadresse(this.contactInfo, this.secret);
+            case EMAILADRESSE:
+                baseData.setEmailadresse(this.kontaktoplysning, this.hemmelig);
                 break;
         }
     }

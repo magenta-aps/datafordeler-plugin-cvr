@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @Entity
 @Table(
     name = "cvr_participant_status",
-    indexes = {@Index(name = "participantStatusName", columnList = "name")}
+    indexes = {@Index(name = "participantStatusName", columnList = "navn")}
 )
 public class ParticipantStatus extends ParticipantClassification {
 }

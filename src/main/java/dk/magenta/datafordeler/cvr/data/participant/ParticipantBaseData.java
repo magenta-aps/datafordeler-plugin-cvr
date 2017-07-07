@@ -43,10 +43,10 @@ public class ParticipantBaseData extends DataItem<ParticipantEffect, Participant
     private AddressData forretningsadresse;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private IntegerData enhedsNummer;
+    private IntegerData enhedsnummer;
 
     @ManyToOne(optional = true)
-    private ParticipantType enhedsType;
+    private ParticipantType enhedstype;
 
     @ManyToOne(optional = true)
     private ParticipantRole rolle;
@@ -70,16 +70,16 @@ public class ParticipantBaseData extends DataItem<ParticipantEffect, Participant
 
 
         if (this.navn != null) {
-            map.put("navn", this.navn.getData());
+            map.put("navn", this.navn.getVaerdi());
         }
         if (this.telefonnummer != null) {
-            map.put("telefonnummer", this.telefonnummer.getKontaktoplysning());
+            map.put("telefonnummer", this.telefonnummer.getVaerdi());
         }
         if (this.emailadresse != null) {
-            map.put("emailadresse", this.emailadresse.getKontaktoplysning());
+            map.put("emailadresse", this.emailadresse.getVaerdi());
         }
         if (this.telefaxnummer != null) {
-            map.put("telefaxnummer", this.telefaxnummer.getKontaktoplysning());
+            map.put("telefaxnummer", this.telefaxnummer.getVaerdi());
         }
         if (this.beliggenhedsadresse != null) {
             map.put("beliggenhedsadresse", this.beliggenhedsadresse.getAdresse());
@@ -90,11 +90,11 @@ public class ParticipantBaseData extends DataItem<ParticipantEffect, Participant
         if (this.forretningsadresse != null) {
             map.put("forretningsadresse", this.forretningsadresse.getAdresse());
         }
-        if (this.enhedsNummer != null) {
-            map.put("enhedsNummer", this.enhedsNummer.getData());
+        if (this.enhedsnummer != null) {
+            map.put("enhedsnummer", this.enhedsnummer.getVaerdi());
         }
-        if (this.enhedsType != null) {
-            map.put("enhedsType", this.enhedsType.getNavn());
+        if (this.enhedstype != null) {
+            map.put("enhedstype", this.enhedstype.getNavn());
         }
         if (this.rolle != null) {
             map.put("rolle", this.rolle.getNavn());
@@ -113,27 +113,27 @@ public class ParticipantBaseData extends DataItem<ParticipantEffect, Participant
         if (this.navn == null) {
             this.navn = new TextData(TextData.Type.NAVN);
         }
-        this.navn.setData(name);
+        this.navn.setVaerdi(name);
     }
     public void setTelefonnummer(String phone, boolean secret) {
         if (this.telefonnummer == null) {
             this.telefonnummer = new ContactData(ContactData.Type.TELEFONNUMMER);
         }
-        this.telefonnummer.setData(phone);
+        this.telefonnummer.setVaerdi(phone);
         this.telefonnummer.setHemmelig(secret);
     }
     public void setEmailadresse(String email, boolean secret) {
         if (this.emailadresse == null) {
-            this.emailadresse = new ContactData(ContactData.Type.EMAIL_ADRESSE);
+            this.emailadresse = new ContactData(ContactData.Type.EMAILADRESSE);
         }
-        this.emailadresse.setData(email);
+        this.emailadresse.setVaerdi(email);
         this.emailadresse.setHemmelig(secret);
     }
     public void setTelefaxnummer(String fax, boolean secret) {
         if (this.telefaxnummer == null) {
             this.telefaxnummer = new ContactData(ContactData.Type.TELEFAXNUMMER);
         }
-        this.telefaxnummer.setData(fax);
+        this.telefaxnummer.setVaerdi(fax);
         this.telefaxnummer.setHemmelig(secret);
     }
     public void setBeliggenhedsadresse(Address address) {
@@ -155,15 +155,15 @@ public class ParticipantBaseData extends DataItem<ParticipantEffect, Participant
         this.forretningsadresse.setAdresse(address);
     }
 
-    public void setEnhedsNummer(long unitNumber) {
-        if (this.enhedsNummer == null) {
-            this.enhedsNummer = new IntegerData();
+    public void setEnhedsnummer(long unitNumber) {
+        if (this.enhedsnummer == null) {
+            this.enhedsnummer = new IntegerData();
         }
-        this.enhedsNummer.setData(unitNumber);
+        this.enhedsnummer.setVaerdi(unitNumber);
     }
 
-    public void setEnhedsType(ParticipantType enhedsType) {
-        this.enhedsType = enhedsType;
+    public void setEnhedstype(ParticipantType enhedstype) {
+        this.enhedstype = enhedstype;
     }
 
     public void setRolle(ParticipantRole rolle) {
@@ -203,14 +203,14 @@ public class ParticipantBaseData extends DataItem<ParticipantEffect, Participant
         if (this.forretningsadresse != null) {
             lookupDefinition.putAll("forretningsadresse", this.forretningsadresse.databaseFields());
         }
-        if (this.enhedsNummer != null) {
-            lookupDefinition.putAll("enhedsNummer", this.enhedsNummer.databaseFields());
+        if (this.enhedsnummer != null) {
+            lookupDefinition.putAll("enhedsnummer", this.enhedsnummer.databaseFields());
         }
         if (this.status != null) {
             lookupDefinition.putAll("status", this.status.databaseFields());
         }
-        if (this.enhedsType != null) {
-            lookupDefinition.putAll("enhedsType", this.enhedsType.databaseFields());
+        if (this.enhedstype != null) {
+            lookupDefinition.putAll("enhedstype", this.enhedstype.databaseFields());
         }
 
         return lookupDefinition;

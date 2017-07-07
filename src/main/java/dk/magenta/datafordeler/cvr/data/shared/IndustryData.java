@@ -20,8 +20,8 @@ public class IndustryData extends DetailData {
     public IndustryData() {
         this(false);
     }
-    public IndustryData(boolean isPrimary) {
-        this.isPrimary = isPrimary;
+    public IndustryData(boolean isPrimaer) {
+        this.isPrimaer = isPrimaer;
     }
 
 
@@ -40,15 +40,15 @@ public class IndustryData extends DetailData {
 
 
     @Column
-    private boolean isPrimary;
+    private boolean isPrimaer;
 
 
-    public boolean isPrimary() {
-        return this.isPrimary;
+    public boolean isPrimaer() {
+        return this.isPrimaer;
     }
 
-    public void setPrimary(boolean primary) {
-        isPrimary = primary;
+    public void setPrimaer(boolean primaer) {
+        isPrimaer = primaer;
     }
 
 
@@ -56,7 +56,7 @@ public class IndustryData extends DetailData {
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("branche", this.branche);
-        map.put("isPrimary", this.isPrimary);
+        map.put("isPrimaer", this.isPrimaer);
         return map;
     }
 

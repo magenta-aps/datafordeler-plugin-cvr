@@ -53,13 +53,13 @@ public class CompanyForm extends UnversionedEntity {
     @JsonProperty(value = "virksomhedsformkode")
     @XmlElement(name = "virksomhedsformkode")
     @Column(nullable = false, unique = true)
-    private int virksomhedsformkode;
+    private String virksomhedsformkode;
 
-    public int getVirksomhedsformkode() {
+    public String getVirksomhedsformkode() {
         return virksomhedsformkode;
     }
 
-    public void setVirksomhedsformkode(int virksomhedsformkode) {
+    public void setVirksomhedsformkode(String virksomhedsformkode) {
         this.virksomhedsformkode = virksomhedsformkode;
     }
 
@@ -78,7 +78,7 @@ public class CompanyForm extends UnversionedEntity {
 
     //----------------------------------------------------
 
-    public static CompanyForm getForm(int virksomhedsformkode, String kortBeskrivelse, String langBeskrivelse, String ansvarligDataleverandoer, QueryManager queryManager, Session session) {
+    public static CompanyForm getForm(String virksomhedsformkode, String kortBeskrivelse, String langBeskrivelse, String ansvarligDataleverandoer, QueryManager queryManager, Session session) {
         CompanyForm form = queryManager.getItem(session, CompanyForm.class, Collections.singletonMap("virksomhedsformkode", virksomhedsformkode));
         if (form == null) {
             form = new CompanyForm();

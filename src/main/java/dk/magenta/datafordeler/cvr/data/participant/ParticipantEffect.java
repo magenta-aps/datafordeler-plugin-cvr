@@ -24,8 +24,8 @@ public class ParticipantEffect extends Effect<ParticipantRegistration, Participa
         super(registration, effectFrom, effectTo);
     }
 
-    /*public ParticipantEffect(ParticipantRegistration registration, TemporalAccessor effectFrom, TemporalAccessor effectTo) {
-        super(registration, effectFrom, effectTo);
+    /*public ParticipantEffect(ParticipantRegistration registrering, TemporalAccessor effectFrom, TemporalAccessor effectTo) {
+        super(registrering, effectFrom, effectTo);
     }*/
 
     public ParticipantEffect(ParticipantRegistration registration, String effectFrom, String effectTo) {

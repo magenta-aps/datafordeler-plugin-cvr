@@ -19,7 +19,7 @@
           "VrproduktionsEnhed": {
             "attributter": [],
             "sidstIndlaest": "2017-01-29T13:08:33.726+01:00",
-            "elektroniskPost": [
+            "emailadresse": [
               {
                 "kontaktoplysning": "jointo@outlook.dk",
                 "hemmelig": false,
@@ -2642,7 +2642,7 @@
             "virkningsAktoer": "R",
             "kvartalsbeskaeftigelse": [],
             "brancheAnsvarskode": null,
-            "telefonNummer": [],
+            "telefonnummer": [],
             "telefaxNummer": [],
             "naermesteFremtidigeDato": null,
             "navne": [
@@ -2669,7 +2669,7 @@
           "VrproduktionsEnhed": {
             "attributter": [],
             "sidstIndlaest": "2017-01-30T14:06:19.327+01:00",
-            "elektroniskPost": [
+            "emailadresse": [
               {
                 "kontaktoplysning": "lc@retroognyt.dk",
                 "hemmelig": false,
@@ -2825,7 +2825,7 @@
             "virkningsAktoer": "R",
             "kvartalsbeskaeftigelse": [],
             "brancheAnsvarskode": null,
-            "telefonNummer": [
+            "telefonnummer": [
               {
                 "kontaktoplysning": "28458209",
                 "hemmelig": false,
@@ -2862,7 +2862,7 @@
           "VrproduktionsEnhed": {
             "attributter": [],
             "sidstIndlaest": "2017-01-30T11:10:05.294+01:00",
-            "elektroniskPost": [
+            "emailadresse": [
               {
                 "kontaktoplysning": "Lalle@outlook.dk",
                 "hemmelig": false,
@@ -3050,7 +3050,7 @@
             "virkningsAktoer": "R",
             "kvartalsbeskaeftigelse": [],
             "brancheAnsvarskode": null,
-            "telefonNummer": [],
+            "telefonnummer": [],
             "telefaxNummer": [],
             "naermesteFremtidigeDato": null,
             "navne": [
@@ -3077,7 +3077,7 @@
           "VrproduktionsEnhed": {
             "attributter": [],
             "sidstIndlaest": "2017-01-30T11:10:11.777+01:00",
-            "elektroniskPost": [
+            "emailadresse": [
               {
                 "kontaktoplysning": "tovem.thomsen@hotmail.com",
                 "hemmelig": false,
@@ -3269,7 +3269,7 @@
             "virkningsAktoer": "R",
             "kvartalsbeskaeftigelse": [],
             "brancheAnsvarskode": null,
-            "telefonNummer": [
+            "telefonnummer": [
               {
                 "kontaktoplysning": "75160418",
                 "hemmelig": false,
@@ -3584,7 +3584,7 @@
             "virkningsAktoer": "R",
             "kvartalsbeskaeftigelse": [],
             "brancheAnsvarskode": null,
-            "telefonNummer": [],
+            "telefonnummer": [],
             "telefaxNummer": [],
             "naermesteFremtidigeDato": null,
             "navne": [
@@ -3611,7 +3611,7 @@
           "VrproduktionsEnhed": {
             "attributter": [],
             "sidstIndlaest": "2017-01-30T15:16:32.425+01:00",
-            "elektroniskPost": [
+            "emailadresse": [
               {
                 "kontaktoplysning": "sanmus@me.com",
                 "hemmelig": false,
@@ -3766,7 +3766,7 @@
             "virkningsAktoer": "R",
             "kvartalsbeskaeftigelse": [],
             "brancheAnsvarskode": null,
-            "telefonNummer": [],
+            "telefonnummer": [],
             "telefaxNummer": [],
             "naermesteFremtidigeDato": null,
             "navne": [
@@ -3936,7 +3936,7 @@
             "virkningsAktoer": "R",
             "kvartalsbeskaeftigelse": [],
             "brancheAnsvarskode": null,
-            "telefonNummer": [],
+            "telefonnummer": [],
             "telefaxNummer": [],
             "naermesteFremtidigeDato": null,
             "navne": [
@@ -4234,7 +4234,7 @@
             "virkningsAktoer": "R",
             "kvartalsbeskaeftigelse": [],
             "brancheAnsvarskode": null,
-            "telefonNummer": [
+            "telefonnummer": [
               {
                 "kontaktoplysning": "33222225",
                 "hemmelig": false,
@@ -4245,7 +4245,7 @@
                 "sidstOpdateret": "2013-11-22T23:01:39.000+01:00"
               }
             ],
-            "telefaxNummer": [
+            "telefaxnummer": [
               {
                 "kontaktoplysning": "33215200",
                 "hemmelig": false,
@@ -4499,7 +4499,7 @@
             "virkningsAktoer": "R",
             "kvartalsbeskaeftigelse": [],
             "brancheAnsvarskode": null,
-            "telefonNummer": [],
+            "telefonnummer": [],
             "telefaxNummer": [],
             "naermesteFremtidigeDato": null,
             "navne": [
@@ -4740,7 +4740,7 @@
             "virkningsAktoer": "R",
             "kvartalsbeskaeftigelse": [],
             "brancheAnsvarskode": null,
-            "telefonNummer": [
+            "telefonnummer": [
               {
                 "kontaktoplysning": "43538668",
                 "hemmelig": false,

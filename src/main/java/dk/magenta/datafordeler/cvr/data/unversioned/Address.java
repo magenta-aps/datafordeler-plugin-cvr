@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "cvr_address", indexes = {
         @Index(name = "companyRoadCode", columnList = "vejkode"),
-        @Index(name = "companyRoadName", columnList = "roadName")
+        @Index(name = "companyRoadName", columnList = "vejnavn")
 })
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Address extends UnversionedEntity {
@@ -70,14 +70,14 @@ public class Address extends UnversionedEntity {
     @JsonProperty(value = "vejnavn")
     @XmlElement(name = "vejnavn")
     @Column
-    private String roadName;
+    private String vejnavn;
 
-    public String getRoadName() {
-        return this.roadName;
+    public String getVejnavn() {
+        return this.vejnavn;
     }
 
-    public void setRoadName(String roadName) {
-        this.roadName = roadName;
+    public void setVejnavn(String roadName) {
+        this.vejnavn = roadName;
     }
 
 

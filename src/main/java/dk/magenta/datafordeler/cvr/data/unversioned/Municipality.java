@@ -48,7 +48,7 @@ public class Municipality extends UnversionedEntity {
     }
 
 
-    public static Municipality getMunicipality(String kommunekode, String kommunenavn, QueryManager queryManager, Session session) {
+    public static Municipality getKommune(String kommunekode, String kommunenavn, QueryManager queryManager, Session session) {
         if (kommunekode != null) {
             Municipality municipality = queryManager.getItem(session, Municipality.class, Collections.singletonMap("kommunekode", kommunekode));
             if (municipality == null) {
@@ -63,7 +63,7 @@ public class Municipality extends UnversionedEntity {
         }
     }
 
-    public static Municipality getMunicipality(Municipality old, QueryManager queryManager, Session session) {
-        return getMunicipality(old.getKommunekode(), old.getKommunenavn(), queryManager, session);
+    public static Municipality getKommune(Municipality old, QueryManager queryManager, Session session) {
+        return getKommune(old.getKommunekode(), old.getKommunenavn(), queryManager, session);
     }
 }

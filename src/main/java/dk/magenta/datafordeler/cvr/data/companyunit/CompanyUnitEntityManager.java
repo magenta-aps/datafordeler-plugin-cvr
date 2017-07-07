@@ -138,20 +138,20 @@ public class CompanyUnitEntityManager extends CvrEntityManager {
         CompanyUnitRegistration lastRegistration = null;
         for (OffsetDateTime registrationFrom : sortedTimestamps) {
 
-            // Get any existing registration that matches this date, or create a new one
+            // Get any existing registrering that matches this date, or create a new one
             CompanyUnitRegistration registration = companyUnit.getRegistration(registrationFrom);
             if (registration == null) {
                 registration = new CompanyUnitRegistration();
-                registration.setRegistrationFrom(registrationFrom);
+                registration.setRegistreringFra(registrationFrom);
                 registration.setEntity(companyUnit);
             }
 
-            // Copy data over from the previous registration, by cloning all effects and point underlying dataitems to the clones as well as the originals
+            // Copy data over from the previous registrering, by cloning all virkninger and point underlying dataitems to the clones as well as the originals
             if (lastRegistration != null) {
-                for (CompanyUnitEffect originalEffect : lastRegistration.getEffects()) {
-                    CompanyUnitEffect newEffect = new CompanyUnitEffect(registration, originalEffect.getEffectFrom(), originalEffect.getEffectTo());
+                for (CompanyUnitEffect originalEffect : lastRegistration.getVirkninger()) {
+                    CompanyUnitEffect newEffect = new CompanyUnitEffect(registration, originalEffect.getVirkningFra(), originalEffect.getVirkningTil());
                     for (CompanyUnitBaseData originalData : originalEffect.getDataItems()) {
-                        originalData.addEffect(newEffect);
+                        originalData.addVirkning(newEffect);
                     }
                 }
             }
@@ -164,7 +164,7 @@ public class CompanyUnitEntityManager extends CvrEntityManager {
 
                 if (effect.getDataItems().isEmpty()) {
                     CompanyUnitBaseData baseData = new CompanyUnitBaseData();
-                    baseData.addEffect(effect);
+                    baseData.addVirkning(effect);
                 }
                 for (CompanyUnitBaseData baseData : effect.getDataItems()) {
                     // There really should be only one item for each effect right now
@@ -175,12 +175,12 @@ public class CompanyUnitEntityManager extends CvrEntityManager {
             registrations.add(registration);
 
             try {
-                queryManager.saveRegistration(session, companyUnit, registration);
+                queryManager.saveRegistrering(session, companyUnit, registration);
             } catch (DataFordelerException e) {
                 e.printStackTrace();
             }
         }
-        log.info("Created " + companyUnit.getRegistrations().size() + " registrations");
+        log.info("Created " + companyUnit.getRegistreringer().size() + " registrations");
         transaction.commit();
         session.close();
         return registrations;

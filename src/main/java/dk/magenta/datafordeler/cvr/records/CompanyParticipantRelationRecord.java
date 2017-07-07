@@ -57,7 +57,7 @@ public class CompanyParticipantRelationRecord extends CompanyBaseRecord {
 
     @Override
     public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
-        baseData.addParticipantRelation(
+        baseData.addDeltagerRelation(
                 this.getParticipantIdentification(queryManager, session),
                 this.getOrganizationIdentifications(queryManager, session)
         );
@@ -65,7 +65,7 @@ public class CompanyParticipantRelationRecord extends CompanyBaseRecord {
 
     @Override
     public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
-        baseData.addParticipantRelation(
+        baseData.addDeltagerRelation(
                 this.getParticipantIdentification(queryManager, session),
                 this.getOrganizationIdentifications(queryManager, session)
         );

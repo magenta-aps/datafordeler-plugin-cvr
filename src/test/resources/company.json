@@ -208,7 +208,7 @@
                 "sidstOpdateret": "2017-04-10T09:01:06.000+02:00"
               }
             ],
-            "telefonNummer": [
+            "telefonnummer": [
               {
                 "kontaktoplysning": "33369696",
                 "hemmelig": false,
@@ -219,8 +219,8 @@
                 "sidstOpdateret": "2001-08-29T19:34:30.000+02:00"
               }
             ],
-            "telefaxNummer": [],
-            "elektroniskPost": [
+            "telefaxnummer": [],
+            "emailadresse": [
               {
                 "kontaktoplysning": "info@magenta.dk",
                 "hemmelig": false,

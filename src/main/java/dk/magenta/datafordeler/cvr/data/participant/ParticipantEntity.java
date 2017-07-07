@@ -32,16 +32,16 @@ public class ParticipantEntity extends Entity<ParticipantEntity, ParticipantRegi
     }
 
     @Column(nullable = false, insertable = true, updatable = false)
-    private long participantNumber;
+    private long deltagernummer;
 
     @JsonProperty
     @XmlElement
-    public long getParticipantNumber() {
-        return this.participantNumber;
+    public long getDeltagernummer() {
+        return this.deltagernummer;
     }
 
-    public void setParticipantNumber(long participantNumber) {
-        this.participantNumber = participantNumber;
+    public void setDeltagernummer(long deltagernummer) {
+        this.deltagernummer = deltagernummer;
     }
 
     public static UUID generateUUID(String unitType, long unitNumber) {

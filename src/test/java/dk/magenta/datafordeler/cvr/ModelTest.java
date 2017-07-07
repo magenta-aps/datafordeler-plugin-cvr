@@ -47,130 +47,130 @@ public class ModelTest {
     @Test
     public void testCompany() throws DataFordelerException, JsonProcessingException {
         Session session = sessionManager.getSessionFactory().openSession();
-        Identification identification = new Identification(UUID.randomUUID(), "test");
-        CompanyEntity company = new CompanyEntity();
-        company.setIdentification(identification);
-        company.setCvrNumber(78975790);
+        Identification identifikation = new Identification(UUID.randomUUID(), "test");
+        CompanyEntity virksomhedEnhed = new CompanyEntity();
+        virksomhedEnhed.setIdentifikation(identifikation);
+        virksomhedEnhed.setCVRNummer(78975790);
 
-        CompanyRegistration registration = new CompanyRegistration(OffsetDateTime.parse("2017-01-01T00:00:00+00:00"), OffsetDateTime.parse("2018-01-01T00:00:00+00:00"), 1);
-        CompanyEffect effect1 = new CompanyEffect(registration, OffsetDateTime.parse("2017-07-01T00:00:00+00:00"), null);
-        CompanyEffect effect2 = new CompanyEffect(registration, OffsetDateTime.parse("2017-08-01T00:00:00+00:00"), null);
+        CompanyRegistration registrering = new CompanyRegistration(OffsetDateTime.parse("2017-01-01T00:00:00+00:00"), OffsetDateTime.parse("2018-01-01T00:00:00+00:00"), 1);
+        CompanyEffect virkning1 = new CompanyEffect(registrering, OffsetDateTime.parse("2017-07-01T00:00:00+00:00"), null);
+        CompanyEffect virkning2 = new CompanyEffect(registrering, OffsetDateTime.parse("2017-08-01T00:00:00+00:00"), null);
 
-        CompanyBaseData companyData1 = new CompanyBaseData();
-        companyData1.addEffect(effect1);
+        CompanyBaseData virksomhed1 = new CompanyBaseData();
+        virksomhed1.addVirkning(virkning1);
 
-        CompanyBaseData companyData2 = new CompanyBaseData();
-        companyData2.addEffect(effect2);
+        CompanyBaseData virksomhed2 = new CompanyBaseData();
+        virksomhed2.addVirkning(virkning2);
 
-        companyData1.setLifecycleStartDate(OffsetDateTime.parse("2000-01-01T00:00:00+00:00"));
-
-
-        companyData1.setAdvertProtection(true);
-
-        companyData1.setName("Some company name");
+        virksomhed1.setLivsforloebStart(OffsetDateTime.parse("2000-01-01T00:00:00+00:00"));
 
 
+        virksomhed1.setReklamebeskyttelse(true);
 
-        Municipality municipality = Municipality.getMunicipality("101", "Copenhagen", queryManager, session);
+        virksomhed1.setVirksomhedsnavn("Some company name");
 
-        HashMap<String, Object> addressData1 = new HashMap<>();
-        addressData1.put("roadName", "FoobarRoad");
-        addressData1.put("roadCode", 1234);
-        addressData1.put("houseNumberFrom", 12);
-        addressData1.put("municipality", municipality);
-        Address locationAddress = queryManager.getItem(session, Address.class, addressData1);
-        if (locationAddress == null) {
-            locationAddress = new Address();
-            locationAddress.setRoadName((String)addressData1.get("roadName"));
-            locationAddress.setVejkode((String)addressData1.get("roadCode"));
-            locationAddress.setHusnummerFra((String)addressData1.get("houseNumberFrom"));
-            locationAddress.setKommune(municipality);
-            session.saveOrUpdate(locationAddress);
+
+
+        Municipality kommune = Municipality.getKommune("101", "Copenhagen", queryManager, session);
+
+        HashMap<String, Object> adresse1 = new HashMap<>();
+        adresse1.put("vejnavn", "FoobarRoad");
+        adresse1.put("vejkode", "1234");
+        adresse1.put("husnummerFra", "12");
+        adresse1.put("kommune", kommune);
+        Address beliggenhedsadresse = queryManager.getItem(session, Address.class, adresse1);
+        if (beliggenhedsadresse == null) {
+            beliggenhedsadresse = new Address();
+            beliggenhedsadresse.setVejnavn((String)adresse1.get("vejnavn"));
+            beliggenhedsadresse.setVejkode((String)adresse1.get("vejkode"));
+            beliggenhedsadresse.setHusnummerFra((String)adresse1.get("husnummerFra"));
+            beliggenhedsadresse.setKommune(kommune);
+            session.saveOrUpdate(beliggenhedsadresse);
         }
-        companyData1.setLocationAddress(locationAddress);
+        virksomhed1.setAdresse(beliggenhedsadresse);
 
 
 
-        HashMap<String, Object> addressData2 = new HashMap<>();
-        addressData2.put("roadName", "HelloWorldRoad");
-        addressData2.put("roadCode", 5678);
-        addressData2.put("houseNumberFrom", 34);
-        addressData2.put("municipality", municipality);
-        Address postalAddress = queryManager.getItem(session, Address.class, addressData2);
-        if (postalAddress == null) {
-            postalAddress = new Address();
-            postalAddress.setRoadName((String)addressData2.get("roadName"));
-            postalAddress.setVejkode((String)addressData2.get("roadCode"));
-            postalAddress.setHusnummerFra((String)addressData2.get("houseNumberFrom"));
-            postalAddress.setKommune(municipality);
-            session.saveOrUpdate(postalAddress);
+        HashMap<String, Object> adresse2 = new HashMap<>();
+        adresse2.put("vejnavn", "HelloWorldRoad");
+        adresse2.put("vejkode", "5678");
+        adresse2.put("husnummerFra", "34");
+        adresse2.put("kommune", kommune);
+        Address postadresse = queryManager.getItem(session, Address.class, adresse2);
+        if (postadresse == null) {
+            postadresse = new Address();
+            postadresse.setVejnavn((String)adresse2.get("vejnavn"));
+            postadresse.setVejkode((String)adresse2.get("vejkode"));
+            postadresse.setHusnummerFra((String)adresse2.get("husnummerFra"));
+            postadresse.setKommune(kommune);
+            session.saveOrUpdate(postadresse);
         }
-        companyData1.setPostalAddress(postalAddress);
+        virksomhed1.setPostalAddress(postadresse);
 
 
-        Industry primaryIndustry = queryManager.getItem(session, Industry.class, Collections.singletonMap("code", 123456));
-        if (primaryIndustry == null) {
-            primaryIndustry = new Industry();
-            primaryIndustry.setCode(123456);
-            primaryIndustry.setText("It company");
-            session.saveOrUpdate(primaryIndustry);
+        Industry hovedbranche = queryManager.getItem(session, Industry.class, Collections.singletonMap("branchekode", "123456"));
+        if (hovedbranche == null) {
+            hovedbranche = new Industry();
+            hovedbranche.setBranchekode("123456");
+            hovedbranche.setBranchetekst("It company");
+            session.saveOrUpdate(hovedbranche);
         }
-        companyData2.setPrimaryIndustry(primaryIndustry);
+        virksomhed2.setHovedbranche(hovedbranche);
 
 
-        Industry secondaryIndustry1 = queryManager.getItem(session, Industry.class, Collections.singletonMap("code", 112358));
-        if (secondaryIndustry1 == null) {
-            secondaryIndustry1 = new Industry();
-            secondaryIndustry1.setCode(112358);
-            secondaryIndustry1.setText("Psychiatric institution");
-            session.saveOrUpdate(secondaryIndustry1);
+        Industry bibranche1 = queryManager.getItem(session, Industry.class, Collections.singletonMap("branchekode", "112358"));
+        if (bibranche1 == null) {
+            bibranche1 = new Industry();
+            bibranche1.setBranchekode("112358");
+            bibranche1.setBranchetekst("Psychiatric institution");
+            session.saveOrUpdate(bibranche1);
         }
-        companyData2.setSecondaryIndustry1(secondaryIndustry1);
+        virksomhed2.setbibranche1(bibranche1);
 
-        companyData1.setPhone("87654321", false);
-        companyData1.setFax("11112222", false);
-        companyData1.setEmail("test@example.com", false);
+        virksomhed1.setTelefonnummer("87654321", false);
+        virksomhed1.setTelefaxnummer("11112222", false);
+        virksomhed1.setEmailadresse("test@example.com", false);
 
-        CompanyForm companyForm = queryManager.getItem(session, CompanyForm.class, Collections.singletonMap("code", 123));
-        if (companyForm == null) {
-            companyForm = new CompanyForm();
-            companyForm.setVirksomhedsformkode(123);
-            companyForm.setKortBeskrivelse("A/S");
-            companyForm.setAnsvarligDataleverandoer("E&S");
-            session.saveOrUpdate(companyForm);
+        CompanyForm virksomhedsform = queryManager.getItem(session, CompanyForm.class, Collections.singletonMap("virksomhedsformkode", "123"));
+        if (virksomhedsform == null) {
+            virksomhedsform = new CompanyForm();
+            virksomhedsform.setVirksomhedsformkode("123");
+            virksomhedsform.setKortBeskrivelse("A/S");
+            virksomhedsform.setAnsvarligDataleverandoer("E&S");
+            session.saveOrUpdate(virksomhedsform);
         }
-        companyData1.setForm(companyForm);
+        virksomhed1.setVirksomhedsform(virksomhedsform);
 
-        companyData1.addYearlyEmployeeNumbers(2017,1,2,1,2,1,2);
+        virksomhed1.addAarsbeskaeftigelse(2017,1,2,1,2,1,2);
 
-        companyData1.addQuarterlyEmployeeNumbers(2017,2,1,2,1,2,1,2);
+        virksomhed1.addKvartalsbeskaeftigelse(2017,2,1,2,1,2,1,2);
 
 
-        ParticipantLink participantLink = queryManager.getItem(session, ParticipantLink.class, Collections.singletonMap("data", 44446666));
-        if (participantLink == null) {
-            participantLink = new ParticipantLink();
-            participantLink.setData(44446666);
-            session.saveOrUpdate(participantLink);
+        ParticipantLink deltagerlink = queryManager.getItem(session, ParticipantLink.class, Collections.singletonMap("vaerdi", 44446666));
+        if (deltagerlink == null) {
+            deltagerlink = new ParticipantLink();
+            deltagerlink.setVaerdi(44446666);
+            session.saveOrUpdate(deltagerlink);
         }
-        companyData1.addParticipant(participantLink);
+        virksomhed1.addDeltager(deltagerlink);
 
 
-        CompanyUnitLink unitLink = queryManager.getItem(session, CompanyUnitLink.class, Collections.singletonMap("pNumber", 314159265));
-        if (unitLink == null) {
-            unitLink = new CompanyUnitLink();
-            unitLink.setpNummer(314159265);
-            session.saveOrUpdate(unitLink);
+        CompanyUnitLink produktionsenhed = queryManager.getItem(session, CompanyUnitLink.class, Collections.singletonMap("pNummer", 314159265));
+        if (produktionsenhed == null) {
+            produktionsenhed = new CompanyUnitLink();
+            produktionsenhed.setpNummer(314159265);
+            session.saveOrUpdate(produktionsenhed);
         }
 
-        CompanyEffect effect3 = new CompanyEffect(registration, OffsetDateTime.parse("2017-09-01T00:00:00+00:00"), null);
-        CompanyBaseData companyData3 = new CompanyBaseData();
-        companyData3.addEffect(effect3);
-        companyData3.addCompanyUnit(unitLink);
+        CompanyEffect virkning3 = new CompanyEffect(registrering, OffsetDateTime.parse("2017-09-01T00:00:00+00:00"), null);
+        CompanyBaseData virksomhed3 = new CompanyBaseData();
+        virksomhed3.addVirkning(virkning3);
+        virksomhed3.addProduktionsenhed(produktionsenhed);
 
         Transaction transaction = session.beginTransaction();
 
         try {
-            queryManager.saveRegistration(session, company, registration);
+            queryManager.saveRegistrering(session, virksomhedEnhed, registrering);
             transaction.commit();
         } catch (DataFordelerException e) {
             transaction.rollback();
@@ -180,36 +180,36 @@ public class ModelTest {
 
         session = sessionManager.getSessionFactory().openSession();
         CompanyQuery companyQuery = new CompanyQuery();
-        companyQuery.setName("Some company name");
+        companyQuery.setVirksomhedsnavn("Some company name");
         Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
         companyQuery = new CompanyQuery();
-        companyQuery.setCvrNumber("78975790");
+        companyQuery.setCVRNummer("78975790");
         Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
         companyQuery = new CompanyQuery();
-        companyQuery.setFormCode(123);
+        companyQuery.setVirksomhedsform("123");
         Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
         companyQuery = new CompanyQuery();
-        companyQuery.setPhone("87654321");
+        companyQuery.setTelefonnummer("87654321");
         Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
         companyQuery = new CompanyQuery();
-        companyQuery.setFax("11112222");
+        companyQuery.setTelefaxnummer("11112222");
         Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
         companyQuery = new CompanyQuery();
-        companyQuery.setEmail("test@example.com");
+        companyQuery.setEmailadresse("test@example.com");
         Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
 
         System.out.println("--------------------------------------");
-        System.out.println(objectMapper.writeValueAsString(company));
+        System.out.println(objectMapper.writeValueAsString(virksomhedEnhed));
         System.out.println("--------------------------------------");
 
         transaction = session.beginTransaction();
-        session.delete(session.merge(company));
+        session.delete(session.merge(virksomhedEnhed));
         transaction.commit();
         session.close();
     }
@@ -217,91 +217,91 @@ public class ModelTest {
     @Test
     public void testCompanyUnit() throws DataFordelerException, JsonProcessingException {
         Session session = sessionManager.getSessionFactory().openSession();
-        Identification companyIdentification = new Identification(UUID.randomUUID(), "test");
-        CompanyEntity company = new CompanyEntity();
-        company.setIdentification(companyIdentification);
-        company.setCvrNumber(24681012);
+        Identification virksomhedsId = new Identification(UUID.randomUUID(), "test");
+        CompanyEntity virksomhedsEnhed = new CompanyEntity();
+        virksomhedsEnhed.setIdentifikation(virksomhedsId);
+        virksomhedsEnhed.setCVRNummer(24681012);
 
-        Identification companyUnitIdentification = new Identification(UUID.randomUUID(), "test");
-        CompanyUnitEntity companyUnit = new CompanyUnitEntity();
-        companyUnit.setIdentification(companyUnitIdentification);
-        companyUnit.setPNumber(11223344);
+        Identification produktionsenhedsId = new Identification(UUID.randomUUID(), "test");
+        CompanyUnitEntity virksomhed = new CompanyUnitEntity();
+        virksomhed.setIdentifikation(produktionsenhedsId);
+        virksomhed.setPNumber(11223344);
 
-        CompanyUnitRegistration registration = new CompanyUnitRegistration(OffsetDateTime.parse("2017-01-01T00:00:00+00:00"), OffsetDateTime.parse("2018-01-01T00:00:00+00:00"), 1);
-        CompanyUnitEffect effect = new CompanyUnitEffect(registration, OffsetDateTime.parse("2017-07-01T00:00:00+00:00"), null);
+        CompanyUnitRegistration registrering = new CompanyUnitRegistration(OffsetDateTime.parse("2017-01-01T00:00:00+00:00"), OffsetDateTime.parse("2018-01-01T00:00:00+00:00"), 1);
+        CompanyUnitEffect virkning = new CompanyUnitEffect(registrering, OffsetDateTime.parse("2017-07-01T00:00:00+00:00"), null);
 
-        CompanyUnitBaseData companyUnitData = new CompanyUnitBaseData();
-        companyUnitData.addEffect(effect);
+        CompanyUnitBaseData produktionsenhed = new CompanyUnitBaseData();
+        produktionsenhed.addVirkning(virkning);
 
-        companyUnitData.setIsPrimary(true);
+        produktionsenhed.setIsPrimaer(true);
 
-        companyUnitData.setLifecycleStartDate(OffsetDateTime.parse("2000-01-01T00:00:00+00:00"));
-
-
-
-        companyUnitData.setName("Some company unit name");
-        companyUnitData.setCompanyCvr(24681012);
+        produktionsenhed.setLivsforloebStart(OffsetDateTime.parse("2000-01-01T00:00:00+00:00"));
 
 
 
-        Municipality municipality = queryManager.getItem(session, Municipality.class, Collections.singletonMap("code", 101));
-        if (municipality == null) {
-            municipality = new Municipality();
-            municipality.setKommunekode("101");
-            municipality.setKommunenavn("Copenhagen");
-            session.saveOrUpdate(municipality);
+        produktionsenhed.setVirksomhedsnavn("Some company unit name");
+        produktionsenhed.setVirksomhedscvr(24681012);
+
+
+
+        Municipality kommune = queryManager.getItem(session, Municipality.class, Collections.singletonMap("kommunekode", "101"));
+        if (kommune == null) {
+            kommune = new Municipality();
+            kommune.setKommunekode("101");
+            kommune.setKommunenavn("Copenhagen");
+            session.saveOrUpdate(kommune);
         }
 
-        HashMap<String, Object> addressData1 = new HashMap<>();
-        addressData1.put("roadName", "FoobarRoad");
-        addressData1.put("roadCode", 1234);
-        addressData1.put("houseNumberFrom", 12);
-        addressData1.put("municipality", municipality);
-        Address locationAddress = queryManager.getItem(session, Address.class, addressData1);
-        if (locationAddress == null) {
-            locationAddress = new Address();
-            locationAddress.setRoadName((String)addressData1.get("roadName"));
-            locationAddress.setVejkode((String)addressData1.get("roadCode"));
-            locationAddress.setHusnummerFra((String)addressData1.get("houseNumberFrom"));
-            locationAddress.setKommune(municipality);
-            session.saveOrUpdate(locationAddress);
+        HashMap<String, Object> adresse = new HashMap<>();
+        adresse.put("vejnavn", "FoobarRoad");
+        adresse.put("vejkode", "1234");
+        adresse.put("husnummerFra", "12");
+        adresse.put("kommune", kommune);
+        Address beliggenhedsadresse = queryManager.getItem(session, Address.class, adresse);
+        if (beliggenhedsadresse == null) {
+            beliggenhedsadresse = new Address();
+            beliggenhedsadresse.setVejnavn((String)adresse.get("vejnavn"));
+            beliggenhedsadresse.setVejkode((String)adresse.get("vejkode"));
+            beliggenhedsadresse.setHusnummerFra((String)adresse.get("husnummerFra"));
+            beliggenhedsadresse.setKommune(kommune);
+            session.saveOrUpdate(beliggenhedsadresse);
         }
 
-        companyUnitData.setLocationAddress(locationAddress);
+        produktionsenhed.setBeliggenhedsadresse(beliggenhedsadresse);
 
 
-        Industry primaryIndustry = queryManager.getItem(session, Industry.class, Collections.singletonMap("code", 123456));
+        Industry primaryIndustry = queryManager.getItem(session, Industry.class, Collections.singletonMap("branchekode", "123456"));
         if (primaryIndustry == null) {
             primaryIndustry = new Industry();
-            primaryIndustry.setCode(123456);
-            primaryIndustry.setText("It company");
+            primaryIndustry.setBranchekode("123456");
+            primaryIndustry.setBranchetekst("It company");
             session.saveOrUpdate(primaryIndustry);
         }
-        companyUnitData.setPrimaryIndustry(primaryIndustry);
+        produktionsenhed.setHovedbranche(primaryIndustry);
 
 
-        companyUnitData.setPhone("87654321", false);
-        companyUnitData.setFax("11112222",true);
-        companyUnitData.setEmail("test@example.com", false);
+        produktionsenhed.setTelefonnummer("87654321", false);
+        produktionsenhed.setTelefaxnummer("11112222",true);
+        produktionsenhed.setEmailadresse("test@example.com", false);
 
-        companyUnitData.addYearlyEmployeeNumbers(2017,1,2,1,2,1,2);
+        produktionsenhed.addAarsbeskaeftigelse(2017,1,2,1,2,1,2);
 
-        companyUnitData.addQuarterlyEmployeeNumbers(2017,2,1,1,1,1,1,1);
+        produktionsenhed.addKvartalsbeskaeftigelse(2017,2,1,1,1,1,1,1);
 
-        ParticipantLink participantLink = queryManager.getItem(session, ParticipantLink.class, Collections.singletonMap("data", 44446666));
-        if (participantLink == null) {
-            participantLink = new ParticipantLink();
-            participantLink.setData(44446666);
-            session.saveOrUpdate(participantLink);
+        ParticipantLink deltagerlink = queryManager.getItem(session, ParticipantLink.class, Collections.singletonMap("vaerdi", 44446666));
+        if (deltagerlink == null) {
+            deltagerlink = new ParticipantLink();
+            deltagerlink.setVaerdi(44446666);
+            session.saveOrUpdate(deltagerlink);
         }
-        companyUnitData.addParticipant(participantLink);
+        produktionsenhed.addDeltagere(deltagerlink);
 
         Transaction transaction = session.beginTransaction();
 
-        session.saveOrUpdate(company);
+        session.saveOrUpdate(virksomhedsEnhed);
 
         try {
-            queryManager.saveRegistration(session, companyUnit, registration);
+            queryManager.saveRegistrering(session, virksomhed, registrering);
             transaction.commit();
         } catch (DataFordelerException e) {
             transaction.rollback();
@@ -310,13 +310,13 @@ public class ModelTest {
         }
 
         System.out.println("--------------------------------------");
-        System.out.println(objectMapper.writeValueAsString(companyUnit));
+        System.out.println(objectMapper.writeValueAsString(virksomhed));
         System.out.println("--------------------------------------");
 
         session = sessionManager.getSessionFactory().openSession();
         transaction = session.beginTransaction();
-        session.delete(company);
-        session.delete(companyUnit);
+        session.delete(virksomhedsEnhed);
+        session.delete(virksomhed);
         transaction.commit();
         session.close();
     }
@@ -325,48 +325,48 @@ public class ModelTest {
     public void testParticipant() throws DataFordelerException, JsonProcessingException {
         Session session = sessionManager.getSessionFactory().openSession();
 
-        ParticipantEntity participant = new ParticipantEntity(UUID.randomUUID(), "test");
-        participant.setParticipantNumber(12345);
+        ParticipantEntity deltagerEnhed = new ParticipantEntity(UUID.randomUUID(), "test");
+        deltagerEnhed.setDeltagernummer(12345);
 
-        ParticipantRegistration registration = new ParticipantRegistration(OffsetDateTime.parse("2017-07-01T00:00:00Z"), null, 1);
+        ParticipantRegistration registrering = new ParticipantRegistration(OffsetDateTime.parse("2017-07-01T00:00:00Z"), null, 1);
 
-        ParticipantEffect effect = new ParticipantEffect(registration, OffsetDateTime.parse("2017-01-01T00:00:00Z"), null);
+        ParticipantEffect virkning = new ParticipantEffect(registrering, OffsetDateTime.parse("2017-01-01T00:00:00Z"), null);
 
-        ParticipantBaseData participantBaseData = new ParticipantBaseData();
-        participantBaseData.addEffect(effect);
-        participantBaseData.setNavn("Mickey Mouse");
+        ParticipantBaseData deltager = new ParticipantBaseData();
+        deltager.addVirkning(virkning);
+        deltager.setNavn("Mickey Mouse");
 
-        ParticipantType type = queryManager.getItem(session, ParticipantType.class, Collections.singletonMap("name", "Person"));
+        ParticipantType type = queryManager.getItem(session, ParticipantType.class, Collections.singletonMap("navn", "Person"));
         if (type == null) {
             type = new ParticipantType();
             type.setNavn("Person");
             session.saveOrUpdate(type);
         }
 
-        participantBaseData.setEnhedsType(type);
+        deltager.setEnhedstype(type);
 
-        ParticipantRole role = queryManager.getItem(session, ParticipantRole.class, Collections.singletonMap("name", "CEO"));
-        if (role == null) {
-            role = new ParticipantRole();
-            role.setNavn("CEO");
-            session.saveOrUpdate(role);
+        ParticipantRole rolle = queryManager.getItem(session, ParticipantRole.class, Collections.singletonMap("navn", "CEO"));
+        if (rolle == null) {
+            rolle = new ParticipantRole();
+            rolle.setNavn("CEO");
+            session.saveOrUpdate(rolle);
         }
 
-        participantBaseData.setRolle(role);
+        deltager.setRolle(rolle);
 
-        ParticipantStatus status = queryManager.getItem(session, ParticipantStatus.class, Collections.singletonMap("name", "Deceased"));
+        ParticipantStatus status = queryManager.getItem(session, ParticipantStatus.class, Collections.singletonMap("navn", "Deceased"));
         if (status == null) {
             status = new ParticipantStatus();
             status.setNavn("Deceased");
             session.saveOrUpdate(status);
         }
 
-        participantBaseData.setStatus(status);
+        deltager.setStatus(status);
 
-        queryManager.saveRegistration(session, participant, registration);
+        queryManager.saveRegistrering(session, deltagerEnhed, registrering);
 
         System.out.println("--------------------------------------");
-        System.out.println(objectMapper.writeValueAsString(participant));
+        System.out.println(objectMapper.writeValueAsString(deltagerEnhed));
         System.out.println("--------------------------------------");
 
     }
