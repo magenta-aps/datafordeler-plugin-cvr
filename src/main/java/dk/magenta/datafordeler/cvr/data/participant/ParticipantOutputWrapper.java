@@ -33,11 +33,13 @@ public class ParticipantOutputWrapper extends OutputWrapper<ParticipantEntity> {
       registreringer.add(wrapRegistrering(participantRegistration));
     }
 
+    /*
     try {
       System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(root));
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }
+    */
     return root;
   }
 

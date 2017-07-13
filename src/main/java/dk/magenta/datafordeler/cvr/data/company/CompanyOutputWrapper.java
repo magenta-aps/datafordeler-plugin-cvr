@@ -38,11 +38,13 @@ public class CompanyOutputWrapper extends OutputWrapper<CompanyEntity> {
       registreringer.add(wrapRegistrering(companyRegistration));
     }
 
+    /*
     try {
       System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(root));
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }
+    */
     return root;
   }
 
