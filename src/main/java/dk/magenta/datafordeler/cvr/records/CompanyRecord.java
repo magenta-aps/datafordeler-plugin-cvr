@@ -20,242 +20,242 @@ import java.util.UUID;
 public class CompanyRecord extends BaseRecord {
 
     @JsonProperty(value = "cvrNummer")
-    private int cvrNumber;
+    private int CVRNummer;
 
-    public int getCvrNumber() {
-        return this.cvrNumber;
+    public int getCVRNummer() {
+        return this.CVRNummer;
     }
 
     @JsonProperty(value = "reklamebeskyttet")
-    private boolean advertProtected;
+    private boolean reklamebeskyttet;
 
     @JsonProperty(value = "enhedsNummer")
-    private int unitNumber;
+    private int enhedsnummer;
 
     @JsonProperty(value = "enhedstype")
-    private String unitType;
+    private String enhedstype;
 
     @JsonProperty(value = "navne")
-    private List<NameRecord> names;
+    private List<NameRecord> navne;
 
     @JsonProperty(value = "beliggenhedsadresse")
-    private List<AddressRecord> locationAddresses;
+    private List<AddressRecord> beliggenhedsadresse;
 
-    public void setLocationAddresses(List<AddressRecord> locationAddresses) {
-        for (AddressRecord record : locationAddresses) {
+    public void setBeliggenhedsadresse(List<AddressRecord> beliggenhedsadresse) {
+        for (AddressRecord record : beliggenhedsadresse) {
             record.setType(AddressRecord.Type.LOCATION);
         }
-        this.locationAddresses = locationAddresses;
+        this.beliggenhedsadresse = beliggenhedsadresse;
     }
 
     @JsonProperty(value = "postadresse")
-    private List<AddressRecord> postalAddresses;
+    private List<AddressRecord> postadresse;
 
-    public void setPostalAddresses(List<AddressRecord> postalAddresses) {
-        for (AddressRecord record : postalAddresses) {
+    public void setPostadresse(List<AddressRecord> postadresse) {
+        for (AddressRecord record : postadresse) {
             record.setType(AddressRecord.Type.POSTAL);
         }
-        this.postalAddresses = postalAddresses;
+        this.postadresse = postadresse;
     }
 
     @JsonProperty(value = "telefonNummer")
-    private List<ContactRecord> phoneRecords;
+    private List<ContactRecord> telefonnummer;
 
-    public void setPhoneRecords(List<ContactRecord> phoneRecords) {
-        for (ContactRecord record : phoneRecords) {
+    public void setTelefonnummer(List<ContactRecord> telefonnummer) {
+        for (ContactRecord record : telefonnummer) {
             record.setType(ContactRecord.Type.TELEFONNUMMER);
         }
-        this.phoneRecords = phoneRecords;
+        this.telefonnummer = telefonnummer;
     }
 
     @JsonProperty(value = "telefaxNummer")
-    private List<ContactRecord> faxRecords;
+    private List<ContactRecord> telefaxnummer;
 
-    public void setFaxRecords(List<ContactRecord> faxRecords) {
-        for (ContactRecord record : faxRecords) {
+    public void setTelefaxnummer(List<ContactRecord> telefaxnummer) {
+        for (ContactRecord record : telefaxnummer) {
             record.setType(ContactRecord.Type.TELEFAXNUMMER);
         }
-        this.faxRecords = faxRecords;
+        this.telefaxnummer = telefaxnummer;
     }
 
     @JsonProperty(value = "elektroniskPost")
-    private List<ContactRecord> emailRecords;
+    private List<ContactRecord> emailadresse;
 
-    public void setEmailRecords(List<ContactRecord> emailRecords) {
-        for (ContactRecord record : emailRecords) {
+    public void setEmailadresse(List<ContactRecord> emailadresse) {
+        for (ContactRecord record : emailadresse) {
             record.setType(ContactRecord.Type.EMAILADRESSE);
         }
-        this.emailRecords = emailRecords;
+        this.emailadresse = emailadresse;
     }
 
     @JsonProperty(value = "hjemmeside")
-    private List<ContactRecord> homepageRecords;
+    private List<ContactRecord> hjemmeside;
 
-    public void setHomepageRecords(List<ContactRecord> homepageRecords) {
-        for (ContactRecord record : homepageRecords) {
+    public void setHjemmeside(List<ContactRecord> hjemmeside) {
+        for (ContactRecord record : hjemmeside) {
             record.setType(ContactRecord.Type.HJEMMESIDE);
         }
-        this.homepageRecords = homepageRecords;
+        this.hjemmeside = hjemmeside;
     }
 
     @JsonProperty(value = "obligatoriskEmail")
-    private List<ContactRecord> mandatoryEmailRecords;
+    private List<ContactRecord> obligatoriskEmailadresse;
 
-    public void setMandatoryEmailRecords(List<ContactRecord> mandatoryEmailRecords) {
-        for (ContactRecord record : mandatoryEmailRecords) {
+    public void setObligatoriskEmailadresse(List<ContactRecord> obligatoriskEmailadresse) {
+        for (ContactRecord record : obligatoriskEmailadresse) {
             record.setType(ContactRecord.Type.OBLIGATORISK_EMAILADRESSE);
         }
-        this.mandatoryEmailRecords = mandatoryEmailRecords;
+        this.obligatoriskEmailadresse = obligatoriskEmailadresse;
     }
 
     @JsonProperty(value = "livsforloeb")
-    private List<LifecycleRecord> lifecycleRecords;
+    private List<LifecycleRecord> livsforloeb;
 
 
     @JsonProperty(value = "hovedbranche")
-    private List<CompanyIndustryRecord> mainIndustryRecords;
+    private List<CompanyIndustryRecord> hovedbranche;
 
-    public void setMainIndustryRecords(List<CompanyIndustryRecord> mainIndustryRecords) {
-        for (CompanyIndustryRecord record : mainIndustryRecords) {
+    public void setHovedbranche(List<CompanyIndustryRecord> hovedbranche) {
+        for (CompanyIndustryRecord record : hovedbranche) {
             record.setIndex(0);
         }
-        this.mainIndustryRecords = mainIndustryRecords;
+        this.hovedbranche = hovedbranche;
     }
 
     @JsonProperty(value = "bibranche1")
-    private List<CompanyIndustryRecord> secondaryIndustryRecords1;
+    private List<CompanyIndustryRecord> bibranche1;
 
-    public void setSecondaryIndustryRecords1(List<CompanyIndustryRecord> secondaryIndustryRecords) {
+    public void setBibranche1(List<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
             record.setIndex(1);
         }
-        this.secondaryIndustryRecords1 = secondaryIndustryRecords;
+        this.bibranche1 = secondaryIndustryRecords;
     }
 
     @JsonProperty(value = "bibranche2")
-    private List<CompanyIndustryRecord> secondaryIndustryRecords2;
+    private List<CompanyIndustryRecord> bibranche2;
 
-    public void setSecondaryIndustryRecords2(List<CompanyIndustryRecord> secondaryIndustryRecords) {
+    public void setBibranche2(List<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
             record.setIndex(2);
         }
-        this.secondaryIndustryRecords2 = secondaryIndustryRecords;
+        this.bibranche2 = secondaryIndustryRecords;
     }
 
     @JsonProperty(value = "bibranche3")
-    private List<CompanyIndustryRecord> secondaryIndustryRecords3;
+    private List<CompanyIndustryRecord> bibranche3;
 
-    public void setSecondaryIndustryRecords3(List<CompanyIndustryRecord> secondaryIndustryRecords) {
+    public void setBibranche3(List<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
             record.setIndex(3);
         }
-        this.secondaryIndustryRecords3 = secondaryIndustryRecords;
+        this.bibranche3 = secondaryIndustryRecords;
     }
 
     @JsonProperty(value = "virksomhedsstatus")
-    private List<CompanyStatusRecord> statusRecords;
+    private List<CompanyStatusRecord> virksomhedsstatus;
 
 
     @JsonProperty(value = "virksomhedsform")
-    private List<CompanyFormRecord> formRecords;
+    private List<CompanyFormRecord> virksomhedsform;
 
     @JsonProperty(value = "aarsbeskaeftigelse")
-    private List<CompanyYearlyNumbersRecord> yearlyNumbersRecords;
+    private List<CompanyYearlyNumbersRecord> aarsbeskaeftigelse;
 
     @JsonProperty(value = "kvartalsbeskaeftigelse")
-    private List<CompanyQuarterlyNumbersRecord> quarterlyNumbersRecords;
+    private List<CompanyQuarterlyNumbersRecord> kvartalsbeskaeftigelse;
 
     @JsonProperty(value = "maanedsbeskaeftigelse")
-    private List<CompanyMonthlyNumbersRecord> monthlyNumbersRecords;
+    private List<CompanyMonthlyNumbersRecord> maanedsbeskaeftigelse;
 
     @JsonProperty(value = "attributter")
-    private List<AttributeRecord> attributeRecords;
+    private List<AttributeRecord> attributter;
 
     @JsonProperty(value = "penheder")
-    private List<CompanyUnitLinkRecord> unitLinkRecords;
+    private List<CompanyUnitLinkRecord> penheder;
 
     @JsonProperty(value = "deltagerRelation")
-    private List<CompanyParticipantRelationRecord> participantRelationRecords;
+    private List<CompanyParticipantRelationRecord> deltagere;
 
     public List<BaseRecord> getAll() {
         ArrayList<BaseRecord> list = new ArrayList<>();
         list.add(this);
-        if (this.names != null) {
-            list.addAll(this.names);
+        if (this.navne != null) {
+            list.addAll(this.navne);
         }
-        if (this.locationAddresses != null) {
-            list.addAll(this.locationAddresses);
+        if (this.beliggenhedsadresse != null) {
+            list.addAll(this.beliggenhedsadresse);
         }
-        if (this.postalAddresses != null) {
-            list.addAll(this.postalAddresses);
+        if (this.postadresse != null) {
+            list.addAll(this.postadresse);
         }
-        if (this.phoneRecords != null) {
-            list.addAll(this.phoneRecords);
+        if (this.telefonnummer != null) {
+            list.addAll(this.telefonnummer);
         }
-        if (this.faxRecords != null) {
-            list.addAll(this.faxRecords);
+        if (this.telefaxnummer != null) {
+            list.addAll(this.telefaxnummer);
         }
-        if (this.emailRecords != null) {
-            list.addAll(this.emailRecords);
+        if (this.emailadresse != null) {
+            list.addAll(this.emailadresse);
         }
-        if (this.homepageRecords != null) {
-            list.addAll(this.homepageRecords);
+        if (this.hjemmeside != null) {
+            list.addAll(this.hjemmeside);
         }
-        if (this.mandatoryEmailRecords != null) {
-            list.addAll(this.mandatoryEmailRecords);
+        if (this.obligatoriskEmailadresse != null) {
+            list.addAll(this.obligatoriskEmailadresse);
         }
-        if (this.lifecycleRecords != null) {
-            list.addAll(this.lifecycleRecords);
+        if (this.livsforloeb != null) {
+            list.addAll(this.livsforloeb);
         }
-        if (this.mainIndustryRecords != null) {
-            list.addAll(this.mainIndustryRecords);
+        if (this.hovedbranche != null) {
+            list.addAll(this.hovedbranche);
         }
-        if (this.secondaryIndustryRecords1 != null) {
-            list.addAll(this.secondaryIndustryRecords1);
+        if (this.bibranche1 != null) {
+            list.addAll(this.bibranche1);
         }
-        if (this.secondaryIndustryRecords2 != null) {
-            list.addAll(this.secondaryIndustryRecords2);
+        if (this.bibranche2 != null) {
+            list.addAll(this.bibranche2);
         }
-        if (this.secondaryIndustryRecords3 != null) {
-            list.addAll(this.secondaryIndustryRecords3);
+        if (this.bibranche3 != null) {
+            list.addAll(this.bibranche3);
         }
-        if (this.statusRecords != null) {
-            list.addAll(this.statusRecords);
+        if (this.virksomhedsstatus != null) {
+            list.addAll(this.virksomhedsstatus);
         }
-        if (this.formRecords != null) {
-            list.addAll(this.formRecords);
+        if (this.virksomhedsform != null) {
+            list.addAll(this.virksomhedsform);
         }
-        if (this.yearlyNumbersRecords != null) {
-            list.addAll(this.yearlyNumbersRecords);
+        if (this.aarsbeskaeftigelse != null) {
+            list.addAll(this.aarsbeskaeftigelse);
         }
-        if (this.quarterlyNumbersRecords != null) {
-            list.addAll(this.quarterlyNumbersRecords);
+        if (this.kvartalsbeskaeftigelse != null) {
+            list.addAll(this.kvartalsbeskaeftigelse);
         }
-        if (this.monthlyNumbersRecords != null) {
-            list.addAll(this.monthlyNumbersRecords);
+        if (this.maanedsbeskaeftigelse != null) {
+            list.addAll(this.maanedsbeskaeftigelse);
         }
-        if (this.attributeRecords != null) {
-            for (AttributeRecord attributeRecord : this.attributeRecords) {
+        if (this.attributter != null) {
+            for (AttributeRecord attributeRecord : this.attributter) {
                 list.addAll(attributeRecord.getValues());
             }
         }
-        if (this.unitLinkRecords != null) {
-            list.addAll(this.unitLinkRecords);
+        if (this.penheder != null) {
+            list.addAll(this.penheder);
         }
-        if (this.participantRelationRecords != null) {
-            list.addAll(this.participantRelationRecords);
+        if (this.deltagere != null) {
+            list.addAll(this.deltagere);
         }
         return list;
     }
 
     public UUID generateUUID() {
-        return CompanyEntity.generateUUID(this.cvrNumber);
+        return CompanyEntity.generateUUID(this.CVRNummer);
     }
 
     @Override
     public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
-        baseData.setReklamebeskyttelse(this.advertProtected);
-        baseData.setCVRNummer(this.unitNumber);
+        baseData.setReklamebeskyttelse(this.reklamebeskyttet);
+        baseData.setCVRNummer(this.CVRNummer);
     }
 
     @Override

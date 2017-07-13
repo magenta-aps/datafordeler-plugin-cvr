@@ -175,6 +175,7 @@ public class CompanyUnitEntityManager extends CvrEntityManager {
                 for (CompanyUnitBaseData baseData : effect.getDataItems()) {
                     // There really should be only one item for each effect right now
                     record.populateBaseData(baseData, this.queryManager, session);
+                    companyUnitRecord.populateBaseData(baseData, this.queryManager, session);
                 }
             }
             lastRegistration = registration;

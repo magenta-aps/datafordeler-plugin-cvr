@@ -13,23 +13,23 @@ import org.hibernate.Session;
 public class NameRecord extends BaseRecord {
 
     @JsonProperty(value = "navn")
-    private String name;
+    private String navn;
 
     public static String getContainerName() {
         return "navne";
     }
 
     public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
-        baseData.setVirksomhedsnavn(this.name);
+        baseData.setVirksomhedsnavn(this.navn);
     }
 
     @Override
     public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
-        baseData.setVirksomhedsnavn(this.name);
+        baseData.setProduktionsenhedsnavn(this.navn);
     }
 
     @Override
     public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
-        baseData.setNavn(this.name);
+        baseData.setNavne(this.navn);
     }
 }

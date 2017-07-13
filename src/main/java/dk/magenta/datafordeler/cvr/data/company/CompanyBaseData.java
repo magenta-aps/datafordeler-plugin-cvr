@@ -99,7 +99,140 @@ public class CompanyBaseData extends DataItem<CompanyEffect, CompanyBaseData> {
     @OneToMany(cascade = CascadeType.ALL)
     private Set<ParticipantRelationData> deltagerRelation = new HashSet<>();
 
+    public CompanyForm getVirksomhedsform() {
+        if(virksomhedsform != null)
+            return virksomhedsform.getVirksomhedsform();
+        else
+            return null;
+    }
 
+    public CompanyStatusData getStatus() {
+        return status;
+    }
+
+    public LifecycleData getLivsforloeb() {
+        return livsforloeb;
+    }
+
+    public Boolean getReklamebeskyttelse() {
+        if(reklamebeskyttelse != null)
+            return reklamebeskyttelse.getVaerdi();
+        else
+            return null;
+    }
+
+    public Long getCVRNummer() {
+        if(CVRNummer != null)
+            return CVRNummer.getVaerdi();
+        else
+            return null;
+    }
+
+    public Address getBeliggenhedsadresse() {
+        if(beliggenhedsadresse != null)
+            return beliggenhedsadresse.getAdresse();
+        else
+            return null;
+    }
+
+    public Address getPostadresse() {
+        if(postadresse != null)
+            return postadresse.getAdresse();
+        else
+            return null;
+    }
+
+    public List<YearlyEmployeeNumbersData> getAarsbeskaeftigelse() {
+        return aarsbeskaeftigelse;
+    }
+
+    public List<QuarterlyEmployeeNumbersData> getKvartalsbeskaeftigelse() {
+        return kvartalsbeskaeftigelse;
+    }
+
+    public List<MonthlyEmployeeNumbersData> getMaanedsbeskaeftigelse() {
+        return maanedsbeskaeftigelse;
+    }
+
+    public String getHovedbranche() {
+        if(hovedbranche != null)
+            return hovedbranche.getBranche().getBranchekode();
+        else
+            return null;
+    }
+
+    public String getBibranche1() {
+        if(bibranche1 != null)
+            return bibranche1.getBranche().getBranchekode();
+        else
+            return null;
+    }
+
+    public String getBibranche2() {
+        if(bibranche2 != null)
+            return bibranche2.getBranche().getBranchekode();
+        else
+            return null;
+    }
+
+    public String getBibranche3() {
+        if(bibranche3 != null)
+            return bibranche3.getBranche().getBranchekode();
+        else
+            return null;
+    }
+
+    public String getVirksomhedsnavn() {
+        if(virksomhedsnavn != null)
+            return virksomhedsnavn.getVaerdi();
+        else
+            return null;
+    }
+
+    public String getTelefonnummer() {
+        if(telefonnummer != null)
+            return telefonnummer.getVaerdi();
+        else
+            return null;
+    }
+
+    public String getEmailadresse() {
+        if(emailadresse != null)
+            return emailadresse.getVaerdi();
+        else
+            return null;
+    }
+
+    public String getTelefaxnummer() {
+        if(telefaxnummer != null)
+            return telefaxnummer.getVaerdi();
+        else
+            return null;
+    }
+
+    public ContactData getHjemmeside() {
+        return hjemmeside;
+    }
+
+    public ContactData getObligatoriskEmail() {
+        return obligatoriskEmail;
+    }
+
+    public Set<CompanyUnitLink> getEnheder() {
+        return enheder;
+    }
+
+    public Set<ParticipantLink> getDeltagere() {
+        return deltagere;
+    }
+
+    public Set<AttributeData> getAttributter() {
+        return attributter;
+    }
+
+    public Set<ParticipantRelationData> getDeltagerRelationer() {
+        return deltagerRelation;
+    }
 
 
     @Override
