@@ -16,6 +16,9 @@ import java.util.Collections;
 public class ParticipantType extends ParticipantClassification {
 
     public static ParticipantType getType(String navn, QueryManager queryManager, Session session) {
+        if(navn == null) {
+            return null;
+        }
         ParticipantType type = queryManager.getItem(session, ParticipantType.class, Collections.singletonMap("navn", navn));
         if (type == null) {
             type = new ParticipantType();
