@@ -5,17 +5,14 @@ import dk.magenta.datafordeler.core.exception.AccessRequiredException;
 import dk.magenta.datafordeler.core.fapi.FapiService;
 import dk.magenta.datafordeler.core.user.DafoUserDetails;
 import dk.magenta.datafordeler.cvr.CvrAccessChecker;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.jws.WebService;
-import javax.ws.rs.Path;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by lars on 19-05-17.
  */
-@Controller
+@RestController
 @RequestMapping("/cvr/companyunit/1/rest")
 public class CompanyUnitEntityService extends FapiService<CompanyUnitEntity, CompanyUnitQuery> {
 
