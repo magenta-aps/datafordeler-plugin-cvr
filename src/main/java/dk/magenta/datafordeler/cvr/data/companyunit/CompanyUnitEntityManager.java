@@ -15,6 +15,7 @@ import dk.magenta.datafordeler.cvr.CvrPlugin;
 import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.records.BaseRecord;
 import dk.magenta.datafordeler.cvr.records.CompanyUnitRecord;
+import java.time.ZoneOffset;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
@@ -34,6 +35,11 @@ import java.util.UUID;
  */
 @Component
 public class CompanyUnitEntityManager extends CvrEntityManager {
+
+    public static final OffsetDateTime MIN_SQL_SERVER_DATETIME = OffsetDateTime.of(
+        1, 1, 1, 0, 0, 0, 0,
+        ZoneOffset.UTC
+    );
 
     @Autowired
     private CompanyUnitEntityService companyUnitEntityService;
@@ -129,7 +135,7 @@ public class CompanyUnitEntityManager extends CvrEntityManager {
             OffsetDateTime registrationFrom = record.getLastUpdated();
             if (registrationFrom == null) {
                 System.out.println("falling back to default");
-                registrationFrom = this.fallbackRegistrationFrom;
+                registrationFrom = MIN_SQL_SERVER_DATETIME;
             }
             ajourRecords.add(registrationFrom, record);
             sortedTimestamps.add(registrationFrom);
