@@ -19,6 +19,11 @@ import javax.ws.rs.Path;
 @RequestMapping("/cvr/company/1/rest")
 public class CompanyEntityService extends FapiService<CompanyEntity, CompanyQuery> {
 
+    public CompanyEntityService() {
+        super();
+        this.setOutputWrapper(new CompanyOutputWrapper());
+    }
+
     @Override
     public int getVersion() {
         return 1;

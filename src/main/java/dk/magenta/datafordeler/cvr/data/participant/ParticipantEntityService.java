@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/cvr/participant/1/rest")
 public class ParticipantEntityService extends FapiService<ParticipantEntity, ParticipantQuery> {
 
+    public ParticipantEntityService() {
+        super();
+        this.setOutputWrapper(new ParticipantOutputWrapper());
+    }
+
     @Override
     public int getVersion() {
         return 1;
