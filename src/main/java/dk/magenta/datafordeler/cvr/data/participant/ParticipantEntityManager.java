@@ -88,7 +88,7 @@ public class ParticipantEntityManager extends CvrEntityManager {
             return null;
         }
         ParticipantEntity participant = new ParticipantEntity(participantRecord.generateUUID(), CvrPlugin.getDomain());
-        participant.setDeltagernummer(participantRecord.unitNumber);
+        participant.setDeltagernummer(participantRecord.enhedsnummer);
 
         List<BaseRecord> records = participantRecord.getAll();
 
@@ -138,6 +138,7 @@ public class ParticipantEntityManager extends CvrEntityManager {
                 for (ParticipantBaseData baseData : effect.getDataItems()) {
                     // There really should be only one item for each effect right now
                     record.populateBaseData(baseData, this.queryManager, session);
+                    participantRecord.populateBaseData(baseData, this.queryManager, session);
                 }
             }
             lastRegistration = registration;

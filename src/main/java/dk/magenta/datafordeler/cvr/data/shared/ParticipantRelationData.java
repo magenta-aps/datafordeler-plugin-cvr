@@ -36,6 +36,13 @@ public class ParticipantRelationData extends DetailData {
         this.organisationer.add(organization);
     }
 
+    public Identification getDeltager() {
+        return deltager;
+    }
+
+    public Set<Identification> getOrganisationer() {
+        return organisationer;
+    }
 
     @Override
     public Map<String, Object> asMap() {

@@ -22,106 +22,106 @@ import java.util.UUID;
 public class ParticipantRecord extends BaseRecord {
 
     @JsonProperty(value = "enhedsNummer")
-    public long unitNumber;
+    public long enhedsnummer;
 
     @JsonProperty(value = "enhedstype")
-    public String unitType;
+    public String enhedstype;
 
     @JsonProperty(value = "navne")
-    public List<NameRecord> names;
+    public List<NameRecord> navne;
 
     @JsonProperty(value = "beliggenhedsadresse")
-    public List<AddressRecord> locationAddresses;
+    public List<AddressRecord> beliggenhedsadresse;
 
-    public void setLocationAddresses(List<AddressRecord> locationAddresses) {
-        for (AddressRecord record : locationAddresses) {
+    public void setBeliggenhedsadresse(List<AddressRecord> beliggenhedsadresse) {
+        for (AddressRecord record : beliggenhedsadresse) {
             record.setType(AddressRecord.Type.LOCATION);
         }
-        this.locationAddresses = locationAddresses;
+        this.beliggenhedsadresse = beliggenhedsadresse;
     }
 
     @JsonProperty(value = "postadresse")
-    public List<AddressRecord> postalAddresses;
+    public List<AddressRecord> postadresse;
 
-    public void setPostalAddresses(List<AddressRecord> postalAddresses) {
-        for (AddressRecord record : postalAddresses) {
+    public void setPostadresse(List<AddressRecord> postadresse) {
+        for (AddressRecord record : postadresse) {
             record.setType(AddressRecord.Type.POSTAL);
         }
-        this.postalAddresses = postalAddresses;
+        this.postadresse = postadresse;
     }
 
     @JsonProperty(value = "forretningsadresse")
-    public List<AddressRecord> businessAddresses;
+    public List<AddressRecord> forretningsadresse;
 
-    public void setBusinessAddresses(List<AddressRecord> businessAddresses) {
-        for (AddressRecord record : businessAddresses) {
+    public void setForretningsadresse(List<AddressRecord> forretningsadresse) {
+        for (AddressRecord record : forretningsadresse) {
             record.setType(AddressRecord.Type.BUSINESS);
         }
-        this.businessAddresses = businessAddresses;
+        this.forretningsadresse = forretningsadresse;
     }
 
     @JsonProperty(value = "telefonNummer")
-    public List<ContactRecord> phoneRecords;
+    public List<ContactRecord> telefonnummer;
 
-    public void setPhoneRecords(List<ContactRecord> phoneRecords) {
-        for (ContactRecord record : phoneRecords) {
+    public void setTelefonnummer(List<ContactRecord> telefonnummer) {
+        for (ContactRecord record : telefonnummer) {
             record.setType(ContactRecord.Type.TELEFONNUMMER);
         }
-        this.phoneRecords = phoneRecords;
+        this.telefonnummer = telefonnummer;
     }
 
     @JsonProperty(value = "telefaxNummer")
-    public List<ContactRecord> faxRecords;
+    public List<ContactRecord> telefaxnummer;
 
-    public void setFaxRecords(List<ContactRecord> faxRecords) {
-        for (ContactRecord record : faxRecords) {
+    public void setTelefaxnummer(List<ContactRecord> telefaxnummer) {
+        for (ContactRecord record : telefaxnummer) {
             record.setType(ContactRecord.Type.TELEFAXNUMMER);
         }
-        this.faxRecords = faxRecords;
+        this.telefaxnummer = telefaxnummer;
     }
 
     @JsonProperty(value = "elektroniskPost")
-    public List<ContactRecord> emailRecords;
+    public List<ContactRecord> emailadresse;
 
-    public void setEmailRecords(List<ContactRecord> emailRecords) {
-        for (ContactRecord record : emailRecords) {
+    public void setEmailadresse(List<ContactRecord> emailadresse) {
+        for (ContactRecord record : emailadresse) {
             record.setType(ContactRecord.Type.EMAILADRESSE);
         }
-        this.emailRecords = emailRecords;
+        this.emailadresse = emailadresse;
     }
 
 
     @JsonProperty(value = "attributter")
-    public List<AttributeRecord> attributeRecords;
+    public List<AttributeRecord> attributter;
 
 
 
     public List<BaseRecord> getAll() {
         ArrayList<BaseRecord> list = new ArrayList<>();
         list.add(this);
-        if (this.names != null) {
-            list.addAll(this.names);
+        if (this.navne != null) {
+            list.addAll(this.navne);
         }
-        if (this.locationAddresses != null) {
-            list.addAll(this.locationAddresses);
+        if (this.beliggenhedsadresse != null) {
+            list.addAll(this.beliggenhedsadresse);
         }
-        if (this.postalAddresses != null) {
-            list.addAll(this.postalAddresses);
+        if (this.postadresse != null) {
+            list.addAll(this.postadresse);
         }
-        if (this.businessAddresses != null) {
-            list.addAll(this.businessAddresses);
+        if (this.forretningsadresse != null) {
+            list.addAll(this.forretningsadresse);
         }
-        if (this.phoneRecords != null) {
-            list.addAll(this.phoneRecords);
+        if (this.telefonnummer != null) {
+            list.addAll(this.telefonnummer);
         }
-        if (this.faxRecords != null) {
-            list.addAll(this.faxRecords);
+        if (this.telefaxnummer != null) {
+            list.addAll(this.telefaxnummer);
         }
-        if (this.emailRecords != null) {
-            list.addAll(this.emailRecords);
+        if (this.emailadresse != null) {
+            list.addAll(this.emailadresse);
         }
-        if (this.attributeRecords != null) {
-            for (AttributeRecord attributeRecord : this.attributeRecords) {
+        if (this.attributter != null) {
+            for (AttributeRecord attributeRecord : this.attributter) {
                 list.addAll(attributeRecord.getValues());
             }
         }
@@ -129,7 +129,7 @@ public class ParticipantRecord extends BaseRecord {
     }
 
     public UUID generateUUID() {
-        return ParticipantEntity.generateUUID(this.unitType, this.unitNumber);
+        return ParticipantEntity.generateUUID(this.enhedstype, this.enhedsnummer);
     }
 
     @Override
@@ -144,7 +144,7 @@ public class ParticipantRecord extends BaseRecord {
 
     @Override
     public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
-        baseData.setEnhedsnummer(this.unitNumber);
-        baseData.setEnhedstype(ParticipantType.getType(this.unitType, queryManager, session));
+        baseData.setEnhedsnummer(this.enhedsnummer);
+        baseData.setEnhedstype(ParticipantType.getType(this.enhedstype, queryManager, session));
     }
 }

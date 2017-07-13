@@ -62,7 +62,7 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
     private IndustryData bibranche3;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private TextData virksomhedsnavn;
+    private TextData produktionsenhedsnavn;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private ContactData telefonnummer;
@@ -77,7 +77,7 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
     private BooleanData primaer;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyUnitCvrData virksomhedscvr;
+    private IntegerData tilknyttetVirksomhedsCVRNummer;
 
     @ManyToMany(mappedBy = "companyUnitBases")
     private Set<ParticipantLink> deltagere = new HashSet<>();
@@ -88,6 +88,130 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
     @OneToMany(cascade = CascadeType.ALL)
     private Set<ParticipantRelationData> deltagerRelation = new HashSet<>();
 
+
+    public LifecycleData getLivsforloeb() {
+        return livsforloeb;
+    }
+
+    public Boolean getReklamebeskyttelse() {
+        if(reklamebeskyttelse != null)
+            return reklamebeskyttelse.getVaerdi();
+        else
+            return null;
+    }
+
+    public Long getpNummer() {
+        if(pNummer != null)
+            return pNummer.getVaerdi();
+        else
+            return null;
+    }
+
+    public Address getBeliggenhedsadresse() {
+        if(beliggenhedsadresse != null)
+            return beliggenhedsadresse.getAdresse();
+        else
+            return null;
+    }
+
+    public Address getPostadresse() {
+        if(postadresse != null)
+            return postadresse.getAdresse();
+        else
+            return null;
+    }
+
+    public List<YearlyEmployeeNumbersData> getAarsbeskaeftigelse() {
+        return aarsbeskaeftigelse;
+    }
+
+    public List<QuarterlyEmployeeNumbersData> getKvartalsbeskaeftigelse() {
+        return kvartalsbeskaeftigelse;
+    }
+
+    public List<MonthlyEmployeeNumbersData> getMaanedsbeskaeftigelse() {
+        return maanedsbeskaeftigelse;
+    }
+
+
+    public String getHovedbranche() {
+        if(hovedbranche != null)
+            return hovedbranche.getBranche().getBranchekode();
+        else
+            return null;
+    }
+
+    public String getBibranche1() {
+        if(bibranche1 != null)
+            return bibranche1.getBranche().getBranchekode();
+        else
+            return null;
+    }
+
+    public String getBibranche2() {
+        if(bibranche2 != null)
+            return bibranche2.getBranche().getBranchekode();
+        else
+            return null;
+    }
+
+    public String getBibranche3() {
+        if(bibranche3 != null)
+            return bibranche3.getBranche().getBranchekode();
+        else
+            return null;
+    }
+
+    public String getProduktionsenhedsnavn() {
+        if(produktionsenhedsnavn != null)
+            return produktionsenhedsnavn.getVaerdi();
+        else
+            return null;
+    }
+
+    public String getTelefonnummer() {
+        if(telefonnummer != null)
+            return telefonnummer.getVaerdi();
+        else
+            return null;
+    }
+
+    public String getEmailadresse() {
+        if(emailadresse != null)
+            return emailadresse.getVaerdi();
+        else
+            return null;
+    }
+
+    public String getTelefaxnummer() {
+        if(telefaxnummer != null)
+            return telefaxnummer.getVaerdi();
+        else
+            return null;
+    }
+
+    public BooleanData getPrimaer() {
+        return primaer;
+    }
+
+    public Long getTilknyttetVirksomhedsCVRNummer() {
+        if(tilknyttetVirksomhedsCVRNummer != null)
+            return tilknyttetVirksomhedsCVRNummer.getVaerdi();
+        else
+            return null;
+    }
+
+    public Set<ParticipantLink> getDeltagere() {
+        return deltagere;
+    }
+
+    public Set<AttributeData> getAttributter() {
+        return attributter;
+    }
+
+    public Set<ParticipantRelationData> getDeltagerRelation() {
+        return deltagerRelation;
+    }
 
     @Override
     public Map<String, Object> asMap() {
@@ -128,8 +252,8 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         if (this.bibranche3 != null) {
             map.put("bibranche3", this.bibranche3.getBranche());
         }
-        if (this.virksomhedsnavn != null) {
-            map.put("virksomhedsnavn", this.virksomhedsnavn.getVaerdi());
+        if (this.produktionsenhedsnavn != null) {
+            map.put("produktionsenhedsnavn", this.produktionsenhedsnavn.getVaerdi());
         }
         if (this.telefonnummer != null) {
             map.put("telefonnummer", this.telefonnummer.asMap());
@@ -143,8 +267,8 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         if (this.primaer != null) {
             map.put("primaer", this.primaer.getVaerdi());
         }
-        if (this.virksomhedscvr != null) {
-            map.put("virksomhedscvr", this.virksomhedscvr);
+        if (this.tilknyttetVirksomhedsCVRNummer != null) {
+            map.put("tilknyttetVirksomhedsCVRNummer", this.tilknyttetVirksomhedsCVRNummer);
         }
         if (this.deltagere != null && !this.deltagere.isEmpty()) {
             map.put("deltagere", this.deltagere);
@@ -268,11 +392,11 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         this.bibranche3.setBranche(industry);
     }
 
-    public void setVirksomhedsnavn(String name) {
-        if (this.virksomhedsnavn == null) {
-            this.virksomhedsnavn = new TextData(TextData.Type.NAVN);
+    public void setProduktionsenhedsnavn(String name) {
+        if (this.produktionsenhedsnavn == null) {
+            this.produktionsenhedsnavn = new TextData(TextData.Type.NAVN);
         }
-        this.virksomhedsnavn.setVaerdi(name);
+        this.produktionsenhedsnavn.setVaerdi(name);
     }
     public void setTelefonnummer(String phone, boolean secret) {
         if (this.telefonnummer == null) {
@@ -302,11 +426,11 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         }
         this.primaer.setVaerdi(isPrimary);
     }
-    public void setVirksomhedscvr(int cvrNumber) {
-        if (this.virksomhedscvr == null) {
-            this.virksomhedscvr = new CompanyUnitCvrData();
+    public void setTilknyttetVirksomhedsCVRNummer(long cvrNumber) {
+        if (this.tilknyttetVirksomhedsCVRNummer == null) {
+            this.tilknyttetVirksomhedsCVRNummer = new IntegerData();
         }
-        this.virksomhedscvr.setVaerdi(cvrNumber);
+        this.tilknyttetVirksomhedsCVRNummer.setVaerdi(cvrNumber);
     }
     public void addDeltagere(ParticipantLink participantLink) {
         this.deltagere.add(participantLink);
@@ -373,8 +497,8 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         if (this.bibranche3 != null) {
             lookupDefinition.putAll("bibranche3", this.bibranche3.databaseFields());
         }
-        if (this.virksomhedsnavn != null) {
-            lookupDefinition.putAll("virksomhedsnavn", this.virksomhedsnavn.databaseFields());
+        if (this.produktionsenhedsnavn != null) {
+            lookupDefinition.putAll("produktionsenhedsnavn", this.produktionsenhedsnavn.databaseFields());
         }
         if (this.telefonnummer != null) {
             lookupDefinition.putAll("telefonnummer", this.telefonnummer.databaseFields());
@@ -388,8 +512,8 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         if (this.primaer != null) {
             lookupDefinition.putAll("primaer", this.primaer.databaseFields());
         }
-        if (this.virksomhedscvr != null) {
-            lookupDefinition.putAll("virksomhedscvr", this.virksomhedscvr.databaseFields());
+        if (this.tilknyttetVirksomhedsCVRNummer != null) {
+            lookupDefinition.putAll("tilknyttetVirksomhedsCVRNummer", this.tilknyttetVirksomhedsCVRNummer.databaseFields());
         }
         if (this.deltagerRelation != null) {
             lookupDefinition.putAll("deltagerRelation", DetailData.listDatabaseFields(this.deltagerRelation));

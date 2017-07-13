@@ -120,7 +120,7 @@ public class CompanyEntityManager extends CvrEntityManager {
             return null;
         }
         CompanyEntity company = new CompanyEntity(UUID.randomUUID(), CvrPlugin.getDomain());
-        company.setCVRNummer(companyRecord.getCvrNumber());
+        company.setCVRNummer(companyRecord.getCVRNummer());
 
         List<BaseRecord> records = companyRecord.getAll();
 
@@ -171,6 +171,7 @@ public class CompanyEntityManager extends CvrEntityManager {
                 for (CompanyBaseData baseData : effect.getDataItems()) {
                     // There really should be only one item for each effect right now
                     record.populateBaseData(baseData, this.queryManager, session);
+                    companyRecord.populateBaseData(baseData, this.queryManager, session);
                 }
             }
             lastRegistration = registration;

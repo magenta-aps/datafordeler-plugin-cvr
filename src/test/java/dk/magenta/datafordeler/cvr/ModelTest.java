@@ -239,8 +239,8 @@ public class ModelTest {
 
 
 
-        produktionsenhed.setVirksomhedsnavn("Some company unit name");
-        produktionsenhed.setVirksomhedscvr(24681012);
+        produktionsenhed.setProduktionsenhedsnavn("Some company unit name");
+        produktionsenhed.setTilknyttetVirksomhedsCVRNummer(24681012);
 
 
 
@@ -334,7 +334,7 @@ public class ModelTest {
 
         ParticipantBaseData deltager = new ParticipantBaseData();
         deltager.addVirkning(virkning);
-        deltager.setNavn("Mickey Mouse");
+        deltager.setNavne("Mickey Mouse");
 
         ParticipantType type = queryManager.getItem(session, ParticipantType.class, Collections.singletonMap("navn", "Person"));
         if (type == null) {

@@ -21,7 +21,7 @@ import java.util.Set;
 public class ParticipantBaseData extends DataItem<ParticipantEffect, ParticipantBaseData> {
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private TextData navn;
+    private TextData navne;
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private ContactData telefonnummer;
@@ -57,7 +57,88 @@ public class ParticipantBaseData extends DataItem<ParticipantEffect, Participant
     @OneToMany(cascade = CascadeType.ALL)
     private Set<AttributeData> attributter = new HashSet<>();
 
+    public String getNavne() {
+        if(navne != null)
+            return navne.getVaerdi();
+        else
+            return null;
+    }
 
+    public String getTelefonnummer() {
+        if(telefonnummer != null)
+            return telefonnummer.getVaerdi();
+        else
+            return null;
+    }
+
+    public String getEmailadresse() {
+        if(emailadresse != null)
+            return emailadresse.getVaerdi();
+        else
+            return null;
+    }
+
+    public String getTelefaxnummer() {
+        if(telefaxnummer != null)
+            return telefaxnummer.getVaerdi();
+        else
+            return null;
+    }
+
+    public Address getBeliggenhedsadresse() {
+        if(beliggenhedsadresse != null)
+            return beliggenhedsadresse.getAdresse();
+        else
+            return null;
+    }
+
+    public Address getPostadresse() {
+        if(postadresse != null)
+            return postadresse.getAdresse();
+        else
+            return null;
+    }
+
+    public Address getForretningsadresse() {
+        if(forretningsadresse != null)
+            return forretningsadresse.getAdresse();
+        else
+            return null;
+    }
+
+    public Long getEnhedsnummer() {
+        if(enhedsnummer != null)
+            return enhedsnummer.getVaerdi();
+        else
+            return null;
+    }
+
+    public Long getEnhedstype() {
+        if(enhedstype != null)
+            return enhedstype.getId();
+        else
+            return null;
+    }
+
+    public Long getRolle() {
+        if(rolle != null)
+            return rolle.getId();
+        else
+            return null;
+    }
+
+    public Long getStatus() {
+        if(status != null)
+            return status.getId();
+        else
+            return null;
+    }
+
+    public Set<AttributeData> getAttributter() {
+        if(attributter.isEmpty())
+            return null;
+        return attributter;
+    }
 
     /**
      * Return a map of attributes, including those from the superclass
@@ -69,8 +150,8 @@ public class ParticipantBaseData extends DataItem<ParticipantEffect, Participant
 
 
 
-        if (this.navn != null) {
-            map.put("navn", this.navn.getVaerdi());
+        if (this.navne != null) {
+            map.put("navne", this.navne.getVaerdi());
         }
         if (this.telefonnummer != null) {
             map.put("telefonnummer", this.telefonnummer.getVaerdi());
@@ -109,11 +190,11 @@ public class ParticipantBaseData extends DataItem<ParticipantEffect, Participant
     }
 
 
-    public void setNavn(String name) {
-        if (this.navn == null) {
-            this.navn = new TextData(TextData.Type.NAVN);
+    public void setNavne(String name) {
+        if (this.navne == null) {
+            this.navne = new TextData(TextData.Type.NAVN);
         }
-        this.navn.setVaerdi(name);
+        this.navne.setVaerdi(name);
     }
     public void setTelefonnummer(String phone, boolean secret) {
         if (this.telefonnummer == null) {
@@ -182,8 +263,8 @@ public class ParticipantBaseData extends DataItem<ParticipantEffect, Participant
     public LookupDefinition getLookupDefinition() {
         LookupDefinition lookupDefinition = new LookupDefinition();
         lookupDefinition.setMatchNulls(true);
-        if (this.navn != null) {
-            lookupDefinition.putAll("navn", this.navn.databaseFields());
+        if (this.navne != null) {
+            lookupDefinition.putAll("navne", this.navne.databaseFields());
         }
         if (this.telefonnummer != null) {
             lookupDefinition.putAll("telefonnummer", this.telefonnummer.databaseFields());
