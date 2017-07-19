@@ -9,6 +9,7 @@ import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.core.fapi.FapiService;
+import dk.magenta.datafordeler.core.plugin.EntityManager;
 import dk.magenta.datafordeler.core.util.ListHashMap;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
 import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
@@ -80,11 +81,41 @@ public class ParticipantEntityManager extends CvrEntityManager {
 
 
     @Override
-    public List<Registration> parseRegistration(JsonNode jsonNode) throws ParseException {
+    public List<? extends Registration> parseRegistration(JsonNode jsonNode) throws ParseException {
         ArrayList<Registration> registrations = new ArrayList<>();
+
+        if (jsonNode.has("hits")) {
+            jsonNode = jsonNode.get("hits");
+            if (jsonNode.has("hits")) {
+                jsonNode = jsonNode.get("hits");
+            }
+            if (jsonNode.isArray()) {
+                // We have a list of results
+                for (JsonNode item : jsonNode) {
+                    registrations.addAll(this.parseRegistration(item));
+                }
+                return registrations;
+            }
+        }
+
+        String type = jsonNode.has("_type") ? jsonNode.get("_type").asText() : null;
+        if (type != null && !type.equals(ParticipantEntity.schema)) {
+            // Wrong type. See if we have another EntityManager that can handle it
+            EntityManager otherManager = this.getRegisterManager().getEntityManager(type);
+            if (otherManager != null) {
+                return otherManager.parseRegistration(jsonNode);
+            }
+            return null;
+        }
+
+        if (jsonNode.has("_source")) {
+            jsonNode = jsonNode.get("_source");
+        }
+        if (jsonNode.has("Vrdeltagerperson")) {
+            jsonNode = jsonNode.get("Vrdeltagerperson");
+        }
         Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        jsonNode = this.unwrap(jsonNode);
 
         ParticipantRecord participantRecord;
         try {
@@ -102,6 +133,7 @@ public class ParticipantEntityManager extends CvrEntityManager {
         TreeSet<OffsetDateTime> sortedTimestamps = new TreeSet<>();
         for (BaseRecord record : records) {
             OffsetDateTime registrationFrom = record.getLastUpdated();
+            System.out.println("registreringFra: "+registrationFrom);
             if (registrationFrom == null) {
                 System.out.println("falling back to default");
                 registrationFrom = MIN_SQL_SERVER_DATETIME;
@@ -149,6 +181,7 @@ public class ParticipantEntityManager extends CvrEntityManager {
             }
             lastRegistration = registration;
             registrations.add(registration);
+
             try {
                 queryManager.saveRegistrering(session, participant, registration);
             } catch (DataFordelerException e) {
