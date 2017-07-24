@@ -1,7 +1,6 @@
 package dk.magenta.datafordeler.cvr.data.unversioned;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import org.hibernate.Session;
@@ -17,7 +16,7 @@ import java.util.Collections;
  */
 @Entity
 @Table(name = "cvr_municipality", indexes = {
-        @Index(name = "code", columnList = "code")
+        @Index(name = "companyMunicipalityCode", columnList = "code")
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Municipality extends UnversionedEntity {

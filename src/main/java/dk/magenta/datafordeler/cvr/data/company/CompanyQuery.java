@@ -1,10 +1,8 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
-import dk.magenta.datafordeler.core.database.Entity;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.core.fapi.ParameterMap;
 import dk.magenta.datafordeler.core.fapi.QueryField;
-import dk.magenta.datafordeler.core.util.ListHashMap;
 import dk.magenta.datafordeler.cvr.data.CvrQuery;
 
 import java.util.HashMap;
@@ -16,12 +14,14 @@ import java.util.Map;
 public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     public static final String CVRNUMBER = "cvrnumber";
+    public static final String ADVERTPROTECTION = "advertprotection";
     public static final String NAME = "name";
+    public static final String PHONE = "phone";
+    public static final String FAX = "fax";
+    public static final String EMAIL = "email";
     public static final String FORM = "form";
 
-
-
-    @QueryField(type = QueryField.FieldType.STRING)
+    @QueryField(type = QueryField.FieldType.STRING, queryName = CVRNUMBER)
     private String cvrNumber;
 
     public String getCvrNumber() {
@@ -33,11 +33,7 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
     }
 
 
-
-
-
-
-    @QueryField(type = QueryField.FieldType.BOOLEAN)
+    @QueryField(type = QueryField.FieldType.BOOLEAN, queryName = ADVERTPROTECTION)
     private String advertProtection;
 
     public String getAdvertProtection() {
@@ -48,10 +44,7 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
         this.advertProtection = advertProtection;
     }
 
-
-
-
-    @QueryField(type = QueryField.FieldType.STRING)
+    @QueryField(type = QueryField.FieldType.STRING, queryName = NAME)
     private String name;
 
     public String getName() {
@@ -63,7 +56,7 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
     }
 
 
-    @QueryField(type = QueryField.FieldType.STRING)
+    @QueryField(type = QueryField.FieldType.STRING, queryName = PHONE)
     private String phone;
 
     public String getPhone() {
@@ -76,7 +69,7 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
 
 
-    @QueryField(type = QueryField.FieldType.STRING)
+    @QueryField(type = QueryField.FieldType.STRING, queryName = FAX)
     private String fax;
 
     public String getFax() {
@@ -89,7 +82,7 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
 
 
-    @QueryField(type = QueryField.FieldType.STRING)
+    @QueryField(type = QueryField.FieldType.STRING, queryName = EMAIL)
     private String email;
 
     public String getEmail() {
@@ -102,7 +95,7 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
 
 
-    @QueryField(type = QueryField.FieldType.INT)
+    @QueryField(type = QueryField.FieldType.INT, queryName = FORM)
     private String formCode;
 
     public String getFormCode() {
@@ -120,15 +113,25 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
     @Override
     public Map<String, Object> getSearchParameters() {
         HashMap<String, Object> map = new HashMap<>();
-        //map.put(CVRNUMBER, this.cvrNumber);
+        map.put(CVRNUMBER, this.cvrNumber);
+        map.put(ADVERTPROTECTION, this.advertProtection);
         map.put(NAME, this.name);
+        map.put(PHONE, this.phone);
+        map.put(FAX, this.fax);
+        map.put(EMAIL, this.email);
+        map.put(FORM, this.formCode);
         return map;
     }
 
     @Override
     public void setFromParameters(ParameterMap parameters) {
         this.setCvrNumber(parameters.getFirst(CVRNUMBER));
+        this.setAdvertProtection(parameters.getFirst(ADVERTPROTECTION));
         this.setName(parameters.getFirst(NAME));
+        this.setPhone(parameters.getFirst(PHONE));
+        this.setFax(parameters.getFirst(FAX));
+        this.setEmail(parameters.getFirst(EMAIL));
+        this.setFormCode(parameters.getFirst(FORM));
     }
 
     @Override

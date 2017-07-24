@@ -13,7 +13,7 @@ import java.util.Collections;
  * Created by lars on 09-06-17.
  */
 @Entity
-@Table(name = "cvr_participant_type", indexes = {@Index(name = "name", columnList = "name")})
+@Table(name = "cvr_participant_type", indexes = {@Index(name = "participantName", columnList = "name")})
 public class ParticipantType extends ParticipantClassification {
 
     public static ParticipantType getType(String name, QueryManager queryManager, Session session) {

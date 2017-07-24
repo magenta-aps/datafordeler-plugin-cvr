@@ -17,8 +17,8 @@ import java.util.Map;
  */
 @Entity
 @Table(name = "cvr_company_contact", indexes = {
-        @Index(name = "type", columnList = "type"),
-        @Index(name = "data", columnList = "type, data")
+        @Index(name = "companyContactType", columnList = "type"),
+        @Index(name = "companyContactData", columnList = "type, data")
 })
 public class ContactData extends SingleData<String> {
 

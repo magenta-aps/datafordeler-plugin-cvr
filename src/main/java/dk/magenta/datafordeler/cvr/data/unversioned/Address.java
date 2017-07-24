@@ -3,8 +3,6 @@ package dk.magenta.datafordeler.cvr.data.unversioned;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dk.magenta.datafordeler.core.database.QueryManager;
-import org.hibernate.Session;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
@@ -17,8 +15,8 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "cvr_address", indexes = {
-        @Index(name = "roadCode", columnList = "roadCode"),
-        @Index(name = "roadName", columnList = "roadName")
+        @Index(name = "companyRoadCode", columnList = "roadCode"),
+        @Index(name = "companyRoadName", columnList = "roadName")
 })
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Address extends UnversionedEntity {
@@ -146,7 +144,7 @@ public class Address extends UnversionedEntity {
 
     @JsonProperty(value = "etage")
     @XmlElement(name = "etage")
-    @Column
+    @Column(name="addressFloor")
     private String floor;
 
     public String getFloor() {
@@ -278,7 +276,7 @@ public class Address extends UnversionedEntity {
 
     @JsonProperty(value = "fritekst")
     @XmlElement(name = "fritekst")
-    @Column
+    @Column(name="addressFreeText")
     private String freeText;
 
     public String getFreeText() {
