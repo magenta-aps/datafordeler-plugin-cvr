@@ -5,14 +5,12 @@ import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.exception.DataStreamException;
 import dk.magenta.datafordeler.core.exception.HttpStatusException;
 import dk.magenta.datafordeler.core.exception.WrongSubclassException;
-import dk.magenta.datafordeler.core.io.Event;
 import dk.magenta.datafordeler.core.io.PluginSourceData;
 import dk.magenta.datafordeler.core.plugin.*;
 import dk.magenta.datafordeler.core.util.ItemInputStream;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfiguration;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfigurationManager;
 import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
-import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
 import dk.magenta.datafordeler.cvr.synchronization.CvrSourceData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -165,6 +163,7 @@ public class CvrRegisterManager extends RegisterManager {
         try {
             outputStream = new PipedOutputStream(inputStream);
             final ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+            final int dataBaseId = responseBody.hashCode();
 
             Thread t = new Thread(new Runnable() {
                 @Override
@@ -181,7 +180,7 @@ public class CvrRegisterManager extends RegisterManager {
                             String line;
                             while ((line = responseReader.readLine()) != null) {
                                 System.out.println("got a response line");
-                                objectOutputStream.writeObject(new CvrSourceData(schema, line));
+                                objectOutputStream.writeObject(new CvrSourceData(schema, line, dataBaseId + ":" + count));
                                 count++;
                             }
                         } catch (IOException e) {

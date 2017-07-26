@@ -6,10 +6,12 @@ public class CvrSourceData implements PluginSourceData {
 
     private String schema;
     private String data;
+    private String id;
 
-    public CvrSourceData(String schema, String data) {
+    public CvrSourceData(String schema, String data, String id) {
         this.schema = schema;
         this.data = data;
+        this.id = id;
     }
 
     @Override
@@ -22,4 +24,13 @@ public class CvrSourceData implements PluginSourceData {
         return this.data;
     }
 
+    @Override
+    public String getReference() {
+        return null;
+    }
+
+    @Override
+    public String getId() {
+        return this.id;
+    }
 }
