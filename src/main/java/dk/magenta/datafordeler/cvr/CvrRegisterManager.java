@@ -30,7 +30,7 @@ import java.util.*;
 @Component
 public class CvrRegisterManager extends RegisterManager {
 
-    private HttpCommunicator commonFetcher;
+    private ScanScrollCommunicator commonFetcher;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -54,6 +54,8 @@ public class CvrRegisterManager extends RegisterManager {
                 configuration.getUsername(),
                 configuration.getPassword()
         );
+        this.commonFetcher.setScrollIdJsonKey("_scroll_id");
+        this.commonFetcher.setThrottle(5000);
         try {
             this.baseEndpoint = new URI(configuration.getRegisterAddress());
         } catch (URISyntaxException e) {
@@ -108,7 +110,7 @@ public class CvrRegisterManager extends RegisterManager {
 
 
     @Override
-    protected URI getEventInterface(EntityManager entityManager) {
+    public URI getEventInterface(EntityManager entityManager) {
         URI base = this.getBaseEndpoint();
         try {
             return new URI(
@@ -172,14 +174,12 @@ public class CvrRegisterManager extends RegisterManager {
                     if (responseBody != null) {
 
                         final BufferedReader responseReader = new BufferedReader(new InputStreamReader(responseBody));
-                        System.out.println("inputStream: " + inputStream);
-                        System.out.println("dataStream: " + responseReader);
 
                         int count = 0;
                         try {
                             String line;
                             while ((line = responseReader.readLine()) != null) {
-                                System.out.println("got a response line");
+                                log.debug("got a response line ("+line.length()+" chars)");
                                 objectOutputStream.writeObject(new CvrSourceData(schema, line, dataBaseId + ":" + count));
                                 count++;
                             }
@@ -187,7 +187,7 @@ public class CvrRegisterManager extends RegisterManager {
                             e.printStackTrace();
                         } finally {
 
-                            System.out.println("Wrote " + count + " events");
+                            log.debug("Wrote " + count + " events");
 
                             try {
                                 responseReader.close();
