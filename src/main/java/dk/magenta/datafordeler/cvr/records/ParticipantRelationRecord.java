@@ -2,10 +2,7 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.jaxrs.json.annotation.JSONP;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 /**

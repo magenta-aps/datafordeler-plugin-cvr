@@ -12,7 +12,7 @@ import java.time.ZoneOffset;
 /**
  * Created by lars on 26-06-17.
  */
-public class LifecycleRecord extends CompanyBaseRecord {
+public class LifecycleRecord extends BaseRecord {
 
     /*@Override
     public String getContainerName() {

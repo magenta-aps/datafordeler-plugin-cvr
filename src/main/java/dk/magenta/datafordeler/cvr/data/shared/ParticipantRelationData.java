@@ -7,17 +7,33 @@ import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by lars on 30-06-17.
  */
 @Entity
 @Table(name = "cvr_participantrelation")
-public class ParticipantRelationData extends DetailData {
+public class ParticipantRelationData extends DetailData implements Comparable<ParticipantRelationData> {
+
+    @Override
+    public int compareTo(ParticipantRelationData o) {
+        Identification i1 = this.participant;
+        Identification i2 = o == null ? null : o.participant;
+        if (i1 == null && i2 == null) return 0;
+        if (i1 == null) return -1;
+        if (i2 == null) return 1;
+        return i1.getUuid().compareTo(i2.getUuid());
+    }
+
+    public static class Comparator implements java.util.Comparator<ParticipantRelationData> {
+        @Override
+        public int compare(ParticipantRelationData o1, ParticipantRelationData o2) {
+            if (o1 == null && o2 == null) return 0;
+            if (o1 == null) return -1;
+            return o1.compareTo(o2);
+        }
+    }
 
     @ManyToOne
     @JsonProperty(value = "deltager")
@@ -28,6 +44,11 @@ public class ParticipantRelationData extends DetailData {
         this.participant = participant;
     }
 
+    public Identification getParticipant() {
+        return participant;
+    }
+
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JsonProperty(value = "organisationer")
     @XmlElement(name = "organisationer")
@@ -37,6 +58,9 @@ public class ParticipantRelationData extends DetailData {
         this.organizations.add(organization);
     }
 
+    public Set<Identification> getOrganizations() {
+        return organizations;
+    }
 
     @Override
     public Map<String, Object> asMap() {

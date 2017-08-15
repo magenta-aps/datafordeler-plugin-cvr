@@ -9,7 +9,7 @@ import dk.magenta.datafordeler.core.plugin.*;
 import dk.magenta.datafordeler.core.util.ItemInputStream;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfiguration;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfigurationManager;
-import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
+import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntityManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ import java.util.*;
 @Component
 public class CvrRegisterManager extends RegisterManager {
 
-    private HttpCommunicator commonFetcher;
+    private ScanScrollCommunicator commonFetcher;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -52,6 +52,7 @@ public class CvrRegisterManager extends RegisterManager {
                 configuration.getUsername(),
                 configuration.getPassword()
         );
+        this.commonFetcher.setScrollIdJsonKey("_scroll_id");
         try {
             this.baseEndpoint = new URI(configuration.getRegisterAddress());
         } catch (URISyntaxException e) {
@@ -114,10 +115,7 @@ public class CvrRegisterManager extends RegisterManager {
         final PipedOutputStream outputStream;
         try {
             outputStream = new PipedOutputStream(inputStream);
-            System.out.println("outputStream: "+outputStream);
             final ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-            System.out.println("objectOutputStream: "+objectOutputStream);
-
             final List<EntityManager> entityManagers = new ArrayList<>(this.entityManagers);
             final URI baseEndpoint = this.baseEndpoint;
 
@@ -126,10 +124,13 @@ public class CvrRegisterManager extends RegisterManager {
                 public void run() {
 
                     for (EntityManager entityManager : entityManagers) {
+                        String body = "{\"query\":{\"match_all\":{}},\"size\":10}";
+
                         InputStream responseBody = null;
                         String schema = entityManager.getSchema();
 
                         try {
+                            System.out.println("/cvr-permanent/" + schema + "/_search   "+body);
                             responseBody = eventCommunicator.fetch(
                                     new URI(
                                             baseEndpoint.getScheme(), baseEndpoint.getHost(),
@@ -139,7 +140,7 @@ public class CvrRegisterManager extends RegisterManager {
                                             baseEndpoint.getScheme(), baseEndpoint.getHost(),
                                             "/_search/scroll", ""
                                     ),
-                                    "{\"query\":{\"match_all\":{}},\"size\":10}"
+                                    body
                             );
                         } catch (URISyntaxException e) {
                             e.printStackTrace();
@@ -149,12 +150,8 @@ public class CvrRegisterManager extends RegisterManager {
                             e1.printStackTrace();
                         }
                         if (responseBody != null) {
-                            System.out.println("got a response body");
 
                             final BufferedReader responseReader = new BufferedReader(new InputStreamReader(responseBody));
-                            System.out.println("inputStream: " + inputStream);
-                            System.out.println("dataStream: " + responseReader);
-
 
                             int count = 0;
                             try {
@@ -162,16 +159,18 @@ public class CvrRegisterManager extends RegisterManager {
 
                                 // One line per event
                                 while ((line = responseReader.readLine()) != null) {
-                                    System.out.println("got a response line");
                                     objectOutputStream.writeObject(CvrRegisterManager.this.wrap(Collections.singletonList(line), schema));
+                                    try {
+                                        Thread.sleep(1000);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
                                     count++;
                                 }
                             } catch (IOException e) {
                                 e.printStackTrace();
                             } finally {
-
-                                System.out.println("Wrote " + count + " events");
-
+                                log.debug("Wrote " + count + " events");
                                 try {
                                     responseReader.close();
                                 } catch (IOException e) {

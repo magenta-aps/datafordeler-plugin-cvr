@@ -1,40 +1,23 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import dk.magenta.datafordeler.core.database.QueryManager;
-import dk.magenta.datafordeler.core.database.Registration;
-import dk.magenta.datafordeler.core.database.RegistrationReference;
-import dk.magenta.datafordeler.core.database.SessionManager;
-import dk.magenta.datafordeler.core.exception.DataFordelerException;
-import dk.magenta.datafordeler.core.exception.ParseException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.magenta.datafordeler.core.database.*;
 import dk.magenta.datafordeler.core.fapi.FapiService;
-import dk.magenta.datafordeler.core.plugin.EntityManager;
-import dk.magenta.datafordeler.core.util.ListHashMap;
-import dk.magenta.datafordeler.cvr.CvrPlugin;
 import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntityManager;
-import dk.magenta.datafordeler.cvr.records.BaseRecord;
 import dk.magenta.datafordeler.cvr.records.CompanyRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeSet;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by lars on 16-05-17.
  */
 @Component
-public class CompanyEntityManager extends CvrEntityManager {
+public class CompanyEntityManager extends CvrEntityManager<CompanyRecord, CompanyEntity, CompanyRegistration, CompanyEffect, CompanyBaseData> {
 
     @Autowired
     private CompanyEntityService companyEntityService;
@@ -44,6 +27,9 @@ public class CompanyEntityManager extends CvrEntityManager {
 
     @Autowired
     private SessionManager sessionManager;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private Logger log = LogManager.getLogger(CompanyEntityManager.class);
 
@@ -74,119 +60,46 @@ public class CompanyEntityManager extends CvrEntityManager {
         return new CompanyRegistrationReference(uri);
     }
 
+    @Override
+    protected SessionManager getSessionManager() {
+        return this.sessionManager;
+    }
 
     @Override
-    public List<? extends Registration> parseRegistration(JsonNode jsonNode) throws ParseException {
+    protected QueryManager getQueryManager() {
+        return this.queryManager;
+    }
 
-        ArrayList<Registration> registrations = new ArrayList<>();
+    @Override
+    protected String getJsonTypeName() {
+        return "Vrvirksomhed";
+    }
 
-        if (jsonNode.has("hits")) {
-            jsonNode = jsonNode.get("hits");
-            if (jsonNode.has("hits")) {
-                jsonNode = jsonNode.get("hits");
-            }
-            if (jsonNode.isArray()) {
-                // We have a list of results
-                for (JsonNode item : jsonNode) {
-                    registrations.addAll(this.parseRegistration(item));
-                }
-                return registrations;
-            }
-        }
+    @Override
+    protected Class getRecordClass() {
+        return CompanyRecord.class;
+    }
 
-        String type = jsonNode.has("_type") ? jsonNode.get("_type").asText() : null;
-        if (type != null && !type.equals(CompanyEntity.schema)) {
-            // Wrong type. See if we have another EntityManager that can handle it
-            EntityManager otherManager = this.getRegisterManager().getEntityManager(type);
-            if (otherManager != null) {
-                return otherManager.parseRegistration(jsonNode);
-            }
-            return null;
-        }
+    @Override
+    protected Class getEntityClass() {
+        return CompanyEntity.class;
+    }
 
-        if (jsonNode.has("_source")) {
-            jsonNode = jsonNode.get("_source");
-        }
-        if (jsonNode.has("Vrvirksomhed")) {
-            jsonNode = jsonNode.get("Vrvirksomhed");
-        }
-        Session session = sessionManager.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
+    @Override
+    protected UUID generateUUID(CompanyRecord record) {
+        return CompanyEntity.generateUUID(record.getCvrNumber());
+    }
 
-        CompanyRecord companyRecord;
-        try {
-            companyRecord = getObjectMapper().treeToValue(jsonNode, CompanyRecord.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return null;
-        }
-        CompanyEntity company = new CompanyEntity(UUID.randomUUID(), CvrPlugin.getDomain());
-        company.setCvrNumber(companyRecord.getCvrNumber());
+    @Override
+    protected CompanyEntity createBasicEntity(CompanyRecord record) {
+        CompanyEntity entity = new CompanyEntity();
+        entity.setCvrNumber(record.getCvrNumber());
+        return entity;
+    }
 
-        List<BaseRecord> records = companyRecord.getAll();
-
-        ListHashMap<OffsetDateTime, BaseRecord> ajourRecords = new ListHashMap<>();
-        TreeSet<OffsetDateTime> sortedTimestamps = new TreeSet<>();
-        for (BaseRecord record : records) {
-            OffsetDateTime registrationFrom = record.getLastUpdated();
-            System.out.println("registrationFrom: "+registrationFrom);
-            if (registrationFrom == null) {
-                System.out.println("falling back to default");
-                registrationFrom = this.fallbackRegistrationFrom;
-            }
-            ajourRecords.add(registrationFrom, record);
-            sortedTimestamps.add(registrationFrom);
-        }
-
-        CompanyRegistration lastRegistration = null;
-        for (OffsetDateTime registrationFrom : sortedTimestamps) {
-
-            // Get any existing registration that matches this date, or create a new one
-            CompanyRegistration registration = company.getRegistration(registrationFrom);
-            if (registration == null) {
-                registration = new CompanyRegistration();
-                registration.setRegistrationFrom(registrationFrom);
-                registration.setEntity(company);
-            }
-
-            // Copy data over from the previous registration, by cloning all effects and point underlying dataitems to the clones as well as the originals
-            if (lastRegistration != null) {
-                for (CompanyEffect originalEffect : lastRegistration.getEffects()) {
-                    CompanyEffect newEffect = new CompanyEffect(registration, originalEffect.getEffectFrom(), originalEffect.getEffectTo());
-                    for (CompanyBaseData originalData : originalEffect.getDataItems()) {
-                        originalData.addEffect(newEffect);
-                    }
-                }
-            }
-
-            for (BaseRecord record : ajourRecords.get(registrationFrom)) {
-                CompanyEffect effect = registration.getEffect(record.getValidFrom(), record.getValidTo());
-                if (effect == null) {
-                    effect = new CompanyEffect(registration, record.getValidFrom(), record.getValidTo());
-                }
-
-                if (effect.getDataItems().isEmpty()) {
-                    CompanyBaseData baseData = new CompanyBaseData();
-                    baseData.addEffect(effect);
-                }
-                for (CompanyBaseData baseData : effect.getDataItems()) {
-                    // There really should be only one item for each effect right now
-                    record.populateBaseData(baseData, this.queryManager, session);
-                }
-            }
-            lastRegistration = registration;
-            registrations.add(registration);
-
-            try {
-                queryManager.saveRegistration(session, company, registration);
-            } catch (DataFordelerException e) {
-                e.printStackTrace();
-            }
-        }
-        log.info("Created "+company.getRegistrations().size()+" registrations");
-        transaction.commit();
-        session.close();
-        return registrations;
+    @Override
+    protected CompanyBaseData createDataItem() {
+        return new CompanyBaseData();
     }
 
 }

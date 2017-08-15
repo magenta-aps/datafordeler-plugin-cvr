@@ -1,6 +1,5 @@
 package dk.magenta.datafordeler.cvr.data.companyunit;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import dk.magenta.datafordeler.core.database.Entity;
@@ -9,7 +8,6 @@ import dk.magenta.datafordeler.core.database.Identification;
 import javax.persistence.Column;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlTransient;
 import java.util.UUID;
 
 /**
@@ -31,6 +29,11 @@ public class CompanyUnitEntity extends Entity<CompanyUnitEntity, CompanyUnitRegi
 
     public CompanyUnitEntity(UUID uuid, String domain) {
         super(uuid, domain);
+    }
+
+    @Override
+    protected CompanyUnitRegistration createEmptyRegistration() {
+        return new CompanyUnitRegistration();
     }
 
     @Column

@@ -31,6 +31,11 @@ public class ParticipantEntity extends Entity<ParticipantEntity, ParticipantRegi
         super(uuid, domain);
     }
 
+    @Override
+    protected ParticipantRegistration createEmptyRegistration() {
+        return new ParticipantRegistration();
+    }
+
     @Column(nullable = false, insertable = true, updatable = false)
     private long participantNumber;
 
