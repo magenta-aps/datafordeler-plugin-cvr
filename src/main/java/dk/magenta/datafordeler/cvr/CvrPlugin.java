@@ -34,6 +34,7 @@ public class CvrPlugin extends Plugin {
     @Autowired
     private ParticipantEntityManager participantEntityManager;
 
+    private CvrRolesDefinition rolesDefinition = new CvrRolesDefinition();
 
     @PostConstruct
     public void init() {
@@ -63,6 +64,6 @@ public class CvrPlugin extends Plugin {
 
     @Override
     public RolesDefinition getRolesDefinition() {
-        return new CvrRolesDefinition();
+        return this.rolesDefinition;
     }
 }
