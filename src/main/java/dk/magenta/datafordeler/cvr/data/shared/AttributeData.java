@@ -58,7 +58,7 @@ public class AttributeData extends DetailData {
 
     @JsonProperty(value = "værdi")
     @XmlElement(name = "værdi")
-    @Column
+    @Column(length = 8192)
     private String value;
 
     public String getValue() {
