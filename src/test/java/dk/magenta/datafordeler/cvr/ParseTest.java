@@ -49,6 +49,7 @@ public class ParseTest {
         InputStream input = ParseTest.class.getResourceAsStream("/company.json");
         JsonNode root = objectMapper.readTree(input);
         JsonNode itemList = root.get("hits").get("hits");
+        System.out.println("itemList.size: "+itemList.size());
         Assert.assertTrue(itemList.isArray());
         for (JsonNode item : itemList) {
             String type = item.get("_type").asText();
@@ -77,11 +78,13 @@ public class ParseTest {
         InputStream input = ParseTest.class.getResourceAsStream("/unit.json");
         JsonNode root = objectMapper.readTree(input);
         JsonNode itemList = root.get("hits").get("hits");
+        System.out.println("itemList.size: "+itemList.size());
         Assert.assertTrue(itemList.isArray());
         for (JsonNode item : itemList) {
             String type = item.get("_type").asText();
             EntityManager entityManager = plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
             List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("VrproduktionsEnhed"));
+            System.out.println("registrations.size: "+registrations.size());
             System.out.println(objectMapper.writeValueAsString(registrations));
         }
     }
@@ -91,12 +94,16 @@ public class ParseTest {
         InputStream input = ParseTest.class.getResourceAsStream("/person.json");
         JsonNode root = objectMapper.readTree(input);
         JsonNode itemList = root.get("hits").get("hits");
+        System.out.println("itemList.size: "+itemList.size());
         Assert.assertTrue(itemList.isArray());
+        Assert.assertEquals(1, itemList.size());
         for (JsonNode item : itemList) {
             String type = item.get("_type").asText();
             EntityManager entityManager = plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
             List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson"));
+            System.out.println("registrations.size: "+registrations.size());
             System.out.println(objectMapper.writeValueAsString(registrations));
+            Assert.assertEquals(4, registrations.size());
         }
     }
 
