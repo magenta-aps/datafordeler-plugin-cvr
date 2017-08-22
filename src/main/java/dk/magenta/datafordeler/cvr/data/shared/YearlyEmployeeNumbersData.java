@@ -18,7 +18,7 @@ import java.util.Map;
 @Table(name = "cvr_company_yearly_employees", indexes = {
         @Index(name = "companyYearlyEmployeesYear", columnList = "year")
 })
-public class YearlyEmployeeNumbersData extends EmployeeNumbersData {
+public class YearlyEmployeeNumbersData extends EmployeeNumbersData implements Comparable<YearlyEmployeeNumbersData> {
 
 
     @Column(name = "year")
@@ -52,5 +52,12 @@ public class YearlyEmployeeNumbersData extends EmployeeNumbersData {
         HashMap<String, Object> map = new HashMap<>(super.databaseFields());
         map.put("year", this.year);
         return map;
+    }
+
+    @Override
+    public int compareTo(YearlyEmployeeNumbersData o) {
+        if (o == null) return 1;
+        if (this.year == o.year) return 0;
+        return this.year < o.year ? -1 : 1;
     }
 }

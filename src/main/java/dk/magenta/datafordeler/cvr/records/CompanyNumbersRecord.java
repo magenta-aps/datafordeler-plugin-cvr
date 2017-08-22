@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 /**
  * Created by lars on 26-06-17.
  */
-public abstract class CompanyNumbersRecord extends CompanyBaseRecord {
+public abstract class CompanyNumbersRecord extends BaseRecord {
 
     private static class Range {
         public int low;

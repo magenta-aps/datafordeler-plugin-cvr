@@ -13,7 +13,7 @@ import java.util.UUID;
 public class OrganizationRecord {
 
     @JsonProperty(value = "enhedsNummerOrganisation")
-    public int unitNumber;
+    public long unitNumber;
 
     @JsonProperty(value = "hovedtype")
     public String mainType;

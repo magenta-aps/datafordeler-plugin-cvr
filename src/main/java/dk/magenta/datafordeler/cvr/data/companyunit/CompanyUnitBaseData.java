@@ -195,12 +195,21 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         this.postalAddressData.setAddress(address);
     }
 
-    public void addYearlyEmployeeNumbers(int year, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
+    public void setYearlyEmployeeNumbers(int year, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
         if (this.yearlyEmployeeNumbersData == null) {
             //this.yearlyEmployeeNumbersData = new CompanyYearlyEmployeeNumbersData();
             this.yearlyEmployeeNumbersData = new ArrayList<>();
         }
-        YearlyEmployeeNumbersData yearlyEmployeeNumbersData = new YearlyEmployeeNumbersData();
+        YearlyEmployeeNumbersData yearlyEmployeeNumbersData = null;
+        for (YearlyEmployeeNumbersData data : this.yearlyEmployeeNumbersData) {
+            if (data.getYear() == year) {
+                yearlyEmployeeNumbersData = data;
+            }
+        }
+        if (yearlyEmployeeNumbersData == null) {
+            yearlyEmployeeNumbersData = new YearlyEmployeeNumbersData();
+            this.yearlyEmployeeNumbersData.add(yearlyEmployeeNumbersData);
+        }
         yearlyEmployeeNumbersData.setYear(year);
         yearlyEmployeeNumbersData.setEmployeesLow(employeesLow);
         yearlyEmployeeNumbersData.setEmployeesHigh(employeesHigh);
@@ -208,14 +217,22 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         yearlyEmployeeNumbersData.setFullTimeEquivalentHigh(fulltimeEquivalentHigh);
         yearlyEmployeeNumbersData.setIncludingOwnersLow(includingOwnersLow);
         yearlyEmployeeNumbersData.setIncludingOwnersHigh(includingOwnersHigh);
-        this.yearlyEmployeeNumbersData.add(yearlyEmployeeNumbersData);
     }
-    public void addQuarterlyEmployeeNumbers(int year, int quarter, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
+    public void setQuarterlyEmployeeNumbers(int year, int quarter, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
         if (this.quarterlyEmployeeNumbersData == null) {
             //this.quarterlyEmployeeNumbersData = new CompanyQuarterlyEmployeeNumbersData();
             this.quarterlyEmployeeNumbersData = new ArrayList<>();
         }
-        QuarterlyEmployeeNumbersData quarterlyEmployeeNumbersData = new QuarterlyEmployeeNumbersData();
+        QuarterlyEmployeeNumbersData quarterlyEmployeeNumbersData = null;
+        for (QuarterlyEmployeeNumbersData data : this.quarterlyEmployeeNumbersData) {
+            if (data.getYear() == year && data.getQuarter() == quarter) {
+                quarterlyEmployeeNumbersData = data;
+            }
+        }
+        if (quarterlyEmployeeNumbersData == null) {
+            quarterlyEmployeeNumbersData = new QuarterlyEmployeeNumbersData();
+            this.quarterlyEmployeeNumbersData.add(quarterlyEmployeeNumbersData);
+        }
         quarterlyEmployeeNumbersData.setYear(year);
         quarterlyEmployeeNumbersData.setQuarter(quarter);
         quarterlyEmployeeNumbersData.setEmployeesLow(employeesLow);
@@ -224,14 +241,22 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         quarterlyEmployeeNumbersData.setFullTimeEquivalentHigh(fulltimeEquivalentHigh);
         quarterlyEmployeeNumbersData.setIncludingOwnersLow(includingOwnersLow);
         quarterlyEmployeeNumbersData.setIncludingOwnersHigh(includingOwnersHigh);
-        this.quarterlyEmployeeNumbersData.add(quarterlyEmployeeNumbersData);
     }
-    public void addMonthlyEmployeeNumbers(int year, int month, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
+    public void setMonthlyEmployeeNumbers(int year, int month, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
         if (this.monthlyEmployeeNumbersData == null) {
             //this.monthlyEmployeeNumbersData = new CompanyMonthlyEmployeeNumbersData();
             this.monthlyEmployeeNumbersData = new ArrayList<>();
         }
-        MonthlyEmployeeNumbersData monthlyEmployeeNumbersData = new MonthlyEmployeeNumbersData();
+        MonthlyEmployeeNumbersData monthlyEmployeeNumbersData = null;
+        for (MonthlyEmployeeNumbersData data : this.monthlyEmployeeNumbersData) {
+            if (data.getYear() == year && data.getMonth() == month) {
+                monthlyEmployeeNumbersData = data;
+            }
+        }
+        if (monthlyEmployeeNumbersData == null) {
+            monthlyEmployeeNumbersData = new MonthlyEmployeeNumbersData();
+            this.monthlyEmployeeNumbersData.add(monthlyEmployeeNumbersData);
+        }
         monthlyEmployeeNumbersData.setYear(year);
         monthlyEmployeeNumbersData.setMonth(month);
         monthlyEmployeeNumbersData.setEmployeesLow(employeesLow);
@@ -240,7 +265,6 @@ public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnit
         monthlyEmployeeNumbersData.setFullTimeEquivalentHigh(fulltimeEquivalentHigh);
         monthlyEmployeeNumbersData.setIncludingOwnersLow(includingOwnersLow);
         monthlyEmployeeNumbersData.setIncludingOwnersHigh(includingOwnersHigh);
-        this.monthlyEmployeeNumbersData.add(monthlyEmployeeNumbersData);
     }
 
     public void setPrimaryIndustry(Industry industry) {

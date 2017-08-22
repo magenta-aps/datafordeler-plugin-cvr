@@ -141,9 +141,9 @@ public class ModelTest {
         }
         companyData1.setForm(companyForm);
 
-        companyData1.addYearlyEmployeeNumbers(2017,1,2,1,2,1,2);
+        companyData1.setYearlyEmployeeNumbers(2017,1,2,1,2,1,2);
 
-        companyData1.addQuarterlyEmployeeNumbers(2017,2,1,2,1,2,1,2);
+        companyData1.setQuarterlyEmployeeNumbers(2017,2,1,2,1,2,1,2);
 
 
         ParticipantLink participantLink = queryManager.getItem(session, ParticipantLink.class, Collections.singletonMap("data", 44446666));
@@ -155,17 +155,10 @@ public class ModelTest {
         companyData1.addParticipant(participantLink);
 
 
-        CompanyUnitLink unitLink = queryManager.getItem(session, CompanyUnitLink.class, Collections.singletonMap("pNumber", 314159265));
-        if (unitLink == null) {
-            unitLink = new CompanyUnitLink();
-            unitLink.setpNumber(314159265);
-            session.saveOrUpdate(unitLink);
-        }
-
         CompanyEffect effect3 = new CompanyEffect(registration, OffsetDateTime.parse("2017-09-01T00:00:00+00:00"), null);
         CompanyBaseData companyData3 = new CompanyBaseData();
         companyData3.addEffect(effect3);
-        companyData3.addCompanyUnit(unitLink);
+        companyData3.addCompanyUnit(314159265);
 
         Transaction transaction = session.beginTransaction();
 
@@ -284,9 +277,9 @@ public class ModelTest {
         companyUnitData.setFax("11112222",true);
         companyUnitData.setEmail("test@example.com", false);
 
-        companyUnitData.addYearlyEmployeeNumbers(2017,1,2,1,2,1,2);
+        companyUnitData.setYearlyEmployeeNumbers(2017,1,2,1,2,1,2);
 
-        companyUnitData.addQuarterlyEmployeeNumbers(2017,2,1,1,1,1,1,1);
+        companyUnitData.setQuarterlyEmployeeNumbers(2017,2,1,1,1,1,1,1);
 
         ParticipantLink participantLink = queryManager.getItem(session, ParticipantLink.class, Collections.singletonMap("data", 44446666));
         if (participantLink == null) {

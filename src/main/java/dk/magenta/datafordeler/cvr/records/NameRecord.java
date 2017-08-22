@@ -15,10 +15,7 @@ public class NameRecord extends BaseRecord {
     @JsonProperty(value = "navn")
     private String name;
 
-    public static String getContainerName() {
-        return "navne";
-    }
-
+    @Override
     public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
         baseData.setName(this.name);
     }

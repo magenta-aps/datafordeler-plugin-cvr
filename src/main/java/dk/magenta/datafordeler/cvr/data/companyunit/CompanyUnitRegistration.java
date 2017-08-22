@@ -27,4 +27,9 @@ public class CompanyUnitRegistration extends Registration<CompanyUnitEntity, Com
     public CompanyUnitRegistration(String registrationFrom, String registrationTo, int sequenceNumber) {
         super(registrationFrom, registrationTo, sequenceNumber);
     }
+
+    @Override
+    protected CompanyUnitEffect createEmptyEffect(OffsetDateTime effectFrom, OffsetDateTime effectTo) {
+        return new CompanyUnitEffect(this, effectFrom, effectTo);
+    }
 }

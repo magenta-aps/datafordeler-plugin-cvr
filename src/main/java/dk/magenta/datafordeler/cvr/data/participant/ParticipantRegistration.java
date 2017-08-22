@@ -26,4 +26,9 @@ public class ParticipantRegistration extends Registration<ParticipantEntity, Par
     public ParticipantRegistration(String registrationFrom, String registrationTo, int sequenceNumber) {
         super(registrationFrom, registrationTo, sequenceNumber);
     }
+
+    @Override
+    protected ParticipantEffect createEmptyEffect(OffsetDateTime effectFrom, OffsetDateTime effectTo) {
+        return new ParticipantEffect(this, effectFrom, effectTo);
+    }
 }

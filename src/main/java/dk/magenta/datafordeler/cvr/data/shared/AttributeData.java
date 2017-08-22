@@ -15,7 +15,7 @@ import java.util.Map;
  */
 @Entity
 @Table(name = "cvr_company_attributes")
-public class AttributeData extends DetailData {
+public class AttributeData extends DetailData implements Comparable<AttributeData> {
 
     @JsonProperty(value = "sekvensNummer")
     @XmlElement(name = "sekvensNummer")
@@ -32,7 +32,7 @@ public class AttributeData extends DetailData {
 
     @JsonProperty
     @XmlElement
-    @Column
+    @Column(length = 50)
     private String type;
 
     public String getType() {
@@ -77,5 +77,14 @@ public class AttributeData extends DetailData {
         map.put("valueType", this.valueType);
         map.put("value", this.value);
         return map;
+    }
+
+    @Override
+    public int compareTo(AttributeData o) {
+        String oType = o == null ? null : o.type;
+        if (this.type == null && oType == null) return 0;
+        if (this.type == null) return -1;
+        if (oType == null) return 1;
+        return this.type.compareTo(o.type);
     }
 }

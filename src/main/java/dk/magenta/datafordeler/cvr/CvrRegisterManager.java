@@ -22,7 +22,6 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
-import java.util.*;
 
 /**
  * Created by lars on 16-05-17.
@@ -123,72 +122,77 @@ public class CvrRegisterManager extends RegisterManager {
         }
     }
 
-    @Override
-    public ItemInputStream<? extends PluginSourceData> pullEvents(final URI eventInterface, EntityManager entityManager) throws DataFordelerException {
+    public ItemInputStream<? extends PluginSourceData> pullEvents(URI eventInterface, EntityManager entityManager) throws DataFordelerException {
         if (!(entityManager instanceof CvrEntityManager)) {
             throw new WrongSubclassException(CvrEntityManager.class, entityManager);
         }
+
         ScanScrollCommunicator eventCommunicator = (ScanScrollCommunicator) this.getEventFetcher();
 
+        URI baseEndpoint = this.baseEndpoint;
+
+        String requestBody = "{\"query\":{\"match_all\":{}},\"size\":10}";
 
         InputStream responseBody = null;
         String schema = entityManager.getSchema();
 
         try {
-            URI repeaterUri = new URI(
-                    eventInterface.getScheme(), eventInterface.getHost(),
-                    "/_search/scroll", ""
-            );
+            System.out.println("/cvr-permanent/" + schema + "/_search   " + requestBody);
             responseBody = eventCommunicator.fetch(
-                    eventInterface,
-                    repeaterUri,
-                    "{\"query\":{\"match_all\":{}},\"size\":10}"
+                    new URI(
+                            baseEndpoint.getScheme(), baseEndpoint.getHost(),
+                            "/cvr-permanent/" + schema + "/_search", ""
+                    ),
+                    new URI(
+                            baseEndpoint.getScheme(), baseEndpoint.getHost(),
+                            "/_search/scroll", ""
+                    ),
+                    requestBody
             );
-        } catch (URISyntaxException | DataStreamException | HttpStatusException e) {
-            CvrRegisterManager.this.log.error(e);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (HttpStatusException e1) {
+            e1.printStackTrace();
+        } catch (DataStreamException e1) {
+            e1.printStackTrace();
         }
         return this.parseEventResponse(responseBody, entityManager);
-    }
 
+    }
     @Override
-    protected ItemInputStream<? extends PluginSourceData> parseEventResponse(InputStream inputStream, EntityManager entityManager) throws DataFordelerException {
-        if (!(entityManager instanceof CvrEntityManager)) {
-            throw new WrongSubclassException(CvrEntityManager.class, entityManager);
-        }
-        return this.parseEventResponse(inputStream, entityManager.getSchema());
-    }
-
-    private ItemInputStream<? extends PluginSourceData> parseEventResponse(final InputStream responseBody, String schema) {
-
+    protected ItemInputStream<? extends PluginSourceData> parseEventResponse(final InputStream responseBody, EntityManager entityManager) throws DataFordelerException {
         PipedInputStream inputStream = new PipedInputStream();
         final PipedOutputStream outputStream;
         try {
             outputStream = new PipedOutputStream(inputStream);
             final ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-            final int dataBaseId = responseBody.hashCode();
 
             Thread t = new Thread(new Runnable() {
                 @Override
                 public void run() {
-
                     if (responseBody != null) {
+                        final int dataBaseId = responseBody.hashCode();
 
                         final BufferedReader responseReader = new BufferedReader(new InputStreamReader(responseBody));
 
                         int count = 0;
                         try {
                             String line;
+
+                            // One line per event
                             while ((line = responseReader.readLine()) != null) {
-                                log.debug("got a response line ("+line.length()+" chars)");
-                                objectOutputStream.writeObject(new CvrSourceData(schema, line, dataBaseId + ":" + count));
+                                objectOutputStream.writeObject(new CvrSourceData(entityManager.getSchema(), line, dataBaseId + ":" + count));
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                                 count++;
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
                         } finally {
-
                             log.debug("Wrote " + count + " events");
-
                             try {
                                 responseReader.close();
                             } catch (IOException e) {
@@ -196,7 +200,6 @@ public class CvrRegisterManager extends RegisterManager {
                             }
                         }
                     }
-
                     try {
                         objectOutputStream.close();
                     } catch (IOException e1) {
@@ -209,9 +212,7 @@ public class CvrRegisterManager extends RegisterManager {
             //System.out.println("There are "+entityManagerParseStreams.size()+" streams");
             return new ItemInputStream<>(inputStream);
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            throw new DataStreamException(e);
         }
     }
-
 }
