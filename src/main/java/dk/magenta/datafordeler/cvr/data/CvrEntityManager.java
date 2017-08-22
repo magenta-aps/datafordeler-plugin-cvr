@@ -333,7 +333,7 @@ public abstract class CvrEntityManager<T extends EntityRecord, E extends Entity<
         }
         registrations.addAll(entityRegistrations);
 
-        log.info("Entity "+entity+" now has "+entity.getRegistrations().size()+" registrations");
+        log.info("Entity "+entity.getUUID()+" now has "+entity.getRegistrations().size()+" registrations");
         transaction.commit();
         session.close();
         return registrations;
