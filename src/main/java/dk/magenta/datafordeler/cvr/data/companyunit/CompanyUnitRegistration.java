@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import dk.magenta.datafordeler.core.database.Registration;
+import dk.magenta.datafordeler.cvr.data.CvrRegistration;
 
 import javax.persistence.Table;
 import java.time.OffsetDateTime;
@@ -11,7 +12,7 @@ import java.time.temporal.TemporalAccessor;
  */
 @javax.persistence.Entity
 @Table(name="cvr_companyunit_registration")
-public class CompanyUnitRegistration extends Registration<CompanyUnitEntity, CompanyUnitRegistration, CompanyUnitEffect> {
+public class CompanyUnitRegistration extends CvrRegistration<CompanyUnitEntity, CompanyUnitRegistration, CompanyUnitEffect> {
     public CompanyUnitRegistration() {
         super();
     }

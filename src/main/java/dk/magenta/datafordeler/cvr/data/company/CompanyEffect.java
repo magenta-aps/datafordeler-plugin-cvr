@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
 import dk.magenta.datafordeler.core.database.Effect;
+import dk.magenta.datafordeler.cvr.data.CvrEffect;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -13,7 +14,7 @@ import java.time.temporal.TemporalAccessor;
  */
 @Entity
 @Table(name="cvr_company_effect")
-public class CompanyEffect extends Effect<CompanyRegistration, CompanyEffect, CompanyBaseData> {
+public class CompanyEffect extends CvrEffect<CompanyRegistration, CompanyEffect, CompanyBaseData> {
     public CompanyEffect() {
     }
 

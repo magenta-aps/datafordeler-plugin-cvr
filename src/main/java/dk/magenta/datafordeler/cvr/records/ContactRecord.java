@@ -11,7 +11,7 @@ import org.hibernate.Session;
 /**
  * Created by lars on 26-06-17.
  */
-public class ContactRecord extends BaseRecord {
+public class ContactRecord extends CvrBaseRecord {
 
     public enum Type {
         PHONE,

@@ -8,7 +8,7 @@ import org.hibernate.Session;
 /**
  * Created by lars on 26-06-17.
  */
-public class CompanyUnitLinkRecord extends BaseRecord {
+public class CompanyUnitLinkRecord extends CvrBaseRecord {
 
     @JsonProperty(value = "pNummer")
     private int pNumber;

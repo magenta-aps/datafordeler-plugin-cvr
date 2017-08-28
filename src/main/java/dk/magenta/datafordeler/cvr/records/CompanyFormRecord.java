@@ -9,7 +9,7 @@ import org.hibernate.Session;
 /**
  * Created by lars on 26-06-17.
  */
-public class CompanyFormRecord extends BaseRecord {
+public class CompanyFormRecord extends CvrBaseRecord {
 
     @JsonProperty(value = "virksomhedsformkode")
     private int code;

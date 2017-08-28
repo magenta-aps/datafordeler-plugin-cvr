@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.data.participant;
 
 import dk.magenta.datafordeler.core.database.Effect;
+import dk.magenta.datafordeler.cvr.data.CvrEffect;
 import dk.magenta.datafordeler.cvr.data.company.CompanyRegistration;
 
 import javax.persistence.Table;
@@ -13,7 +14,7 @@ import java.time.temporal.TemporalAccessor;
  */
 @javax.persistence.Entity
 @Table(name="cvr_participant_effect")
-public class ParticipantEffect extends Effect<ParticipantRegistration, ParticipantEffect, ParticipantBaseData> {
+public class ParticipantEffect extends CvrEffect<ParticipantRegistration, ParticipantEffect, ParticipantBaseData> {
     public ParticipantEffect() {
     }
 

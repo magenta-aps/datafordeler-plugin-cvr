@@ -15,7 +15,7 @@ import java.util.UUID;
  * Created by lars on 26-06-17.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CompanyRecord extends EntityRecord {
+public class CompanyRecord extends CvrEntityRecord {
 
     @JsonProperty(value = "cvrNummer")
     private int cvrNumber;
@@ -176,8 +176,8 @@ public class CompanyRecord extends EntityRecord {
     private List<CompanyParticipantRelationRecord> participantRelationRecords;
 
     @Override
-    public List<BaseRecord> getAll() {
-        ArrayList<BaseRecord> list = new ArrayList<>();
+    public List<CvrBaseRecord> getAll() {
+        ArrayList<CvrBaseRecord> list = new ArrayList<>();
         list.add(this);
         if (this.names != null) {
             list.addAll(this.names);

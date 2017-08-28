@@ -4,6 +4,7 @@ import dk.magenta.datafordeler.core.database.DataItem;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.core.exception.ParseException;
+import dk.magenta.datafordeler.cvr.data.CvrData;
 import dk.magenta.datafordeler.cvr.data.DetailData;
 import dk.magenta.datafordeler.cvr.data.shared.*;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
@@ -20,7 +21,7 @@ import java.util.*;
  */
 @Entity
 @Table(name="cvr_companyunit_basedata")
-public class CompanyUnitBaseData extends DataItem<CompanyUnitEffect, CompanyUnitBaseData> {
+public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitBaseData> {
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private LifecycleData lifecycleData;

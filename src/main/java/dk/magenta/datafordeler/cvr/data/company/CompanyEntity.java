@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import dk.magenta.datafordeler.core.database.Entity;
 import dk.magenta.datafordeler.core.database.Identification;
+import dk.magenta.datafordeler.cvr.data.CvrEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @javax.persistence.Entity
 @Table(name="cvr_company_entity")
 @JsonPropertyOrder({"cvrNumber", "uuid", "domain"})
-public class CompanyEntity extends Entity<CompanyEntity, CompanyRegistration> {
+public class CompanyEntity extends CvrEntity<CompanyEntity, CompanyRegistration> {
 
     @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="type")
     public static final String schema = "virksomhed";

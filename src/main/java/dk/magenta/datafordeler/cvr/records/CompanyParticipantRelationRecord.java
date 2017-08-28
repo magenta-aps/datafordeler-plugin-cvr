@@ -2,9 +2,6 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
@@ -22,7 +19,7 @@ import java.util.UUID;
  * Created by lars on 30-06-17.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CompanyParticipantRelationRecord extends BaseRecord {
+public class CompanyParticipantRelationRecord extends CvrBaseRecord {
 
     @JsonProperty(value = "deltager")
     private ParticipantRelationRecord participant;

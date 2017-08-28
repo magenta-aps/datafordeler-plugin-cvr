@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.data.participant;
 
 import dk.magenta.datafordeler.core.database.DataItem;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
+import dk.magenta.datafordeler.cvr.data.CvrData;
 import dk.magenta.datafordeler.cvr.data.shared.*;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import org.hibernate.Hibernate;
@@ -18,7 +19,7 @@ import java.util.Set;
  */
 @javax.persistence.Entity
 @Table(name="cvr_participant_data")
-public class ParticipantBaseData extends DataItem<ParticipantEffect, ParticipantBaseData> {
+public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantBaseData> {
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private TextData nameData;

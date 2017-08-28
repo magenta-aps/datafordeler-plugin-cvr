@@ -10,7 +10,7 @@ import org.hibernate.Session;
 /**
  * Created by lars on 26-06-17.
  */
-public class NameRecord extends BaseRecord {
+public class NameRecord extends CvrBaseRecord {
 
     @JsonProperty(value = "navn")
     private String name;

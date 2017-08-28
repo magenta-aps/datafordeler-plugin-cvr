@@ -16,7 +16,7 @@ import java.util.UUID;
  * Created by lars on 26-06-17.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ParticipantRecord extends EntityRecord {
+public class ParticipantRecord extends CvrEntityRecord {
 
     @JsonProperty(value = "enhedsNummer")
     public long unitNumber;
@@ -93,8 +93,8 @@ public class ParticipantRecord extends EntityRecord {
 
 
 
-    public List<BaseRecord> getAll() {
-        ArrayList<BaseRecord> list = new ArrayList<>();
+    public List<CvrBaseRecord> getAll() {
+        ArrayList<CvrBaseRecord> list = new ArrayList<>();
         list.add(this);
         if (this.names != null) {
             list.addAll(this.names);

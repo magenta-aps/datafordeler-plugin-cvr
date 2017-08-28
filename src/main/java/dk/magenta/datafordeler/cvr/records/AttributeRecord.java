@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by lars on 26-06-17.
  */
-public class AttributeRecord extends BaseRecord {
+public class AttributeRecord extends CvrBaseRecord {
 
     @JsonProperty(value = "sekvensnr")
     private int sequenceNumber;

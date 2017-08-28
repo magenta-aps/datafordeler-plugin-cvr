@@ -12,7 +12,7 @@ import org.hibernate.Session;
  * Created by lars on 26-06-17.
  * A superclass for data-holding records, able to populate Cvr DataItems (thus updating the DB)
  */
-public abstract class BaseRecord extends CvrRecord {
+public abstract class CvrBaseRecord extends CvrRecord {
 
     public void populateBaseData(DataItem baseData, QueryManager queryManager, Session session) throws ParseException {
         if (baseData instanceof CompanyBaseData) {

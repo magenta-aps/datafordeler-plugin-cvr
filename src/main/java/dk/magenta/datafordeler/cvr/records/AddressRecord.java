@@ -14,7 +14,7 @@ import org.hibernate.Session;
 /**
  * Created by lars on 26-06-17.
  */
-public class AddressRecord extends BaseRecord {
+public class AddressRecord extends CvrBaseRecord {
 
     public enum Type {
         LOCATION,

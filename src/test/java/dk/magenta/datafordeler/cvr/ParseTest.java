@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.magenta.datafordeler.core.database.Registration;
 import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.core.plugin.EntityManager;
+import dk.magenta.datafordeler.core.role.SystemRole;
 import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
@@ -52,9 +53,11 @@ public class ParseTest {
         System.out.println("itemList.size: "+itemList.size());
         Assert.assertTrue(itemList.isArray());
         for (JsonNode item : itemList) {
+            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(item));
             String type = item.get("_type").asText();
             EntityManager entityManager = plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
             List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"));
+            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations.get(0).getEntity()));
 
             Collections.sort(registrations);
             Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:47+01:00"), registrations.get(0).getRegistrationFrom());

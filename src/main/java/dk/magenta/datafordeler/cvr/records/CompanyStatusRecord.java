@@ -9,7 +9,7 @@ import org.hibernate.Session;
 /**
  * Created by lars on 26-06-17.
  */
-public class CompanyStatusRecord extends BaseRecord {
+public class CompanyStatusRecord extends CvrBaseRecord {
 
     @JsonProperty(value = "status")
     private String status;

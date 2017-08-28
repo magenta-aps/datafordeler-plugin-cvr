@@ -18,7 +18,7 @@ import java.util.*;
  * Created by lars on 16-05-17.
  */
 @Component
-public class CompanyUnitEntityManager extends CvrEntityManager<CompanyUnitRecord, CompanyUnitEntity, CompanyUnitRegistration, CompanyUnitEffect, CompanyUnitBaseData> {
+public class CompanyUnitEntityManager extends CvrEntityManager<CompanyUnitEntity, CompanyUnitRegistration, CompanyUnitEffect, CompanyUnitBaseData, CompanyUnitRecord> {
 
     @Autowired
     private CompanyUnitEntityService companyUnitEntityService;
