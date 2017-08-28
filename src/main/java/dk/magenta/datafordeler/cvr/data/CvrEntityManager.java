@@ -162,46 +162,6 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         return this.parseRegistration(this.getObjectMapper().readTree(dataChunk));
     }
 
-    protected <R extends Registration, E extends Entity<E, R>> Collection<R> buildRegistrations(E entity, List<CvrBaseRecord> records) {
-        // Create a list of registrations, sorted by date and made so that each registration ends when the next begins
-        HashMap<OffsetDateTime, R> registrationMap = new HashMap<>();
-        for (R registration : entity.getRegistrations()) {
-            registrationMap.put(registration.getRegistrationFrom(), registration);
-        }
-        for (CvrBaseRecord record : records) {
-            //System.out.println(record.getClass().getSimpleName()+": "+record.getLastUpdated());
-            OffsetDateTime registrationStart = record.getRegistrationFrom();
-            if (!registrationMap.containsKey(registrationStart)) {
-                log.debug("Create new registration "+registrationStart);
-                R registration = entity.createRegistration();
-                registration.setRegistrationFrom(registrationStart);
-                registrationMap.put(registrationStart, registration);
-            }
-        }
-
-        HashSet<OffsetDateTime> startTimeSet = new HashSet<>(registrationMap.keySet());
-        boolean hadNull = startTimeSet.remove(null);
-        ArrayList<OffsetDateTime> startTimes = new ArrayList<>(startTimeSet);
-        Collections.sort(startTimes);
-        R last = null;
-        if (hadNull) {
-            startTimes.add(0, null);
-        }
-        for (OffsetDateTime startTime : startTimes) {
-            R registration = registrationMap.get(startTime);
-            if (last != null) {
-                if (last.getRegistrationTo() == null) {
-                    last.setRegistrationTo(startTime);
-                    registration.setSequenceNumber(last.getSequenceNumber() + 1);
-                } else if (!last.getRegistrationTo().isEqual(startTime)) {
-                    log.error("Registration time mismatch: "+last.getRegistrationTo()+" != "+startTime);
-                }
-            }
-            last = registration;
-        }
-        return registrationMap.values();
-    }
-
     protected abstract SessionManager getSessionManager();
     protected abstract QueryManager getQueryManager();
     protected abstract String getJsonTypeName(); // VrproduktionsEnhed
