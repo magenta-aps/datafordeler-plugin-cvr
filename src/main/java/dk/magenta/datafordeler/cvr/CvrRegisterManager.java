@@ -124,12 +124,6 @@ public class CvrRegisterManager extends RegisterManager {
         }
     }
 
-    public ItemInputStream<? extends PluginSourceData> pullEvents(URI eventInterface, EntityManager entityManager) throws DataFordelerException {
-        if (!(entityManager instanceof CvrEntityManager)) {
-            throw new WrongSubclassException(CvrEntityManager.class, entityManager);
-        }
-
-
     /**
      * Pull data from the data source denoted by eventInterface, using the 
      * mechanism appropriate for the source.
@@ -139,7 +133,10 @@ public class CvrRegisterManager extends RegisterManager {
      * We then package each response in an Event, and feed them into a stream for 
      * returning.
      */
-    public ItemInputStream<Event> pullEvents(URI eventInterface) throws DataFordelerException {
+    public ItemInputStream<? extends PluginSourceData> pullEvents(URI eventInterface, EntityManager entityManager) throws DataFordelerException {
+        if (!(entityManager instanceof CvrEntityManager)) {
+            throw new WrongSubclassException(CvrEntityManager.class, entityManager);
+        }
         ScanScrollCommunicator eventCommunicator = (ScanScrollCommunicator) this.getEventFetcher();
 
         URI baseEndpoint = this.baseEndpoint;
