@@ -131,11 +131,14 @@ public class CvrRegisterManager extends RegisterManager {
 
 
     /**
-    * Pull data from the data source denoted by eventInterface, using the mechanism appropriate for the source
-    * For CVR, this is done using a ScanScrollCommunicator, where we specify the query in a POST, then get 
-    * a handle back that we can use in a series of subsequent GET requests to get all the data
-    * We then package each response in an Event, and feed them into a stream for returning
-    */
+     * Pull data from the data source denoted by eventInterface, using the 
+     * mechanism appropriate for the source.
+     * For CVR, this is done using a ScanScrollCommunicator, where we specify the 
+     * query in a POST, then get a handle back that we can use in a series of 
+     * subsequent GET requests to get all the data.
+     * We then package each response in an Event, and feed them into a stream for 
+     * returning.
+     */
     public ItemInputStream<Event> pullEvents(URI eventInterface) throws DataFordelerException {
         ScanScrollCommunicator eventCommunicator = (ScanScrollCommunicator) this.getEventFetcher();
 
