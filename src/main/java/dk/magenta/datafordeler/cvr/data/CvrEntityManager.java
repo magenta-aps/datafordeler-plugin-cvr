@@ -53,6 +53,10 @@ public abstract class CvrEntityManager<T extends EntityRecord, E extends Entity<
         this.handledURISubstrings = new ArrayList<>();
     }
 
+    /**
+     * Set the associated RegisterManager (called as part of Plugin initialization), setting up
+     * the service paths listened on in the process
+     */
     @Override
     public void setRegisterManager(RegisterManager registerManager) {
         super.setRegisterManager(registerManager);
@@ -60,6 +64,9 @@ public abstract class CvrEntityManager<T extends EntityRecord, E extends Entity<
         this.handledURISubstrings.add(expandBaseURI(this.getBaseEndpoint(), "/get/" + this.getBaseName(), null, null).toString());
     }
 
+    /**
+     * Return the URI substrings that are listened on in the service
+     */
     @Override
     public Collection<String> getHandledURISubstrings() {
         return this.handledURISubstrings;
@@ -80,6 +87,9 @@ public abstract class CvrEntityManager<T extends EntityRecord, E extends Entity<
         return this.commonFetcher;
     }
 
+    /**
+     * Return the base endpoint, which points to the external source
+     */
     @Override
     public URI getBaseEndpoint() {
         return this.getRegisterManager().getBaseEndpoint();
@@ -90,11 +100,17 @@ public abstract class CvrEntityManager<T extends EntityRecord, E extends Entity<
         return null;
     }
 
+    /**
+     * Parse a raw reference data stream into a RegistrationReference object
+     */
     @Override
     public RegistrationReference parseReference(InputStream referenceData) throws IOException {
         return this.getObjectMapper().readValue(referenceData, this.managedRegistrationReferenceClass);
     }
 
+    /**
+     * Parse a raw reference data string into a RegistrationReference object
+     */
     @Override
     public RegistrationReference parseReference(String referenceData, String charsetName) throws IOException {
         return this.getObjectMapper().readValue(referenceData.getBytes(charsetName), this.managedRegistrationReferenceClass);
@@ -102,11 +118,17 @@ public abstract class CvrEntityManager<T extends EntityRecord, E extends Entity<
 
     protected abstract RegistrationReference createRegistrationReference(URI uri);
 
+    /**
+     * Create a RegistrationReference object that encapsulates the given URI in the proper object
+     */
     @Override
     public RegistrationReference parseReference(URI uri) {
         return this.createRegistrationReference(uri);
     }
 
+    /**
+     * Returns the reference URI based on a RegistrationReference, basically unpacking it
+     */
     @Override
     public URI getRegistrationInterface(RegistrationReference reference) throws WrongSubclassException {
         if (!this.managedRegistrationReferenceClass.isInstance(reference)) {
@@ -191,9 +213,9 @@ public abstract class CvrEntityManager<T extends EntityRecord, E extends Entity<
 
     /**
      * Parse an incoming JsonNode into registrations (and save them)
-     * Must be idempotent
-     * @param jsonNode
-     * @return
+     * Must be idempotent: Running a second time with the same input should not result in new data
+     * @param jsonNode JSON object containing one or more parseable entities from the CVR data source
+     * @return A list of registrations that have been saved to the database
      * @throws ParseException
      */
     @Override

@@ -48,20 +48,33 @@ public class CvrPlugin extends Plugin {
         return "cvr";
     }
 
+    /**
+    * Return the domain for the plugin, used in Identification objects under CVR
+    **/
     public static String getDomain() {
         return "cvr";
     }
 
+    /**
+    * Return the plugin’s register manager
+    **/
     @Override
     public RegisterManager getRegisterManager() {
         return this.registerManager;
     }
 
+
+    /**
+    * Return the plugin’s configuration manager
+    **/
     @Override
     public ConfigurationManager getConfigurationManager() {
         return this.configurationManager;
     }
 
+    /**
+    * Get a defintion of user roles
+    **/
     @Override
     public RolesDefinition getRolesDefinition() {
         return this.rolesDefinition;

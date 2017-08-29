@@ -10,6 +10,8 @@ import java.util.Collection;
 
 /**
  * Created by lars on 26-06-17.
+ * A CVR record is the object representation of a node in our input data,
+ * holding at least some bitemporality, and (in subclasses) some data that take effect within this bitemporality
  */
 public abstract class CvrRecord implements Comparable<CvrRecord> {
 
@@ -64,6 +66,10 @@ public abstract class CvrRecord implements Comparable<CvrRecord> {
         }
     }
 
+    /**
+     * For sorting purposes; we implement the Comparable interface, so we should
+     * provide a comparison method. Here, we sort CvrRecord objects by registrationFrom, with nulls first
+     */
     @Override
     public int compareTo(CvrRecord o) {
         OffsetDateTime oUpdated = o == null ? null : o.getRegistrationFrom();
@@ -84,6 +90,11 @@ public abstract class CvrRecord implements Comparable<CvrRecord> {
         this.registrationTo = registrationTo;
     }
 
+    /**
+     * Given a Collection of CvrRecord objects, group them into buckets that share
+     * bitemporality. That way, we can treat all records in a bucket the same way,
+     * thus we won’t have to look up the appropriate Registration/Effect more than once
+     */
     public static <T extends CvrRecord> ListHashMap<String, T> sortIntoGroups(Collection<T> records) {
         // Sort the records into groups that share bitemporality
         ListHashMap<String, T> recordGroups = new ListHashMap<>();

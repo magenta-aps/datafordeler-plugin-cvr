@@ -2,6 +2,10 @@ package dk.magenta.datafordeler.cvr.synchronization;
 
 import dk.magenta.datafordeler.core.io.PluginSourceData;
 
+/**
+ * Specific PluginSourceData implementation, holding a chunk of data from the 
+ * CVR source, along with an id and a schema
+ */
 public class CvrSourceData implements PluginSourceData {
 
     private String schema;

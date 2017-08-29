@@ -46,6 +46,9 @@ public class CvrRegisterManager extends RegisterManager {
 
     }
 
+    /**
+    * RegisterManager initialization; set up configuration, source fetcher and source url
+    */
     @PostConstruct
     public void init() {
         CvrConfiguration configuration = configurationManager.getConfiguration();
@@ -107,7 +110,6 @@ public class CvrRegisterManager extends RegisterManager {
     }
 
 
-
     @Override
     public URI getEventInterface(EntityManager entityManager) {
         URI base = this.getBaseEndpoint();
@@ -127,6 +129,14 @@ public class CvrRegisterManager extends RegisterManager {
             throw new WrongSubclassException(CvrEntityManager.class, entityManager);
         }
 
+
+    /**
+    * Pull data from the data source denoted by eventInterface, using the mechanism appropriate for the source
+    * For CVR, this is done using a ScanScrollCommunicator, where we specify the query in a POST, then get 
+    * a handle back that we can use in a series of subsequent GET requests to get all the data
+    * We then package each response in an Event, and feed them into a stream for returning
+    */
+    public ItemInputStream<Event> pullEvents(URI eventInterface) throws DataFordelerException {
         ScanScrollCommunicator eventCommunicator = (ScanScrollCommunicator) this.getEventFetcher();
 
         URI baseEndpoint = this.baseEndpoint;

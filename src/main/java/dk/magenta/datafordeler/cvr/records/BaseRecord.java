@@ -10,6 +10,7 @@ import org.hibernate.Session;
 
 /**
  * Created by lars on 26-06-17.
+ * A superclass for data-holding records, able to populate Cvr DataItems (thus updating the DB)
  */
 public abstract class BaseRecord extends CvrRecord {
 
