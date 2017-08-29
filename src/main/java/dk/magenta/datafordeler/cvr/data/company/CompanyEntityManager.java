@@ -1,6 +1,5 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.magenta.datafordeler.core.database.*;
 import dk.magenta.datafordeler.core.fapi.FapiService;
 import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
@@ -27,9 +26,6 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
 
     @Autowired
     private SessionManager sessionManager;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     private Logger log = LogManager.getLogger(CompanyEntityManager.class);
 

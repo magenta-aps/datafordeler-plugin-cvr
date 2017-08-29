@@ -393,7 +393,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public void addAttribute(String type, String valueType, String value, int sequenceNumber) {
         AttributeData attributeData = null;
         for (AttributeData data : this.attributeData) {
-            if (data.getType().equals(type) && data.getSequenceNumber() == sequenceNumber) {
+            if (data.getType().equals(type) && data.getSequenceNumber() == sequenceNumber && data.getValueType().equals(valueType) && data.getValue().equals(value)) {
                 attributeData = data;
             }
         }
