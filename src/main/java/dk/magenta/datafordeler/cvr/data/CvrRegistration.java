@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.data;
 
 import dk.magenta.datafordeler.core.database.Entity;
 import dk.magenta.datafordeler.core.database.Registration;
+import dk.magenta.datafordeler.core.util.Equality;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.TemporalAccessor;
@@ -27,8 +28,8 @@ public abstract class CvrRegistration<E extends CvrEntity<E, R>, R extends CvrRe
     public V getEffect(OffsetDateTime effectFrom, boolean effectFromUncertain, OffsetDateTime effectTo, boolean effectToUncertain) {
         for (V effect : this.effects) {
             if (
-                    Registration.equalOffsetDateTime(effect.getEffectFrom(), effectFrom) &&
-                            Registration.equalOffsetDateTime(effect.getEffectTo(), effectTo)
+                    Equality.equal(effect.getEffectFrom(), effectFrom) &&
+                    Equality.equal(effect.getEffectTo(), effectTo)
                     ) {
                 return effect;
             }
