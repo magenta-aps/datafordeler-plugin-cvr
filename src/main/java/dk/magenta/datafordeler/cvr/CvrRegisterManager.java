@@ -57,7 +57,7 @@ public class CvrRegisterManager extends RegisterManager {
                 configuration.getPassword()
         );
         this.commonFetcher.setScrollIdJsonKey("_scroll_id");
-        this.commonFetcher.setThrottle(5000);
+        this.commonFetcher.setThrottle(2000);
         try {
             this.baseEndpoint = new URI(configuration.getRegisterAddress());
         } catch (URISyntaxException e) {
@@ -191,11 +191,6 @@ public class CvrRegisterManager extends RegisterManager {
                             // One line per event
                             while ((line = responseReader.readLine()) != null) {
                                 objectOutputStream.writeObject(new CvrSourceData(entityManager.getSchema(), line, dataBaseId + ":" + count));
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
                                 count++;
                             }
                         } catch (IOException e) {
