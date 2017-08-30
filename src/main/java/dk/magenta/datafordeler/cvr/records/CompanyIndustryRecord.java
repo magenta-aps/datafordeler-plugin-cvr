@@ -11,7 +11,7 @@ import org.hibernate.Session;
 /**
  * Created by lars on 26-06-17.
  */
-public class CompanyIndustryRecord extends CompanyBaseRecord {
+public class CompanyIndustryRecord extends CvrBaseRecord {
 
     @JsonIgnore
     private int index;

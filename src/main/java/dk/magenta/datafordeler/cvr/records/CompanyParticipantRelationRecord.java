@@ -19,7 +19,7 @@ import java.util.UUID;
  * Created by lars on 30-06-17.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CompanyParticipantRelationRecord extends CompanyBaseRecord {
+public class CompanyParticipantRelationRecord extends CvrBaseRecord {
 
     @JsonProperty(value = "deltager")
     private ParticipantRelationRecord participant;
@@ -27,18 +27,22 @@ public class CompanyParticipantRelationRecord extends CompanyBaseRecord {
     @JsonProperty(value = "organisationer")
     private List<OrganizationRecord> organizations;
 
-    public OffsetDateTime getLastUpdated() {
-        return this.participant.getLastUpdated();
+    public OffsetDateTime getRegistrationFrom() {
+        return this.participant != null ? this.participant.getRegistrationFrom() : null;
     }
 
     private Identification getParticipantIdentification(QueryManager queryManager, Session session) {
-        UUID participantUUID = this.participant.generateUUID();
-        Identification participantIdentification = queryManager.getIdentification(session, participantUUID);
-        if (participantIdentification == null) {
-            participantIdentification = new Identification(participantUUID, CvrPlugin.getDomain());
-            session.save(participantIdentification);
+        if (this.participant != null) {
+            UUID participantUUID = this.participant.generateUUID();
+            Identification participantIdentification = queryManager.getIdentification(session, participantUUID);
+            if (participantIdentification == null) {
+                participantIdentification = new Identification(participantUUID, CvrPlugin.getDomain());
+                session.save(participantIdentification);
+            }
+            return participantIdentification;
+        } else {
+            return null;
         }
-        return participantIdentification;
     }
 
     private Set<Identification> getOrganizationIdentifications(QueryManager queryManager, Session session) {

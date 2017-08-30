@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import org.hibernate.Session;
 
 import java.util.ArrayList;
@@ -17,7 +15,7 @@ import java.util.UUID;
  * Created by lars on 26-06-17.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CompanyRecord extends BaseRecord {
+public class CompanyRecord extends CvrEntityRecord {
 
     @JsonProperty(value = "cvrNummer")
     private int cvrNumber;
@@ -177,8 +175,9 @@ public class CompanyRecord extends BaseRecord {
     @JsonProperty(value = "deltagerRelation")
     private List<CompanyParticipantRelationRecord> participantRelationRecords;
 
-    public List<BaseRecord> getAll() {
-        ArrayList<BaseRecord> list = new ArrayList<>();
+    @Override
+    public List<CvrBaseRecord> getAll() {
+        ArrayList<CvrBaseRecord> list = new ArrayList<>();
         list.add(this);
         if (this.names != null) {
             list.addAll(this.names);
@@ -258,13 +257,4 @@ public class CompanyRecord extends BaseRecord {
         baseData.setUnitNumber(this.unitNumber);
     }
 
-    @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
-        // noop
-    }
-
-    @Override
-    public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
-        // noop
-    }
 }

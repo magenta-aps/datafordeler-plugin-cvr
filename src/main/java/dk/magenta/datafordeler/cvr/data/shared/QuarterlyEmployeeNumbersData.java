@@ -19,8 +19,7 @@ import java.util.Map;
         @Index(name = "companyQuarterlyEmployessYear", columnList = "year"),
         @Index(name = "companyQuarterlyEmployessQuarter", columnList = "quarter, year")
 })
-public class QuarterlyEmployeeNumbersData extends EmployeeNumbersData {
-
+public class QuarterlyEmployeeNumbersData extends EmployeeNumbersData implements Comparable<QuarterlyEmployeeNumbersData> {
 
     @Column(name = "year")
     @JsonProperty(value = "år")
@@ -71,5 +70,15 @@ public class QuarterlyEmployeeNumbersData extends EmployeeNumbersData {
         map.put("year", this.year);
         map.put("quarter", this.quarter);
         return map;
+    }
+
+    @Override
+    public int compareTo(QuarterlyEmployeeNumbersData o) {
+        if (o == null) return 1;
+        if (this.year == o.year) {
+            if (this.quarter == o.quarter) return 0;
+            return this.quarter < o.quarter ? -1 : 1;
+        }
+        return this.year < o.year ? -1 : 1;
     }
 }

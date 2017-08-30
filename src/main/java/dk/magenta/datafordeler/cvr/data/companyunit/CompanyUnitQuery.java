@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.data.companyunit;
 
+import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.core.fapi.ParameterMap;
 import dk.magenta.datafordeler.core.fapi.QueryField;
 import dk.magenta.datafordeler.cvr.data.CvrQuery;
@@ -45,6 +46,17 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
     @Override
     public Class getDataClass() {
         return CompanyUnitBaseData.class;
+    }
+
+    @Override
+    public LookupDefinition getLookupDefinition() {
+        LookupDefinition lookupDefinition = new LookupDefinition(this);
+
+        if (this.pNumber != null) {
+            lookupDefinition.put(LookupDefinition.entityref + ".pNumber", this.pNumber);
+        }
+
+        return lookupDefinition;
     }
 
 }

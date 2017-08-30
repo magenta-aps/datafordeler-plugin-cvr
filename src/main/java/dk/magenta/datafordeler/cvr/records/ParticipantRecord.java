@@ -3,9 +3,6 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
-import dk.magenta.datafordeler.core.exception.ParseException;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantType;
@@ -19,7 +16,7 @@ import java.util.UUID;
  * Created by lars on 26-06-17.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ParticipantRecord extends BaseRecord {
+public class ParticipantRecord extends CvrEntityRecord {
 
     @JsonProperty(value = "enhedsNummer")
     public long unitNumber;
@@ -96,8 +93,8 @@ public class ParticipantRecord extends BaseRecord {
 
 
 
-    public List<BaseRecord> getAll() {
-        ArrayList<BaseRecord> list = new ArrayList<>();
+    public List<CvrBaseRecord> getAll() {
+        ArrayList<CvrBaseRecord> list = new ArrayList<>();
         list.add(this);
         if (this.names != null) {
             list.addAll(this.names);
@@ -130,16 +127,6 @@ public class ParticipantRecord extends BaseRecord {
 
     public UUID generateUUID() {
         return ParticipantEntity.generateUUID(this.unitType, this.unitNumber);
-    }
-
-    @Override
-    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) throws ParseException {
-        // Noop
-    }
-
-    @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) throws ParseException {
-        // Noop
     }
 
     @Override

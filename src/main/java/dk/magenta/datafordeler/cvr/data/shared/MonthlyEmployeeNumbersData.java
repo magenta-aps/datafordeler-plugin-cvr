@@ -19,7 +19,7 @@ import java.util.Map;
         @Index(name = "companyMonthlyEmployeesYear", columnList = "year"),
         @Index(name = "companyMonthlyEmployeesMonth", columnList = "month")
 })
-public class MonthlyEmployeeNumbersData extends EmployeeNumbersData {
+public class MonthlyEmployeeNumbersData extends EmployeeNumbersData implements Comparable<MonthlyEmployeeNumbersData> {
 
 
     @Column(name = "year")
@@ -71,5 +71,15 @@ public class MonthlyEmployeeNumbersData extends EmployeeNumbersData {
         map.put("year", this.year);
         map.put("month", this.month);
         return map;
+    }
+
+    @Override
+    public int compareTo(MonthlyEmployeeNumbersData o) {
+        if (o == null) return 1;
+        if (this.year == o.year) {
+            if (this.month == o.month) return 0;
+            return this.month < o.month ? -1 : 1;
+        }
+        return this.year < o.year ? -1 : 1;
     }
 }

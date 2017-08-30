@@ -1,9 +1,8 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
-import dk.magenta.datafordeler.core.database.Registration;
+import dk.magenta.datafordeler.cvr.data.CvrRegistration;
 
 import javax.persistence.Table;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.temporal.TemporalAccessor;
 
@@ -12,7 +11,7 @@ import java.time.temporal.TemporalAccessor;
  */
 @javax.persistence.Entity
 @Table(name="cvr_company_registration")
-public class CompanyRegistration extends Registration<CompanyEntity, CompanyRegistration, CompanyEffect> {
+public class CompanyRegistration extends CvrRegistration<CompanyEntity, CompanyRegistration, CompanyEffect> {
     public CompanyRegistration() {
     }
 
@@ -26,6 +25,11 @@ public class CompanyRegistration extends Registration<CompanyEntity, CompanyRegi
 
     public CompanyRegistration(String registrationFrom, String registrationTo, int sequenceNumber) {
         super(registrationFrom, registrationTo, sequenceNumber);
+    }
+
+    @Override
+    protected CompanyEffect createEmptyEffect(OffsetDateTime effectFrom, OffsetDateTime effectTo) {
+        return new CompanyEffect(this, effectFrom, effectTo);
     }
     // A Registration has a registrationFrom field and a registrationTo field (with setters)
     // Both are of type java.time.OffsetDateTime, and describe the time range within which the contained data is considered authoritative

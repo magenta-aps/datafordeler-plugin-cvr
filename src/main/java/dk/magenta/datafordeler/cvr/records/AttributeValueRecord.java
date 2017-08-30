@@ -11,7 +11,7 @@ import org.hibernate.Session;
 /**
  * Created by lars on 26-06-17.
  */
-public class AttributeValueRecord extends BaseRecord {
+public class AttributeValueRecord extends CvrBaseRecord {
 
     @JsonProperty(value = "vaerdi")
     private String value;

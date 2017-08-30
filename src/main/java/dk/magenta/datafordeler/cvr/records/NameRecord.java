@@ -10,15 +10,12 @@ import org.hibernate.Session;
 /**
  * Created by lars on 26-06-17.
  */
-public class NameRecord extends BaseRecord {
+public class NameRecord extends CvrBaseRecord {
 
     @JsonProperty(value = "navn")
     private String name;
 
-    public static String getContainerName() {
-        return "navne";
-    }
-
+    @Override
     public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
         baseData.setName(this.name);
     }

@@ -3,14 +3,13 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import org.hibernate.Session;
 
 /**
  * Created by lars on 26-06-17.
  */
-public class CompanyFormRecord extends CompanyBaseRecord {
+public class CompanyFormRecord extends CvrBaseRecord {
 
     @JsonProperty(value = "virksomhedsformkode")
     private int code;
@@ -30,8 +29,4 @@ public class CompanyFormRecord extends CompanyBaseRecord {
         baseData.setForm(form);
     }
 
-    @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
-        // noop
-    }
 }
