@@ -1,8 +1,10 @@
 package dk.magenta.datafordeler.cvr;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.magenta.datafordeler.core.database.Registration;
+import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.core.plugin.EntityManager;
 import dk.magenta.datafordeler.core.role.SystemRole;
@@ -46,7 +48,7 @@ public class ParseTest {
     }
 
     @Test
-    public void testParseCompanyFile() throws IOException, ParseException {
+    public void testParseCompanyFile() throws DataFordelerException, IOException {
         InputStream input = ParseTest.class.getResourceAsStream("/company.json");
         JsonNode root = objectMapper.readTree(input);
         JsonNode itemList = root.get("hits").get("hits");
@@ -77,7 +79,7 @@ public class ParseTest {
     }
 
     @Test
-    public void testParseUnitFile() throws IOException, ParseException {
+    public void testParseUnitFile() throws IOException, DataFordelerException {
         InputStream input = ParseTest.class.getResourceAsStream("/unit.json");
         JsonNode root = objectMapper.readTree(input);
         JsonNode itemList = root.get("hits").get("hits");
@@ -93,7 +95,7 @@ public class ParseTest {
     }
 
     @Test
-    public void testParseParticipantFile() throws IOException, ParseException {
+    public void testParseParticipantFile() throws IOException, DataFordelerException {
         InputStream input = ParseTest.class.getResourceAsStream("/person.json");
         JsonNode root = objectMapper.readTree(input);
         JsonNode itemList = root.get("hits").get("hits");

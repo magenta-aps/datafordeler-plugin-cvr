@@ -3,8 +3,10 @@ package dk.magenta.datafordeler.cvr.data;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import dk.magenta.datafordeler.core.database.*;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
+import dk.magenta.datafordeler.core.exception.DataStreamException;
 import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.core.exception.WrongSubclassException;
 import dk.magenta.datafordeler.core.io.Receipt;
@@ -157,9 +159,13 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
     }
 
     @Override
-    public List<? extends Registration> parseRegistration(InputStream registrationData) throws ParseException, IOException {
+    public List<? extends Registration> parseRegistration(InputStream registrationData) throws DataFordelerException {
         String dataChunk = new Scanner(registrationData, "UTF-8").useDelimiter(new String(this.commonFetcher.getDelimiter())).next();
-        return this.parseRegistration(this.getObjectMapper().readTree(dataChunk));
+        try {
+            return this.parseRegistration(this.getObjectMapper().readTree(dataChunk));
+        } catch (IOException e) {
+            throw new DataStreamException(e);
+        }
     }
 
     protected abstract SessionManager getSessionManager();
@@ -186,7 +192,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
      * @throws ParseException
      */
     @Override
-    public List<? extends Registration> parseRegistration(JsonNode jsonNode) throws ParseException {
+    public List<? extends Registration> parseRegistration(JsonNode jsonNode) throws DataFordelerException {
         ArrayList<Registration> registrations = new ArrayList<>();
 
         if (jsonNode.has("hits")) {
@@ -195,6 +201,9 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                 jsonNode = jsonNode.get("hits");
             }
             if (jsonNode.isArray()) {
+                if (jsonNode.size() == 0) {
+                    throw new DataStreamException("No input data");
+                }
                 // We have a list of results
                 for (JsonNode item : jsonNode) {
                     registrations.addAll(this.parseRegistration(item));

@@ -147,7 +147,6 @@ public class CvrRegisterManager extends RegisterManager {
         String schema = entityManager.getSchema();
 
         try {
-            System.out.println("/cvr-permanent/" + schema + "/_search   " + requestBody);
             responseBody = eventCommunicator.fetch(
                     new URI(
                             baseEndpoint.getScheme(), baseEndpoint.getHost(),
