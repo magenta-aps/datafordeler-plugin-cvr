@@ -8,13 +8,13 @@ import dk.magenta.datafordeler.core.user.DafoUserDetails;
 import dk.magenta.datafordeler.cvr.CvrAccessChecker;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by lars on 19-05-17.
  */
-@Controller
+@RestController
 @RequestMapping("/cvr/company/1/rest")
 public class CompanyEntityService extends FapiService<CompanyEntity, CompanyQuery> {
 
