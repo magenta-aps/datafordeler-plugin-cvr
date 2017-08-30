@@ -193,6 +193,12 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
      */
     @Override
     public List<? extends Registration> parseRegistration(JsonNode jsonNode) throws DataFordelerException {
+        timer.reset(TASK_PARSE);
+        timer.reset(TASK_FIND_ENTITY);
+        timer.reset(TASK_FIND_REGISTRATIONS);
+        timer.reset(TASK_FIND_ITEMS);
+        timer.reset(TASK_POPULATE_DATA);
+        timer.reset(TASK_SAVE);
         ArrayList<Registration> registrations = new ArrayList<>();
 
         if (jsonNode.has("hits")) {
