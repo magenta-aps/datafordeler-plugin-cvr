@@ -1,14 +1,11 @@
 package dk.magenta.datafordeler.cvr;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.magenta.datafordeler.core.Application;
 import dk.magenta.datafordeler.core.database.Registration;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
-import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.core.plugin.EntityManager;
-import dk.magenta.datafordeler.core.role.SystemRole;
-import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
@@ -24,14 +21,13 @@ import java.io.InputStream;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by lars on 26-06-17.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = TestConfig.class)
+@ContextConfiguration(classes = Application.class)
 public class ParseTest {
 
     @Autowired

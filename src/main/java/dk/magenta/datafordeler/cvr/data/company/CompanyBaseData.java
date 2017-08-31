@@ -502,12 +502,14 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
                 e.printStackTrace();
             }
         }
-        /*Hibernate.initialize(this.yearlyEmployeeNumbersData);
+        Hibernate.initialize(this.yearlyEmployeeNumbersData);
         Hibernate.initialize(this.quarterlyEmployeeNumbersData);
         Hibernate.initialize(this.monthlyEmployeeNumbersData);
         Hibernate.initialize(this.unitData);
         Hibernate.initialize(this.participantData);
         Hibernate.initialize(this.attributeData);
-        Hibernate.initialize(this.participantRelationData);*/
+        for (ParticipantRelationData participantRelationData : this.participantRelationData) {
+            participantRelationData.forceLoad(session);
+        }
     }
 }
