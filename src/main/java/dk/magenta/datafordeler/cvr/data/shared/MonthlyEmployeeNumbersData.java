@@ -11,20 +11,25 @@ import javax.xml.bind.annotation.XmlElement;
 import java.util.HashMap;
 import java.util.Map;
 
+import static dk.magenta.datafordeler.cvr.data.shared.MonthlyEmployeeNumbersData.DB_FIELD_MONTH;
+import static dk.magenta.datafordeler.cvr.data.shared.MonthlyEmployeeNumbersData.DB_FIELD_YEAR;
+
 /**
  * Created by lars on 15-06-17.
  */
 @Entity
 @Table(name = "cvr_company_monthly_employees", indexes = {
-        @Index(name = "companyMonthlyEmployeesYear", columnList = "year"),
-        @Index(name = "companyMonthlyEmployeesMonth", columnList = "month")
+        @Index(name = "companyMonthlyEmployeesYear", columnList = DB_FIELD_YEAR),
+        @Index(name = "companyMonthlyEmployeesMonth", columnList = DB_FIELD_MONTH + ", " + DB_FIELD_YEAR)
 })
 public class MonthlyEmployeeNumbersData extends EmployeeNumbersData implements Comparable<MonthlyEmployeeNumbersData> {
 
+    public static final String DB_FIELD_YEAR = "year";
+    public static final String IO_FIELD_YEAR = "aar";
 
-    @Column(name = "year")
-    @JsonProperty(value = "år")
-    @XmlElement(name = "år")
+    @Column
+    @JsonProperty(value = IO_FIELD_YEAR)
+    @XmlElement(name = IO_FIELD_YEAR)
     private int year;
 
     public int getYear() {
@@ -35,11 +40,14 @@ public class MonthlyEmployeeNumbersData extends EmployeeNumbersData implements C
         this.year = year;
     }
 
+    //-----------------------------------------------
 
+    public static final String DB_FIELD_MONTH = "month";
+    public static final String IO_FIELD_MONTH = "maaned";
 
-    @Column(name = "month")
-    @JsonProperty(value = "måned")
-    @XmlElement(name = "måned")
+    @Column
+    @JsonProperty(value = IO_FIELD_MONTH)
+    @XmlElement(name = IO_FIELD_MONTH)
     private int month;
 
     public int getMonth() {
@@ -50,14 +58,14 @@ public class MonthlyEmployeeNumbersData extends EmployeeNumbersData implements C
         this.month = month;
     }
 
-
+    //-----------------------------------------------
 
 
     @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>(super.asMap());
-        map.put("year", this.year);
-        map.put("month", this.month);
+        map.put(DB_FIELD_YEAR, this.year);
+        map.put(DB_FIELD_MONTH, this.month);
         return map;
     }
 
@@ -68,8 +76,8 @@ public class MonthlyEmployeeNumbersData extends EmployeeNumbersData implements C
     @JsonIgnore
     public Map<String, Object> databaseFields() {
         HashMap<String, Object> map = new HashMap<>(super.databaseFields());
-        map.put("year", this.year);
-        map.put("month", this.month);
+        map.put(DB_FIELD_YEAR, this.year);
+        map.put(DB_FIELD_MONTH, this.month);
         return map;
     }
 

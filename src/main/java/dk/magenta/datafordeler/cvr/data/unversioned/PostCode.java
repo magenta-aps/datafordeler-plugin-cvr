@@ -8,57 +8,68 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.Collections;
+
+import static dk.magenta.datafordeler.cvr.data.unversioned.PostCode.DB_FIELD_CODE;
 
 /**
  * Created by lars on 26-01-15.
  */
 @Entity
 @Table(name = "cvr_postcode", indexes = {
-        @Index(name = "companyPostalCode", columnList = "code")
+        @Index(name = "companyPostalCode", columnList = DB_FIELD_CODE)
 })
 public class PostCode extends UnversionedEntity {
 
+    public static final String DB_FIELD_CODE = "postCode";
+    public static final String IO_FIELD_CODE = "postnummer";
 
-    @JsonProperty(value = "postnummer")
+    @JsonProperty(value = IO_FIELD_CODE)
+    @XmlElement(name = IO_FIELD_CODE)
     @Column(nullable = false, unique = true)
-    private int code;
+    private int postCode;
 
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-
-
-    @JsonProperty(value = "postdistrikt")
-    @Column
-    private String text;
-
-    public String getText() {
-        return this.text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-
-    public static PostCode getPostcode(int code, String text, QueryManager queryManager, Session session) {
-        PostCode postCode = queryManager.getItem(session, PostCode.class, Collections.singletonMap("code", code));
-        if (postCode == null) {
-            postCode = new PostCode();
-            postCode.setCode(code);
-            postCode.setText(text);
-            session.save(postCode);
-        }
+    public int getPostCode() {
         return postCode;
     }
 
+    public void setPostCode(int postCode) {
+        this.postCode = postCode;
+    }
+
+    //----------------------------------------------------
+
+    public static final String DB_FIELD_DISTRICT = "postDistrict";
+    public static final String IO_FIELD_DISTRICT = "postdistrikt";
+
+    @JsonProperty(value = IO_FIELD_DISTRICT)
+    @XmlElement(name = IO_FIELD_DISTRICT)
+    @Column
+    private String postDistrict;
+
+    public String getPostDistrict() {
+        return this.postDistrict;
+    }
+
+    public void setPostDistrict(String postDistrict) {
+        this.postDistrict = postDistrict;
+    }
+
+    //----------------------------------------------------
+
+    public static PostCode getPostcode(int postCode, String postDistrict, QueryManager queryManager, Session session) {
+        PostCode post = queryManager.getItem(session, PostCode.class, Collections.singletonMap(DB_FIELD_CODE, postCode));
+        if (post == null) {
+            post = new PostCode();
+            post.setPostCode(postCode);
+            post.setPostDistrict(postDistrict);
+            session.save(post);
+        }
+        return post;
+    }
+
     public static PostCode getPostcode(PostCode old, QueryManager queryManager, Session session) {
-        return getPostcode(old.getCode(), old.getText(), queryManager, session);
+        return getPostcode(old.getPostCode(), old.getPostDistrict(), queryManager, session);
     }
 }

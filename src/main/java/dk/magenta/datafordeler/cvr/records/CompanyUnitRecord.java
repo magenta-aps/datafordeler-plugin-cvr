@@ -26,106 +26,106 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     }
 
     @JsonProperty(value = "reklamebeskyttet")
-    private boolean advertProtected;
+    private boolean advertProtection;
 
     @JsonProperty(value = "enhedsNummer")
     private int unitNumber;
 
-    @JsonProperty(value = "navne")
+    @JsonProperty(value = "names")
     public List<NameRecord> names;
 
     @JsonProperty(value = "beliggenhedsadresse")
-    public List<AddressRecord> locationAddresses;
+    public List<AddressRecord> locationAddress;
 
-    public void setLocationAddresses(List<AddressRecord> locationAddresses) {
-        for (AddressRecord record : locationAddresses) {
+    public void setLocationAddress(List<AddressRecord> locationAddress) {
+        for (AddressRecord record : locationAddress) {
             record.setType(AddressRecord.Type.LOCATION);
         }
-        this.locationAddresses = locationAddresses;
+        this.locationAddress = locationAddress;
     }
 
     @JsonProperty(value = "postadresse")
-    public List<AddressRecord> postalAddresses;
+    public List<AddressRecord> postalAddress;
 
-    public void setPostalAddresses(List<AddressRecord> postalAddresses) {
-        for (AddressRecord record : postalAddresses) {
+    public void setPostalAddress(List<AddressRecord> postalAddress) {
+        for (AddressRecord record : postalAddress) {
             record.setType(AddressRecord.Type.POSTAL);
         }
-        this.postalAddresses = postalAddresses;
+        this.postalAddress = postalAddress;
     }
 
     @JsonProperty(value = "telefonNummer")
-    public List<ContactRecord> phoneRecords;
+    public List<ContactRecord> phoneNumber;
 
-    public void setPhoneRecords(List<ContactRecord> phoneRecords) {
-        for (ContactRecord record : phoneRecords) {
-            record.setType(ContactRecord.Type.PHONE);
+    public void setPhoneNumber(List<ContactRecord> phoneNumber) {
+        for (ContactRecord record : phoneNumber) {
+            record.setType(ContactRecord.Type.TELEFONNUMMER);
         }
-        this.phoneRecords = phoneRecords;
+        this.phoneNumber = phoneNumber;
     }
 
     @JsonProperty(value = "telefaxNummer")
-    public List<ContactRecord> faxRecords;
+    public List<ContactRecord> faxNumber;
 
-    public void setFaxRecords(List<ContactRecord> faxRecords) {
-        for (ContactRecord record : faxRecords) {
-            record.setType(ContactRecord.Type.FAX);
+    public void setFaxNumber(List<ContactRecord> faxNumber) {
+        for (ContactRecord record : faxNumber) {
+            record.setType(ContactRecord.Type.TELEFAXNUMMER);
         }
-        this.faxRecords = faxRecords;
+        this.faxNumber = faxNumber;
     }
 
     @JsonProperty(value = "elektroniskPost")
-    public List<ContactRecord> emailRecords;
+    public List<ContactRecord> emailAddress;
 
-    public void setEmailRecords(List<ContactRecord> emailRecords) {
-        for (ContactRecord record : emailRecords) {
-            record.setType(ContactRecord.Type.EMAIL);
+    public void setEmailAddress(List<ContactRecord> emailAddress) {
+        for (ContactRecord record : emailAddress) {
+            record.setType(ContactRecord.Type.EMAILADRESSE);
         }
-        this.emailRecords = emailRecords;
+        this.emailAddress = emailAddress;
     }
 
     @JsonProperty(value = "livsforloeb")
-    public List<LifecycleRecord> lifecycleRecords;
+    public List<LifecycleRecord> lifecycle;
 
 
     @JsonProperty(value = "hovedbranche")
-    public List<CompanyIndustryRecord> mainIndustryRecords;
+    public List<CompanyIndustryRecord> primaryIndustry;
 
-    public void setMainIndustryRecords(List<CompanyIndustryRecord> mainIndustryRecords) {
-        for (CompanyIndustryRecord record : mainIndustryRecords) {
+    public void setPrimaryIndustry(List<CompanyIndustryRecord> primaryIndustry) {
+        for (CompanyIndustryRecord record : primaryIndustry) {
             record.setIndex(0);
         }
-        this.mainIndustryRecords = mainIndustryRecords;
+        this.primaryIndustry = primaryIndustry;
     }
 
     @JsonProperty(value = "bibranche1")
-    public List<CompanyIndustryRecord> secondaryIndustryRecords1;
+    public List<CompanyIndustryRecord> secondaryIndustry1;
 
-    public void setSecondaryIndustryRecords1(List<CompanyIndustryRecord> secondaryIndustryRecords) {
+    public void setSecondaryIndustry1(List<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
             record.setIndex(1);
         }
-        this.secondaryIndustryRecords1 = secondaryIndustryRecords;
+        this.secondaryIndustry1 = secondaryIndustryRecords;
     }
 
     @JsonProperty(value = "bibranche2")
-    public List<CompanyIndustryRecord> secondaryIndustryRecords2;
+    public List<CompanyIndustryRecord> secondaryIndustry2;
 
-    public void setSecondaryIndustryRecords2(List<CompanyIndustryRecord> secondaryIndustryRecords) {
+    public void setSecondaryIndustry2(List<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
             record.setIndex(2);
         }
-        this.secondaryIndustryRecords2 = secondaryIndustryRecords;
+        this.secondaryIndustry2 = secondaryIndustryRecords;
     }
 
     @JsonProperty(value = "bibranche3")
-    public List<CompanyIndustryRecord> secondaryIndustryRecords3;
+    public List<CompanyIndustryRecord> secondaryIndustry3;
 
-    public void setSecondaryIndustryRecords3(List<CompanyIndustryRecord> secondaryIndustryRecords) {
+    public void setSecondaryIndustry3(List<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
             record.setIndex(3);
         }
-        this.secondaryIndustryRecords3 = secondaryIndustryRecords;
+        this.secondaryIndustry3 = secondaryIndustryRecords;
     }
 
     @JsonProperty(value = "aarsbeskaeftigelse")
@@ -138,18 +138,18 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     //public List<CompanyMonthlyNumbersRecord> monthlyNumbersRecords;
 
     @JsonProperty(value = "attributter")
-    public List<AttributeRecord> attributeRecords;
+    public List<AttributeRecord> attributes;
 
     @JsonProperty(value = "deltagerRelation")
-    private List<CompanyParticipantRelationRecord> participantRelationRecords;
+    private List<CompanyParticipantRelationRecord> participantRelations;
 
 
-    // virksomhedsrelation
+    // TODO: Tilføj virksomhedsrelation som mangler i output json
     // enhedstype
     // dataAdgang
-    // enhedsNummer
-    // reklamebeskyttet
-    // deltagerRelation
+    // unitNumber
+    // advertProtection
+    // deltagere
     // virkningsAktoer
     // brancheAnsvarskode
     // naermesteFremtidigeDato
@@ -160,35 +160,35 @@ public class CompanyUnitRecord extends CvrEntityRecord {
         if (this.names != null) {
             list.addAll(this.names);
         }
-        if (this.locationAddresses != null) {
-            list.addAll(this.locationAddresses);
+        if (this.locationAddress != null) {
+            list.addAll(this.locationAddress);
         }
-        if (this.postalAddresses != null) {
-            list.addAll(this.postalAddresses);
+        if (this.postalAddress != null) {
+            list.addAll(this.postalAddress);
         }
-        if (this.phoneRecords != null) {
-            list.addAll(this.phoneRecords);
+        if (this.phoneNumber != null) {
+            list.addAll(this.phoneNumber);
         }
-        if (this.faxRecords != null) {
-            list.addAll(this.faxRecords);
+        if (this.faxNumber != null) {
+            list.addAll(this.faxNumber);
         }
-        if (this.emailRecords != null) {
-            list.addAll(this.emailRecords);
+        if (this.emailAddress != null) {
+            list.addAll(this.emailAddress);
         }
-        if (this.lifecycleRecords != null) {
-            list.addAll(this.lifecycleRecords);
+        if (this.lifecycle != null) {
+            list.addAll(this.lifecycle);
         }
-        if (this.mainIndustryRecords != null) {
-            list.addAll(this.mainIndustryRecords);
+        if (this.primaryIndustry != null) {
+            list.addAll(this.primaryIndustry);
         }
-        if (this.secondaryIndustryRecords1 != null) {
-            list.addAll(this.secondaryIndustryRecords1);
+        if (this.secondaryIndustry1 != null) {
+            list.addAll(this.secondaryIndustry1);
         }
-        if (this.secondaryIndustryRecords2 != null) {
-            list.addAll(this.secondaryIndustryRecords2);
+        if (this.secondaryIndustry2 != null) {
+            list.addAll(this.secondaryIndustry2);
         }
-        if (this.secondaryIndustryRecords3 != null) {
-            list.addAll(this.secondaryIndustryRecords3);
+        if (this.secondaryIndustry3 != null) {
+            list.addAll(this.secondaryIndustry3);
         }
         if (this.yearlyNumbersRecords != null) {
             list.addAll(this.yearlyNumbersRecords);
@@ -196,13 +196,13 @@ public class CompanyUnitRecord extends CvrEntityRecord {
         if (this.quarterlyNumbersRecords != null) {
             list.addAll(this.quarterlyNumbersRecords);
         }
-        if (this.attributeRecords != null) {
-            for (AttributeRecord attributeRecord : this.attributeRecords) {
+        if (this.attributes != null) {
+            for (AttributeRecord attributeRecord : this.attributes) {
                 list.addAll(attributeRecord.getValues());
             }
         }
-        if (this.participantRelationRecords != null) {
-            list.addAll(this.participantRelationRecords);
+        if (this.participantRelations != null) {
+            list.addAll(this.participantRelations);
         }
         return list;
     }
@@ -214,8 +214,8 @@ public class CompanyUnitRecord extends CvrEntityRecord {
 
     @Override
     public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) throws ParseException {
-        baseData.setAdvertProtection(this.advertProtected);
-        baseData.setUnitNumber(this.unitNumber);
+        baseData.setAdvertProtection(this.advertProtection);
+        baseData.setPNumber(this.unitNumber);
     }
 
 }

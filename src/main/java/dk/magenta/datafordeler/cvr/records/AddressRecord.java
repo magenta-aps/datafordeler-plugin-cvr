@@ -83,9 +83,9 @@ public class AddressRecord extends CvrBaseRecord {
             if (oldMunicipality != null) {
                 this.address.setMunicipality(Municipality.getMunicipality(oldMunicipality, queryManager, session));
             }
-            int postcode = this.address.getPostCode();
+            int postcode = this.address.getPostnummer();
             if (postcode != 0) {
-                this.address.setPostCodeObject(PostCode.getPostcode(postcode, this.address.getPostDistrict(), queryManager, session));
+                this.address.setPost(PostCode.getPostcode(postcode, this.address.getPostdistrikt(), queryManager, session));
             }
         }
     }

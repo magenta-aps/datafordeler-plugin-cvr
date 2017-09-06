@@ -24,10 +24,11 @@ import java.util.regex.Pattern;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class EmployeeNumbersData extends DetailData {
 
+    public static final String DB_FIELD_EMPLOYEES_LOW = "employeesLow";
 
     @JsonIgnore
     @XmlTransient
-    @Column(name = "employeesLow")
+    @Column(name = DB_FIELD_EMPLOYEES_LOW)
     private Integer employeesLow;
 
     public int getEmployeesLow() {
@@ -43,11 +44,13 @@ public abstract class EmployeeNumbersData extends DetailData {
         }
     }
 
+    //-------------------------------------------
 
+    public static final String DB_FIELD_EMPLOYEES_HIGH = "employeesHigh";
 
     @JsonIgnore
     @XmlTransient
-    @Column(name = "employeesHigh")
+    @Column(name = DB_FIELD_EMPLOYEES_HIGH)
     private Integer employeesHigh;
 
     public int getEmployeesHigh() {
@@ -63,16 +66,23 @@ public abstract class EmployeeNumbersData extends DetailData {
         }
     }
 
-    @JsonProperty(value = "intervalAntalAnsatte")
-    @XmlElement(name = "intervalAntalAnsatte")
+    //-------------------------------------------
+
+    public static final String IO_FIELD_EMPLOYEES = "intervalAntalAnsatte";
+
+    @JsonProperty(value = IO_FIELD_EMPLOYEES)
+    @XmlElement(name = IO_FIELD_EMPLOYEES)
     public String getEmployeesInterval() {
         return this.formatInterval(this.employeesLow, this.employeesHigh);
     }
 
+    //-------------------------------------------
+
+    public static final String DB_FIELD_FULLTIME_LOW = "fullTimeEquivalentLow";
 
     @JsonIgnore
     @XmlTransient
-    @Column(name = "fullTimeEquivalentLow")
+    @Column(name = DB_FIELD_FULLTIME_LOW)
     private Integer fullTimeEquivalentLow;
 
     public int getFullTimeEquivalentLow() {
@@ -88,11 +98,13 @@ public abstract class EmployeeNumbersData extends DetailData {
         }
     }
 
+    //-------------------------------------------
 
+    public static final String DB_FIELD_FULLTIME_HIGH = "fullTimeEquivalentHigh";
 
     @JsonIgnore
     @XmlTransient
-    @Column(name = "fullTimeEquivalentHigh")
+    @Column(name = DB_FIELD_FULLTIME_HIGH)
     private Integer fullTimeEquivalentHigh;
 
     public int getFullTimeEquivalentHigh() {
@@ -108,16 +120,23 @@ public abstract class EmployeeNumbersData extends DetailData {
         }
     }
 
-    @JsonProperty(value = "intervalAntalÅrsværk")
-    @XmlElement(name = "intervalAntalÅrsværk")
+    //-------------------------------------------
+
+    public static final String IO_FIELD_FULLTIME = "intervalAntalÅrsværk";
+
+    @JsonProperty(value = IO_FIELD_FULLTIME)
+    @XmlElement(name = IO_FIELD_FULLTIME)
     public String getFullTimeEquivalentInterval() {
         return this.formatInterval(this.fullTimeEquivalentLow, this.fullTimeEquivalentHigh);
     }
 
+    //-------------------------------------------
+
+    public static final String DB_FIELD_INCL_OWNERS_LOW = "includingOwnersLow";
 
     @JsonIgnore
     @XmlTransient
-    @Column(name = "includingOwnersLow")
+    @Column(name = DB_FIELD_INCL_OWNERS_LOW)
     private Integer includingOwnersLow;
 
     public int getIncludingOwnersLow() {
@@ -133,11 +152,13 @@ public abstract class EmployeeNumbersData extends DetailData {
         }
     }
 
+    //-------------------------------------------
 
+    public static final String DB_FIELD_INCL_OWNERS_HIGH = "includingOwnersHigh";
 
     @JsonIgnore
     @XmlTransient
-    @Column(name = "includingOwnersHigh")
+    @Column(name = DB_FIELD_INCL_OWNERS_HIGH)
     private Integer includingOwnersHigh;
 
     public int getIncludingOwnersHigh() {
@@ -153,12 +174,17 @@ public abstract class EmployeeNumbersData extends DetailData {
         }
     }
 
-    @JsonProperty(value = "intervalAntalInklusivEjere")
-    @XmlElement(name = "intervalAntalInklusivEjere")
+    //-------------------------------------------
+
+    public static final String IO_FIELD_INCL_OWNERS = "intervalAntalInklusivEjere";
+
+    @JsonProperty(value = IO_FIELD_INCL_OWNERS)
+    @XmlElement(name = IO_FIELD_INCL_OWNERS)
     public String getIncludingOwnersInterval() {
         return this.formatInterval(this.includingOwnersLow, this.includingOwnersHigh);
     }
 
+    //-------------------------------------------
 
     @Override
     public Map<String, Object> asMap() {
@@ -176,12 +202,12 @@ public abstract class EmployeeNumbersData extends DetailData {
     @JsonIgnore
     public Map<String, Object> databaseFields() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("employeesLow", this.employeesLow);
-        map.put("employeesHigh", this.employeesHigh);
-        map.put("fullTimeEquivalentLow", this.fullTimeEquivalentLow);
-        map.put("fullTimeEquivalentHigh", this.fullTimeEquivalentHigh);
-        map.put("includingOwnersLow", this.includingOwnersLow);
-        map.put("includingOwnersHigh", this.includingOwnersHigh);
+        map.put(DB_FIELD_EMPLOYEES_LOW, this.employeesLow);
+        map.put(DB_FIELD_EMPLOYEES_HIGH, this.employeesHigh);
+        map.put(DB_FIELD_FULLTIME_LOW, this.fullTimeEquivalentLow);
+        map.put(DB_FIELD_FULLTIME_HIGH, this.fullTimeEquivalentHigh);
+        map.put(DB_FIELD_INCL_OWNERS_LOW, this.includingOwnersLow);
+        map.put(DB_FIELD_INCL_OWNERS_HIGH, this.includingOwnersHigh);
         return map;
     }
 

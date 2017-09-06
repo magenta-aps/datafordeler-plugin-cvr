@@ -7,21 +7,27 @@ import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import static dk.magenta.datafordeler.cvr.data.shared.SingleData.DB_FIELD_VALUE;
+import static dk.magenta.datafordeler.cvr.data.shared.TextData.DB_FIELD_TYPE;
+
 /**
  * Created by lars on 16-05-17.
  */
 @Entity
 @Table(name = "cvr_text", indexes = {
-        @Index(name = "companyTextType", columnList = "type"),
-        @Index(name = "companyTextData", columnList = "type, data")
+        @Index(name = "companyTextType", columnList = DB_FIELD_TYPE),
+        @Index(name = "companyTextData", columnList = DB_FIELD_TYPE + ", " + DB_FIELD_VALUE)
 })
 public class TextData extends SingleData<String> {
 
+    public static final String DB_FIELD_TYPE = "type";
+    public static final String IO_FIELD_TYPE = "type";
+
     public enum Type {
-        NAME,
-        EMAIL,
-        PHONE,
-        FAX,
+        NAVN,
+        EMAILADRESSE,
+        TELEFONNUMMER,
+        TELEFAXNUMMER,
         TYPE
     }
 
@@ -32,8 +38,8 @@ public class TextData extends SingleData<String> {
         this.setType(type);
     }
 
-    @Column
     @JsonIgnore
+    @Column(name = DB_FIELD_TYPE)
     private Type type;
 
     public String getFieldName() {
@@ -43,7 +49,7 @@ public class TextData extends SingleData<String> {
     @JsonAnyGetter
     public Map<String, Object> asMap() {
         HashMap<String, Object> fields = new HashMap<>();
-        fields.put(this.getFieldName(), this.getData());
+        fields.put(this.getFieldName(), this.getValue());
         return fields;
     }
 
@@ -53,9 +59,8 @@ public class TextData extends SingleData<String> {
      */
     @JsonIgnore
     public Map<String, Object> databaseFields() {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("data", this.getData());
-        map.put("type", this.type);
+        HashMap<String, Object> map = new HashMap<>(super.databaseFields());
+        map.put(DB_FIELD_TYPE, this.type);
         return map;
     }
 

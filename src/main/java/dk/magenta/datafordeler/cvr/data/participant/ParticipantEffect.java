@@ -25,8 +25,8 @@ public class ParticipantEffect extends CvrEffect<ParticipantRegistration, Partic
         super(registration, effectFrom, effectTo);
     }
 
-    /*public ParticipantEffect(ParticipantRegistration registration, TemporalAccessor effectFrom, TemporalAccessor effectTo) {
-        super(registration, effectFrom, effectTo);
+    /*public ParticipantEffect(ParticipantRegistration registrering, TemporalAccessor effectFrom, TemporalAccessor effectTo) {
+        super(registrering, effectFrom, effectTo);
     }*/
 
     public ParticipantEffect(ParticipantRegistration registration, String effectFrom, String effectTo) {

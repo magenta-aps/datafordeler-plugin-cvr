@@ -3,7 +3,6 @@ package dk.magenta.datafordeler.cvr.data.company;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import dk.magenta.datafordeler.core.database.Entity;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.cvr.data.CvrEntity;
 
@@ -42,8 +41,8 @@ public class CompanyEntity extends CvrEntity<CompanyEntity, CompanyRegistration>
     @Column
     private int cvrNumber;
 
-    @JsonProperty
-    @XmlElement
+    @JsonProperty(value = "CVRNummer")
+    @XmlElement(name = "CVRNummer")
     public int getCvrNumber() {
         return cvrNumber;
     }

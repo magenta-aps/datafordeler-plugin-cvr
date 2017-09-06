@@ -18,17 +18,17 @@ import java.util.Map;
 @Entity
 @Table(name = "cvr_company_contact", indexes = {
         @Index(name = "companyContactType", columnList = "type"),
-        @Index(name = "companyContactData", columnList = "type, data")
+        @Index(name = "companyContactData", columnList = "type, value")
 })
 public class ContactData extends SingleData<String> {
 
     public enum Type {
-        NAME,
-        EMAIL,
-        PHONE,
-        FAX,
-        HOMEPAGE,
-        MANDATORY_EMAIL
+        NAVN,
+        EMAILADRESSE,
+        TELEFONNUMMER,
+        TELEFAXNUMMER,
+        HJEMMESIDE,
+        OBLIGATORISK_EMAILADRESSE
     }
 
     public ContactData() {
@@ -38,9 +38,14 @@ public class ContactData extends SingleData<String> {
         this.setType(type);
     }
 
-    @Column
+    //----------------------------------------------------
+
+    public static final String DB_FIELD_TYPE = "type";
+    public static final String IO_FIELD_TYPE = "type";
+
     @JsonIgnore
     @XmlTransient
+    @Column(name = DB_FIELD_TYPE)
     private Type type;
 
     public Type getType() {
@@ -51,16 +56,14 @@ public class ContactData extends SingleData<String> {
         this.type = type;
     }
 
-    @Column
-    @JsonProperty(value = "kontaktoplysning")
-    @XmlElement(name = "kontaktoplysning")
-    public String getData() {
-        return super.getData();
-    }
+    //----------------------------------------------------
 
-    @Column
-    @JsonProperty("hemmelig")
-    @XmlElement(name = "hemmelig")
+    public static final String DB_FIELD_SECRET = "secret";
+    public static final String IO_FIELD_SECRET = "hemmelig";
+
+    @Column(name = DB_FIELD_SECRET)
+    @JsonProperty(value = IO_FIELD_SECRET)
+    @XmlElement(name = IO_FIELD_SECRET)
     private boolean secret;
 
     public boolean isSecret() {
@@ -71,11 +74,13 @@ public class ContactData extends SingleData<String> {
         this.secret = secret;
     }
 
+    //---------------------------------------------------
+
     public Map<String, Object> asMap() {
         HashMap<String, Object> fields = new HashMap<>();
-        fields.put("data", this.getData());
-        fields.put("secret", this.secret);
-        fields.put("type", this.type);
+        fields.put(IO_FIELD_VALUE, this.getValue());
+        fields.put(IO_FIELD_SECRET, this.secret);
+        fields.put(IO_FIELD_TYPE, this.type);
         return fields;
     }
 
@@ -85,10 +90,9 @@ public class ContactData extends SingleData<String> {
      */
     @JsonIgnore
     public Map<String, Object> databaseFields() {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("data", this.getData());
-        map.put("secret", this.secret);
-        map.put("type", this.type);
+        HashMap<String, Object> map = new HashMap<>(super.databaseFields());
+        map.put(DB_FIELD_SECRET, this.secret);
+        map.put(DB_FIELD_TYPE, this.type);
         return map;
     }
 

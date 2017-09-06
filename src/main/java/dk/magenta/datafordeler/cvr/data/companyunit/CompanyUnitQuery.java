@@ -13,29 +13,43 @@ import java.util.Map;
  */
 public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
 
-    public static final String PNUMBER = "pnumber";
+    public static final String ASSOCIATED_COMPANY_CVR = "tilknyttetVirksomhedsCVRNummer";
+    public static final String PRIMARYINDUSTRY = "hovedbranche";
 
-    @QueryField(type = QueryField.FieldType.STRING, queryName = PNUMBER)
-    private String pNumber;
+    @QueryField(type = QueryField.FieldType.INT, queryName = ASSOCIATED_COMPANY_CVR)
+    private Long associatedCompanyCvrNumber;
 
-    public String getpNumber() {
-        return pNumber;
+    public Long getAssociatedCompanyCvrNumber() {
+        return associatedCompanyCvrNumber;
     }
 
-    public void setpNumber(String pNumber) {
-        this.pNumber = pNumber;
+    public void setAssociatedCompanyCvrNumber(Long associatedCompanyCvrNumber) {
+        this.associatedCompanyCvrNumber = associatedCompanyCvrNumber;
+    }
+
+    @QueryField(type = QueryField.FieldType.STRING, queryName = PRIMARYINDUSTRY)
+    private String primaryIndustry;
+
+    public String getPrimaryIndustry() {
+        return primaryIndustry;
+    }
+
+    public void setPrimaryIndustry(String primaryIndustry) {
+        this.primaryIndustry = primaryIndustry;
     }
 
     @Override
     public Map<String, Object> getSearchParameters() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put(PNUMBER, this.pNumber);
+        map.put(ASSOCIATED_COMPANY_CVR, this.associatedCompanyCvrNumber);
+        map.put(PRIMARYINDUSTRY, this.primaryIndustry);
         return map;
     }
 
     @Override
     public void setFromParameters(ParameterMap parameters) {
-        this.setpNumber(parameters.getFirst(PNUMBER));
+        this.setAssociatedCompanyCvrNumber(Long.parseLong(parameters.getFirst(ASSOCIATED_COMPANY_CVR)));
+        this.setPrimaryIndustry(parameters.getFirst(PRIMARYINDUSTRY));
     }
 
     @Override
@@ -51,9 +65,16 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
     @Override
     public LookupDefinition getLookupDefinition() {
         LookupDefinition lookupDefinition = new LookupDefinition(this);
-
+/*
         if (this.pNumber != null) {
             lookupDefinition.put(LookupDefinition.entityref + ".pNumber", this.pNumber);
+*/
+        if (this.associatedCompanyCvrNumber != null) {
+            lookupDefinition.put("associatedCvrNumber.value", this.associatedCompanyCvrNumber);
+        }
+
+        if (this.primaryIndustry != null) {
+            lookupDefinition.put("primaryIndustry.value", this.primaryIndustry);
         }
 
         return lookupDefinition;

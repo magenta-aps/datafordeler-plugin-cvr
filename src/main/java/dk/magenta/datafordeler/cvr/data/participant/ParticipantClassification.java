@@ -16,9 +16,12 @@ import java.util.Map;
 @MappedSuperclass
 public abstract class ParticipantClassification extends UnversionedEntity {
 
-    @Column(unique = true)
-    @JsonProperty
-    @XmlElement
+    public static final String DB_FIELD_NAME = "name";
+    public static final String IO_FIELD_NAME = "navn";
+
+    @Column(name = DB_FIELD_NAME, unique = true)
+    @JsonProperty(value = IO_FIELD_NAME)
+    @XmlElement(name = IO_FIELD_NAME)
     private String name;
 
     public String getName() {
@@ -36,7 +39,7 @@ public abstract class ParticipantClassification extends UnversionedEntity {
     @JsonIgnore
     public Map<String, Object> databaseFields() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("name", this.getName());
+        map.put(DB_FIELD_NAME, this.getName());
         return map;
     }
 }

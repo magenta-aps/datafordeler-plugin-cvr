@@ -23,22 +23,22 @@ public class CompanyFormData extends DetailData {
     @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("form", this.form);
+        map.put("companyForm", this.companyForm);
         return map;
     }
 
 
     @ManyToOne
-    @JsonProperty(value = "form")
-    @XmlElement(name = "form")
-    private CompanyForm form;
+    @JsonProperty(value = "virksomhedsform")
+    @XmlElement(name = "virksomhedsform")
+    private CompanyForm companyForm;
 
-    public CompanyForm getForm() {
-        return this.form;
+    public CompanyForm getCompanyForm() {
+        return this.companyForm;
     }
 
-    public void setForm(CompanyForm form) {
-        this.form = form;
+    public void setCompanyForm(CompanyForm companyForm) {
+        this.companyForm = companyForm;
     }
 
 }

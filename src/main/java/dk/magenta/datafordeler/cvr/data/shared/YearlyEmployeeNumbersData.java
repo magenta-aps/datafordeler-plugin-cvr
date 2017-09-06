@@ -11,19 +11,23 @@ import javax.xml.bind.annotation.XmlElement;
 import java.util.HashMap;
 import java.util.Map;
 
+import static dk.magenta.datafordeler.cvr.data.shared.YearlyEmployeeNumbersData.DB_FIELD_YEAR;
+
 /**
  * Created by lars on 15-06-17.
  */
 @Entity
 @Table(name = "cvr_company_yearly_employees", indexes = {
-        @Index(name = "companyYearlyEmployeesYear", columnList = "year")
+        @Index(name = "companyYearlyEmployeesYear", columnList = DB_FIELD_YEAR)
 })
 public class YearlyEmployeeNumbersData extends EmployeeNumbersData implements Comparable<YearlyEmployeeNumbersData> {
 
+    public static final String DB_FIELD_YEAR = "year";
+    public static final String IO_FIELD_YEAR = "aar";
 
-    @Column(name = "year")
-    @JsonProperty(value = "år")
-    @XmlElement(name = "år")
+    @Column
+    @JsonProperty(value = IO_FIELD_YEAR)
+    @XmlElement(name = IO_FIELD_YEAR)
     private int year;
 
     public int getYear() {
@@ -34,12 +38,12 @@ public class YearlyEmployeeNumbersData extends EmployeeNumbersData implements Co
         this.year = year;
     }
 
-
+    //--------------------------------------------------
 
     @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>(super.asMap());
-        map.put("year", this.year);
+        map.put(DB_FIELD_YEAR, this.year);
         return map;
     }
 
@@ -50,7 +54,7 @@ public class YearlyEmployeeNumbersData extends EmployeeNumbersData implements Co
     @JsonIgnore
     public Map<String, Object> databaseFields() {
         HashMap<String, Object> map = new HashMap<>(super.databaseFields());
-        map.put("year", this.year);
+        map.put(DB_FIELD_YEAR, this.year);
         return map;
     }
 

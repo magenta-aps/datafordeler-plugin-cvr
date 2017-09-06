@@ -1,12 +1,12 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.cvr.data.DetailData;
 
 import javax.persistence.*;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import javax.xml.bind.annotation.XmlElement;
+import java.util.*;
 
 /**
  * Created by lars on 15-06-17.
@@ -15,7 +15,12 @@ import java.util.Set;
 @Table(name = "cvr_company_unitlink")
 public class CompanyUnitLink extends DetailData {
 
-    @Column(insertable = true, updatable = false, nullable = false)
+    public static final String DB_FIELD_PNUMBER = "pNumber";
+    public static final String IO_FIELD_PNUMBER = "pNummer";
+
+    @JsonProperty(value = IO_FIELD_PNUMBER)
+    @XmlElement(name = IO_FIELD_PNUMBER)
+    @Column(name = DB_FIELD_PNUMBER, insertable = true, updatable = false, nullable = false)
     private int pNumber;
 
     public int getpNumber() {
@@ -26,11 +31,25 @@ public class CompanyUnitLink extends DetailData {
         this.pNumber = pNumber;
     }
 
+    //------------------------------------------------------------
+
+    public static final String DB_FIELD_COMPANYBASES = "companyBases";
     @ManyToMany
     private Set<CompanyBaseData> companyBases = new HashSet<>();
 
     @Override
     public Map<String, Object> asMap() {
         return Collections.singletonMap("pNumber", this.pNumber);
+    }
+
+    /**
+     * Return a map of attributes, including those from the superclass
+     * @return
+     */
+    @JsonIgnore
+    public Map<String, Object> databaseFields() {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(DB_FIELD_PNUMBER, this.pNumber);
+        return map;
     }
 }

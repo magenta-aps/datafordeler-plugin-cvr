@@ -38,8 +38,6 @@ public class CompanyUnitEntity extends CvrEntity<CompanyUnitEntity, CompanyUnitR
     }
 
     @Column
-    @JsonProperty
-    @XmlElement
     private int pNumber;
 
     @JsonProperty(value = "pNumber")

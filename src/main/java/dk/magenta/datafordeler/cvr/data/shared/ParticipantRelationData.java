@@ -3,7 +3,6 @@ package dk.magenta.datafordeler.cvr.data.shared;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.cvr.data.DetailData;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
@@ -37,37 +36,49 @@ public class ParticipantRelationData extends DetailData implements Comparable<Pa
         }
     }
 
+    //--------------------------------------------------
+
+    public static final String DB_FIELD_PARTICIPANT = "participant";
+    public static final String IO_FIELD_PARTICIPANT = "deltager";
+
     @ManyToOne
-    @JsonProperty(value = "deltager")
-    @XmlElement(name = "deltager")
     private Identification participant;
 
     public void setParticipant(Identification participant) {
         this.participant = participant;
     }
 
+    @JsonProperty(value = IO_FIELD_PARTICIPANT)
+    @XmlElement(name = IO_FIELD_PARTICIPANT)
     public Identification getParticipant() {
-        return participant;
+        return this.participant;
     }
 
+    //--------------------------------------------------
+
+    public static final String DB_FIELD_ORGANIZATIONS = "organizations";
+    public static final String IO_FIELD_ORGANIZATIONS = "organisationer";
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JsonProperty(value = "organisationer")
-    @XmlElement(name = "organisationer")
     private Set<Identification> organizations = new HashSet<>();
 
     public void addOrganization(Identification organization) {
         this.organizations.add(organization);
     }
 
+    @JsonProperty(value = IO_FIELD_ORGANIZATIONS)
+    @XmlElement(name = IO_FIELD_ORGANIZATIONS)
     public Set<Identification> getOrganizations() {
-        return organizations;
+        return this.organizations;
     }
+
+    //--------------------------------------------
 
     @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("participant", this.participant);
+        map.put(DB_FIELD_PARTICIPANT, this.participant);
+        map.put(DB_FIELD_ORGANIZATIONS, this.organizations);
         return map;
     }
 

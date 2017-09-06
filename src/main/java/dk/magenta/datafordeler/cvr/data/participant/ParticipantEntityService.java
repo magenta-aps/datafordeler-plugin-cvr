@@ -21,6 +21,11 @@ public class ParticipantEntityService extends FapiService<ParticipantEntity, Par
     @Autowired
     private CvrPlugin cvrPlugin;
 
+    public ParticipantEntityService() {
+        super();
+        this.setOutputWrapper(new ParticipantOutputWrapper());
+    }
+
     @Override
     public int getVersion() {
         return 1;

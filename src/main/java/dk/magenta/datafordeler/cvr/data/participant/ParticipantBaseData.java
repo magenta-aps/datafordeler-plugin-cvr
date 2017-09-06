@@ -1,6 +1,6 @@
 package dk.magenta.datafordeler.cvr.data.participant;
 
-import dk.magenta.datafordeler.core.database.DataItem;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.cvr.data.CvrData;
 import dk.magenta.datafordeler.cvr.data.shared.*;
@@ -21,42 +21,301 @@ import java.util.Set;
 @Table(name="cvr_participant_data")
 public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantBaseData> {
 
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private TextData nameData;
+    public static final String DB_FIELD_NAMES = "names";
+    public static final String IO_FIELD_NAMES = "navne";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private ContactData phoneData;
+    private TextData names;
+
+    public String getNames() {
+        if (names != null) {
+            return names.getValue();
+        } else {
+            return null;
+        }
+    }
+
+    public void setNames(String name) {
+        if (this.names == null) {
+            this.names = new TextData(TextData.Type.NAVN);
+        }
+        this.names.setValue(name);
+    }
+
+    //--------------------------------------------------------------------------
+
+
+    public static final String DB_FIELD_PHONENUMBER = "phoneNumber";
+    public static final String IO_FIELD_PHONENUMBER = "telefonnummer";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private ContactData emailData;
+    private ContactData phoneNumber;
+
+    @JsonProperty(value = IO_FIELD_PHONENUMBER)
+    public String getPhoneNumber() {
+        if (phoneNumber != null) {
+            return phoneNumber.getValue();
+        } else {
+            return null;
+        }
+    }
+
+    public void setPhoneNumber(String phone, boolean secret) {
+        if (this.phoneNumber == null) {
+            this.phoneNumber = new ContactData(ContactData.Type.TELEFONNUMMER);
+        }
+        this.phoneNumber.setValue(phone);
+        this.phoneNumber.setSecret(secret);
+    }
+
+
+    //--------------------------------------------------------------------------
+
+
+    public static final String DB_FIELD_EMAIL = "emailAddress";
+    public static final String IO_FIELD_EMAIL = "emailadresse";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private ContactData faxData;
+    private ContactData emailAddress;
+
+    @JsonProperty(value = IO_FIELD_EMAIL)
+    public String getEmailAddress() {
+        if (emailAddress != null) {
+            return emailAddress.getValue();
+        } else {
+            return null;
+        }
+    }
+
+    public void setEmailAddress(String email, boolean secret) {
+        if (this.emailAddress == null) {
+            this.emailAddress = new ContactData(ContactData.Type.EMAILADRESSE);
+        }
+        this.emailAddress.setValue(email);
+        this.emailAddress.setSecret(secret);
+    }
+
+
+    //--------------------------------------------------------------------------
+
+
+    public static final String DB_FIELD_FAXNUMBER = "faxNumber";
+    public static final String IO_FIELD_FAXNUMBER = "telefaxnummer";
+
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private ContactData faxNumber;
+
+    @JsonProperty(IO_FIELD_FAXNUMBER)
+    public String getFaxNumber() {
+        if (faxNumber != null) {
+            return faxNumber.getValue();
+        } else {
+            return null;
+        }
+    }
+
+    public void setFaxNumber(String fax, boolean secret) {
+        if (this.faxNumber == null) {
+            this.faxNumber = new ContactData(ContactData.Type.TELEFAXNUMMER);
+        }
+        this.faxNumber.setValue(fax);
+        this.faxNumber.setSecret(secret);
+    }
+
+
+    //--------------------------------------------------------------------------
+
+
+    public static final String DB_FIELD_LOCATION_ADDRESS = "locationAddress";
+    public static final String IO_FIELD_LOCATION_ADDRESS = "beliggenhedsadresse";
+
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private AddressData locationAddress;
+
+    @JsonProperty(value = IO_FIELD_LOCATION_ADDRESS)
+    public Address getLocationAddress() {
+        if (locationAddress != null) {
+            return locationAddress.getAddress();
+        } else {
+            return null;
+        }
+    }
+
+    public void setLocationAddress(Address address) {
+        if (this.locationAddress == null) {
+            this.locationAddress = new AddressData();
+        }
+        this.locationAddress.setAddress(address);
+    }
+
+
+    //--------------------------------------------------------------------------
+
+
+    public static final String DB_FIELD_POSTAL_ADDRESS = "postalAddress";
+    public static final String IO_FIELD_POSTAL_ADDRESS = "postadresse";
+
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private AddressData postalAddress;
+
+    @JsonProperty(value = IO_FIELD_POSTAL_ADDRESS)
+    public Address getPostalAddress() {
+        if (postalAddress != null) {
+            return postalAddress.getAddress();
+        } else {
+            return null;
+        }
+    }
+    public void setPostalAddress(Address address) {
+        if (this.postalAddress == null) {
+            this.postalAddress = new AddressData();
+        }
+        this.postalAddress.setAddress(address);
+    }
+
+
+    //--------------------------------------------------------------------------
 
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private AddressData locationAddressData;
+    private AddressData businessAddress;
+
+    public static final String DB_FIELD_BUSINESS_ADDRESS = "businessAddress";
+    public static final String IO_FIELD_BUSINESS_ADDRESS = "forretningsadresse";
+
+    public Address getBusinessAddress() {
+        if (businessAddress != null) {
+            return businessAddress.getAddress();
+        } else {
+            return null;
+        }
+    }
+
+    public void setBusinessAddress(Address address) {
+        if (this.businessAddress == null) {
+            this.businessAddress = new AddressData();
+        }
+        this.businessAddress.setAddress(address);
+    }
+
+
+    //--------------------------------------------------------------------------
+
+
+    public static final String DB_FIELD_UNIT_NUMBER = "unitNumber";
+    public static final String IO_FIELD_UNIT_NUMBER = "enhedsnummer";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private AddressData postalAddressData;
+    private IntegerData unitNumber;
 
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private AddressData businessAddressData;
+    public Long getUnitNumber() {
+        if (unitNumber != null) {
+            return unitNumber.getValue();
+        } else {
+            return null;
+        }
+    }
 
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private IntegerData unitNumberData;
+    public void setUnitNumber(long unitNumber) {
+        if (this.unitNumber == null) {
+            this.unitNumber = new IntegerData();
+        }
+        this.unitNumber.setValue(unitNumber);
+    }
+
+
+    //--------------------------------------------------------------------------
+
+
+    public static final String DB_FIELD_UNIT_TYPE = "unitType";
+    public static final String IO_FIELD_UNIT_TYPE = "enhedstype";
 
     @ManyToOne(optional = true)
-    private ParticipantType type;
+    private ParticipantType unitType;
+
+    public String getUnitType() {
+        if (unitType != null) {
+            return unitType.getName();
+        } else {
+            return null;
+        }
+    }
+
+    public void setUnitType(ParticipantType enhedstype) {
+        this.unitType = enhedstype;
+    }
+
+
+    //--------------------------------------------------------------------------
+
+
+    public static final String DB_FIELD_ROLE = "role";
+    public static final String IO_FIELD_ROLE = "rolle";
 
     @ManyToOne(optional = true)
     private ParticipantRole role;
 
+    public String getRole() {
+        if (role != null) {
+            return role.getName();
+        } else {
+            return null;
+        }
+    }
+
+    public void setRole(ParticipantRole role) {
+        this.role = role;
+    }
+
+
+    //--------------------------------------------------------------------------
+
+
+    public static final String DB_FIELD_STATUS = "status";
+    public static final String IO_FIELD_STATUS = "status";
+
     @ManyToOne(optional = true)
     private ParticipantStatus status;
 
+    public String getStatus() {
+        if (status != null) {
+            return status.getName();
+        } else {
+            return null;
+        }
+    }
+
+    public void setStatus(ParticipantStatus status) {
+        this.status = status;
+    }
+
+
+    //--------------------------------------------------------------------------
+
+
+    public static final String DB_FIELD_ATTRIBUTES = "attributeData";
+    public static final String IO_FIELD_ATTRIBUTES = "attributter";
+
     @OneToMany(cascade = CascadeType.ALL)
     private Set<AttributeData> attributeData = new HashSet<>();
+
+    public Set<AttributeData> getAttributeData() {
+        return attributeData;
+    }
+
+    @JsonProperty(value = IO_FIELD_ATTRIBUTES)
+    public Set<AttributeData> getAttributes() {
+        if (attributeData.isEmpty()) {
+            return null;
+        }
+        return attributeData;
+    }
+
+    public void addAttribute(AttributeData attributeData) {
+        this.attributeData.add(attributeData);
+    }
+
+    //--------------------------------------------------------------------------
 
 
 
@@ -70,148 +329,79 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
 
 
 
-        if (this.nameData != null) {
-            map.put("navn", this.nameData.getData());
+        if (this.names != null) {
+            map.put("names", this.names.getValue());
         }
-        if (this.phoneData != null) {
-            map.put("telefon", this.phoneData.getData());
+        if (this.phoneNumber != null) {
+            map.put("phoneNumber", this.phoneNumber.getValue());
         }
-        if (this.emailData != null) {
-            map.put("email", this.emailData.getData());
+        if (this.emailAddress != null) {
+            map.put("emailAddress", this.emailAddress.getValue());
         }
-        if (this.faxData != null) {
-            map.put("fax", this.faxData.getData());
+        if (this.faxNumber != null) {
+            map.put("faxNumber", this.faxNumber.getValue());
         }
-        if (this.locationAddressData != null) {
-            map.put("beliggenhedsadresse", this.locationAddressData.getAddress());
+        if (this.locationAddress != null) {
+            map.put("locationAddress", this.locationAddress.getAddress());
         }
-        if (this.postalAddressData != null) {
-            map.put("postadresse", this.postalAddressData.getAddress());
+        if (this.postalAddress != null) {
+            map.put("postalAddress", this.postalAddress.getAddress());
         }
-        if (this.businessAddressData != null) {
-            map.put("forretningsadresse", this.businessAddressData.getAddress());
+        if (this.businessAddress != null) {
+            map.put("businessAddress", this.businessAddress.getAddress());
         }
-        if (this.unitNumberData != null) {
-            map.put("enhedsNummer", this.unitNumberData.getData());
+        if (this.unitNumber != null) {
+            map.put("unitNumber", this.unitNumber.getValue());
         }
-        if (this.type != null) {
-            map.put("enhedsType", this.type.getName());
+        if (this.unitType != null) {
+            map.put("unitType", this.unitType.getName());
         }
         if (this.role != null) {
-            map.put("rolle", this.role.getName());
+            map.put("role", this.role.getName());
         }
         if (this.status != null) {
             map.put("status", this.status.getName());
         }
-        if (this.attributeData != null && !this.attributeData.isEmpty()) {
-            map.put("attributter", this.attributeData);
+        if (this.getAttributes() != null) {
+            map.put("attributes", this.getAttributes());
         }
         return map;
     }
 
 
-    public void setName(String name) {
-        if (this.nameData == null) {
-            this.nameData = new TextData(TextData.Type.NAME);
-        }
-        this.nameData.setData(name);
-    }
-    public void setPhone(String phone, boolean secret) {
-        if (this.phoneData == null) {
-            this.phoneData = new ContactData(ContactData.Type.PHONE);
-        }
-        this.phoneData.setData(phone);
-        this.phoneData.setSecret(secret);
-    }
-    public void setEmail(String email, boolean secret) {
-        if (this.emailData == null) {
-            this.emailData = new ContactData(ContactData.Type.EMAIL);
-        }
-        this.emailData.setData(email);
-        this.emailData.setSecret(secret);
-    }
-    public void setFax(String fax, boolean secret) {
-        if (this.faxData == null) {
-            this.faxData = new ContactData(ContactData.Type.FAX);
-        }
-        this.faxData.setData(fax);
-        this.faxData.setSecret(secret);
-    }
-    public void setLocationAddress(Address address) {
-        if (this.locationAddressData == null) {
-            this.locationAddressData = new AddressData();
-        }
-        this.locationAddressData.setAddress(address);
-    }
-    public void setPostalAddress(Address address) {
-        if (this.postalAddressData == null) {
-            this.postalAddressData = new AddressData();
-        }
-        this.postalAddressData.setAddress(address);
-    }
-    public void setBusinessAddress(Address address) {
-        if (this.businessAddressData == null) {
-            this.businessAddressData = new AddressData();
-        }
-        this.businessAddressData.setAddress(address);
-    }
-
-    public void setUnitNumber(long unitNumber) {
-        if (this.unitNumberData == null) {
-            this.unitNumberData = new IntegerData();
-        }
-        this.unitNumberData.setData(unitNumber);
-    }
-
-    public void setType(ParticipantType type) {
-        this.type = type;
-    }
-
-    public void setRole(ParticipantRole role) {
-        this.role = role;
-    }
-
-    public void setStatus(ParticipantStatus status) {
-        this.status = status;
-    }
-
-    public void addAttribute(AttributeData attributeData) {
-        this.attributeData.add(attributeData);
-    }
-
     @Override
     public LookupDefinition getLookupDefinition() {
         LookupDefinition lookupDefinition = new LookupDefinition();
         lookupDefinition.setMatchNulls(true);
-        if (this.nameData != null) {
-            lookupDefinition.putAll("nameData", this.nameData.databaseFields());
+        if (this.names != null) {
+            lookupDefinition.putAll(DB_FIELD_NAMES, this.names.databaseFields());
         }
-        if (this.phoneData != null) {
-            lookupDefinition.putAll("phoneData", this.phoneData.databaseFields());
+        if (this.phoneNumber != null) {
+            lookupDefinition.putAll(DB_FIELD_PHONENUMBER, this.phoneNumber.databaseFields());
         }
-        if (this.emailData != null) {
-            lookupDefinition.putAll("emailData", this.emailData.databaseFields());
+        if (this.emailAddress != null) {
+            lookupDefinition.putAll(DB_FIELD_EMAIL, this.emailAddress.databaseFields());
         }
-        if (this.faxData != null) {
-            lookupDefinition.putAll("faxData", this.faxData.databaseFields());
+        if (this.faxNumber != null) {
+            lookupDefinition.putAll(DB_FIELD_FAXNUMBER, this.faxNumber.databaseFields());
         }
-        if (this.locationAddressData != null) {
-            lookupDefinition.putAll("locationAddressData", this.locationAddressData.databaseFields());
+        if (this.locationAddress != null) {
+            lookupDefinition.putAll(DB_FIELD_LOCATION_ADDRESS, this.locationAddress.databaseFields());
         }
-        if (this.postalAddressData != null) {
-            lookupDefinition.putAll("postalAddressData", this.postalAddressData.databaseFields());
+        if (this.postalAddress != null) {
+            lookupDefinition.putAll(DB_FIELD_LOCATION_ADDRESS, this.postalAddress.databaseFields());
         }
-        if (this.businessAddressData != null) {
-            lookupDefinition.putAll("businessAddressData", this.businessAddressData.databaseFields());
+        if (this.businessAddress != null) {
+            lookupDefinition.putAll(DB_FIELD_BUSINESS_ADDRESS, this.businessAddress.databaseFields());
         }
-        if (this.unitNumberData != null) {
-            lookupDefinition.putAll("unitNumberData", this.unitNumberData.databaseFields());
+        if (this.unitNumber != null) {
+            lookupDefinition.putAll(DB_FIELD_UNIT_NUMBER, this.unitNumber.databaseFields());
         }
         if (this.status != null) {
-            lookupDefinition.putAll("status", this.status.databaseFields());
+            lookupDefinition.putAll(DB_FIELD_STATUS, this.status.databaseFields());
         }
-        if (this.type != null) {
-            lookupDefinition.putAll("type", this.type.databaseFields());
+        if (this.unitType != null) {
+            lookupDefinition.putAll(DB_FIELD_UNIT_TYPE, this.unitType.databaseFields());
         }
 
         return lookupDefinition;

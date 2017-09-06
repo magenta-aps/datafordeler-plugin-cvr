@@ -11,50 +11,60 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Collections;
 
+import static dk.magenta.datafordeler.cvr.data.unversioned.Industry.DB_FIELD_CODE;
+
 /**
  * Created by lars on 26-01-15.
  */
 @Entity
 @Table(name = "cvr_industry", indexes = {
-        @Index(name = "industryCode", columnList = "code")
+        @Index(name = "industryCode", columnList = DB_FIELD_CODE)
 })
 public class Industry extends UnversionedEntity {
-    
-    @JsonProperty(value = "branchekode")
-    @XmlElement(name = "branchekode")
+
+    public static final String DB_FIELD_CODE = "industryCode";
+    public static final String IO_FIELD_CODE = "branchekode";
+
+    @JsonProperty(value = IO_FIELD_CODE)
+    @XmlElement(name = IO_FIELD_CODE)
     @Column(nullable = false, unique = true)
-    private int code;
+    private String industryCode;
 
-    public int getCode() {
-        return code;
+    public String getIndustryCode() {
+        return industryCode;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setIndustryCode(String industryCode) {
+        this.industryCode = industryCode;
     }
 
+    //----------------------------------------------------
 
 
-    @JsonProperty(value = "branchetekst")
-    @XmlElement(name = "branchetekst")
+    public static final String DB_FIELD_NAME = "industryText";
+    public static final String IO_FIELD_NAME = "branchetekst";
+
+    @JsonProperty(value = IO_FIELD_NAME)
+    @XmlElement(name = IO_FIELD_NAME)
     @Column
-    private String text;
+    private String industryText;
 
-    public String getText() {
-        return this.text;
+    public String getIndustryText() {
+        return this.industryText;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setIndustryText(String industryText) {
+        this.industryText = industryText;
     }
 
+    //----------------------------------------------------
 
-    public static Industry getIndustry(int code, String text, QueryManager queryManager, Session session) {
-        Industry industry = queryManager.getItem(session, Industry.class, Collections.singletonMap("code", code));
+    public static Industry getIndustry(String branchekode, String branchetekst, QueryManager queryManager, Session session) {
+        Industry industry = queryManager.getItem(session, Industry.class, Collections.singletonMap(DB_FIELD_CODE, branchekode));
         if (industry == null) {
             industry = new Industry();
-            industry.setCode(code);
-            industry.setText(text);
+            industry.setIndustryCode(branchekode);
+            industry.setIndustryText(branchetekst);
             session.save(industry);
         }
         return industry;

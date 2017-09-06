@@ -25,7 +25,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     @JsonProperty(value = "reklamebeskyttet")
-    private boolean advertProtected;
+    private boolean advertProtection;
 
     @JsonProperty(value = "enhedsNummer")
     private int unitNumber;
@@ -33,147 +33,147 @@ public class CompanyRecord extends CvrEntityRecord {
     @JsonProperty(value = "enhedstype")
     private String unitType;
 
-    @JsonProperty(value = "navne")
+    @JsonProperty(value = "names")
     private List<NameRecord> names;
 
     @JsonProperty(value = "beliggenhedsadresse")
-    private List<AddressRecord> locationAddresses;
+    private List<AddressRecord> locationAddress;
 
-    public void setLocationAddresses(List<AddressRecord> locationAddresses) {
-        for (AddressRecord record : locationAddresses) {
+    public void setLocationAddress(List<AddressRecord> locationAddress) {
+        for (AddressRecord record : locationAddress) {
             record.setType(AddressRecord.Type.LOCATION);
         }
-        this.locationAddresses = locationAddresses;
+        this.locationAddress = locationAddress;
     }
 
     @JsonProperty(value = "postadresse")
-    private List<AddressRecord> postalAddresses;
+    private List<AddressRecord> postalAddress;
 
-    public void setPostalAddresses(List<AddressRecord> postalAddresses) {
-        for (AddressRecord record : postalAddresses) {
+    public void setPostalAddress(List<AddressRecord> postalAddress) {
+        for (AddressRecord record : postalAddress) {
             record.setType(AddressRecord.Type.POSTAL);
         }
-        this.postalAddresses = postalAddresses;
+        this.postalAddress = postalAddress;
     }
 
     @JsonProperty(value = "telefonNummer")
-    private List<ContactRecord> phoneRecords;
+    private List<ContactRecord> phoneNumber;
 
-    public void setPhoneRecords(List<ContactRecord> phoneRecords) {
-        for (ContactRecord record : phoneRecords) {
-            record.setType(ContactRecord.Type.PHONE);
+    public void setPhoneNumber(List<ContactRecord> phoneNumber) {
+        for (ContactRecord record : phoneNumber) {
+            record.setType(ContactRecord.Type.TELEFONNUMMER);
         }
-        this.phoneRecords = phoneRecords;
+        this.phoneNumber = phoneNumber;
     }
 
     @JsonProperty(value = "telefaxNummer")
-    private List<ContactRecord> faxRecords;
+    private List<ContactRecord> faxNumber;
 
-    public void setFaxRecords(List<ContactRecord> faxRecords) {
-        for (ContactRecord record : faxRecords) {
-            record.setType(ContactRecord.Type.FAX);
+    public void setFaxNumber(List<ContactRecord> faxNumber) {
+        for (ContactRecord record : faxNumber) {
+            record.setType(ContactRecord.Type.TELEFAXNUMMER);
         }
-        this.faxRecords = faxRecords;
+        this.faxNumber = faxNumber;
     }
 
     @JsonProperty(value = "elektroniskPost")
-    private List<ContactRecord> emailRecords;
+    private List<ContactRecord> emailAddress;
 
-    public void setEmailRecords(List<ContactRecord> emailRecords) {
-        for (ContactRecord record : emailRecords) {
-            record.setType(ContactRecord.Type.EMAIL);
+    public void setEmailAddress(List<ContactRecord> emailAddress) {
+        for (ContactRecord record : emailAddress) {
+            record.setType(ContactRecord.Type.EMAILADRESSE);
         }
-        this.emailRecords = emailRecords;
+        this.emailAddress = emailAddress;
     }
 
     @JsonProperty(value = "hjemmeside")
-    private List<ContactRecord> homepageRecords;
+    private List<ContactRecord> homepage;
 
-    public void setHomepageRecords(List<ContactRecord> homepageRecords) {
-        for (ContactRecord record : homepageRecords) {
-            record.setType(ContactRecord.Type.HOMEPAGE);
+    public void setHomepage(List<ContactRecord> homepage) {
+        for (ContactRecord record : homepage) {
+            record.setType(ContactRecord.Type.HJEMMESIDE);
         }
-        this.homepageRecords = homepageRecords;
+        this.homepage = homepage;
     }
 
     @JsonProperty(value = "obligatoriskEmail")
-    private List<ContactRecord> mandatoryEmailRecords;
+    private List<ContactRecord> mandatoryEmailAddress;
 
-    public void setMandatoryEmailRecords(List<ContactRecord> mandatoryEmailRecords) {
-        for (ContactRecord record : mandatoryEmailRecords) {
-            record.setType(ContactRecord.Type.MANDATORY_EMAIL);
+    public void setMandatoryEmailAddress(List<ContactRecord> mandatoryEmailAddress) {
+        for (ContactRecord record : mandatoryEmailAddress) {
+            record.setType(ContactRecord.Type.OBLIGATORISK_EMAILADRESSE);
         }
-        this.mandatoryEmailRecords = mandatoryEmailRecords;
+        this.mandatoryEmailAddress = mandatoryEmailAddress;
     }
 
     @JsonProperty(value = "livsforloeb")
-    private List<LifecycleRecord> lifecycleRecords;
+    private List<LifecycleRecord> lifecycle;
 
 
     @JsonProperty(value = "hovedbranche")
-    private List<CompanyIndustryRecord> mainIndustryRecords;
+    private List<CompanyIndustryRecord> primaryIndustry;
 
-    public void setMainIndustryRecords(List<CompanyIndustryRecord> mainIndustryRecords) {
-        for (CompanyIndustryRecord record : mainIndustryRecords) {
+    public void setPrimaryIndustry(List<CompanyIndustryRecord> primaryIndustry) {
+        for (CompanyIndustryRecord record : primaryIndustry) {
             record.setIndex(0);
         }
-        this.mainIndustryRecords = mainIndustryRecords;
+        this.primaryIndustry = primaryIndustry;
     }
 
     @JsonProperty(value = "bibranche1")
-    private List<CompanyIndustryRecord> secondaryIndustryRecords1;
+    private List<CompanyIndustryRecord> secondaryIndustry1;
 
-    public void setSecondaryIndustryRecords1(List<CompanyIndustryRecord> secondaryIndustryRecords) {
+    public void setSecondaryIndustry1(List<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
             record.setIndex(1);
         }
-        this.secondaryIndustryRecords1 = secondaryIndustryRecords;
+        this.secondaryIndustry1 = secondaryIndustryRecords;
     }
 
     @JsonProperty(value = "bibranche2")
-    private List<CompanyIndustryRecord> secondaryIndustryRecords2;
+    private List<CompanyIndustryRecord> secondaryIndustry2;
 
-    public void setSecondaryIndustryRecords2(List<CompanyIndustryRecord> secondaryIndustryRecords) {
+    public void setSecondaryIndustry2(List<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
             record.setIndex(2);
         }
-        this.secondaryIndustryRecords2 = secondaryIndustryRecords;
+        this.secondaryIndustry2 = secondaryIndustryRecords;
     }
 
     @JsonProperty(value = "bibranche3")
-    private List<CompanyIndustryRecord> secondaryIndustryRecords3;
+    private List<CompanyIndustryRecord> secondaryIndustry3;
 
-    public void setSecondaryIndustryRecords3(List<CompanyIndustryRecord> secondaryIndustryRecords) {
+    public void setSecondaryIndustry3(List<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
             record.setIndex(3);
         }
-        this.secondaryIndustryRecords3 = secondaryIndustryRecords;
+        this.secondaryIndustry3 = secondaryIndustryRecords;
     }
 
     @JsonProperty(value = "virksomhedsstatus")
-    private List<CompanyStatusRecord> statusRecords;
+    private List<CompanyStatusRecord> companyStatus;
 
 
     @JsonProperty(value = "virksomhedsform")
-    private List<CompanyFormRecord> formRecords;
+    private List<CompanyFormRecord> companyForm;
 
     @JsonProperty(value = "aarsbeskaeftigelse")
-    private List<CompanyYearlyNumbersRecord> yearlyNumbersRecords;
+    private List<CompanyYearlyNumbersRecord> yearlyNumbers;
 
     @JsonProperty(value = "kvartalsbeskaeftigelse")
-    private List<CompanyQuarterlyNumbersRecord> quarterlyNumbersRecords;
+    private List<CompanyQuarterlyNumbersRecord> quarterlyNumbers;
 
     @JsonProperty(value = "maanedsbeskaeftigelse")
-    private List<CompanyMonthlyNumbersRecord> monthlyNumbersRecords;
+    private List<CompanyMonthlyNumbersRecord> monthlyNumbers;
 
     @JsonProperty(value = "attributter")
-    private List<AttributeRecord> attributeRecords;
+    private List<AttributeRecord> attributes;
 
     @JsonProperty(value = "penheder")
-    private List<CompanyUnitLinkRecord> unitLinkRecords;
+    private List<CompanyUnitLinkRecord> productionUnits;
 
     @JsonProperty(value = "deltagerRelation")
-    private List<CompanyParticipantRelationRecord> participantRelationRecords;
+    private List<CompanyParticipantRelationRecord> participants;
 
     @Override
     public List<CvrBaseRecord> getAll() {
@@ -182,67 +182,67 @@ public class CompanyRecord extends CvrEntityRecord {
         if (this.names != null) {
             list.addAll(this.names);
         }
-        if (this.locationAddresses != null) {
-            list.addAll(this.locationAddresses);
+        if (this.locationAddress != null) {
+            list.addAll(this.locationAddress);
         }
-        if (this.postalAddresses != null) {
-            list.addAll(this.postalAddresses);
+        if (this.postalAddress != null) {
+            list.addAll(this.postalAddress);
         }
-        if (this.phoneRecords != null) {
-            list.addAll(this.phoneRecords);
+        if (this.phoneNumber != null) {
+            list.addAll(this.phoneNumber);
         }
-        if (this.faxRecords != null) {
-            list.addAll(this.faxRecords);
+        if (this.faxNumber != null) {
+            list.addAll(this.faxNumber);
         }
-        if (this.emailRecords != null) {
-            list.addAll(this.emailRecords);
+        if (this.emailAddress != null) {
+            list.addAll(this.emailAddress);
         }
-        if (this.homepageRecords != null) {
-            list.addAll(this.homepageRecords);
+        if (this.homepage != null) {
+            list.addAll(this.homepage);
         }
-        if (this.mandatoryEmailRecords != null) {
-            list.addAll(this.mandatoryEmailRecords);
+        if (this.mandatoryEmailAddress != null) {
+            list.addAll(this.mandatoryEmailAddress);
         }
-        if (this.lifecycleRecords != null) {
-            list.addAll(this.lifecycleRecords);
+        if (this.lifecycle != null) {
+            list.addAll(this.lifecycle);
         }
-        if (this.mainIndustryRecords != null) {
-            list.addAll(this.mainIndustryRecords);
+        if (this.primaryIndustry != null) {
+            list.addAll(this.primaryIndustry);
         }
-        if (this.secondaryIndustryRecords1 != null) {
-            list.addAll(this.secondaryIndustryRecords1);
+        if (this.secondaryIndustry1 != null) {
+            list.addAll(this.secondaryIndustry1);
         }
-        if (this.secondaryIndustryRecords2 != null) {
-            list.addAll(this.secondaryIndustryRecords2);
+        if (this.secondaryIndustry2 != null) {
+            list.addAll(this.secondaryIndustry2);
         }
-        if (this.secondaryIndustryRecords3 != null) {
-            list.addAll(this.secondaryIndustryRecords3);
+        if (this.secondaryIndustry3 != null) {
+            list.addAll(this.secondaryIndustry3);
         }
-        if (this.statusRecords != null) {
-            list.addAll(this.statusRecords);
+        if (this.companyStatus != null) {
+            list.addAll(this.companyStatus);
         }
-        if (this.formRecords != null) {
-            list.addAll(this.formRecords);
+        if (this.companyForm != null) {
+            list.addAll(this.companyForm);
         }
-        if (this.yearlyNumbersRecords != null) {
-            list.addAll(this.yearlyNumbersRecords);
+        if (this.yearlyNumbers != null) {
+            list.addAll(this.yearlyNumbers);
         }
-        if (this.quarterlyNumbersRecords != null) {
-            list.addAll(this.quarterlyNumbersRecords);
+        if (this.quarterlyNumbers != null) {
+            list.addAll(this.quarterlyNumbers);
         }
-        if (this.monthlyNumbersRecords != null) {
-            list.addAll(this.monthlyNumbersRecords);
+        if (this.monthlyNumbers != null) {
+            list.addAll(this.monthlyNumbers);
         }
-        if (this.attributeRecords != null) {
-            for (AttributeRecord attributeRecord : this.attributeRecords) {
+        if (this.attributes != null) {
+            for (AttributeRecord attributeRecord : this.attributes) {
                 list.addAll(attributeRecord.getValues());
             }
         }
-        if (this.unitLinkRecords != null) {
-            list.addAll(this.unitLinkRecords);
+        if (this.productionUnits != null) {
+            list.addAll(this.productionUnits);
         }
-        if (this.participantRelationRecords != null) {
-            list.addAll(this.participantRelationRecords);
+        if (this.participants != null) {
+            list.addAll(this.participants);
         }
         return list;
     }
@@ -253,8 +253,8 @@ public class CompanyRecord extends CvrEntityRecord {
 
     @Override
     public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
-        baseData.setAdvertProtection(this.advertProtected);
-        baseData.setUnitNumber(this.unitNumber);
+        baseData.setAdvertProtection(this.advertProtection);
+        baseData.setCvrNumber(this.cvrNumber);
     }
 
 }

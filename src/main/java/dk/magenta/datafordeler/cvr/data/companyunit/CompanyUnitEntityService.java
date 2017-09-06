@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * Created by lars on 19-05-17.
  */
@@ -21,6 +20,11 @@ public class CompanyUnitEntityService extends FapiService<CompanyUnitEntity, Com
 
     @Autowired
     private CvrPlugin cvrPlugin;
+
+    public CompanyUnitEntityService() {
+        super();
+        this.setOutputWrapper(new CompanyUnitOutputWrapper());
+    }
 
     @Override
     public int getVersion() {

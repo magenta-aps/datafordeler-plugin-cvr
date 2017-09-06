@@ -24,72 +24,72 @@ public class ParticipantRecord extends CvrEntityRecord {
     @JsonProperty(value = "enhedstype")
     public String unitType;
 
-    @JsonProperty(value = "navne")
+    @JsonProperty(value = "names")
     public List<NameRecord> names;
 
     @JsonProperty(value = "beliggenhedsadresse")
-    public List<AddressRecord> locationAddresses;
+    public List<AddressRecord> locationAddress;
 
-    public void setLocationAddresses(List<AddressRecord> locationAddresses) {
-        for (AddressRecord record : locationAddresses) {
+    public void setLocationAddress(List<AddressRecord> locationAddress) {
+        for (AddressRecord record : locationAddress) {
             record.setType(AddressRecord.Type.LOCATION);
         }
-        this.locationAddresses = locationAddresses;
+        this.locationAddress = locationAddress;
     }
 
     @JsonProperty(value = "postadresse")
-    public List<AddressRecord> postalAddresses;
+    public List<AddressRecord> postalAddress;
 
-    public void setPostalAddresses(List<AddressRecord> postalAddresses) {
-        for (AddressRecord record : postalAddresses) {
+    public void setPostalAddress(List<AddressRecord> postalAddress) {
+        for (AddressRecord record : postalAddress) {
             record.setType(AddressRecord.Type.POSTAL);
         }
-        this.postalAddresses = postalAddresses;
+        this.postalAddress = postalAddress;
     }
 
     @JsonProperty(value = "forretningsadresse")
-    public List<AddressRecord> businessAddresses;
+    public List<AddressRecord> businessAddress;
 
-    public void setBusinessAddresses(List<AddressRecord> businessAddresses) {
-        for (AddressRecord record : businessAddresses) {
+    public void setBusinessAddress(List<AddressRecord> businessAddress) {
+        for (AddressRecord record : businessAddress) {
             record.setType(AddressRecord.Type.BUSINESS);
         }
-        this.businessAddresses = businessAddresses;
+        this.businessAddress = businessAddress;
     }
 
     @JsonProperty(value = "telefonNummer")
-    public List<ContactRecord> phoneRecords;
+    public List<ContactRecord> phoneNumber;
 
-    public void setPhoneRecords(List<ContactRecord> phoneRecords) {
-        for (ContactRecord record : phoneRecords) {
-            record.setType(ContactRecord.Type.PHONE);
+    public void setPhoneNumber(List<ContactRecord> phoneNumber) {
+        for (ContactRecord record : phoneNumber) {
+            record.setType(ContactRecord.Type.TELEFONNUMMER);
         }
-        this.phoneRecords = phoneRecords;
+        this.phoneNumber = phoneNumber;
     }
 
     @JsonProperty(value = "telefaxNummer")
-    public List<ContactRecord> faxRecords;
+    public List<ContactRecord> faxNumber;
 
-    public void setFaxRecords(List<ContactRecord> faxRecords) {
-        for (ContactRecord record : faxRecords) {
-            record.setType(ContactRecord.Type.FAX);
+    public void setFaxNumber(List<ContactRecord> faxNumber) {
+        for (ContactRecord record : faxNumber) {
+            record.setType(ContactRecord.Type.TELEFAXNUMMER);
         }
-        this.faxRecords = faxRecords;
+        this.faxNumber = faxNumber;
     }
 
     @JsonProperty(value = "elektroniskPost")
-    public List<ContactRecord> emailRecords;
+    public List<ContactRecord> emailAddress;
 
-    public void setEmailRecords(List<ContactRecord> emailRecords) {
-        for (ContactRecord record : emailRecords) {
-            record.setType(ContactRecord.Type.EMAIL);
+    public void setEmailAddress(List<ContactRecord> emailAddress) {
+        for (ContactRecord record : emailAddress) {
+            record.setType(ContactRecord.Type.EMAILADRESSE);
         }
-        this.emailRecords = emailRecords;
+        this.emailAddress = emailAddress;
     }
 
 
     @JsonProperty(value = "attributter")
-    public List<AttributeRecord> attributeRecords;
+    public List<AttributeRecord> attributes;
 
 
 
@@ -99,26 +99,26 @@ public class ParticipantRecord extends CvrEntityRecord {
         if (this.names != null) {
             list.addAll(this.names);
         }
-        if (this.locationAddresses != null) {
-            list.addAll(this.locationAddresses);
+        if (this.locationAddress != null) {
+            list.addAll(this.locationAddress);
         }
-        if (this.postalAddresses != null) {
-            list.addAll(this.postalAddresses);
+        if (this.postalAddress != null) {
+            list.addAll(this.postalAddress);
         }
-        if (this.businessAddresses != null) {
-            list.addAll(this.businessAddresses);
+        if (this.businessAddress != null) {
+            list.addAll(this.businessAddress);
         }
-        if (this.phoneRecords != null) {
-            list.addAll(this.phoneRecords);
+        if (this.phoneNumber != null) {
+            list.addAll(this.phoneNumber);
         }
-        if (this.faxRecords != null) {
-            list.addAll(this.faxRecords);
+        if (this.faxNumber != null) {
+            list.addAll(this.faxNumber);
         }
-        if (this.emailRecords != null) {
-            list.addAll(this.emailRecords);
+        if (this.emailAddress != null) {
+            list.addAll(this.emailAddress);
         }
-        if (this.attributeRecords != null) {
-            for (AttributeRecord attributeRecord : this.attributeRecords) {
+        if (this.attributes != null) {
+            for (AttributeRecord attributeRecord : this.attributes) {
                 list.addAll(attributeRecord.getValues());
             }
         }
@@ -132,6 +132,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     @Override
     public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
         baseData.setUnitNumber(this.unitNumber);
-        baseData.setType(ParticipantType.getType(this.unitType, queryManager, session));
+        baseData.setUnitType(ParticipantType.getType(this.unitType, queryManager, session));
     }
 }

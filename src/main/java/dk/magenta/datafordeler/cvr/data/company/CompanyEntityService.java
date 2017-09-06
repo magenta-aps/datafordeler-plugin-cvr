@@ -21,6 +21,11 @@ public class CompanyEntityService extends FapiService<CompanyEntity, CompanyQuer
     @Autowired
     private CvrPlugin cvrPlugin;
 
+    public CompanyEntityService() {
+        super();
+        this.setOutputWrapper(new CompanyOutputWrapper());
+    }
+
     @Override
     public int getVersion() {
         return 1;

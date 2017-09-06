@@ -20,9 +20,12 @@ import java.util.Map;
 @Table(name="cvr_company_address")
 public class AddressData extends DetailData {
 
+    public static final String DB_FIELD_ADDRESS = "address";
+    public static final String IO_FIELD_ADDRESS = "adresse";
+
+    @JsonProperty(value = IO_FIELD_ADDRESS)
+    @XmlElement(name = IO_FIELD_ADDRESS)
     @ManyToOne
-    @JsonProperty
-    @XmlElement
     @Cascade(value = CascadeType.ALL)
     private Address address;
 

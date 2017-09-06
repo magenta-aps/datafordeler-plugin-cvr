@@ -22,20 +22,20 @@ public class LifecycleRecord extends CvrBaseRecord {
     @Override
     public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
         if (this.getValidFrom() != null) {
-            baseData.setLifecycleStartDate(OffsetDateTime.of(this.getValidFrom(), LocalTime.MIDNIGHT, ZoneOffset.UTC));
+            baseData.setLivsforloebStart(OffsetDateTime.of(this.getValidFrom(), LocalTime.MIDNIGHT, ZoneOffset.UTC));
         }
         if (this.getValidTo() != null) {
-            baseData.setLifecycleEndDate(OffsetDateTime.of(this.getValidTo(), LocalTime.MIDNIGHT, ZoneOffset.UTC));
+            baseData.setLivsforloebSlut(OffsetDateTime.of(this.getValidTo(), LocalTime.MIDNIGHT, ZoneOffset.UTC));
         }
     }
 
     @Override
     public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
         if (this.getValidFrom() != null) {
-            baseData.setLifecycleStartDate(OffsetDateTime.of(this.getValidFrom(), LocalTime.MIDNIGHT, ZoneOffset.UTC));
+            baseData.setLifecycleStart(OffsetDateTime.of(this.getValidFrom(), LocalTime.MIDNIGHT, ZoneOffset.UTC));
         }
         if (this.getValidTo() != null) {
-            baseData.setLifecycleEndDate(OffsetDateTime.of(this.getValidTo(), LocalTime.MIDNIGHT, ZoneOffset.UTC));
+            baseData.setLifecycleStop(OffsetDateTime.of(this.getValidTo(), LocalTime.MIDNIGHT, ZoneOffset.UTC));
         }
     }
 }

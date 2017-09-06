@@ -18,8 +18,8 @@ import java.util.Map;
 public class BooleanData extends SingleData<Boolean> {
 
     public enum Type {
-        ADVERT_PROTECTION,
-        IS_PRIMARY_UNIT,
+        REKLAME_BESKYTTELSE,
+        ER_PRIMAER_ENHED,
     }
 
     public BooleanData() {
@@ -29,9 +29,24 @@ public class BooleanData extends SingleData<Boolean> {
         this.setType(type);
     }
 
-    @Column
+    //---------------------------------------------------
+
+    public static final String DB_FIELD_TYPE = "type";
+    public static final String IO_FIELD_TYPE = "type";
+
     @JsonIgnore
+    @Column(name = DB_FIELD_TYPE)
     private Type type;
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    //---------------------------------------------------
 
     public String getFieldName() {
         return this.type.name().toLowerCase();
@@ -40,7 +55,7 @@ public class BooleanData extends SingleData<Boolean> {
     @JsonAnyGetter
     public Map<String, Object> asMap() {
         HashMap<String, Object> fields = new HashMap<>();
-        fields.put(this.getFieldName(), this.getData());
+        fields.put(this.getFieldName(), this.getValue());
         return fields;
     }
 
@@ -50,18 +65,9 @@ public class BooleanData extends SingleData<Boolean> {
      */
     @JsonIgnore
     public Map<String, Object> databaseFields() {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("data", this.getData());
-        map.put("type", this.type);
+        HashMap<String, Object> map = new HashMap<>(super.databaseFields());
+        map.put(DB_FIELD_TYPE, this.type);
         return map;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
     }
 
 }

@@ -14,15 +14,15 @@ import org.hibernate.Session;
 public class ContactRecord extends CvrBaseRecord {
 
     public enum Type {
-        PHONE,
-        FAX,
-        EMAIL,
-        HOMEPAGE,
-        MANDATORY_EMAIL
+        TELEFONNUMMER,
+        TELEFAXNUMMER,
+        EMAILADRESSE,
+        HJEMMESIDE,
+        OBLIGATORISK_EMAILADRESSE
     }
 
     @JsonProperty(value = "kontaktoplysning")
-    protected String contactInfo;
+    protected String contectInformation;
 
     @JsonProperty(value = "hemmelig")
     protected boolean secret;
@@ -37,20 +37,20 @@ public class ContactRecord extends CvrBaseRecord {
     @Override
     public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
         switch (this.type) {
-            case PHONE:
-                baseData.setPhone(this.contactInfo, this.secret);
+            case TELEFONNUMMER:
+                baseData.setPhoneNumber(this.contectInformation, this.secret);
                 break;
-            case FAX:
-                baseData.setFax(this.contactInfo, this.secret);
+            case TELEFAXNUMMER:
+                baseData.setFaxNumber(this.contectInformation, this.secret);
                 break;
-            case EMAIL:
-                baseData.setEmail(this.contactInfo, this.secret);
+            case EMAILADRESSE:
+                baseData.setEmailAddress(this.contectInformation, this.secret);
                 break;
-            case HOMEPAGE:
-                baseData.setHomepage(this.contactInfo, this.secret);
+            case HJEMMESIDE:
+                baseData.setHomepage(this.contectInformation, this.secret);
                 break;
-            case MANDATORY_EMAIL:
-                baseData.setMandatoryEmail(this.contactInfo, this.secret);
+            case OBLIGATORISK_EMAILADRESSE:
+                baseData.setMandatoryEmail(this.contectInformation, this.secret);
                 break;
         }
     }
@@ -58,14 +58,14 @@ public class ContactRecord extends CvrBaseRecord {
     @Override
     public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
         switch (this.type) {
-            case PHONE:
-                baseData.setPhone(this.contactInfo, this.secret);
+            case TELEFONNUMMER:
+                baseData.setPhoneNumber(this.contectInformation, this.secret);
                 break;
-            case FAX:
-                baseData.setFax(this.contactInfo, this.secret);
+            case TELEFAXNUMMER:
+                baseData.setFaxNumber(this.contectInformation, this.secret);
                 break;
-            case EMAIL:
-                baseData.setEmail(this.contactInfo, this.secret);
+            case EMAILADRESSE:
+                baseData.setEmailAddress(this.contectInformation, this.secret);
                 break;
         }
     }
@@ -73,14 +73,14 @@ public class ContactRecord extends CvrBaseRecord {
     @Override
     public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
         switch (this.type) {
-            case PHONE:
-                baseData.setPhone(this.contactInfo, this.secret);
+            case TELEFONNUMMER:
+                baseData.setPhoneNumber(this.contectInformation, this.secret);
                 break;
-            case FAX:
-                baseData.setFax(this.contactInfo, this.secret);
+            case TELEFAXNUMMER:
+                baseData.setFaxNumber(this.contectInformation, this.secret);
                 break;
-            case EMAIL:
-                baseData.setEmail(this.contactInfo, this.secret);
+            case EMAILADRESSE:
+                baseData.setEmailAddress(this.contectInformation, this.secret);
                 break;
         }
     }

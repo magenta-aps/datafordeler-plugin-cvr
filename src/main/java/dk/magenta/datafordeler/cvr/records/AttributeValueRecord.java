@@ -49,7 +49,7 @@ public class AttributeValueRecord extends CvrBaseRecord {
                 this.parent.getType(),
                 this.parent.getValueType(),
                 this.value,
-                this.parent.getSequenceNumber()
+                this.parent.getSekvensnummer()
         );*/
     }
 }

@@ -11,11 +11,13 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Collections;
 
+import static dk.magenta.datafordeler.cvr.data.unversioned.CompanyStatus.DB_FIELD_NAME;
+
 /**
  * Created by lars on 26-01-15.
  */
 @Entity
-@Table(name = "cvr_status", indexes = {@Index(name = "cvrStatus", columnList = "status")})
+@Table(name = "cvr_status", indexes = {@Index(name = "cvrStatus", columnList = DB_FIELD_NAME)})
 public class CompanyStatus extends UnversionedEntity {
 
     public CompanyStatus() {
@@ -23,8 +25,11 @@ public class CompanyStatus extends UnversionedEntity {
 
     //----------------------------------------------------
 
-    @JsonProperty
-    @XmlElement
+    public static final String DB_FIELD_NAME = "status";
+    public static final String IO_FIELD_NAME = "status";
+
+    @JsonProperty(value = IO_FIELD_NAME)
+    @XmlElement(name = IO_FIELD_NAME)
     @Column(nullable = true, unique = true)
     private String status;
 
@@ -38,7 +43,7 @@ public class CompanyStatus extends UnversionedEntity {
 
 
     public static CompanyStatus getStatus(String statusText, QueryManager queryManager, Session session) {
-        CompanyStatus status = queryManager.getItem(session, CompanyStatus.class, Collections.singletonMap("status", statusText));
+        CompanyStatus status = queryManager.getItem(session, CompanyStatus.class, Collections.singletonMap(DB_FIELD_NAME, statusText));
         if (status == null) {
             status = new CompanyStatus();
             status.setStatus(statusText);

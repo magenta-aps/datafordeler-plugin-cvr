@@ -1,6 +1,5 @@
 package dk.magenta.datafordeler.cvr.data.shared;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.cvr.data.DetailData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 
@@ -8,7 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlElement;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,43 +20,43 @@ public class IndustryData extends DetailData {
     public IndustryData() {
         this(false);
     }
-    public IndustryData(boolean isPrimary) {
-        this.isPrimary = isPrimary;
+    public IndustryData(boolean isPrimaer) {
+        this.isPrimaer = isPrimaer;
     }
 
 
 
     @ManyToOne
-    private Industry industry;
+    private Industry branche;
 
-    public Industry getIndustry() {
-        return this.industry;
+    public Industry getBranche() {
+        return this.branche;
     }
 
-    public void setIndustry(Industry industry) {
-        this.industry = industry;
+    public void setBranche(Industry branche) {
+        this.branche = branche;
     }
 
 
 
     @Column
-    private boolean isPrimary;
+    private boolean isPrimaer;
 
 
-    public boolean isPrimary() {
-        return this.isPrimary;
+    public boolean isPrimaer() {
+        return this.isPrimaer;
     }
 
-    public void setPrimary(boolean primary) {
-        isPrimary = primary;
+    public void setPrimaer(boolean primaer) {
+        isPrimaer = primaer;
     }
 
 
 
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("industry", this.industry);
-        map.put("isPrimary", this.isPrimary);
+        map.put("branche", this.branche);
+        map.put("isPrimaer", this.isPrimaer);
         return map;
     }
 

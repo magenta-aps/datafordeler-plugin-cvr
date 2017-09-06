@@ -26,8 +26,8 @@ public class CompanyEffect extends CvrEffect<CompanyRegistration, CompanyEffect,
         super(registration, effectFrom, effectTo);
     }
 /*
-    public CompanyEffect(CompanyRegistration registration, TemporalAccessor effectFrom, TemporalAccessor effectTo) {
-        super(registration, effectFrom, effectTo);
+    public CompanyEffect(CompanyRegistration registrering, TemporalAccessor effectFrom, TemporalAccessor effectTo) {
+        super(registrering, effectFrom, effectTo);
     }
 */
 

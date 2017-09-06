@@ -50,121 +50,128 @@ public class ModelTest {
         Session session = sessionManager.getSessionFactory().openSession();
         Identification identification = new Identification(UUID.randomUUID(), "test");
         CompanyEntity company = new CompanyEntity();
-        company.setIdentification(identification);
+        company.setIdentifikation(identification);
         company.setCvrNumber(78975790);
 
-        CompanyRegistration registration = new CompanyRegistration(OffsetDateTime.parse("2017-01-01T00:00:00+00:00"), OffsetDateTime.parse("2018-01-01T00:00:00+00:00"), 1);
-        CompanyEffect effect1 = new CompanyEffect(registration, OffsetDateTime.parse("2017-07-01T00:00:00+00:00"), null);
-        CompanyEffect effect2 = new CompanyEffect(registration, OffsetDateTime.parse("2017-08-01T00:00:00+00:00"), null);
+        CompanyRegistration registrering = new CompanyRegistration(OffsetDateTime.parse("2017-01-01T00:00:00+00:00"), OffsetDateTime.parse("2018-01-01T00:00:00+00:00"), 1);
+        CompanyEffect effect1 = new CompanyEffect(registrering, OffsetDateTime.parse("2017-07-01T00:00:00+00:00"), null);
+        CompanyEffect effect2 = new CompanyEffect(registrering, OffsetDateTime.parse("2017-08-01T00:00:00+00:00"), null);
 
-        CompanyBaseData companyData1 = new CompanyBaseData();
-        companyData1.addEffect(effect1);
+        CompanyBaseData companyBase1 = new CompanyBaseData();
+        companyBase1.addEffect(effect1);
 
-        CompanyBaseData companyData2 = new CompanyBaseData();
-        companyData2.addEffect(effect2);
+        CompanyBaseData companyBase2 = new CompanyBaseData();
+        companyBase2.addEffect(effect2);
 
-        companyData1.setLifecycleStartDate(OffsetDateTime.parse("2000-01-01T00:00:00+00:00"));
-
-
-        companyData1.setAdvertProtection(true);
-
-        companyData1.setName("Some company name");
+        companyBase1.setLivsforloebStart(OffsetDateTime.parse("2000-01-01T00:00:00+00:00"));
 
 
+        companyBase1.setAdvertProtection(true);
 
-        Municipality municipality = Municipality.getMunicipality(101, "Copenhagen", queryManager, session);
+        companyBase1.setCompanyName("Some company name");
 
-        HashMap<String, Object> addressData1 = new HashMap<>();
-        addressData1.put("roadName", "FoobarRoad");
-        addressData1.put("roadCode", 1234);
-        addressData1.put("houseNumberFrom", 12);
-        addressData1.put("municipality", municipality);
-        Address locationAddress = queryManager.getItem(session, Address.class, addressData1);
+
+
+        Municipality municipality = Municipality.getMunicipality("101", "Copenhagen", queryManager, session);
+
+        HashMap<String, Object> adresse1 = new HashMap<>();
+        adresse1.put(Address.DB_FIELD_ROADNAME, "FoobarRoad");
+        adresse1.put(Address.DB_FIELD_ROADCODE, "1234");
+        adresse1.put(Address.DB_FIELD_HOUSE_FROM, "12");
+        adresse1.put(Address.DB_FIELD_MUNICIPALITY, municipality);
+        Address locationAddress = queryManager.getItem(session, Address.class, adresse1);
         if (locationAddress == null) {
             locationAddress = new Address();
-            locationAddress.setRoadName((String)addressData1.get("roadName"));
-            locationAddress.setRoadCode((int)addressData1.get("roadCode"));
-            locationAddress.setHouseNumberFrom((int)addressData1.get("houseNumberFrom"));
+            locationAddress.setRoadName((String)adresse1.get(Address.DB_FIELD_ROADNAME));
+            locationAddress.setRoadCode((String)adresse1.get(Address.DB_FIELD_ROADCODE));
+            locationAddress.setHouseNumberFrom((String)adresse1.get(Address.DB_FIELD_HOUSE_FROM));
             locationAddress.setMunicipality(municipality);
             session.saveOrUpdate(locationAddress);
         }
-        companyData1.setLocationAddress(locationAddress);
+        companyBase1.setLocationAddress(locationAddress);
 
 
 
-        HashMap<String, Object> addressData2 = new HashMap<>();
-        addressData2.put("roadName", "HelloWorldRoad");
-        addressData2.put("roadCode", 5678);
-        addressData2.put("houseNumberFrom", 34);
-        addressData2.put("municipality", municipality);
-        Address postalAddress = queryManager.getItem(session, Address.class, addressData2);
+        HashMap<String, Object> adresse2 = new HashMap<>();
+        adresse2.put(Address.DB_FIELD_ROADNAME, "HelloWorldRoad");
+        adresse2.put(Address.DB_FIELD_ROADCODE, "5678");
+        adresse2.put(Address.DB_FIELD_HOUSE_FROM, "34");
+        adresse2.put(Address.DB_FIELD_MUNICIPALITY, municipality);
+        Address postalAddress = queryManager.getItem(session, Address.class, adresse2);
         if (postalAddress == null) {
             postalAddress = new Address();
-            postalAddress.setRoadName((String)addressData2.get("roadName"));
-            postalAddress.setRoadCode((int)addressData2.get("roadCode"));
-            postalAddress.setHouseNumberFrom((int)addressData2.get("houseNumberFrom"));
+            postalAddress.setRoadName((String)adresse2.get(Address.DB_FIELD_ROADNAME));
+            postalAddress.setRoadCode((String)adresse2.get(Address.DB_FIELD_ROADCODE));
+            postalAddress.setHouseNumberFrom((String)adresse2.get(Address.DB_FIELD_HOUSE_FROM));
             postalAddress.setMunicipality(municipality);
             session.saveOrUpdate(postalAddress);
         }
-        companyData1.setPostalAddress(postalAddress);
+        companyBase1.setPostalAddress(postalAddress);
 
 
-        Industry primaryIndustry = queryManager.getItem(session, Industry.class, Collections.singletonMap("code", 123456));
+        Industry primaryIndustry = queryManager.getItem(session, Industry.class, Collections.singletonMap(Industry.DB_FIELD_CODE, "123456"));
         if (primaryIndustry == null) {
             primaryIndustry = new Industry();
-            primaryIndustry.setCode(123456);
-            primaryIndustry.setText("It company");
+            primaryIndustry.setIndustryCode("123456");
+            primaryIndustry.setIndustryText("It company");
             session.saveOrUpdate(primaryIndustry);
         }
-        companyData2.setPrimaryIndustry(primaryIndustry);
+        companyBase2.setPrimaryIndustry(primaryIndustry);
 
 
-        Industry secondaryIndustry1 = queryManager.getItem(session, Industry.class, Collections.singletonMap("code", 112358));
+        Industry secondaryIndustry1 = queryManager.getItem(session, Industry.class, Collections.singletonMap(Industry.DB_FIELD_CODE, "112358"));
         if (secondaryIndustry1 == null) {
             secondaryIndustry1 = new Industry();
-            secondaryIndustry1.setCode(112358);
-            secondaryIndustry1.setText("Psychiatric institution");
+            secondaryIndustry1.setIndustryCode("112358");
+            secondaryIndustry1.setIndustryText("Psychiatric institution");
             session.saveOrUpdate(secondaryIndustry1);
         }
-        companyData2.setSecondaryIndustry1(secondaryIndustry1);
+        companyBase2.setSecondaryIndustry1(secondaryIndustry1);
 
-        companyData1.setPhone("87654321", false);
-        companyData1.setFax("11112222", false);
-        companyData1.setEmail("test@example.com", false);
+        companyBase1.setPhoneNumber("87654321", false);
+        companyBase1.setFaxNumber("11112222", false);
+        companyBase1.setEmailAddress("test@example.com", false);
 
-        CompanyForm companyForm = queryManager.getItem(session, CompanyForm.class, Collections.singletonMap("code", 123));
+        CompanyForm companyForm = queryManager.getItem(session, CompanyForm.class, Collections.singletonMap(CompanyForm.DB_FIELD_CODE, "123"));
         if (companyForm == null) {
             companyForm = new CompanyForm();
-            companyForm.setCode(123);
+            companyForm.setCompanyFormCode("123");
             companyForm.setShortDescription("A/S");
-            companyForm.setResponsibleDatasource("E&S");
+            companyForm.setResponsibleDataSource("E&S");
             session.saveOrUpdate(companyForm);
         }
-        companyData1.setForm(companyForm);
+        companyBase1.setCompanyForm(companyForm);
 
-        companyData1.setYearlyEmployeeNumbers(2017,1,2,1,2,1,2);
+        companyBase1.setYearlyEmployeeNumbers(2017,1,2,1,2,1,2);
 
-        companyData1.setQuarterlyEmployeeNumbers(2017,2,1,2,1,2,1,2);
+        companyBase1.setQuarterlyEmployeeNumbers(2017,2,1,2,1,2,1,2);
 
 
-        ParticipantLink participantLink = queryManager.getItem(session, ParticipantLink.class, Collections.singletonMap("data", 44446666));
+        ParticipantLink participantLink = queryManager.getItem(session, ParticipantLink.class, Collections.singletonMap(ParticipantLink.DB_FIELD_VALUE, 44446666));
         if (participantLink == null) {
             participantLink = new ParticipantLink();
-            participantLink.setData(44446666);
+            participantLink.setValue(44446666);
             session.saveOrUpdate(participantLink);
         }
-        companyData1.addParticipant(participantLink);
+        companyBase1.addParticipant(participantLink);
 
 
-        CompanyEffect effect3 = new CompanyEffect(registration, OffsetDateTime.parse("2017-09-01T00:00:00+00:00"), null);
-        CompanyBaseData companyData3 = new CompanyBaseData();
-        companyData3.addEffect(effect3);
-        companyData3.addCompanyUnit(314159265);
+        CompanyUnitLink productionUnit = queryManager.getItem(session, CompanyUnitLink.class, Collections.singletonMap(CompanyUnitLink.DB_FIELD_PNUMBER, 314159265));
+        if (productionUnit == null) {
+            productionUnit = new CompanyUnitLink();
+            productionUnit.setpNumber(314159265);
+            session.saveOrUpdate(productionUnit);
+        }
+
+        CompanyEffect effect3 = new CompanyEffect(registrering, OffsetDateTime.parse("2017-09-01T00:00:00+00:00"), null);
+        CompanyBaseData companyBase3 = new CompanyBaseData();
+        companyBase3.addEffect(effect3);
+        companyBase3.addCompanyUnit(314159265);
 
         Transaction transaction = session.beginTransaction();
 
         try {
-            queryManager.saveRegistration(session, company, registration);
+            queryManager.saveRegistration(session, company, registrering);
             transaction.commit();
         } catch (DataFordelerException e) {
             transaction.rollback();
@@ -174,33 +181,29 @@ public class ModelTest {
 
         session = sessionManager.getSessionFactory().openSession();
         CompanyQuery companyQuery = new CompanyQuery();
-        companyQuery.setName("Some company name");
+        companyQuery.setVirksomhedsnavn("Some company name");
         Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
         companyQuery = new CompanyQuery();
-        companyQuery.setCvrNumber("78975790");
+        companyQuery.setCVRNummer("78975790");
         Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
         companyQuery = new CompanyQuery();
-        companyQuery.setFormCode(123);
+        companyQuery.setVirksomhedsform("123");
         Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
         companyQuery = new CompanyQuery();
-        companyQuery.setPhone("87654321");
+        companyQuery.setTelefonnummer("87654321");
         Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
         companyQuery = new CompanyQuery();
-        companyQuery.setFax("11112222");
+        companyQuery.setTelefaxnummer("11112222");
         Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
         companyQuery = new CompanyQuery();
-        companyQuery.setEmail("test@example.com");
+        companyQuery.setEmailadresse("test@example.com");
         Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
-
-        System.out.println("--------------------------------------");
-        System.out.println(objectMapper.writeValueAsString(company));
-        System.out.println("--------------------------------------");
 
         transaction = session.beginTransaction();
         session.delete(session.merge(company));
@@ -213,89 +216,111 @@ public class ModelTest {
         Session session = sessionManager.getSessionFactory().openSession();
         Identification companyIdentification = new Identification(UUID.randomUUID(), "test");
         CompanyEntity company = new CompanyEntity();
-        company.setIdentification(companyIdentification);
+        company.setIdentifikation(companyIdentification);
         company.setCvrNumber(24681012);
 
-        Identification companyUnitIdentification = new Identification(UUID.randomUUID(), "test");
-        CompanyUnitEntity companyUnit = new CompanyUnitEntity();
-        companyUnit.setIdentification(companyUnitIdentification);
-        companyUnit.setPNumber(11223344);
+        Identification unitIdentification = new Identification(UUID.randomUUID(), "test");
+        CompanyUnitEntity unit = new CompanyUnitEntity();
+        unit.setIdentifikation(unitIdentification);
+        Assert.assertEquals(unitIdentification, unit.getIdentification());
 
-        CompanyUnitRegistration registration = new CompanyUnitRegistration(OffsetDateTime.parse("2017-01-01T00:00:00+00:00"), OffsetDateTime.parse("2018-01-01T00:00:00+00:00"), 1);
-        CompanyUnitEffect effect = new CompanyUnitEffect(registration, OffsetDateTime.parse("2017-07-01T00:00:00+00:00"), null);
+        unit.setPNumber(11223344);
+        Assert.assertEquals(11223344, unit.getPNumber());
 
-        CompanyUnitBaseData companyUnitData = new CompanyUnitBaseData();
-        companyUnitData.addEffect(effect);
+        CompanyUnitRegistration registrering = new CompanyUnitRegistration(OffsetDateTime.parse("2017-01-01T00:00:00+00:00"), OffsetDateTime.parse("2018-01-01T00:00:00+00:00"), 1);
+        CompanyUnitEffect virkning = new CompanyUnitEffect(registrering, OffsetDateTime.parse("2017-07-01T00:00:00+00:00"), null);
 
-        companyUnitData.setIsPrimary(true);
+        CompanyUnitBaseData unitBase = new CompanyUnitBaseData();
+        unitBase.addEffect(virkning);
 
-        companyUnitData.setLifecycleStartDate(OffsetDateTime.parse("2000-01-01T00:00:00+00:00"));
+        unitBase.setIsPrimary(true);
+        Assert.assertEquals(true, unitBase.getIsPrimary());
+        unitBase.setIsPrimary(false);
+        Assert.assertEquals(false, unitBase.getIsPrimary());
+
+        OffsetDateTime startDate = OffsetDateTime.parse("2000-01-01T00:00:00+00:00");
+        unitBase.setLifecycleStart(startDate);
+        Assert.assertTrue(startDate.isEqual(unitBase.getLifecycleData().getStartDate()));
+        Assert.assertNull(unitBase.getLifecycleData().getEndDate());
 
 
 
-        companyUnitData.setName("Some company unit name");
-        companyUnitData.setCompanyCvr(24681012);
+        unitBase.setName("Some company unit name");
+        Assert.assertEquals("Some company unit name", unitBase.getName());
+        unitBase.setAssociatedCvrNumber(24681012);
+        Assert.assertEquals(24681012, (long) unitBase.getAssociatedCvrNumber());
 
 
 
-        Municipality municipality = queryManager.getItem(session, Municipality.class, Collections.singletonMap("code", 101));
-        if (municipality == null) {
-            municipality = new Municipality();
-            municipality.setCode(101);
-            municipality.setText("Copenhagen");
-            session.saveOrUpdate(municipality);
+        Municipality kommune = queryManager.getItem(session, Municipality.class, Collections.singletonMap(Municipality.DB_FIELD_CODE, "101"));
+        if (kommune == null) {
+            kommune = new Municipality();
+            kommune.setCode("101");
+            kommune.setName("Copenhagen");
+            session.saveOrUpdate(kommune);
         }
 
-        HashMap<String, Object> addressData1 = new HashMap<>();
-        addressData1.put("roadName", "FoobarRoad");
-        addressData1.put("roadCode", 1234);
-        addressData1.put("houseNumberFrom", 12);
-        addressData1.put("municipality", municipality);
-        Address locationAddress = queryManager.getItem(session, Address.class, addressData1);
-        if (locationAddress == null) {
-            locationAddress = new Address();
-            locationAddress.setRoadName((String)addressData1.get("roadName"));
-            locationAddress.setRoadCode((int)addressData1.get("roadCode"));
-            locationAddress.setHouseNumberFrom((int)addressData1.get("houseNumberFrom"));
-            locationAddress.setMunicipality(municipality);
-            session.saveOrUpdate(locationAddress);
+        HashMap<String, Object> adresse = new HashMap<>();
+        adresse.put(Address.DB_FIELD_ROADNAME, "FoobarRoad");
+        adresse.put(Address.DB_FIELD_ROADCODE, "1234");
+        adresse.put(Address.DB_FIELD_HOUSE_FROM, "12");
+        adresse.put(Address.DB_FIELD_MUNICIPALITY, kommune);
+        Address beliggenhedsadresse = queryManager.getItem(session, Address.class, adresse);
+        if (beliggenhedsadresse == null) {
+            beliggenhedsadresse = new Address();
+            beliggenhedsadresse.setRoadName((String)adresse.get(Address.DB_FIELD_ROADNAME));
+            beliggenhedsadresse.setRoadCode((String)adresse.get(Address.DB_FIELD_ROADCODE));
+            beliggenhedsadresse.setHouseNumberFrom((String)adresse.get(Address.DB_FIELD_HOUSE_FROM));
+            beliggenhedsadresse.setMunicipality(kommune);
+            session.saveOrUpdate(beliggenhedsadresse);
         }
+        unitBase.setLocationAddress(beliggenhedsadresse);
+        Assert.assertEquals("101", unitBase.getLocationAddress().getMunicipality().getCode());
+        Assert.assertEquals("Copenhagen", unitBase.getLocationAddress().getMunicipality().getName());
+        Assert.assertEquals("FoobarRoad", unitBase.getLocationAddress().getRoadName());
+        Assert.assertEquals("1234", unitBase.getLocationAddress().getRoadCode());
+        Assert.assertEquals("12", unitBase.getLocationAddress().getHouseNumberFrom());
 
-        companyUnitData.setLocationAddress(locationAddress);
 
 
-        Industry primaryIndustry = queryManager.getItem(session, Industry.class, Collections.singletonMap("code", 123456));
+        Industry primaryIndustry = queryManager.getItem(session, Industry.class, Collections.singletonMap(Industry.DB_FIELD_CODE, "123456"));
         if (primaryIndustry == null) {
             primaryIndustry = new Industry();
-            primaryIndustry.setCode(123456);
-            primaryIndustry.setText("It company");
+            primaryIndustry.setIndustryCode("123456");
+            primaryIndustry.setIndustryText("It company");
             session.saveOrUpdate(primaryIndustry);
         }
-        companyUnitData.setPrimaryIndustry(primaryIndustry);
+        unitBase.setPrimaryIndustry(primaryIndustry);
+        Assert.assertEquals("123456", unitBase.getPrimaryIndustry());
 
 
-        companyUnitData.setPhone("87654321", false);
-        companyUnitData.setFax("11112222",true);
-        companyUnitData.setEmail("test@example.com", false);
+        unitBase.setPhoneNumber("87654321", false);
+        Assert.assertEquals("87654321", unitBase.getPhoneNumber());
 
-        companyUnitData.setYearlyEmployeeNumbers(2017,1,2,1,2,1,2);
+        unitBase.setFaxNumber("11112222",true);
+        Assert.assertEquals("11112222", unitBase.getFaxNumber());
 
-        companyUnitData.setQuarterlyEmployeeNumbers(2017,2,1,1,1,1,1,1);
+        unitBase.setEmailAddress("test@example.com", false);
+        Assert.assertEquals("test@example.com", unitBase.getEmailAddress());
 
-        ParticipantLink participantLink = queryManager.getItem(session, ParticipantLink.class, Collections.singletonMap("data", 44446666));
-        if (participantLink == null) {
-            participantLink = new ParticipantLink();
-            participantLink.setData(44446666);
-            session.saveOrUpdate(participantLink);
+        unitBase.setYearlyEmployeeNumbers(2017,1,2,1,2,1,2);
+
+        unitBase.setQuarterlyEmployeeNumbers(2017,2,1,1,1,1,1,1);
+
+        ParticipantLink deltagerlink = queryManager.getItem(session, ParticipantLink.class, Collections.singletonMap(ParticipantLink.DB_FIELD_VALUE, 44446666));
+        if (deltagerlink == null) {
+            deltagerlink = new ParticipantLink();
+            deltagerlink.setValue(44446666);
+            session.saveOrUpdate(deltagerlink);
         }
-        companyUnitData.addParticipant(participantLink);
+        unitBase.addParticipant(deltagerlink);
 
         Transaction transaction = session.beginTransaction();
 
         session.saveOrUpdate(company);
 
         try {
-            queryManager.saveRegistration(session, companyUnit, registration);
+            queryManager.saveRegistration(session, unit, registrering);
             transaction.commit();
         } catch (DataFordelerException e) {
             transaction.rollback();
@@ -304,13 +329,13 @@ public class ModelTest {
         }
 
         System.out.println("--------------------------------------");
-        System.out.println(objectMapper.writeValueAsString(companyUnit));
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(unit));
         System.out.println("--------------------------------------");
 
         session = sessionManager.getSessionFactory().openSession();
         transaction = session.beginTransaction();
         session.delete(company);
-        session.delete(companyUnit);
+        session.delete(unit);
         transaction.commit();
         session.close();
     }
@@ -326,41 +351,51 @@ public class ModelTest {
 
         ParticipantEffect effect = new ParticipantEffect(registration, OffsetDateTime.parse("2017-01-01T00:00:00Z"), null);
 
-        ParticipantBaseData participantBaseData = new ParticipantBaseData();
-        participantBaseData.addEffect(effect);
-        participantBaseData.setName("Mickey Mouse");
+        ParticipantBaseData participantBase = new ParticipantBaseData();
+        participantBase.addEffect(effect);
 
-        ParticipantType type = queryManager.getItem(session, ParticipantType.class, Collections.singletonMap("name", "Person"));
+
+        participantBase.setNames("Mickey Mouse");
+        Assert.assertEquals("Mickey Mouse", participantBase.getNames());
+
+
+
+        ParticipantType type = queryManager.getItem(session, ParticipantType.class, Collections.singletonMap(ParticipantType.DB_FIELD_NAME, "Person"));
         if (type == null) {
             type = new ParticipantType();
             type.setName("Person");
             session.saveOrUpdate(type);
         }
+        participantBase.setUnitType(type);
+        Assert.assertEquals("Person", participantBase.getUnitType());
 
-        participantBaseData.setType(type);
 
-        ParticipantRole role = queryManager.getItem(session, ParticipantRole.class, Collections.singletonMap("name", "CEO"));
+
+
+        ParticipantRole role = queryManager.getItem(session, ParticipantRole.class, Collections.singletonMap(ParticipantType.DB_FIELD_NAME, "CEO"));
         if (role == null) {
             role = new ParticipantRole();
             role.setName("CEO");
             session.saveOrUpdate(role);
         }
+        participantBase.setRole(role);
+        Assert.assertEquals("CEO", participantBase.getRole());
 
-        participantBaseData.setRole(role);
 
-        ParticipantStatus status = queryManager.getItem(session, ParticipantStatus.class, Collections.singletonMap("name", "Deceased"));
+
+        ParticipantStatus status = queryManager.getItem(session, ParticipantStatus.class, Collections.singletonMap(ParticipantType.DB_FIELD_NAME, "Deceased"));
         if (status == null) {
             status = new ParticipantStatus();
             status.setName("Deceased");
             session.saveOrUpdate(status);
         }
-
-        participantBaseData.setStatus(status);
+        participantBase.setStatus(status);
+        Assert.assertEquals("Deceased", participantBase.getStatus());
 
         queryManager.saveRegistration(session, participant, registration);
 
         System.out.println("--------------------------------------");
-        System.out.println(objectMapper.writeValueAsString(participant));
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(participant));
         System.out.println("--------------------------------------");
 
     }

@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.data.shared;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.cvr.data.DetailData;
@@ -20,9 +21,12 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LifecycleData extends DetailData {
 
-    @JsonProperty(value = "startDato")
-    @XmlElement(name = "startDato")
-    @Column(nullable = true)
+    public static final String DB_FIELD_START = "startDate";
+    public static final String IO_FIELD_START = "startDato";
+
+    @JsonProperty(value = IO_FIELD_START)
+    @XmlElement(name = IO_FIELD_START)
+    @Column(name = DB_FIELD_START, nullable = true)
     private OffsetDateTime startDate;
 
     public OffsetDateTime getStartDate() {
@@ -33,11 +37,14 @@ public class LifecycleData extends DetailData {
         this.startDate = startDate;
     }
 
+    //-------------------------------------------
 
+    public static final String DB_FIELD_END = "endDate";
+    public static final String IO_FIELD_END = "slutDato";
 
-    @JsonProperty(value = "slutDato")
-    @XmlElement(name = "slutDato")
-    @Column(nullable = true)
+    @JsonProperty(value = IO_FIELD_END)
+    @XmlElement(name = IO_FIELD_END)
+    @Column(name = DB_FIELD_END, nullable = true)
     private OffsetDateTime endDate;
 
     public OffsetDateTime getEndDate() {
@@ -48,17 +55,26 @@ public class LifecycleData extends DetailData {
         this.endDate = endDate;
     }
 
-
+    //-------------------------------------------
 
     @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
         if (this.startDate != null) {
-            map.put("startDate", this.startDate);
+            map.put("startDato", this.startDate);
         }
         if (this.endDate != null) {
-            map.put("endDate", this.endDate);
+            map.put("slutDato", this.endDate);
         }
+        return map;
+    }
+
+
+    @JsonIgnore
+    public Map<String, Object> databaseFields() {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(DB_FIELD_START, this.startDate);
+        map.put(DB_FIELD_END, this.endDate);
         return map;
     }
 }

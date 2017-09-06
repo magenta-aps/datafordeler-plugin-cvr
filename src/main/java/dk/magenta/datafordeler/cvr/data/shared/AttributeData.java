@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.data.shared;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.cvr.data.DetailData;
 
@@ -17,9 +18,12 @@ import java.util.Map;
 @Table(name = "cvr_company_attributes")
 public class AttributeData extends DetailData implements Comparable<AttributeData> {
 
-    @JsonProperty(value = "sekvensNummer")
-    @XmlElement(name = "sekvensNummer")
-    @Column
+    public static final String DB_FIELD_SEQNO = "sequenceNumber";
+    public static final String IO_FIELD_SEQNO = "sekvensNummer";
+
+    @JsonProperty(value = IO_FIELD_SEQNO)
+    @XmlElement(name = IO_FIELD_SEQNO)
+    @Column(name = DB_FIELD_SEQNO)
     private int sequenceNumber;
 
     public int getSequenceNumber() {
@@ -30,9 +34,14 @@ public class AttributeData extends DetailData implements Comparable<AttributeDat
         this.sequenceNumber = sequenceNumber;
     }
 
-    @JsonProperty
-    @XmlElement
-    @Column(length = 50)
+    //------------------------------------------------
+
+    public static final String DB_FIELD_TYPE = "type";
+    public static final String IO_FIELD_TYPE = "type";
+
+    @JsonProperty(value = IO_FIELD_TYPE)
+    @XmlElement(name = IO_FIELD_TYPE)
+    @Column(name = DB_FIELD_TYPE, length = 50)
     private String type;
 
     public String getType() {
@@ -43,9 +52,14 @@ public class AttributeData extends DetailData implements Comparable<AttributeDat
         this.type = type;
     }
 
-    @JsonProperty(value = "værditype")
-    @XmlElement(name = "værditype")
-    @Column
+    //------------------------------------------------
+
+    public static final String DB_FIELD_VALUETYPE = "valueType";
+    public static final String IO_FIELD_VALUETYPE = "værditype";
+
+    @JsonProperty(value = IO_FIELD_VALUETYPE)
+    @XmlElement(name = IO_FIELD_VALUETYPE)
+    @Column(name = DB_FIELD_VALUETYPE)
     private String valueType;
 
     public String getValueType() {
@@ -56,9 +70,14 @@ public class AttributeData extends DetailData implements Comparable<AttributeDat
         this.valueType = valueType;
     }
 
-    @JsonProperty(value = "værdi")
-    @XmlElement(name = "værdi")
-    @Column(length = 8192)
+    //------------------------------------------------
+
+    public static final String DB_FIELD_VALUE = "value";
+    public static final String IO_FIELD_VALUE = "værdi";
+
+    @JsonProperty(value = IO_FIELD_VALUE)
+    @XmlElement(name = IO_FIELD_VALUE)
+    @Column(name = DB_FIELD_VALUE, length = 8192)
     private String value;
 
     public String getValue() {
@@ -69,10 +88,27 @@ public class AttributeData extends DetailData implements Comparable<AttributeDat
         this.value = value;
     }
 
+    //------------------------------------------------
+
+    /**
+     * Return a map of attributes, including those from the superclass
+     * @return
+     */
+    @JsonIgnore
+    public Map<String, Object> databaseFields() {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(DB_FIELD_SEQNO, this.sequenceNumber);
+        map.put(DB_FIELD_TYPE, this.type);
+        map.put(DB_FIELD_VALUETYPE, this.valueType);
+        map.put(DB_FIELD_VALUE, this.value);
+        return map;
+    }
+
+
     @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("sequenceNumber", this.sequenceNumber);
+        map.put("sekvensnummer", this.sequenceNumber);
         map.put("type", this.type);
         map.put("valueType", this.valueType);
         map.put("value", this.value);

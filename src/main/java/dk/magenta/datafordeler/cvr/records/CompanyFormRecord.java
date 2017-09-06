@@ -12,7 +12,7 @@ import org.hibernate.Session;
 public class CompanyFormRecord extends CvrBaseRecord {
 
     @JsonProperty(value = "virksomhedsformkode")
-    private int code;
+    private String companyFormCode;
 
     @JsonProperty(value = "kortBeskrivelse")
     private String shortDescription;
@@ -25,8 +25,8 @@ public class CompanyFormRecord extends CvrBaseRecord {
 
     @Override
     public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
-        CompanyForm form = CompanyForm.getForm(this.code, this.shortDescription, this.longDescription, this.responsibleDatasource, queryManager, session);
-        baseData.setForm(form);
+        CompanyForm form = CompanyForm.getForm(this.companyFormCode, this.shortDescription, this.longDescription, this.responsibleDatasource, queryManager, session);
+        baseData.setCompanyForm(form);
     }
 
 }

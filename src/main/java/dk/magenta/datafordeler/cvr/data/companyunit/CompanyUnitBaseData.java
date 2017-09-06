@@ -1,6 +1,6 @@
 package dk.magenta.datafordeler.cvr.data.companyunit;
 
-import dk.magenta.datafordeler.core.database.DataItem;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.core.exception.ParseException;
@@ -23,135 +23,399 @@ import java.util.*;
 @Table(name="cvr_companyunit_basedata")
 public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitBaseData> {
 
+
+    public static final String DB_FIELD_LIFECYCLE = "lifecycleData";
+    public static final String IO_FIELD_LIFECYCLE = "livscyklus";
+
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private LifecycleData lifecycleData;
 
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private BooleanData advertProtectionData;
+    @JsonProperty(value = IO_FIELD_LIFECYCLE)
+    public LifecycleData getLifecycleData() {
+        return lifecycleData;
+    }
 
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private IntegerData unitNumberData;
 
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private AddressData locationAddressData;
 
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private AddressData postalAddressData;
 
+    public static final String DB_FIELD_ADVERTPROTECTION = "advertProtection";
+    public static final String IO_FIELD_ADVERTPROTECTION = "reklamebeskyttelse";
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private BooleanData advertProtection;
+
+    @JsonProperty(value = IO_FIELD_ADVERTPROTECTION)
+    public Boolean getAdvertProtection() {
+        if (advertProtection != null) {
+            return advertProtection.getValue();
+        } else {
+            return null;
+        }
+    }
+
+
+
+
+    public static final String DB_FIELD_PNUMBER = "pNumber";
+    public static final String IO_FIELD_PNUMBER = "pNummer";
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private IntegerData pNumber;
+
+    @JsonProperty(value = IO_FIELD_PNUMBER)
+    public Long getpNumber() {
+        if (pNumber != null) {
+            return pNumber.getValue();
+        } else {
+            return null;
+        }
+    }
+
+
+
+
+    public static final String DB_FIELD_LOCATION_ADDRESS = "locationAddress";
+    public static final String IO_FIELD_LOCATION_ADDRESS = "beliggenhedsadresse";
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private AddressData locationAddress;
+
+    @JsonProperty(value = IO_FIELD_LOCATION_ADDRESS)
+    public Address getLocationAddress() {
+        if (locationAddress != null) {
+            return locationAddress.getAddress();
+        } else {
+            return null;
+        }
+    }
+
+
+
+
+    public static final String DB_FIELD_POSTAL_ADDRESS = "postalAddress";
+    public static final String IO_FIELD_POSTAL_ADDRESS = "postadresse";
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private AddressData postalAddress;
+
+    @JsonProperty(value = IO_FIELD_POSTAL_ADDRESS)
+    public Address getPostalAddress() {
+        if (postalAddress != null) {
+            return postalAddress.getAddress();
+        } else {
+            return null;
+        }
+    }
+
+
+
+
+    public static final String DB_FIELD_YEARLY_NUMBERS = "yearlyEmployeeNumbersData";
+    public static final String IO_FIELD_YEARLY_NUMBERS = "aarsbeskaeftigelse";
     @OneToMany(cascade = CascadeType.ALL)
-    @OrderBy(value = "year asc")
+    @OrderBy(value = YearlyEmployeeNumbersData.DB_FIELD_YEAR + " asc")
     private List<YearlyEmployeeNumbersData> yearlyEmployeeNumbersData;
 
+    @JsonProperty(value = IO_FIELD_YEARLY_NUMBERS)
+    public List<YearlyEmployeeNumbersData> getYearlyEmployeeNumbersData() {
+        return yearlyEmployeeNumbersData;
+    }
+
+
+
+
+    public static final String DB_FIELD_QUARTERLY_NUMBERS = "quarterlyEmployeeNumbersData";
+    public static final String IO_FIELD_QUARTERLY_NUMBERS = "kvartalsbeskaeftigelse";
     @OneToMany(cascade = CascadeType.ALL)
-    @OrderBy(value = "year asc, quarter asc")
+    @OrderBy(value = "aar asc, kvartal asc")
     private List<QuarterlyEmployeeNumbersData> quarterlyEmployeeNumbersData;
 
+    @JsonProperty(value = IO_FIELD_QUARTERLY_NUMBERS)
+    public List<QuarterlyEmployeeNumbersData> getQuarterlyEmployeeNumbersData() {
+        return quarterlyEmployeeNumbersData;
+    }
+
+
+
+
+    public static final String DB_FIELD_MONTHLY_NUMBERS = "monthlyEmployeeNumbersData";
+    public static final String IO_FIELD_MONTHLY_NUMBERS = "maanedsbeskaeftigelse";
     @OneToMany(cascade = CascadeType.ALL)
-    @OrderBy(value = "year asc, month asc")
+    @OrderBy(value = MonthlyEmployeeNumbersData.DB_FIELD_YEAR + " asc, "+MonthlyEmployeeNumbersData.DB_FIELD_MONTH+" asc")
     private List<MonthlyEmployeeNumbersData> monthlyEmployeeNumbersData;
 
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private IndustryData primaryIndustryData;
+    @JsonProperty(value = IO_FIELD_MONTHLY_NUMBERS)
+    public List<MonthlyEmployeeNumbersData> getMonthlyEmployeeNumbersData() {
+        return monthlyEmployeeNumbersData;
+    }
 
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private IndustryData secondaryIndustryData1;
 
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private IndustryData secondaryIndustryData2;
 
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private IndustryData secondaryIndustryData3;
 
+    public static final String DB_FIELD_PRIMARY_INDUSTRY = "primaryIndustry";
+    public static final String IO_FIELD_PRIMARY_INDUSTRY = "hovedbranche";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private TextData nameData;
+    private IndustryData primaryIndustry;
 
+    @JsonProperty(value = IO_FIELD_PRIMARY_INDUSTRY)
+    public String getPrimaryIndustry() {
+        if (primaryIndustry != null) {
+            return primaryIndustry.getBranche().getIndustryCode();
+        } else {
+            return null;
+        }
+    }
+
+
+
+
+    public static final String DB_FIELD_SECONDARY_INDUSTRY_1 = "secondaryIndustry1";
+    public static final String IO_FIELD_SECONDARY_INDUSTRY_1 = "bibranche1";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private ContactData phoneData;
+    private IndustryData secondaryIndustry1;
 
+    @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_1)
+    public String getSecondaryIndustry1() {
+        if(secondaryIndustry1 != null)
+            return secondaryIndustry1.getBranche().getIndustryCode();
+        else
+            return null;
+    }
+
+
+
+
+    public static final String DB_FIELD_SECONDARY_INDUSTRY_2 = "secondaryIndustry2";
+    public static final String IO_FIELD_SECONDARY_INDUSTRY_2 = "bibranche2";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private ContactData emailData;
+    private IndustryData secondaryIndustry2;
 
+    @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_2)
+    public String getSecondaryIndustry2() {
+        if (secondaryIndustry2 != null) {
+            return secondaryIndustry2.getBranche().getIndustryCode();
+        } else {
+            return null;
+        }
+    }
+
+
+
+
+    public static final String DB_FIELD_SECONDARY_INDUSTRY_3 = "secondaryIndustry3";
+    public static final String IO_FIELD_SECONDARY_INDUSTRY_3 = "bibranche3";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private ContactData faxData;
+    private IndustryData secondaryIndustry3;
 
+    @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_3)
+    public String getSecondaryIndustry3() {
+        if (secondaryIndustry3 != null) {
+            return secondaryIndustry3.getBranche().getIndustryCode();
+        } else {
+            return null;
+        }
+    }
+
+
+
+
+    public static final String DB_FIELD_NAME = "name";
+    public static final String IO_FIELD_NAME = "navn";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private BooleanData isPrimaryData;
+    private TextData name;
 
+    @JsonProperty(value = IO_FIELD_NAME)
+    public String getName() {
+        if (name != null) {
+            return name.getValue();
+        } else {
+            return null;
+        }
+    }
+
+
+
+
+    public static final String DB_FIELD_PHONENUMBER = "phoneNumber";
+    public static final String IO_FIELD_PHONENUMBER = "telefonnummer";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private CompanyUnitCvrData companyData;
+    private ContactData phoneNumber;
 
+    @JsonProperty(value = IO_FIELD_PHONENUMBER)
+    public String getPhoneNumber() {
+        if (phoneNumber != null) {
+            return phoneNumber.getValue();
+        } else {
+            return null;
+        }
+    }
+
+
+
+
+    public static final String DB_FIELD_EMAIL = "emailAddress";
+    public static final String IO_FIELD_EMAIL = "emailadresse";
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private ContactData emailAddress;
+
+    @JsonProperty(value = IO_FIELD_EMAIL)
+    public String getEmailAddress() {
+        if (emailAddress != null) {
+            return emailAddress.getValue();
+        } else {
+            return null;
+        }
+    }
+
+
+
+
+    public static final String DB_FIELD_FAXNUMBER = "faxNumber";
+    public static final String IO_FIELD_FAXNUMBER = "telefaxnummer";
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private ContactData faxNumber;
+
+    @JsonProperty(IO_FIELD_FAXNUMBER)
+    public String getFaxNumber() {
+        if (faxNumber != null) {
+            return faxNumber.getValue();
+        } else {
+            return null;
+        }
+    }
+
+
+
+
+    public static final String DB_FIELD_IS_PRIMARY = "isPrimary";
+    public static final String IO_FIELD_IS_PRIMARY = "primaer";
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private BooleanData isPrimary;
+
+    @JsonProperty(value = IO_FIELD_IS_PRIMARY)
+    public Boolean getIsPrimary() {
+        return isPrimary.getValue();
+    }
+
+
+
+
+
+    public static final String DB_FIELD_CVR_NUMBER = "associatedCvrNumber";
+    public static final String IO_FIELD_CVR_NUMBER = "tilknyttetVirksomhedsCVRNummer";
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private IntegerData associatedCvrNumber;
+
+    @JsonProperty(value = IO_FIELD_CVR_NUMBER)
+    public Long getAssociatedCvrNumber() {
+        if (associatedCvrNumber != null) {
+            return associatedCvrNumber.getValue();
+        } else {
+            return null;
+        }
+    }
+
+
+
+
+    public static final String DB_FIELD_PARTICIPANTS = "participantData";
+    public static final String IO_FIELD_PARTICIPANTS = "deltagere";
     @ManyToMany(mappedBy = "companyUnitBases")
     private Set<ParticipantLink> participantData = new HashSet<>();
 
+    @JsonProperty(value = IO_FIELD_PARTICIPANTS)
+    public Set<ParticipantLink> getParticipantData() {
+        return participantData;
+    }
+
+
+
+
+    public static final String DB_FIELD_ATTRIBUTES = "attributeData";
+    public static final String IO_FIELD_ATTRIBUTES = "attributter";
     @OneToMany(cascade = CascadeType.ALL)
     private Set<AttributeData> attributeData = new HashSet<>();
 
+    @JsonProperty(value = IO_FIELD_ATTRIBUTES)
+    public Set<AttributeData> getAttributeData() {
+        return attributeData;
+    }
+
+
+
+
+    public static final String DB_FIELD_PARTICIPANT_RELATIONS = "participantRelationData";
+    public static final String IO_FIELD_PARTICIPANT_RELATIONS = "deltagerRelation";
     @OneToMany(cascade = CascadeType.ALL)
     private Set<ParticipantRelationData> participantRelationData = new HashSet<>();
+
+    @JsonProperty(IO_FIELD_PARTICIPANT_RELATIONS)
+    public Set<ParticipantRelationData> getParticipantRelationData() {
+        return participantRelationData;
+    }
+
+
+
 
 
     @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
         if (this.lifecycleData != null) {
-            map.put("livsforløb", this.lifecycleData.asMap());
+            map.put("livsforloeb", this.lifecycleData.asMap());
         }
-        if (this.advertProtectionData != null) {
-            map.put("reklamebeskyttelse", this.advertProtectionData.getData());
+        if (this.advertProtection != null) {
+            map.put("reklamebeskyttelse", this.advertProtection.getValue());
         }
-        if (this.unitNumberData != null) {
-            map.put("enhedsNummer", this.unitNumberData.getData());
+        if (this.pNumber != null) {
+            map.put("pNummer", this.pNumber.getValue());
         }
-        if (this.locationAddressData != null) {
-            map.put("beliggenhedsadresse", this.locationAddressData.getAddress());
+        if (this.locationAddress != null) {
+            map.put("locationAddress", this.locationAddress.getAddress());
         }
-        if (this.postalAddressData != null) {
-            map.put("postadresse", this.postalAddressData.getAddress());
+        if (this.postalAddress != null) {
+            map.put("postadresse", this.postalAddress.getAddress());
         }
         if (this.yearlyEmployeeNumbersData != null) {
-            map.put("årsbeskæftigelse", this.yearlyEmployeeNumbersData);
+            map.put("aarsbeskaeftigelse", this.yearlyEmployeeNumbersData);
         }
         if (this.quarterlyEmployeeNumbersData != null) {
-            map.put("kvartalsbeskæftigelse", this.quarterlyEmployeeNumbersData);
+            map.put("kvartalsbeskaeftigelse", this.quarterlyEmployeeNumbersData);
         }
         if (this.monthlyEmployeeNumbersData != null) {
-            map.put("månedsbeskæftigelse", this.monthlyEmployeeNumbersData);
+            map.put("maanedsbeskaeftigelse", this.monthlyEmployeeNumbersData);
         }
-        if (this.primaryIndustryData != null) {
-            map.put("hovedbranche", this.primaryIndustryData.getIndustry());
+        if (this.primaryIndustry != null) {
+            map.put("hovedbranche", this.primaryIndustry.getBranche());
         }
-        if (this.secondaryIndustryData1 != null) {
-            map.put("bibranche1", this.secondaryIndustryData1.getIndustry());
+        if (this.secondaryIndustry1 != null) {
+            map.put("bibranche1", this.secondaryIndustry1.getBranche());
         }
-        if (this.secondaryIndustryData2 != null) {
-            map.put("bibranche2", this.secondaryIndustryData2.getIndustry());
+        if (this.secondaryIndustry2 != null) {
+            map.put("bibranche2", this.secondaryIndustry2.getBranche());
         }
-        if (this.secondaryIndustryData3 != null) {
-            map.put("bibranche3", this.secondaryIndustryData3.getIndustry());
+        if (this.secondaryIndustry3 != null) {
+            map.put("bibranche3", this.secondaryIndustry3.getBranche());
         }
-        if (this.nameData != null) {
-            map.put("navn", this.nameData.getData());
+        if (this.name != null) {
+            map.put("name", this.name.getValue());
         }
-        if (this.phoneData != null) {
-            map.put("telefon", this.phoneData);
+        if (this.phoneNumber != null) {
+            map.put("telefonnummer", this.phoneNumber.asMap());
         }
-        if (this.emailData != null) {
-            map.put("email", this.emailData);
+        if (this.emailAddress != null) {
+            map.put("emailadresse", this.emailAddress.asMap());
         }
-        if (this.faxData != null) {
-            map.put("fax", this.faxData);
+        if (this.faxNumber != null) {
+            map.put("telefaxnummer", this.faxNumber.asMap());
         }
-        if (this.isPrimaryData != null) {
-            map.put("primær", this.isPrimaryData.getData());
+        if (this.isPrimary != null) {
+            map.put("primaer", this.isPrimary.getValue());
         }
-        if (this.companyData != null) {
-            map.put("virksomhed", this.companyData);
+        if (this.associatedCvrNumber != null) {
+            map.put("tilknyttetVirksomhedsCVRNummer", this.associatedCvrNumber);
         }
         if (this.participantData != null && !this.participantData.isEmpty()) {
             map.put("deltagere", this.participantData);
         }
         if (this.attributeData != null && !this.attributeData.isEmpty()) {
-            map.put("attributter", this.attributeData);
+            map.put("attributes", this.attributeData);
         }
         if (this.participantRelationData != null && !this.participantRelationData.isEmpty()) {
             map.put("deltagerRelation", this.participantRelationData);
@@ -159,41 +423,41 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
         return map;
     }
 
-    public void setLifecycleStartDate(OffsetDateTime startDate) {
+    public void setLifecycleStart(OffsetDateTime startDate) {
         if (this.lifecycleData == null) {
             this.lifecycleData = new LifecycleData();
         }
         this.lifecycleData.setStartDate(startDate);
     }
-    public void setLifecycleEndDate(OffsetDateTime endDate) {
+    public void setLifecycleStop(OffsetDateTime endDate) {
         if (this.lifecycleData == null) {
             this.lifecycleData = new LifecycleData();
         }
         this.lifecycleData.setEndDate(endDate);
     }
     public void setAdvertProtection(boolean advertProtection) {
-        if (this.advertProtectionData == null) {
-            this.advertProtectionData = new BooleanData(BooleanData.Type.ADVERT_PROTECTION);
+        if (this.advertProtection == null) {
+            this.advertProtection = new BooleanData(BooleanData.Type.REKLAME_BESKYTTELSE);
         }
-        this.advertProtectionData.setData(advertProtection);
+        this.advertProtection.setValue(advertProtection);
     }
-    public void setUnitNumber(long unitNumber) {
-        if (this.unitNumberData == null) {
-            this.unitNumberData = new IntegerData();
+    public void setPNumber(long unitNumber) {
+        if (this.pNumber == null) {
+            this.pNumber = new IntegerData();
         }
-        this.unitNumberData.setData(unitNumber);
+        this.pNumber.setValue(unitNumber);
     }
     public void setLocationAddress(Address address) {
-        if (this.locationAddressData == null) {
-            this.locationAddressData = new AddressData();
+        if (this.locationAddress == null) {
+            this.locationAddress = new AddressData();
         }
-        this.locationAddressData.setAddress(address);
+        this.locationAddress.setAddress(address);
     }
     public void setPostalAddress(Address address) {
-        if (this.postalAddressData == null) {
-            this.postalAddressData = new AddressData();
+        if (this.postalAddress == null) {
+            this.postalAddress = new AddressData();
         }
-        this.postalAddressData.setAddress(address);
+        this.postalAddress.setAddress(address);
     }
 
     public void setYearlyEmployeeNumbers(int year, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
@@ -219,6 +483,8 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
         yearlyEmployeeNumbersData.setIncludingOwnersLow(includingOwnersLow);
         yearlyEmployeeNumbersData.setIncludingOwnersHigh(includingOwnersHigh);
     }
+
+
     public void setQuarterlyEmployeeNumbers(int year, int quarter, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
         if (this.quarterlyEmployeeNumbersData == null) {
             //this.quarterlyEmployeeNumbersData = new CompanyQuarterlyEmployeeNumbersData();
@@ -243,6 +509,8 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
         quarterlyEmployeeNumbersData.setIncludingOwnersLow(includingOwnersLow);
         quarterlyEmployeeNumbersData.setIncludingOwnersHigh(includingOwnersHigh);
     }
+
+
     public void setMonthlyEmployeeNumbers(int year, int month, Integer employeesLow, Integer employeesHigh, Integer fulltimeEquivalentLow, Integer fulltimeEquivalentHigh, Integer includingOwnersLow, Integer includingOwnersHigh) throws ParseException {
         if (this.monthlyEmployeeNumbersData == null) {
             //this.monthlyEmployeeNumbersData = new CompanyMonthlyEmployeeNumbersData();
@@ -269,69 +537,69 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     }
 
     public void setPrimaryIndustry(Industry industry) {
-        if (this.primaryIndustryData == null) {
-            this.primaryIndustryData = new IndustryData(true);
+        if (this.primaryIndustry == null) {
+            this.primaryIndustry = new IndustryData(true);
         }
-        this.primaryIndustryData.setIndustry(industry);
+        this.primaryIndustry.setBranche(industry);
     }
     public void setSecondaryIndustry1(Industry industry) {
-        if (this.secondaryIndustryData1 == null) {
-            this.secondaryIndustryData1 = new IndustryData(false);
+        if (this.secondaryIndustry1 == null) {
+            this.secondaryIndustry1 = new IndustryData(false);
         }
-        this.secondaryIndustryData1.setIndustry(industry);
+        this.secondaryIndustry1.setBranche(industry);
     }
     public void setSecondaryIndustry2(Industry industry) {
-        if (this.secondaryIndustryData2 == null) {
-            this.secondaryIndustryData2 = new IndustryData(false);
+        if (this.secondaryIndustry2 == null) {
+            this.secondaryIndustry2 = new IndustryData(false);
         }
-        this.secondaryIndustryData2.setIndustry(industry);
+        this.secondaryIndustry2.setBranche(industry);
     }
     public void setSecondaryIndustry3(Industry industry) {
-        if (this.secondaryIndustryData3 == null) {
-            this.secondaryIndustryData3 = new IndustryData(false);
+        if (this.secondaryIndustry3 == null) {
+            this.secondaryIndustry3 = new IndustryData(false);
         }
-        this.secondaryIndustryData3.setIndustry(industry);
+        this.secondaryIndustry3.setBranche(industry);
     }
 
     public void setName(String name) {
-        if (this.nameData == null) {
-            this.nameData = new TextData(TextData.Type.NAME);
+        if (this.name == null) {
+            this.name = new TextData(TextData.Type.NAVN);
         }
-        this.nameData.setData(name);
+        this.name.setValue(name);
     }
-    public void setPhone(String phone, boolean secret) {
-        if (this.phoneData == null) {
-            this.phoneData = new ContactData(ContactData.Type.PHONE);
+    public void setPhoneNumber(String phone, boolean secret) {
+        if (this.phoneNumber == null) {
+            this.phoneNumber = new ContactData(ContactData.Type.TELEFONNUMMER);
         }
-        this.phoneData.setData(phone);
-        this.phoneData.setSecret(secret);
+        this.phoneNumber.setValue(phone);
+        this.phoneNumber.setSecret(secret);
     }
-    public void setEmail(String email, boolean secret) {
-        if (this.emailData == null) {
-            this.emailData = new ContactData(ContactData.Type.EMAIL);
+    public void setEmailAddress(String email, boolean secret) {
+        if (this.emailAddress == null) {
+            this.emailAddress = new ContactData(ContactData.Type.EMAILADRESSE);
         }
-        this.emailData.setData(email);
-        this.emailData.setSecret(secret);
+        this.emailAddress.setValue(email);
+        this.emailAddress.setSecret(secret);
     }
-    public void setFax(String fax, boolean secret) {
-        if (this.faxData == null) {
-            this.faxData = new ContactData(ContactData.Type.FAX);
+    public void setFaxNumber(String fax, boolean secret) {
+        if (this.faxNumber == null) {
+            this.faxNumber = new ContactData(ContactData.Type.TELEFAXNUMMER);
         }
-        this.faxData.setData(fax);
-        this.faxData.setSecret(secret);
+        this.faxNumber.setValue(fax);
+        this.faxNumber.setSecret(secret);
     }
 
     public void setIsPrimary(boolean isPrimary) {
-        if (this.isPrimaryData == null) {
-            this.isPrimaryData = new BooleanData(BooleanData.Type.IS_PRIMARY_UNIT);
+        if (this.isPrimary == null) {
+            this.isPrimary = new BooleanData(BooleanData.Type.ER_PRIMAER_ENHED);
         }
-        this.isPrimaryData.setData(isPrimary);
+        this.isPrimary.setValue(isPrimary);
     }
-    public void setCompanyCvr(int cvrNumber) {
-        if (this.companyData == null) {
-            this.companyData = new CompanyUnitCvrData();
+    public void setAssociatedCvrNumber(long cvrNumber) {
+        if (this.associatedCvrNumber == null) {
+            this.associatedCvrNumber = new IntegerData();
         }
-        this.companyData.setData(cvrNumber);
+        this.associatedCvrNumber.setValue(cvrNumber);
     }
     public void addParticipant(ParticipantLink participantLink) {
         this.participantData.add(participantLink);
@@ -363,61 +631,61 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
         LookupDefinition lookupDefinition = new LookupDefinition();
         lookupDefinition.setMatchNulls(true);
         if (this.lifecycleData != null) {
-            lookupDefinition.putAll("lifecycleData", this.lifecycleData.databaseFields());
+            lookupDefinition.putAll(DB_FIELD_LIFECYCLE, this.lifecycleData.databaseFields());
         }
-        if (this.advertProtectionData != null) {
-            lookupDefinition.putAll("advertProtectionData", this.advertProtectionData.databaseFields());
+        if (this.advertProtection != null) {
+            lookupDefinition.putAll(DB_FIELD_ADVERTPROTECTION, this.advertProtection.databaseFields());
         }
-        if (this.unitNumberData != null) {
-            lookupDefinition.putAll("unitNumberData", this.unitNumberData.databaseFields());
+        if (this.pNumber != null) {
+            lookupDefinition.putAll(DB_FIELD_PNUMBER, this.pNumber.databaseFields());
         }
-        if (this.locationAddressData != null) {
-            lookupDefinition.putAll("locationAddressData", this.locationAddressData.databaseFields());
+        if (this.locationAddress != null) {
+            lookupDefinition.putAll(DB_FIELD_LOCATION_ADDRESS, this.locationAddress.databaseFields());
         }
-        if (this.postalAddressData != null) {
-            lookupDefinition.putAll("postalAddressData", this.postalAddressData.databaseFields());
+        if (this.postalAddress != null) {
+            lookupDefinition.putAll(DB_FIELD_POSTAL_ADDRESS, this.postalAddress.databaseFields());
         }
-        /*if (this.yearlyEmployeeNumbersData != null) {
-            lookupDefinition.putAll("yearlyEmployeeNumbersData", this.yearlyEmployeeNumbersData.databaseFields());
+        /*if (this.aarsbeskaeftigelse != null) {
+            lookupDefinition.putAll("aarsbeskaeftigelse", this.aarsbeskaeftigelse.databaseFields());
         }*/
-        /*if (this.quarterlyEmployeeNumbersData != null) {
-            lookupDefinition.putAll("quarterlyEmployeeNumbersData", this.quarterlyEmployeeNumbersData.databaseFields());
+        /*if (this.kvartalsbeskaeftigelse != null) {
+            lookupDefinition.putAll("kvartalsbeskaeftigelse", this.kvartalsbeskaeftigelse.databaseFields());
         }*/
-        /*if (this.monthlyEmployeeNumbersData != null) {
-            lookupDefinition.putAll("monthlyEmployeeNumbersData", this.monthlyEmployeeNumbersData.databaseFields());
+        /*if (this.maanedsbeskaeftigelse != null) {
+            lookupDefinition.putAll("maanedsbeskaeftigelse", this.maanedsbeskaeftigelse.databaseFields());
         }*/
-        if (this.primaryIndustryData != null) {
-            lookupDefinition.putAll("primaryIndustryData", this.primaryIndustryData.databaseFields());
+        if (this.primaryIndustry != null) {
+            lookupDefinition.putAll(DB_FIELD_PRIMARY_INDUSTRY, this.primaryIndustry.databaseFields());
         }
-        if (this.secondaryIndustryData1 != null) {
-            lookupDefinition.putAll("secondaryIndustryData1", this.secondaryIndustryData1.databaseFields());
+        if (this.secondaryIndustry1 != null) {
+            lookupDefinition.putAll(DB_FIELD_SECONDARY_INDUSTRY_1, this.secondaryIndustry1.databaseFields());
         }
-        if (this.secondaryIndustryData2 != null) {
-            lookupDefinition.putAll("secondaryIndustryData2", this.secondaryIndustryData2.databaseFields());
+        if (this.secondaryIndustry2 != null) {
+            lookupDefinition.putAll(DB_FIELD_SECONDARY_INDUSTRY_2, this.secondaryIndustry2.databaseFields());
         }
-        if (this.secondaryIndustryData3 != null) {
-            lookupDefinition.putAll("secondaryIndustryData3", this.secondaryIndustryData3.databaseFields());
+        if (this.secondaryIndustry3 != null) {
+            lookupDefinition.putAll(DB_FIELD_SECONDARY_INDUSTRY_3, this.secondaryIndustry3.databaseFields());
         }
-        if (this.nameData != null) {
-            lookupDefinition.putAll("nameData", this.nameData.databaseFields());
+        if (this.name != null) {
+            lookupDefinition.putAll(DB_FIELD_NAME, this.name.databaseFields());
         }
-        if (this.phoneData != null) {
-            lookupDefinition.putAll("phoneData", this.phoneData.databaseFields());
+        if (this.phoneNumber != null) {
+            lookupDefinition.putAll(DB_FIELD_PHONENUMBER, this.phoneNumber.databaseFields());
         }
-        if (this.emailData != null) {
-            lookupDefinition.putAll("emailData", this.emailData.databaseFields());
+        if (this.emailAddress != null) {
+            lookupDefinition.putAll(DB_FIELD_EMAIL, this.emailAddress.databaseFields());
         }
-        if (this.faxData != null) {
-            lookupDefinition.putAll("faxData", this.faxData.databaseFields());
+        if (this.faxNumber != null) {
+            lookupDefinition.putAll(DB_FIELD_FAXNUMBER, this.faxNumber.databaseFields());
         }
-        if (this.isPrimaryData != null) {
-            lookupDefinition.putAll("isPrimaryData", this.isPrimaryData.databaseFields());
+        if (this.isPrimary != null) {
+            lookupDefinition.putAll(DB_FIELD_IS_PRIMARY, this.isPrimary.databaseFields());
         }
-        if (this.companyData != null) {
-            lookupDefinition.putAll("companyData", this.companyData.databaseFields());
+        if (this.associatedCvrNumber != null) {
+            lookupDefinition.putAll(DB_FIELD_CVR_NUMBER, this.associatedCvrNumber.databaseFields());
         }
         if (this.participantRelationData != null) {
-            lookupDefinition.putAll("participantRelationData", DetailData.listDatabaseFields(this.participantRelationData));
+            lookupDefinition.putAll(DB_FIELD_PARTICIPANT_RELATIONS, DetailData.listDatabaseFields(this.participantRelationData));
         }
         return lookupDefinition;
     }

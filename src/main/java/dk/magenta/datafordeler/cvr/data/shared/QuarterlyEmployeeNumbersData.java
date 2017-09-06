@@ -11,19 +11,25 @@ import javax.xml.bind.annotation.XmlElement;
 import java.util.HashMap;
 import java.util.Map;
 
+import static dk.magenta.datafordeler.cvr.data.shared.QuarterlyEmployeeNumbersData.DB_FIELD_QUARTER;
+import static dk.magenta.datafordeler.cvr.data.shared.QuarterlyEmployeeNumbersData.DB_FIELD_YEAR;
+
 /**
  * Created by lars on 15-06-17.
  */
 @Entity
 @Table(name = "cvr_company_quarterly_employees", indexes = {
-        @Index(name = "companyQuarterlyEmployessYear", columnList = "year"),
-        @Index(name = "companyQuarterlyEmployessQuarter", columnList = "quarter, year")
+        @Index(name = "companyQuarterlyEmployessYear", columnList = DB_FIELD_YEAR),
+        @Index(name = "companyQuarterlyEmployessQuarter", columnList = DB_FIELD_QUARTER + ", " + DB_FIELD_YEAR)
 })
 public class QuarterlyEmployeeNumbersData extends EmployeeNumbersData implements Comparable<QuarterlyEmployeeNumbersData> {
 
-    @Column(name = "year")
-    @JsonProperty(value = "år")
-    @XmlElement(name = "år")
+    public static final String DB_FIELD_YEAR = "year";
+    public static final String IO_FIELD_YEAR = "aar";
+
+    @Column
+    @JsonProperty(value = IO_FIELD_YEAR)
+    @XmlElement(name = IO_FIELD_YEAR)
     private int year;
 
     public int getYear() {
@@ -34,11 +40,14 @@ public class QuarterlyEmployeeNumbersData extends EmployeeNumbersData implements
         this.year = year;
     }
 
+    //-------------------------------------------------------
 
+    public static final String DB_FIELD_QUARTER = "quarter";
+    public static final String IO_FIELD_QUARTER = "kvartal";
 
-    @Column(name = "quarter")
-    @JsonProperty(value = "kvartal")
-    @XmlElement(name = "kvartal")
+    @Column
+    @JsonProperty(value = IO_FIELD_QUARTER)
+    @XmlElement(name = IO_FIELD_QUARTER)
     private int quarter;
 
     public int getQuarter() {
@@ -49,14 +58,14 @@ public class QuarterlyEmployeeNumbersData extends EmployeeNumbersData implements
         this.quarter = quarter;
     }
 
-
+    //-------------------------------------------------------
 
 
     @Override
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>(super.asMap());
-        map.put("year", this.year);
-        map.put("quarter", this.quarter);
+        map.put(DB_FIELD_YEAR, this.year);
+        map.put(DB_FIELD_QUARTER, this.quarter);
         return map;
     }
 
@@ -67,8 +76,8 @@ public class QuarterlyEmployeeNumbersData extends EmployeeNumbersData implements
     @JsonIgnore
     public Map<String, Object> databaseFields() {
         HashMap<String, Object> map = new HashMap<>(super.databaseFields());
-        map.put("year", this.year);
-        map.put("quarter", this.quarter);
+        map.put(DB_FIELD_YEAR, this.year);
+        map.put(DB_FIELD_QUARTER, this.quarter);
         return map;
     }
 

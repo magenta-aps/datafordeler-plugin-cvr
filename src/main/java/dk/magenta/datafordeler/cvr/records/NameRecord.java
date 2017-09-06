@@ -17,7 +17,7 @@ public class NameRecord extends CvrBaseRecord {
 
     @Override
     public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
-        baseData.setName(this.name);
+        baseData.setCompanyName(this.name);
     }
 
     @Override
@@ -27,6 +27,6 @@ public class NameRecord extends CvrBaseRecord {
 
     @Override
     public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
-        baseData.setName(this.name);
+        baseData.setNames(this.name);
     }
 }

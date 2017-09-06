@@ -8,11 +8,13 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Collections;
 
+import static dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm.DB_FIELD_CODE;
+
 /**
  * Created by lars on 26-01-15.
  */
 @Entity
-@Table(name = "cvr_form", indexes = {@Index(name = "companyFormCode", columnList = "code")})
+@Table(name = "cvr_form", indexes = {@Index(name = "companyFormCode", columnList = DB_FIELD_CODE)})
 public class CompanyForm extends UnversionedEntity {
 
     public CompanyForm() {
@@ -20,8 +22,11 @@ public class CompanyForm extends UnversionedEntity {
 
     //----------------------------------------------------
 
-    @JsonProperty(value = "kortBeskrivelse")
-    @XmlElement(name = "kortBeskrivelse")
+    public static final String DB_FIELD_DESC_SHORT = "shortDescription";
+    public static final String IO_FIELD_DESC_SHORT = "kortBeskrivelse";
+
+    @JsonProperty(value = IO_FIELD_DESC_SHORT)
+    @XmlElement(name = IO_FIELD_DESC_SHORT)
     @Column(nullable = true, unique = true)
     private String shortDescription;
 
@@ -35,8 +40,11 @@ public class CompanyForm extends UnversionedEntity {
 
     //----------------------------------------------------
 
-    @JsonProperty(value = "langBeskrivelse")
-    @XmlElement(name = "langBeskrivelse")
+    public static final String DB_FIELD_DESC_LONG = "longDescription";
+    public static final String IO_FIELD_DESC_LONG = "langBeskrivelse";
+
+    @JsonProperty(value = IO_FIELD_DESC_LONG)
+    @XmlElement(name = IO_FIELD_DESC_LONG)
     @Column(nullable = true, unique = true)
     private String longDescription;
 
@@ -50,48 +58,56 @@ public class CompanyForm extends UnversionedEntity {
 
     //----------------------------------------------------
 
-    @JsonProperty(value = "virksomhedsformkode")
-    @XmlElement(name = "virksomhedsformkode")
+    public static final String DB_FIELD_CODE = "companyFormCode";
+    public static final String IO_FIELD_CODE = "virksomhedsformkode";
+
+    @JsonProperty(value = IO_FIELD_CODE)
+    @XmlElement(name = IO_FIELD_CODE)
     @Column(nullable = false, unique = true)
-    private int code;
+    private String companyFormCode;
 
-    public int getCode() {
-        return code;
+    public String getCompanyFormCode() {
+        return companyFormCode;
     }
 
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    @JsonProperty(value = "ansvarligDataleverandoer")
-    @XmlElement(name = "ansvarligDataleverandoer")
-    @Column
-    private String responsibleDatasource;
-
-    public String getResponsibleDatasource() {
-        return responsibleDatasource;
-    }
-
-    public void setResponsibleDatasource(String responsibleDatasource) {
-        this.responsibleDatasource = responsibleDatasource;
+    public void setCompanyFormCode(String companyFormCode) {
+        this.companyFormCode = companyFormCode;
     }
 
     //----------------------------------------------------
 
-    public static CompanyForm getForm(int code, String shortDescription, String longDescription, String responsibleDatasource, QueryManager queryManager, Session session) {
-        CompanyForm form = queryManager.getItem(session, CompanyForm.class, Collections.singletonMap("code", code));
+    public static final String DB_FIELD_SOURCE = "responsibleDataSource";
+    public static final String IO_FIELD_SOURCE = "ansvarligDataleverandoer";
+
+    @JsonProperty(value = IO_FIELD_SOURCE)
+    @XmlElement(name = IO_FIELD_SOURCE)
+    @Column
+    private String responsibleDataSource;
+
+    public String getResponsibleDataSource() {
+        return responsibleDataSource;
+    }
+
+    public void setResponsibleDataSource(String responsibleDataSource) {
+        this.responsibleDataSource = responsibleDataSource;
+    }
+
+    //----------------------------------------------------
+
+    public static CompanyForm getForm(String companyFormCode, String shortDescription, String longDescription, String responsibleDataSource, QueryManager queryManager, Session session) {
+        CompanyForm form = queryManager.getItem(session, CompanyForm.class, Collections.singletonMap(DB_FIELD_CODE, companyFormCode));
         if (form == null) {
             form = new CompanyForm();
-            form.setCode(code);
+            form.setCompanyFormCode(companyFormCode);
             form.setShortDescription(shortDescription);
             form.setLongDescription(longDescription);
-            form.setResponsibleDatasource(responsibleDatasource);
+            form.setResponsibleDataSource(responsibleDataSource);
             session.save(form);
         }
         return form;
     }
 
     public static CompanyForm getForm(CompanyForm oldForm, QueryManager queryManager, Session session) {
-        return getForm(oldForm.getCode(), oldForm.getShortDescription(), oldForm.getLongDescription(), oldForm.getResponsibleDatasource(), queryManager, session);
+        return getForm(oldForm.getCompanyFormCode(), oldForm.getShortDescription(), oldForm.getLongDescription(), oldForm.getResponsibleDataSource(), queryManager, session);
     }
 }
