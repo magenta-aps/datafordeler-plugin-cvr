@@ -13,6 +13,7 @@ import dk.magenta.datafordeler.cvr.data.unversioned.CompanyStatus;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.SortComparator;
 
 import javax.persistence.*;
@@ -587,7 +588,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public static final String DB_FIELD_UNITS = "unitData";
     public static final String IO_FIELD_UNITS = "produktionsenheder";
 
-    @ManyToMany(mappedBy = CompanyUnitLink.DB_FIELD_COMPANYBASES)
+    @ManyToMany(cascade = CascadeType.ALL)
     private Set<CompanyUnitLink> unitData = new HashSet<>();
 
     @JsonProperty(value = IO_FIELD_UNITS)

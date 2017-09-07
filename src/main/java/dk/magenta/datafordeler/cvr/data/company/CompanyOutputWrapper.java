@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dk.magenta.datafordeler.core.database.Effect;
+import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.fapi.OutputWrapper;
 import dk.magenta.datafordeler.cvr.data.shared.LifecycleData;
 import dk.magenta.datafordeler.cvr.data.shared.ParticipantRelationData;
@@ -12,193 +13,255 @@ import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 public class CompanyOutputWrapper extends OutputWrapper<CompanyEntity> {
 
-  private ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
-  @Override
-  public Object wrapResult(CompanyEntity input) {
+    HashMap<Long, ObjectNode> dataObjectCache = new HashMap<>();
 
-    objectMapper = new ObjectMapper();
+    @Override
+    public Object wrapResult(CompanyEntity input) {
 
-    // Root
-    ObjectNode root = objectMapper.createObjectNode();
+        objectMapper = new ObjectMapper();
 
-    root.put("UUID", input.getUUID().toString());
-    root.put("CVRNummer", input.getCvrNumber());
-    root.putPOJO("id", input.getIdentification());
+        // Root
+        ObjectNode root = objectMapper.createObjectNode();
+        root.put("UUID", input.getUUID().toString());
+        root.put("CVRNummer", input.getCvrNumber());
+        root.putPOJO("id", input.getIdentification());
 
-    // Registreringer
-    ArrayNode registreringer = objectMapper.createArrayNode();
-    root.set("registreringer", registreringer);
+        // Registrations
+        ArrayNode registreringer = objectMapper.createArrayNode();
+        root.set("registreringer", registreringer);
+        for (CompanyRegistration companyRegistration : input.getRegistrations()) {
+            registreringer.add(wrapRegistrering(companyRegistration));
+        }
 
-    for(CompanyRegistration companyRegistration : input.getRegistrations()) {
-      registreringer.add(wrapRegistrering(companyRegistration));
+        return root;
     }
 
-    /*
-    try {
-      System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(root));
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
-    */
-    return root;
-  }
+    protected ObjectNode wrapRegistrering(CompanyRegistration input) {
+        ObjectNode output = objectMapper.createObjectNode();
 
-  protected ObjectNode wrapRegistrering(CompanyRegistration input) {
-    ObjectNode output = objectMapper.createObjectNode();
-
-    output.put(
-        "registreringFra",
-        input.getRegistrationFrom() != null ? input.getRegistrationFrom().toString() : null
-    );
-    output.put(
-        "registreringTil",
-        input.getRegistrationTo() != null ? input.getRegistrationTo().toString() : null
-    );
-
-    for(CompanyEffect virkning : input.getSortedEffects()) {
-
-      ObjectNode virkningObject = createVirkning(virkning, true);
-
-      for (CompanyBaseData companyUnitBaseData : virkning.getDataItems()) {
-
-        addEffectDataToRegistration(
-            output, "virksomhed", createVirksomhedObject(virkningObject, companyUnitBaseData)
+        output.put(
+                "registreringFra",
+                input.getRegistrationFrom() != null ? input.getRegistrationFrom().toString() : null
         );
-      }
+        output.put(
+                "registreringTil",
+                input.getRegistrationTo() != null ? input.getRegistrationTo().toString() : null
+        );
+
+        ArrayNode effectArray = objectMapper.createArrayNode();
+
+        for (CompanyEffect virkning : input.getEffects()) {
+            ObjectNode virkningObject = createVirkning(virkning, true);
+            //ArrayNode array = objectMapper.createArrayNode();
+
+            for (CompanyBaseData companyUnitBaseData : virkning.getDataItems()) {
+                ObjectNode dataNode = this.dataObjectCache.get(companyUnitBaseData.getId());
+                if (dataNode == null) {
+                    //dataNode = createDataObject(virkningObject, companyUnitBaseData);
+                    dataNode = createDataObject(companyUnitBaseData);
+                    this.dataObjectCache.put(companyUnitBaseData.getId(), dataNode);
+                }
+                virkningObject.setAll(dataNode);
+                //array.add(dataNode);
+            }
+            //output.set("virksomhed", array);
+            effectArray.add(virkningObject);
+        }
+        output.set("virkninger", effectArray);
+
+        return output;
     }
 
-    return output;
-  }
-
-  protected void addEffectDataToRegistration(ObjectNode output, String key, JsonNode value) {
-    if(!output.has(key)) {
-      output.set(key, objectMapper.createArrayNode());
+    protected ObjectNode createVirkning(Effect virkning, boolean includeVirkningTil) {
+        ObjectNode output = objectMapper.createObjectNode();
+        output.put(
+                "virkningFra",
+                virkning.getEffectFrom() != null ? virkning.getEffectFrom().toString() : null
+        );
+        if (includeVirkningTil) {
+            output.put(
+                    "virkningTil",
+                    virkning.getEffectTo() != null ? virkning.getEffectTo().toString() : null
+            );
+        }
+        return output;
     }
-    ((ArrayNode)output.get(key)).add(value);
-  }
 
-  protected ObjectNode createVirkning(Effect virkning, boolean includeVirkningTil) {
+    protected ObjectNode createDataObject(CompanyBaseData dataItem) {
+        ObjectNode node = objectMapper.createObjectNode();
+        NodeWrapper wrapper = new NodeWrapper(node);
+        wrapper.put("CVRNummer", dataItem.getCvrNumber());
 
-    ObjectNode output = objectMapper.createObjectNode();
+        wrapper.put("virksomhedsnavn", dataItem.getCompanyName());
 
-    output.put(
-        "virkningFra",
-        virkning.getEffectFrom() != null ? virkning.getEffectFrom().toString() : null
-    );
-    if(includeVirkningTil) {
-      output.put(
-          "virkningTil",
-          virkning.getEffectTo() != null ? virkning.getEffectTo().toString() : null
-      );
+        CompanyForm virksomhedsform = dataItem.getCompanyForm();
+        String virksomhedsformkode = null;
+        String dataleverandør = null;
+        if (virksomhedsform != null) {
+            virksomhedsformkode = virksomhedsform.getCompanyFormCode();
+            dataleverandør = virksomhedsform.getResponsibleDataSource();
+        }
+        wrapper.put("virksomhedsform", virksomhedsformkode);
+        wrapper.put("dataleverandør", dataleverandør);
+
+        ObjectNode beliggenhedsadresseObject = addAdresseObject(dataItem.getLocationAddress());
+        wrapper.set("beliggenhedsadresse", beliggenhedsadresseObject);
+
+        ObjectNode postadresseObject = addAdresseObject(dataItem.getPostalAddress());
+        wrapper.set("postadresse", postadresseObject);
+
+        wrapper.put("hovedbranche", dataItem.getPrimaryIndustry());
+
+        wrapper.put("bibbranche1", dataItem.getSecondaryIndustry1());
+
+        wrapper.put("bibbranche2", dataItem.getSecondaryIndustry2());
+
+        wrapper.put("bibbranche3", dataItem.getSecondaryIndustry3());
+
+        wrapper.putPOJO("kreditOplysning", null); // Missing in input
+
+        wrapper.put("reklamebeskyttelse", dataItem.getAdvertProtection());
+
+        wrapper.put("telefonnummer", dataItem.getPhoneNumber());
+
+        wrapper.put("emailadresse", dataItem.getEmailAddress());
+
+        wrapper.put("telefaxnummer", dataItem.getFaxNumber());
+
+
+        LifecycleData lifeCycle = dataItem.getLifecycleData();
+        if (lifeCycle != null) {
+            OffsetDateTime startDate = lifeCycle.getStartDate();
+            wrapper.put("virksomhedStartdato", startDate != null ? startDate.toLocalDate().toString() : null);
+            OffsetDateTime endDate = lifeCycle.getEndDate();
+            wrapper.put("virksomhedOphørsdato", endDate != null ? endDate.toLocalDate().toString() : null);
+        }
+
+
+        Set<ParticipantRelationData> participantRelations = dataItem.getParticipantRelations();
+        if (participantRelations != null && !participantRelations.isEmpty()) {
+            ArrayNode participantRelationNode = objectMapper.createArrayNode();
+            wrapper.set("fuldtAnsvarligDeltagerRelation", participantRelationNode);
+            for (ParticipantRelationData participantRelationData : participantRelations) {
+                participantRelationNode.add(this.addIdentification(participantRelationData.getParticipant()));
+            }
+        }
+
+
+        Set<CompanyUnitLink> unitLinks = dataItem.getUnitData();
+        if (unitLinks != null && !unitLinks.isEmpty()) {
+            ArrayNode unitLinkNode = objectMapper.createArrayNode();
+            wrapper.set("penheder", unitLinkNode);
+            for (CompanyUnitLink unitLink : unitLinks) {
+                unitLinkNode.add(unitLink.getpNumber());
+            }
+        }
+
+
+        return wrapper.getNode();
     }
-    return output;
-  }
 
-  protected ObjectNode createVirksomhedObject (ObjectNode node, CompanyBaseData virksomhed)
-  {
-    node.put("CVRNummer", virksomhed.getCvrNumber());
+    protected ObjectNode addAdresseObject(Address adresse) {
 
-    node.put("virksomhedsnavn", virksomhed.getCompanyName());
+        ObjectNode adresseObject = objectMapper.createObjectNode();
 
-    CompanyForm virksomhedsform = virksomhed.getCompanyForm();
-    String virksomhedsformkode = null;
-    String dataleverandør = null;
-    if(virksomhedsform != null) {
-      virksomhedsformkode = virksomhedsform.getCompanyFormCode();
-      dataleverandør = virksomhedsform.getResponsibleDataSource();
+        if (adresse != null) {
+            NodeWrapper inner = new NodeWrapper(objectMapper.createObjectNode());
+
+            inner.put("vejkode", adresse.getRoadCode());
+            inner.put("husnummerFra", adresse.getHouseNumberFrom());
+            inner.put("etagebetegnelse", adresse.getFloor());
+            inner.put("dørbetegnelse", adresse.getDoor());
+
+            String kommunekode = null;
+            String kommunenavn = null;
+            Municipality kommune = adresse.getMunicipality();
+            if (kommune != null) {
+                kommunekode = kommune.getCode();
+                kommunenavn = kommune.getName();
+            }
+            inner.put("kommunekode", kommunekode);
+            inner.put("kommunenavn", kommunenavn);
+
+            inner.put("postdistrikt", adresse.getPostdistrikt());
+            inner.put("vejnavn", adresse.getRoadName());
+            inner.put("husnummerTil", adresse.getHouseNumberTo());
+            inner.put("postnummer", adresse.getPostnummer());
+            inner.put("supplerendeBynavn", adresse.getSupplementalCityName());
+            inner.put("adresseFritekst", adresse.getAddressText());
+            inner.put("landekode", adresse.getCountryCode());
+
+            adresseObject.set("CVRAdresse", inner.getNode());
+            adresseObject.set("adresse1", null); // Missing in input
+            adresseObject.set("adresse2", null); // Missing in input
+            adresseObject.set("coNavn", null); // Missing in input
+        } else
+            return null;
+
+        return adresseObject;
     }
-    node.put("virksomhedsform", virksomhedsformkode);
-    node.put("dataleverandør", dataleverandør);
 
-    ObjectNode beliggenhedsadresseObject = addAdresseObject(virksomhed.getLocationAddress());
-    node.set("beliggenhedsadresse", beliggenhedsadresseObject);
 
-    ObjectNode postadresseObject = addAdresseObject(virksomhed.getPostalAddress());
-    node.set("postadresse", postadresseObject);
-
-    node.put("hovedbranche", virksomhed.getPrimaryIndustry());
-
-    node.put("bibbranche1", virksomhed.getSecondaryIndustry1());
-
-    node.put("bibbranche2", virksomhed.getSecondaryIndustry2());
-
-    node.put("bibbranche3", virksomhed.getSecondaryIndustry3());
-
-    node.putPOJO("kreditOplysning", null); // Missing in input
-
-    node.put("reklamebeskyttelse", virksomhed.getAdvertProtection());
-
-    node.put("telefonnummer", virksomhed.getPhoneNumber());
-
-    node.put("emailadresse", virksomhed.getEmailAddress());
-
-    node.put("telefaxnummer", virksomhed.getFaxNumber());
-
-    LifecycleData livsforloeb = virksomhed.getLifecycleData();
-    OffsetDateTime virksomhedStartdato = null;
-    OffsetDateTime virksomhedOphørsdato = null;
-    if (livsforloeb != null) {
-      virksomhedStartdato = livsforloeb.getStartDate();
-      virksomhedOphørsdato = livsforloeb.getEndDate();
+    protected ObjectNode addIdentification(Identification identification) {
+        ObjectNode identificationObject = objectMapper.createObjectNode();
+        identificationObject.put("uuid", identification.getUuid().toString());
+        identificationObject.put("domaene", identification.getDomain());
+        return identificationObject;
     }
-    node.put("virksomhedStartdato", virksomhedStartdato != null ? virksomhedStartdato.toLocalDate().toString() : null);
-    node.put("virksomhedOphørsdato", virksomhedOphørsdato != null ? virksomhedOphørsdato.toLocalDate().toString() : null);
 
-    ArrayNode fuldtAnsvarligDeltagerRelation = objectMapper.createArrayNode();
-    for (ParticipantRelationData participantRelationData : virksomhed.getParticipantRelations()) {
-      fuldtAnsvarligDeltagerRelation.addPOJO(participantRelationData.getParticipant());
+    public class NodeWrapper {
+        private ObjectNode node;
+
+        public NodeWrapper(ObjectNode node) {
+            this.node = node;
+        }
+
+        public ObjectNode getNode() {
+            return this.node;
+        }
+
+        public void put(String key, Boolean value) {
+            if (value != null) {
+                this.node.put(key, value);
+            }
+        }
+        public void put(String key, Short value) {
+            if (value != null) {
+                this.node.put(key, value);
+            }
+        }
+        public void put(String key, Integer value) {
+            if (value != null) {
+                this.node.put(key, value);
+            }
+        }
+        public void put(String key, Long value) {
+            if (value != null) {
+                this.node.put(key, value);
+            }
+        }
+        public void put(String key, String value) {
+            if (value != null) {
+                this.node.put(key, value);
+            }
+        }
+        public void set(String key, JsonNode value) {
+            if (value != null) {
+                this.node.set(key, value);
+            }
+        }
+        public void putPOJO(String key, Object value) {
+            if (value != null) {
+                this.node.putPOJO(key, value);
+            }
+        }
     }
-    if(fuldtAnsvarligDeltagerRelation.size() == 0)
-      fuldtAnsvarligDeltagerRelation = null;
-
-    node.putPOJO("fuldtAnsvarligDeltagerRelation", fuldtAnsvarligDeltagerRelation);
-
-    return node;
-  }
-
-  protected ObjectNode addAdresseObject(Address adresse) {
-
-    ObjectNode adresseObject = objectMapper.createObjectNode();
-
-    if(adresse != null) {
-      ObjectNode json = objectMapper.createObjectNode();
-
-      json.put("vejkode", adresse.getRoadCode());
-      json.put("hunummerFra", adresse.getHouseNumberFrom());
-      json.put("etagebetegnelse", adresse.getFloor());
-      json.put("dørbetegnelse", adresse.getDoor());
-
-      String kommunekode = null;
-      String kommunenavn = null;
-      Municipality kommune = adresse.getMunicipality();
-      if(kommune != null) {
-        kommunekode = kommune.getCode();
-        kommunenavn = kommune.getName();
-      }
-      json.put("kommunekode", kommunekode);
-      json.put("kommunenavn", kommunenavn);
-
-      json.put("postdistrikt", adresse.getPostdistrikt());
-      json.put("vejnavn", adresse.getRoadName());
-      json.put("husnummerTil", adresse.getHouseNumberTo());
-      json.put("postnummer", adresse.getPostnummer());
-      json.put("supplerendeBynavn", adresse.getSupplementalCityName());
-      json.put("adresseFritekst", adresse.getAddressText());
-      json.put("landekode", adresse.getCountryCode());
-
-      adresseObject.set("CVRAdresse", json);
-      adresseObject.set("adresse1", null); // Missing in input
-      adresseObject.set("adresse2", null); // Missing in input
-      adresseObject.set("coNavn", null); // Missing in input
-    }
-    else
-      return null;
-
-    return adresseObject;
-  }
-
 }

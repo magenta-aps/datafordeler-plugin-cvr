@@ -45,7 +45,7 @@ public class ParseTest {
 
     @Test
     public void testParseCompanyFile() throws DataFordelerException, IOException {
-        InputStream input = ParseTest.class.getResourceAsStream("/company.json");
+        InputStream input = ParseTest.class.getResourceAsStream("/company_in.json");
         JsonNode root = objectMapper.readTree(input);
         JsonNode itemList = root.get("hits").get("hits");
         System.out.println("itemList.size: "+itemList.size());

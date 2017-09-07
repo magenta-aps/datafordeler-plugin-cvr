@@ -34,7 +34,7 @@ public class CompanyUnitLink extends DetailData {
     //------------------------------------------------------------
 
     public static final String DB_FIELD_COMPANYBASES = "companyBases";
-    @ManyToMany
+    @ManyToMany(mappedBy = CompanyBaseData.DB_FIELD_UNITS)
     private Set<CompanyBaseData> companyBases = new HashSet<>();
 
     @Override

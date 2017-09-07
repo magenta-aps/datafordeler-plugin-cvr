@@ -238,7 +238,7 @@ public class CompanyRecord extends CvrEntityRecord {
                 list.addAll(attributeRecord.getValues());
             }
         }
-        if (this.productionUnits != null) {
+        if (this.productionUnits != null && !this.productionUnits.isEmpty()) {
             list.addAll(this.productionUnits);
         }
         if (this.participants != null) {
