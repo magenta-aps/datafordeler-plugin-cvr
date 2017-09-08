@@ -9,6 +9,7 @@ import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.fapi.ParameterMap;
+import dk.magenta.datafordeler.core.io.ImportMetadata;
 import dk.magenta.datafordeler.core.role.SystemRole;
 import dk.magenta.datafordeler.core.user.DafoUserManager;
 import dk.magenta.datafordeler.core.user.UserProfile;
@@ -81,12 +82,13 @@ public class QueryTest {
     private ParticipantOutputWrapper participantOutputWrapper = new ParticipantOutputWrapper();
 
     private void loadCompany() throws IOException, DataFordelerException {
+        ImportMetadata importMetadata = new ImportMetadata();
         InputStream testData = QueryTest.class.getResourceAsStream("/company_in.json");
         JsonNode root = objectMapper.readTree(testData);
         JsonNode itemList = root.get("hits").get("hits");
         Assert.assertTrue(itemList.isArray());
         for (JsonNode item : itemList) {
-            companyEntityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"));
+            companyEntityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"), importMetadata);
         }
     }
 
@@ -205,13 +207,14 @@ public class QueryTest {
     @Test
     public void testQueryCompanyUnit() throws IOException, DataFordelerException {
         Session session = null;
+        ImportMetadata importMetadata = new ImportMetadata();
         try {
             InputStream testData = QueryTest.class.getResourceAsStream("/unit.json");
             JsonNode root = objectMapper.readTree(testData);
             JsonNode itemList = root.get("hits").get("hits");
             Assert.assertTrue(itemList.isArray());
             for (JsonNode item : itemList) {
-                companyUnitEntityManager.parseRegistration(item.get("_source").get("VrproduktionsEnhed"));
+                companyUnitEntityManager.parseRegistration(item.get("_source").get("VrproduktionsEnhed"), importMetadata);
             }
 
             CompanyUnitQuery query = new CompanyUnitQuery();
@@ -233,6 +236,7 @@ public class QueryTest {
 
     @Test
     public void testQueryParticipant() throws IOException, DataFordelerException {
+        ImportMetadata importMetadata = new ImportMetadata();
         Session session = null;
         try {
             InputStream testData = QueryTest.class.getResourceAsStream("/person.json");
@@ -240,7 +244,7 @@ public class QueryTest {
             JsonNode itemList = root.get("hits").get("hits");
             Assert.assertTrue(itemList.isArray());
             for (JsonNode item : itemList) {
-                participantEntityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson"));
+                participantEntityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson"), importMetadata);
             }
             ParticipantQuery query = new ParticipantQuery();
             query.setNavne("Morten Kjærsgaard");

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.magenta.datafordeler.core.Application;
 import dk.magenta.datafordeler.core.database.Registration;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
+import dk.magenta.datafordeler.core.io.ImportMetadata;
 import dk.magenta.datafordeler.core.plugin.EntityManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
@@ -45,6 +46,7 @@ public class ParseTest {
 
     @Test
     public void testParseCompanyFile() throws DataFordelerException, IOException {
+        ImportMetadata importMetadata = new ImportMetadata();
         InputStream input = ParseTest.class.getResourceAsStream("/company_in.json");
         JsonNode root = objectMapper.readTree(input);
         JsonNode itemList = root.get("hits").get("hits");
@@ -54,7 +56,7 @@ public class ParseTest {
             System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(item));
             String type = item.get("_type").asText();
             EntityManager entityManager = plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-            List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"));
+            List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"), importMetadata);
             System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations.get(0).getEntity()));
 
             Collections.sort(registrations);
@@ -67,7 +69,7 @@ public class ParseTest {
             //System.out.println(json1);
             System.out.println("==========================================================");
 
-            List<? extends Registration> registrations2 = entityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"));
+            List<? extends Registration> registrations2 = entityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"), importMetadata);
             //String json2 = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations2);
 
             //Assert.assertEquals(json1, json2);
@@ -76,6 +78,7 @@ public class ParseTest {
 
     @Test
     public void testParseUnitFile() throws IOException, DataFordelerException {
+        ImportMetadata importMetadata = new ImportMetadata();
         InputStream input = ParseTest.class.getResourceAsStream("/unit.json");
         JsonNode root = objectMapper.readTree(input);
         JsonNode itemList = root.get("hits").get("hits");
@@ -84,7 +87,7 @@ public class ParseTest {
         for (JsonNode item : itemList) {
             String type = item.get("_type").asText();
             EntityManager entityManager = plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-            List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("VrproduktionsEnhed"));
+            List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("VrproduktionsEnhed"), importMetadata);
             System.out.println("registrations.size: "+registrations.size());
             System.out.println(objectMapper.writeValueAsString(registrations));
         }
@@ -92,6 +95,7 @@ public class ParseTest {
 
     @Test
     public void testParseParticipantFile() throws IOException, DataFordelerException {
+        ImportMetadata importMetadata = new ImportMetadata();
         InputStream input = ParseTest.class.getResourceAsStream("/person.json");
         JsonNode root = objectMapper.readTree(input);
         JsonNode itemList = root.get("hits").get("hits");
@@ -101,7 +105,7 @@ public class ParseTest {
         for (JsonNode item : itemList) {
             String type = item.get("_type").asText();
             EntityManager entityManager = plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-            List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson"));
+            List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson"), importMetadata);
             System.out.println("registrations.size: "+registrations.size());
             System.out.println(objectMapper.writeValueAsString(registrations));
             Assert.assertEquals(4, registrations.size());

@@ -8,6 +8,7 @@ import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.exception.DataStreamException;
 import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.core.exception.WrongSubclassException;
+import dk.magenta.datafordeler.core.io.ImportMetadata;
 import dk.magenta.datafordeler.core.io.Receipt;
 import dk.magenta.datafordeler.core.plugin.*;
 import dk.magenta.datafordeler.core.util.ItemInputStream;
@@ -158,10 +159,10 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
     }
 
     @Override
-    public List<? extends Registration> parseRegistration(InputStream registrationData) throws DataFordelerException {
+    public List<? extends Registration> parseRegistration(InputStream registrationData, ImportMetadata importMetadata) throws DataFordelerException {
         String dataChunk = new Scanner(registrationData, "UTF-8").useDelimiter(new String(this.commonFetcher.getDelimiter())).next();
         try {
-            return this.parseRegistration(this.getObjectMapper().readTree(dataChunk));
+            return this.parseRegistration(this.getObjectMapper().readTree(dataChunk), importMetadata);
         } catch (IOException e) {
             throw new DataStreamException(e);
         }
@@ -191,7 +192,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
      * @throws ParseException
      */
     @Override
-    public List<? extends Registration> parseRegistration(JsonNode jsonNode) throws DataFordelerException {
+    public List<? extends Registration> parseRegistration(JsonNode jsonNode, ImportMetadata importMetadata) throws DataFordelerException {
         timer.reset(TASK_PARSE);
         timer.reset(TASK_FIND_ENTITY);
         timer.reset(TASK_FIND_REGISTRATIONS);
@@ -211,7 +212,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                 }
                 // We have a list of results
                 for (JsonNode item : jsonNode) {
-                    registrations.addAll(this.parseRegistration(item));
+                    registrations.addAll(this.parseRegistration(item, importMetadata));
                 }
                 return registrations;
             }
@@ -222,7 +223,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             // Wrong type. See if we have another EntityManager that can handle it
             EntityManager otherManager = this.getRegisterManager().getEntityManager(type);
             if (otherManager != null) {
-                return otherManager.parseRegistration(jsonNode);
+                return otherManager.parseRegistration(jsonNode, importMetadata);
             }
             return null;
         }
@@ -262,7 +263,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         timer.measure(TASK_FIND_ENTITY);
 
 
-        Collection<R> entityRegistrations = this.parseRegistration(entity, toplevelRecord.getAll(), getQueryManager(), session);
+        Collection<R> entityRegistrations = this.parseRegistration(entity, toplevelRecord.getAll(), getQueryManager(), session, importMetadata);
 
         registrations.addAll(entityRegistrations);
 
@@ -282,7 +283,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
 
 
-    private Collection<R> parseRegistration(E entity, List<CvrBaseRecord> records, QueryManager queryManager, Session session) throws ParseException {
+    private Collection<R> parseRegistration(E entity, List<CvrBaseRecord> records, QueryManager queryManager, Session session, ImportMetadata importMetadata) throws ParseException {
 
         HashSet<R> entityRegistrations = new HashSet<>();
         ListHashMap<Bitemporality, CvrBaseRecord> groups = this.sortIntoGroups(records);
@@ -340,6 +341,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         ArrayList<R> registrationList = new ArrayList<>(entityRegistrations);
         Collections.sort(registrationList);
         for (R registration : registrationList) {
+            registration.setLastImportTime(importMetadata.getImportTime());
             session.saveOrUpdate(registration);
             /*try {
                 queryManager.saveRegistration(session, entity, registration, false, false);
