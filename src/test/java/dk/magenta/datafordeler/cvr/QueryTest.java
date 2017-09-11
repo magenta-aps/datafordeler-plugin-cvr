@@ -28,6 +28,7 @@ import dk.magenta.datafordeler.cvr.data.participant.ParticipantQuery;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Session;
@@ -155,12 +156,12 @@ public class QueryTest {
             ArrayNode registrations = (ArrayNode) entity.get("registreringer");
             Assert.assertEquals(1, registrations.size());
             ObjectNode registration = (ObjectNode) registrations.get(0);
-            Assert.assertEquals("1999-11-29T16:37:10+01:00", registration.get("registreringFra").textValue());
-            Assert.assertEquals("2000-02-29T21:10:50+01:00", registration.get("registreringTil").textValue());
+            Assert.assertTrue(OffsetDateTime.parse("1999-11-29T16:37:10+01:00").isEqual(OffsetDateTime.parse(registration.get("registreringFra").textValue())));
+            Assert.assertTrue(OffsetDateTime.parse("2000-02-29T21:10:50+01:00").isEqual(OffsetDateTime.parse(registration.get("registreringTil").textValue())));
 
             Assert.assertEquals(1, registration.get("virkninger").size());
             ObjectNode effect = (ObjectNode) registration.get("virkninger").get(0);
-            Assert.assertEquals("1999-11-15T01:00+01:00", effect.get("virkningFra").asText());
+            Assert.assertTrue(OffsetDateTime.parse("1999-11-15T01:00+01:00").isEqual(OffsetDateTime.parse(effect.get("virkningFra").asText())));
             Assert.assertTrue(effect.get("virkningTil").isNull());
             Assert.assertEquals("80", effect.get("virksomhedsform").asText());
             Assert.assertEquals("E&S", effect.get("dataleverandør").asText());
