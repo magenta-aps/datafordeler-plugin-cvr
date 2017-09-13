@@ -11,12 +11,14 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.UUID;
 
+import static dk.magenta.datafordeler.cvr.data.company.CompanyEntity.IO_FIELD_CVR;
+
 /**
  * Created by lars on 16-05-17.
  */
 @javax.persistence.Entity
 @Table(name="cvr_company_entity")
-@JsonPropertyOrder({"cvrNumber", "uuid", "domain"})
+@JsonPropertyOrder({IO_FIELD_CVR, "uuid", "domain"})
 public class CompanyEntity extends CvrEntity<CompanyEntity, CompanyRegistration> {
 
     @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="type")
@@ -38,11 +40,13 @@ public class CompanyEntity extends CvrEntity<CompanyEntity, CompanyRegistration>
         return new CompanyRegistration();
     }
 
-    @Column
+    public static final String DB_FIELD_CVR = "cvrNumber";
+    public static final String IO_FIELD_CVR = "CVRNummer";
+    @Column(name = DB_FIELD_CVR)
     private int cvrNumber;
 
-    @JsonProperty(value = "CVRNummer")
-    @XmlElement(name = "CVRNummer")
+    @JsonProperty(value = IO_FIELD_CVR)
+    @XmlElement(name = IO_FIELD_CVR)
     public int getCvrNumber() {
         return cvrNumber;
     }

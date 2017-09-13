@@ -58,7 +58,7 @@ public class ParseTest {
             Collections.sort(registrations);
             Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:47+01:00"), registrations.get(0).getRegistrationFrom());
             Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:51+01:00"), registrations.get(0).getRegistrationTo());
-            Assert.assertEquals(122, registrations.size());
+            Assert.assertEquals(123, registrations.size());
         }
     }
 

@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.data.shared;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.cvr.data.DetailData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
@@ -40,6 +41,17 @@ public class AddressData extends DetailData {
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("address", this.address);
+        return map;
+    }
+
+    /**
+     * Return a map of attributes
+     * @return
+     */
+    @JsonIgnore
+    public Map<String, Object> databaseFields() {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(DB_FIELD_ADDRESS, this.address);
         return map;
     }
 

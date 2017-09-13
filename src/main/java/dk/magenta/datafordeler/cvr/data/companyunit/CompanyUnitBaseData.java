@@ -156,7 +156,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     @JsonProperty(value = IO_FIELD_PRIMARY_INDUSTRY)
     public String getPrimaryIndustry() {
         if (primaryIndustry != null) {
-            return primaryIndustry.getBranche().getIndustryCode();
+            return primaryIndustry.getIndustry().getIndustryCode();
         } else {
             return null;
         }
@@ -173,7 +173,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_1)
     public String getSecondaryIndustry1() {
         if(secondaryIndustry1 != null)
-            return secondaryIndustry1.getBranche().getIndustryCode();
+            return secondaryIndustry1.getIndustry().getIndustryCode();
         else
             return null;
     }
@@ -189,7 +189,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_2)
     public String getSecondaryIndustry2() {
         if (secondaryIndustry2 != null) {
-            return secondaryIndustry2.getBranche().getIndustryCode();
+            return secondaryIndustry2.getIndustry().getIndustryCode();
         } else {
             return null;
         }
@@ -206,7 +206,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_3)
     public String getSecondaryIndustry3() {
         if (secondaryIndustry3 != null) {
-            return secondaryIndustry3.getBranche().getIndustryCode();
+            return secondaryIndustry3.getIndustry().getIndustryCode();
         } else {
             return null;
         }
@@ -382,16 +382,16 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
             map.put("maanedsbeskaeftigelse", this.monthlyEmployeeNumbersData);
         }
         if (this.primaryIndustry != null) {
-            map.put("hovedbranche", this.primaryIndustry.getBranche());
+            map.put("hovedbranche", this.primaryIndustry.getIndustry());
         }
         if (this.secondaryIndustry1 != null) {
-            map.put("bibranche1", this.secondaryIndustry1.getBranche());
+            map.put("bibranche1", this.secondaryIndustry1.getIndustry());
         }
         if (this.secondaryIndustry2 != null) {
-            map.put("bibranche2", this.secondaryIndustry2.getBranche());
+            map.put("bibranche2", this.secondaryIndustry2.getIndustry());
         }
         if (this.secondaryIndustry3 != null) {
-            map.put("bibranche3", this.secondaryIndustry3.getBranche());
+            map.put("bibranche3", this.secondaryIndustry3.getIndustry());
         }
         if (this.name != null) {
             map.put("name", this.name.getValue());
@@ -540,25 +540,25 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
         if (this.primaryIndustry == null) {
             this.primaryIndustry = new IndustryData(true);
         }
-        this.primaryIndustry.setBranche(industry);
+        this.primaryIndustry.setIndustry(industry);
     }
     public void setSecondaryIndustry1(Industry industry) {
         if (this.secondaryIndustry1 == null) {
             this.secondaryIndustry1 = new IndustryData(false);
         }
-        this.secondaryIndustry1.setBranche(industry);
+        this.secondaryIndustry1.setIndustry(industry);
     }
     public void setSecondaryIndustry2(Industry industry) {
         if (this.secondaryIndustry2 == null) {
             this.secondaryIndustry2 = new IndustryData(false);
         }
-        this.secondaryIndustry2.setBranche(industry);
+        this.secondaryIndustry2.setIndustry(industry);
     }
     public void setSecondaryIndustry3(Industry industry) {
         if (this.secondaryIndustry3 == null) {
             this.secondaryIndustry3 = new IndustryData(false);
         }
-        this.secondaryIndustry3.setBranche(industry);
+        this.secondaryIndustry3.setIndustry(industry);
     }
 
     public void setName(String name) {

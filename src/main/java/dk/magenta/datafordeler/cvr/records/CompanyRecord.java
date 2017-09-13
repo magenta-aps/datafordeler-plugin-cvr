@@ -33,7 +33,7 @@ public class CompanyRecord extends CvrEntityRecord {
     @JsonProperty(value = "enhedstype")
     private String unitType;
 
-    @JsonProperty(value = "names")
+    @JsonProperty(value = "navne")
     private List<NameRecord> names;
 
     @JsonProperty(value = "beliggenhedsadresse")

@@ -28,9 +28,11 @@ public class CompanyFormData extends DetailData {
     }
 
 
+    public static final String DB_FIELD_FORM = "companyForm";
+    public static final String IO_FIELD_FROM = "virksomhedsform";
     @ManyToOne
-    @JsonProperty(value = "virksomhedsform")
-    @XmlElement(name = "virksomhedsform")
+    @JsonProperty(value = IO_FIELD_FROM)
+    @XmlElement(name = IO_FIELD_FROM)
     private CompanyForm companyForm;
 
     public CompanyForm getCompanyForm() {

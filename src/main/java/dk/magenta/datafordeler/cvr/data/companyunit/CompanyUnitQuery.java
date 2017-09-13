@@ -5,7 +5,9 @@ import dk.magenta.datafordeler.core.fapi.ParameterMap;
 import dk.magenta.datafordeler.core.fapi.QueryField;
 import dk.magenta.datafordeler.cvr.data.CvrQuery;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
+import dk.magenta.datafordeler.cvr.data.shared.IndustryData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
+import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 
 import java.util.HashMap;
@@ -94,10 +96,11 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
             lookupDefinition.put(LookupDefinition.entityref + ".pNumber", this.pNumber);
 */
         if (this.associatedCompanyCvrNumber != null) {
-            lookupDefinition.put("associatedCvrNumber.value", this.associatedCompanyCvrNumber);
+            lookupDefinition.put(CompanyUnitBaseData.DB_FIELD_CVR_NUMBER + LookupDefinition.separator + "value", this.associatedCompanyCvrNumber);
         }
         if (this.primaryIndustry != null) {
-            lookupDefinition.put("primaryIndustry.value", this.primaryIndustry);
+            lookupDefinition.put(CompanyUnitBaseData.DB_FIELD_PRIMARY_INDUSTRY + LookupDefinition.separator + IndustryData.DB_FIELD_INDUSTRY + LookupDefinition.separator + Industry.DB_FIELD_CODE, this.primaryIndustry);
+            lookupDefinition.put(CompanyUnitBaseData.DB_FIELD_PRIMARY_INDUSTRY + LookupDefinition.separator + IndustryData.DB_FIELD_PRIMARY, true);
         }
         if (this.kommunekode != null) {
             StringJoiner sj = new StringJoiner(LookupDefinition.separator);

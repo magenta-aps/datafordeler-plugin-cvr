@@ -5,7 +5,11 @@ import dk.magenta.datafordeler.core.fapi.ParameterMap;
 import dk.magenta.datafordeler.core.fapi.QueryField;
 import dk.magenta.datafordeler.cvr.data.CvrQuery;
 import dk.magenta.datafordeler.cvr.data.shared.AddressData;
+import dk.magenta.datafordeler.cvr.data.shared.BooleanData;
+import dk.magenta.datafordeler.cvr.data.shared.ContactData;
+import dk.magenta.datafordeler.cvr.data.shared.TextData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
+import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 
 import java.util.HashMap;
@@ -174,25 +178,25 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
         LookupDefinition lookupDefinition = new LookupDefinition(this);
 
         if (this.CVRNummer != null) {
-            lookupDefinition.put(LookupDefinition.entityref + ".cvrNumber", this.CVRNummer);
+            lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + CompanyEntity.DB_FIELD_CVR, this.CVRNummer);
         }
         if (this.virksomhedsform != null) {
-            lookupDefinition.put(CompanyBaseData.DB_FIELD_FORM + LookupDefinition.separator + "companyForm" + LookupDefinition.separator + "companyFormCode", this.virksomhedsform);
+            lookupDefinition.put(CompanyBaseData.DB_FIELD_FORM + LookupDefinition.separator + CompanyFormData.DB_FIELD_FORM + LookupDefinition.separator + CompanyForm.DB_FIELD_CODE, this.virksomhedsform);
         }
         if (this.reklamebeskyttelse != null) {
-            lookupDefinition.put(CompanyBaseData.DB_FIELD_ADVERTPROTECTION + LookupDefinition.separator + "value", this.reklamebeskyttelse);
+            lookupDefinition.put(CompanyBaseData.DB_FIELD_ADVERTPROTECTION + LookupDefinition.separator + BooleanData.DB_FIELD_VALUE, this.reklamebeskyttelse);
         }
         if (this.virksomhedsnavn != null) {
-            lookupDefinition.put(CompanyBaseData.DB_FIELD_NAME + LookupDefinition.separator + "value", this.virksomhedsnavn);
+            lookupDefinition.put(CompanyBaseData.DB_FIELD_NAME + LookupDefinition.separator + TextData.DB_FIELD_VALUE, this.virksomhedsnavn);
         }
         if (this.telefonnummer != null) {
-            lookupDefinition.put(CompanyBaseData.DB_FIELD_PHONENUMBER + LookupDefinition.separator + "value", this.telefonnummer);
+            lookupDefinition.put(CompanyBaseData.DB_FIELD_PHONENUMBER + LookupDefinition.separator + ContactData.DB_FIELD_VALUE, this.telefonnummer);
         }
         if (this.telefaxnummer != null) {
-            lookupDefinition.put(CompanyBaseData.DB_FIELD_FAXNUMBER + LookupDefinition.separator + "value", this.telefaxnummer);
+            lookupDefinition.put(CompanyBaseData.DB_FIELD_FAXNUMBER + LookupDefinition.separator + ContactData.DB_FIELD_VALUE, this.telefaxnummer);
         }
         if (this.emailadresse != null) {
-            lookupDefinition.put(CompanyBaseData.DB_FIELD_EMAIL + LookupDefinition.separator + "value", this.emailadresse);
+            lookupDefinition.put(CompanyBaseData.DB_FIELD_EMAIL + LookupDefinition.separator + ContactData.DB_FIELD_VALUE, this.emailadresse);
         }
         if (this.kommunekode != null) {
             StringJoiner sj = new StringJoiner(LookupDefinition.separator);

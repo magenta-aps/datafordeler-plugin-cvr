@@ -12,7 +12,6 @@ import dk.magenta.datafordeler.core.fapi.ParameterMap;
 import dk.magenta.datafordeler.core.role.SystemRole;
 import dk.magenta.datafordeler.core.user.DafoUserManager;
 import dk.magenta.datafordeler.core.user.UserProfile;
-import dk.magenta.datafordeler.core.util.ListHashMap;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntityManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyOutputWrapper;
@@ -32,7 +31,10 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
+
 import org.hibernate.Session;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -124,55 +126,93 @@ public class QueryTest {
         when(dafoUserManager.getFallbackUser()).thenReturn(testUserDetails);
     }
 
+    private ResponseEntity<String> restSearch(ParameterMap parameters, String type) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept", "application/json");
+        HttpEntity<String> httpEntity = new HttpEntity<String>("", headers);
+        return this.restTemplate.exchange("/cvr/"+type+"/1/rest/search?" + parameters.asUrlParams(), HttpMethod.GET, httpEntity, String.class);
+    }
+
     @Test
-    public void testQueryCompany() throws IOException, DataFordelerException {
-        Session session = null;
+    public void testCompanyIdempotence() throws IOException, DataFordelerException {
+        Session session = sessionManager.getSessionFactory().openSession();
         try {
             loadCompany();
 
-            CompanyQuery query = new CompanyQuery();
-            query.setEmailadresse("info@magenta.dk");
-            session = sessionManager.getSessionFactory().openSession();
-
-            List<CompanyEntity> entities = queryManager.getAllEntities(session, query, CompanyEntity.class);
-            long start = Instant.now().toEpochMilli();
-            List<Object> wrapped = companyOutputWrapper.wrapResults(entities);
-            System.out.println(Instant.now().toEpochMilli() - start + "ms");
-
-            Assert.assertEquals(1, wrapped.size());
-            Assert.assertTrue(wrapped.get(0) instanceof ObjectNode);
-            ObjectNode objectNode = (ObjectNode) wrapped.get(0);
-
-            Assert.assertEquals(122, objectNode.get("registreringer").size());
-
-            String firstImport = objectMapper.writeValueAsString(wrapped);
-
+            List<CompanyEntity> entities = queryManager.getAllEntities(session, CompanyEntity.class);
+            JsonNode firstImport = objectMapper.valueToTree(entities);
 
             loadCompany();
-            entities = queryManager.getAllEntities(session, query, CompanyEntity.class);
-            wrapped = companyOutputWrapper.wrapResults(entities);
-            String secondImport = objectMapper.writeValueAsString(wrapped);
+            entities = queryManager.getAllEntities(session, CompanyEntity.class);
+            JsonNode secondImport = objectMapper.valueToTree(entities);
 
-            assertJsonEquality(objectMapper.readTree(firstImport), objectMapper.readTree(secondImport), true, true);
+            assertJsonEquality(firstImport, secondImport, true, true);
+        } finally {
+            session.close();
+        }
+    }
+
+
+    @Test
+    public void testCompanyQuery() throws IOException, DataFordelerException {
+        Session session = sessionManager.getSessionFactory().openSession();
+        try {
+            loadCompany();
+            UUID expectedUUID = UUID.fromString("2334456b-d2ca-372d-aa60-4a2ba7fed7cd");
+
+            CompanyEntity companyEntity = queryManager.getEntity(session, expectedUUID, CompanyEntity.class);
+            Object wrappedEntity = companyOutputWrapper.wrapResult(companyEntity);
+            Assert.assertTrue(wrappedEntity instanceof ObjectNode);
+            ObjectNode objectNode = (ObjectNode) wrappedEntity;
+            Assert.assertEquals(123, objectNode.get("registreringer").size());
+
+            List<CompanyEntity> entities;
+            CompanyQuery query;
+
+            query = new CompanyQuery();
+            query.setEmailadresse("info@magenta.dk");
+            entities = queryManager.getAllEntities(session, query, CompanyEntity.class);
+            Assert.assertEquals(1, entities.size());
+            Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
             query = new CompanyQuery();
             query.setKommunekode(101);
             entities = queryManager.getAllEntities(session, query, CompanyEntity.class);
             Assert.assertEquals(1, entities.size());
+            Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
+            query = new CompanyQuery();
+            query.setVirksomhedsform(80);
+            entities = queryManager.getAllEntities(session, query, CompanyEntity.class);
+            Assert.assertEquals(1, entities.size());
+            Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
+
+            query = new CompanyQuery();
+            query.setCVRNummer("25052943");
+            entities = queryManager.getAllEntities(session, query, CompanyEntity.class);
+            Assert.assertEquals(1, entities.size());
+            Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
+
+            query = new CompanyQuery();
+            query.setTelefonnummer("33369696");
+            entities = queryManager.getAllEntities(session, query, CompanyEntity.class);
+            Assert.assertEquals(1, entities.size());
+            Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
+
+            query = new CompanyQuery();
+            query.setVirksomhedsnavn("MAGENTA ApS");
+            entities = queryManager.getAllEntities(session, query, CompanyEntity.class);
+            Assert.assertEquals(1, entities.size());
+            Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
         } finally {
-            if (session != null) {
-                session.close();
-            }
+            session.close();
         }
     }
 
 
-
-
     @Test
-    public void testRestQueryCompany() throws IOException, DataFordelerException {
+    public void testCompanyRestQuery() throws IOException, DataFordelerException {
         Session session = null;
         try {
             loadCompany();
@@ -183,7 +223,7 @@ public class QueryTest {
             searchParameters.add("registrationFrom", "1999-11-30");
             searchParameters.add("registrationTo", "1999-12-01");
 
-            ResponseEntity<String> response = search(searchParameters);
+            ResponseEntity<String> response = restSearch(searchParameters, "company");
             Assert.assertEquals(200, response.getStatusCode().value());
             JsonNode jsonBody = objectMapper.readTree(response.getBody());
 
@@ -193,9 +233,9 @@ public class QueryTest {
             Assert.assertEquals(1, registrations.size());
             ObjectNode registration = (ObjectNode) registrations.get(0);
             Assert.assertTrue(OffsetDateTime.parse("1999-11-29T16:37:10+01:00").isEqual(OffsetDateTime.parse(registration.get("registreringFra").textValue())));
-            Assert.assertTrue(OffsetDateTime.parse("2000-02-29T21:10:50+01:00").isEqual(OffsetDateTime.parse(registration.get("registreringTil").textValue())));
+            Assert.assertTrue(OffsetDateTime.parse("2000-02-29T11:44:42+01:00").isEqual(OffsetDateTime.parse(registration.get("registreringTil").textValue())));
 
-            Assert.assertEquals(1, registration.get("virkninger").size());
+            Assert.assertEquals(2, registration.get("virkninger").size());
             ObjectNode effect = (ObjectNode) registration.get("virkninger").get(0);
             Assert.assertTrue(OffsetDateTime.parse("1999-11-15T01:00+01:00").isEqual(OffsetDateTime.parse(effect.get("virkningFra").asText())));
             Assert.assertTrue(effect.get("virkningTil").isNull());
@@ -213,16 +253,14 @@ public class QueryTest {
             searchParameters.add("effectFrom", "2015-01-01");
             searchParameters.add("effectTo", "2015-01-01");
 
-            response = search(searchParameters);
+            response = restSearch(searchParameters, "company");
             Assert.assertEquals(200, response.getStatusCode().value());
             jsonBody = objectMapper.readTree(response.getBody());
 
             entity = (ObjectNode) jsonBody.get("results").get(0);
             registrations = (ArrayNode) entity.get("registreringer");
             registration = (ObjectNode) registrations.get(0);
-            Assert.assertEquals(4, registration.get("virkninger").size());
-
-            //System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonBody));
+            Assert.assertEquals(5, registration.get("virkninger").size());
 
         } finally {
             if (session != null) {
@@ -231,47 +269,48 @@ public class QueryTest {
         }
     }
 
-    private ResponseEntity<String> search(ParameterMap parameters) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Accept", "application/json");
-        HttpEntity<String> httpEntity = new HttpEntity<String>("", headers);
-        return this.restTemplate.exchange("/cvr/company/1/rest/search?" + parameters.asUrlParams(), HttpMethod.GET, httpEntity, String.class);
+
+    @Test
+    public void testCompanyUnitIdempotence() throws Exception {
+        Session session = sessionManager.getSessionFactory().openSession();
+        try {
+            loadUnit();
+            List<CompanyUnitEntity> entities = queryManager.getAllEntities(session, CompanyUnitEntity.class);
+            JsonNode firstImport = objectMapper.valueToTree(entities);
+
+            loadUnit();
+            entities = queryManager.getAllEntities(session, CompanyUnitEntity.class);
+            JsonNode secondImport = objectMapper.valueToTree(entities);
+
+            assertJsonEquality(firstImport, secondImport, true, true);
+        } finally {
+            session.close();
+        }
     }
 
 
     @Test
-    public void testQueryCompanyUnit() throws Exception {
-        Session session = null;
+    public void testCompanyUnitQuery() throws Exception {
+        Session session = sessionManager.getSessionFactory().openSession();
         try {
             loadUnit();
-            CompanyUnitQuery query = new CompanyUnitQuery();
-            //query.setAssociatedCompanyCvrNumber(1020895337L);
-            session = sessionManager.getSessionFactory().openSession();
 
+            CompanyUnitQuery query = new CompanyUnitQuery();
+            query.setPrimaryIndustry("620200");
             List<CompanyUnitEntity> entities = queryManager.getAllEntities(session, query, CompanyUnitEntity.class);
             List<Object> wrapped = companyUnitOutputWrapper.wrapResults(entities);
-
-            Assert.assertEquals(10, wrapped.size());
+            Assert.assertEquals(1, wrapped.size());
             Assert.assertTrue(wrapped.get(0) instanceof ObjectNode);
             ObjectNode objectNode = (ObjectNode) wrapped.get(0);
-            Assert.assertEquals(5, objectNode.get("registreringer").size());
-
-            String firstImport = objectMapper.writeValueAsString(wrapped);
-
-
-            loadUnit();
-            entities = queryManager.getAllEntities(session, query, CompanyUnitEntity.class);
-            wrapped = companyUnitOutputWrapper.wrapResults(entities);
-            String secondImport = objectMapper.writeValueAsString(wrapped);
-
-            assertJsonEquality(objectMapper.readTree(firstImport), objectMapper.readTree(secondImport), true, true);
-
+            Assert.assertEquals(3, objectNode.get("registreringer").size());
 
             query = new CompanyUnitQuery();
             query.setKommunekode(101);
             entities = queryManager.getAllEntities(session, query, CompanyUnitEntity.class);
             Assert.assertEquals(5, entities.size());
 
+
+
         } finally {
             if (session != null) {
                 session.close();
@@ -280,15 +319,30 @@ public class QueryTest {
     }
 
     @Test
-    public void testQueryParticipant() throws IOException, DataFordelerException {
-        Session session = null;
+    public void testParticipantIdempotence() throws IOException, DataFordelerException {
+        Session session = sessionManager.getSessionFactory().openSession();
         try {
             loadParticipant();
 
+            List<ParticipantEntity> entities = queryManager.getAllEntities(session, ParticipantEntity.class);
+            JsonNode firstImport = objectMapper.valueToTree(entities);
+
+            loadParticipant();
+            entities = queryManager.getAllEntities(session, ParticipantEntity.class);
+            JsonNode secondImport = objectMapper.valueToTree(entities);
+
+            assertJsonEquality(firstImport, secondImport, true, true);
+        } finally {
+            session.close();
+        }
+    }
+
+    @Test
+    public void testParticipantQuery() throws IOException, DataFordelerException {
+        Session session = null;
+        try {
+            loadParticipant();
             session = sessionManager.getSessionFactory().openSession();
-            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(queryManager.getAllEntities(session, ParticipantEntity.class)));
-
-
 
             ParticipantQuery query = new ParticipantQuery();
             query.setNavne("Morten Kjærsgaard");
@@ -302,7 +356,6 @@ public class QueryTest {
             Assert.assertEquals(4, objectNode.get("registreringer").size());
 
             String firstImport = objectMapper.writeValueAsString(wrapped);
-            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(wrapped));
 
             loadParticipant();
             entities = queryManager.getAllEntities(session, query, ParticipantEntity.class);
