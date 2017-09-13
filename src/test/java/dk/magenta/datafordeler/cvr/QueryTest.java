@@ -92,6 +92,26 @@ public class QueryTest {
         }
     }
 
+    private void loadUnit() throws IOException, DataFordelerException {
+        InputStream testData = QueryTest.class.getResourceAsStream("/unit.json");
+        JsonNode root = objectMapper.readTree(testData);
+        JsonNode itemList = root.get("hits").get("hits");
+        Assert.assertTrue(itemList.isArray());
+        for (JsonNode item : itemList) {
+            companyUnitEntityManager.parseRegistration(item.get("_source").get("VrproduktionsEnhed"));
+        }
+    }
+
+    private void loadParticipant() throws IOException, DataFordelerException {
+        InputStream testData = QueryTest.class.getResourceAsStream("/person.json");
+        JsonNode root = objectMapper.readTree(testData);
+        JsonNode itemList = root.get("hits").get("hits");
+        Assert.assertTrue(itemList.isArray());
+        for (JsonNode item : itemList) {
+            participantEntityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson"));
+        }
+    }
+
     private void giveAccess(SystemRole... rolesDefinitions) {
         ArrayList<String> roleNames = new ArrayList<>();
         for (SystemRole role : rolesDefinitions) {
@@ -223,22 +243,28 @@ public class QueryTest {
     public void testQueryCompanyUnit() throws Exception {
         Session session = null;
         try {
-            InputStream testData = QueryTest.class.getResourceAsStream("/unit.json");
-            JsonNode root = objectMapper.readTree(testData);
-            JsonNode itemList = root.get("hits").get("hits");
-            Assert.assertTrue(itemList.isArray());
-            for (JsonNode item : itemList) {
-                companyUnitEntityManager.parseRegistration(item.get("_source").get("VrproduktionsEnhed"));
-            }
-
+            loadUnit();
             CompanyUnitQuery query = new CompanyUnitQuery();
             //query.setAssociatedCompanyCvrNumber(1020895337L);
             session = sessionManager.getSessionFactory().openSession();
 
-
             List<CompanyUnitEntity> entities = queryManager.getAllEntities(session, query, CompanyUnitEntity.class);
-            companyUnitOutputWrapper.wrapResults(entities);
+            List<Object> wrapped = companyUnitOutputWrapper.wrapResults(entities);
 
+            Assert.assertEquals(10, wrapped.size());
+            Assert.assertTrue(wrapped.get(0) instanceof ObjectNode);
+            ObjectNode objectNode = (ObjectNode) wrapped.get(0);
+            Assert.assertEquals(5, objectNode.get("registreringer").size());
+
+            String firstImport = objectMapper.writeValueAsString(wrapped);
+
+
+            loadUnit();
+            entities = queryManager.getAllEntities(session, query, CompanyUnitEntity.class);
+            wrapped = companyUnitOutputWrapper.wrapResults(entities);
+            String secondImport = objectMapper.writeValueAsString(wrapped);
+
+            assertJsonEquality(objectMapper.readTree(firstImport), objectMapper.readTree(secondImport), true, true);
 
 
             query = new CompanyUnitQuery();
@@ -257,29 +283,38 @@ public class QueryTest {
     public void testQueryParticipant() throws IOException, DataFordelerException {
         Session session = null;
         try {
-            InputStream testData = QueryTest.class.getResourceAsStream("/person.json");
-            JsonNode root = objectMapper.readTree(testData);
-            JsonNode itemList = root.get("hits").get("hits");
-            Assert.assertTrue(itemList.isArray());
-            for (JsonNode item : itemList) {
-                participantEntityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson"));
-            }
+            loadParticipant();
+
+            session = sessionManager.getSessionFactory().openSession();
+            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(queryManager.getAllEntities(session, ParticipantEntity.class)));
+
+
+
             ParticipantQuery query = new ParticipantQuery();
             query.setNavne("Morten Kjærsgaard");
-            session = sessionManager.getSessionFactory().openSession();
-
 
             List<ParticipantEntity> entities = queryManager.getAllEntities(session, query, ParticipantEntity.class);
-            participantOutputWrapper.wrapResults(entities);
+            List<Object> wrapped = participantOutputWrapper.wrapResults(entities);
 
+            Assert.assertEquals(1, wrapped.size());
+            Assert.assertTrue(wrapped.get(0) instanceof ObjectNode);
+            ObjectNode objectNode = (ObjectNode) wrapped.get(0);
+            Assert.assertEquals(4, objectNode.get("registreringer").size());
+
+            String firstImport = objectMapper.writeValueAsString(wrapped);
+            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(wrapped));
+
+            loadParticipant();
+            entities = queryManager.getAllEntities(session, query, ParticipantEntity.class);
+            wrapped = participantOutputWrapper.wrapResults(entities);
+            String secondImport = objectMapper.writeValueAsString(wrapped);
+
+            assertJsonEquality(objectMapper.readTree(firstImport), objectMapper.readTree(secondImport), true, true);
 
             query = new ParticipantQuery();
             query.setKommunekode(101);
             entities = queryManager.getAllEntities(session, query, ParticipantEntity.class);
             Assert.assertEquals(1, entities.size());
-
-
-
 
         } finally {
             if (session != null) {

@@ -24,7 +24,7 @@ public class ParticipantRecord extends CvrEntityRecord {
     @JsonProperty(value = "enhedstype")
     public String unitType;
 
-    @JsonProperty(value = "names")
+    @JsonProperty(value = "navne")
     public List<NameRecord> names;
 
     @JsonProperty(value = "beliggenhedsadresse")
