@@ -4,9 +4,13 @@ import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.core.fapi.ParameterMap;
 import dk.magenta.datafordeler.core.fapi.QueryField;
 import dk.magenta.datafordeler.cvr.data.CvrQuery;
+import dk.magenta.datafordeler.cvr.data.shared.AddressData;
+import dk.magenta.datafordeler.cvr.data.unversioned.Address;
+import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringJoiner;
 
 /**
  * Created by lars on 19-05-17.
@@ -16,10 +20,11 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
     public static final String CVRNUMMER = "CVRNummer";
     public static final String REKLAMEBESKYTTELSE = "reklamebeskyttelse";
     public static final String NAVN = "virksomhedsnavn";
-    public static final String TELEFONNUMMER = "phoneNumber";
-    public static final String TELEFAXNUMMER = "faxNumber";
+    public static final String TELEFONNUMMER = "telefon";
+    public static final String TELEFAXNUMMER = "telefax";
     public static final String EMAILADRESSE = "emailadresse";
     public static final String VIRKSOMHEDSFORM = "virksomhedsform";
+    public static final String KOMMUNEKODE = "kommunekode";
 
     @QueryField(type = QueryField.FieldType.STRING, queryName = CVRNUMMER)
     private String CVRNummer;
@@ -110,6 +115,23 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
         this.setVirksomhedsform(Integer.toString(virksomhedsform));
     }
 
+
+
+    @QueryField(type = QueryField.FieldType.STRING, queryName = KOMMUNEKODE)
+    private String kommunekode;
+
+    public String getKommunekode() {
+        return this.kommunekode;
+    }
+
+    public void setKommunekode(String kommunekode) {
+        this.kommunekode = kommunekode;
+    }
+
+    public void setKommunekode(int kommunekode) {
+        this.setKommunekode(String.format("%03d", kommunekode));
+    }
+
     @Override
     public Map<String, Object> getSearchParameters() {
         HashMap<String, Object> map = new HashMap<>();
@@ -120,6 +142,7 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
         map.put(TELEFAXNUMMER, this.telefaxnummer);
         map.put(EMAILADRESSE, this.emailadresse);
         map.put(VIRKSOMHEDSFORM, this.virksomhedsform);
+        map.put(KOMMUNEKODE, this.kommunekode);
         return map;
     }
 
@@ -132,6 +155,7 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
         this.setTelefaxnummer(parameters.getFirst(TELEFAXNUMMER));
         this.setEmailadresse(parameters.getFirst(EMAILADRESSE));
         this.setVirksomhedsform(parameters.getFirst(VIRKSOMHEDSFORM));
+        this.setKommunekode(parameters.getFirst(KOMMUNEKODE));
     }
 
     @Override
@@ -153,49 +177,30 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
             lookupDefinition.put(LookupDefinition.entityref + ".cvrNumber", this.CVRNummer);
         }
         if (this.virksomhedsform != null) {
-            lookupDefinition.put("companyForm.companyForm.companyFormCode", this.virksomhedsform);
+            lookupDefinition.put(CompanyBaseData.DB_FIELD_FORM + LookupDefinition.separator + "companyForm" + LookupDefinition.separator + "companyFormCode", this.virksomhedsform);
         }
         if (this.reklamebeskyttelse != null) {
-            lookupDefinition.put("advertProtection.value", this.reklamebeskyttelse);
+            lookupDefinition.put(CompanyBaseData.DB_FIELD_ADVERTPROTECTION + LookupDefinition.separator + "value", this.reklamebeskyttelse);
         }
-        /*if (this.lifecycleData != null) {
-            lookupDefinition.putAll("lifecycleData", this.lifecycleData.databaseFields());
-        }
-        if (this.locationAddressData != null) {
-            lookupDefinition.putAll("locationAddressData", this.locationAddressData.databaseFields());
-        }
-        if (this.postalAddressData != null) {
-            lookupDefinition.putAll("postalAddressData", this.postalAddressData.databaseFields());
-        }
-        if (this.yearlyEmployeeNumbersData != null) {
-            lookupDefinition.putAll("yearlyEmployeeNumbersData", this.yearlyEmployeeNumbersData.databaseFields());
-        }
-        if (this.quarterlyEmployeeNumbersData != null) {
-            lookupDefinition.putAll("quarterlyEmployeeNumbersData", this.quarterlyEmployeeNumbersData.databaseFields());
-        }*//*
-        if (this.primaryIndustryData != null) {
-            lookupDefinition.putAll("primaryIndustryData", this.primaryIndustryData.databaseFields());
-        }
-        if (this.secondaryIndustryData1 != null) {
-            lookupDefinition.putAll("secondaryIndustryData1", this.secondaryIndustryData1.databaseFields());
-        }
-        if (this.secondaryIndustryData2 != null) {
-            lookupDefinition.putAll("secondaryIndustryData2", this.secondaryIndustryData2.databaseFields());
-        }
-        if (this.secondaryIndustryData3 != null) {
-            lookupDefinition.putAll("secondaryIndustryData3", this.secondaryIndustryData3.databaseFields());
-        }*/
         if (this.virksomhedsnavn != null) {
-            lookupDefinition.put("companyName.value", this.virksomhedsnavn);
+            lookupDefinition.put(CompanyBaseData.DB_FIELD_NAME + LookupDefinition.separator + "value", this.virksomhedsnavn);
         }
         if (this.telefonnummer != null) {
-            lookupDefinition.put("phoneNumber.value", this.telefonnummer);
-        }
-        if (this.emailadresse != null) {
-            lookupDefinition.put("emailAddress.value", this.emailadresse);
+            lookupDefinition.put(CompanyBaseData.DB_FIELD_PHONENUMBER + LookupDefinition.separator + "value", this.telefonnummer);
         }
         if (this.telefaxnummer != null) {
-            lookupDefinition.put("faxNumber.value", this.telefaxnummer);
+            lookupDefinition.put(CompanyBaseData.DB_FIELD_FAXNUMBER + LookupDefinition.separator + "value", this.telefaxnummer);
+        }
+        if (this.emailadresse != null) {
+            lookupDefinition.put(CompanyBaseData.DB_FIELD_EMAIL + LookupDefinition.separator + "value", this.emailadresse);
+        }
+        if (this.kommunekode != null) {
+            StringJoiner sj = new StringJoiner(LookupDefinition.separator);
+            sj.add(CompanyBaseData.DB_FIELD_LOCATION_ADDRESS);
+            sj.add(AddressData.DB_FIELD_ADDRESS);
+            sj.add(Address.DB_FIELD_MUNICIPALITY);
+            sj.add(Municipality.DB_FIELD_CODE);
+            lookupDefinition.put(sj.toString(), this.kommunekode);
         }
         return lookupDefinition;
     }

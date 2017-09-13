@@ -123,7 +123,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_QUARTERLY_NUMBERS = "quarterlyEmployeeNumbersData";
     public static final String IO_FIELD_QUARTERLY_NUMBERS = "kvartalsbeskaeftigelse";
     @OneToMany(cascade = CascadeType.ALL)
-    @OrderBy(value = "aar asc, kvartal asc")
+    @OrderBy(value = QuarterlyEmployeeNumbersData.DB_FIELD_YEAR + " asc, " + QuarterlyEmployeeNumbersData.DB_FIELD_QUARTER + " asc")
     private List<QuarterlyEmployeeNumbersData> quarterlyEmployeeNumbersData;
 
     @JsonProperty(value = IO_FIELD_QUARTERLY_NUMBERS)

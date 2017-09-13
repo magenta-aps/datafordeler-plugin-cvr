@@ -51,26 +51,14 @@ public class ParseTest {
         System.out.println("itemList.size: "+itemList.size());
         Assert.assertTrue(itemList.isArray());
         for (JsonNode item : itemList) {
-            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(item));
             String type = item.get("_type").asText();
             EntityManager entityManager = plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
             List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"));
-            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations.get(0).getEntity()));
 
             Collections.sort(registrations);
             Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:47+01:00"), registrations.get(0).getRegistrationFrom());
             Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:51+01:00"), registrations.get(0).getRegistrationTo());
-            System.out.println(registrations.size());
-
-
-            //String json1 = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations);
-            //System.out.println(json1);
-            System.out.println("==========================================================");
-
-            List<? extends Registration> registrations2 = entityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"));
-            //String json2 = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations2);
-
-            //Assert.assertEquals(json1, json2);
+            Assert.assertEquals(122, registrations.size());
         }
     }
 

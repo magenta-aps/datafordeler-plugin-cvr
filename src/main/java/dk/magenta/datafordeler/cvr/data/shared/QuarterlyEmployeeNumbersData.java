@@ -27,7 +27,7 @@ public class QuarterlyEmployeeNumbersData extends EmployeeNumbersData implements
     public static final String DB_FIELD_YEAR = "year";
     public static final String IO_FIELD_YEAR = "aar";
 
-    @Column
+    @Column(name = DB_FIELD_YEAR)
     @JsonProperty(value = IO_FIELD_YEAR)
     @XmlElement(name = IO_FIELD_YEAR)
     private int year;
@@ -45,7 +45,7 @@ public class QuarterlyEmployeeNumbersData extends EmployeeNumbersData implements
     public static final String DB_FIELD_QUARTER = "quarter";
     public static final String IO_FIELD_QUARTER = "kvartal";
 
-    @Column
+    @Column(name = DB_FIELD_QUARTER)
     @JsonProperty(value = IO_FIELD_QUARTER)
     @XmlElement(name = IO_FIELD_QUARTER)
     private int quarter;
