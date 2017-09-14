@@ -299,13 +299,20 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
 
     public static final String DB_FIELD_CVR_NUMBER = "associatedCvrNumber";
     public static final String IO_FIELD_CVR_NUMBER = "tilknyttetVirksomhedsCVRNummer";
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private IntegerData associatedCvrNumber;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<IntegerData> associatedCvrNumber;
 
     @JsonProperty(value = IO_FIELD_CVR_NUMBER)
-    public Long getAssociatedCvrNumber() {
+    public List<Long> getAssociatedCvrNumber() {
         if (associatedCvrNumber != null) {
-            return associatedCvrNumber.getValue();
+            ArrayList<Long> list = new ArrayList<>();
+            for (IntegerData i : this.associatedCvrNumber) {
+                Long cvr = i.getValue();
+                if (cvr != null) {
+                    list.add(cvr);
+                }
+            }
+            return list;
         } else {
             return null;
         }
@@ -595,12 +602,22 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
         }
         this.isPrimary.setValue(isPrimary);
     }
-    public void setAssociatedCvrNumber(long cvrNumber) {
+
+    public void addAssociatedCvrNumber(long cvrNumber) {
+        System.out.println("adding assoc cvr "+cvrNumber);
         if (this.associatedCvrNumber == null) {
-            this.associatedCvrNumber = new IntegerData();
+            this.associatedCvrNumber = new ArrayList<>();
         }
-        this.associatedCvrNumber.setValue(cvrNumber);
+        for (IntegerData i : this.associatedCvrNumber) {
+            if (i.getValue() == cvrNumber) {
+                return;
+            }
+        }
+        IntegerData i = new IntegerData();
+        i.setValue(cvrNumber);
+        this.associatedCvrNumber.add(i);
     }
+
     public void addParticipant(ParticipantLink participantLink) {
         this.participantData.add(participantLink);
     }
@@ -682,7 +699,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
             lookupDefinition.putAll(DB_FIELD_IS_PRIMARY, this.isPrimary.databaseFields());
         }
         if (this.associatedCvrNumber != null) {
-            lookupDefinition.putAll(DB_FIELD_CVR_NUMBER, this.associatedCvrNumber.databaseFields());
+            lookupDefinition.putAll(DB_FIELD_CVR_NUMBER, DetailData.listDatabaseFields(this.associatedCvrNumber));
         }
         if (this.participantRelationData != null) {
             lookupDefinition.putAll(DB_FIELD_PARTICIPANT_RELATIONS, DetailData.listDatabaseFields(this.participantRelationData));

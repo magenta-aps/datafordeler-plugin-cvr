@@ -5,7 +5,9 @@ import dk.magenta.datafordeler.core.fapi.ParameterMap;
 import dk.magenta.datafordeler.core.fapi.QueryField;
 import dk.magenta.datafordeler.cvr.data.CvrQuery;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
+import dk.magenta.datafordeler.cvr.data.shared.AddressData;
 import dk.magenta.datafordeler.cvr.data.shared.IndustryData;
+import dk.magenta.datafordeler.cvr.data.shared.IntegerData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
@@ -96,19 +98,19 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
             lookupDefinition.put(LookupDefinition.entityref + ".pNumber", this.pNumber);
 */
         if (this.associatedCompanyCvrNumber != null) {
-            lookupDefinition.put(CompanyUnitBaseData.DB_FIELD_CVR_NUMBER + LookupDefinition.separator + "value", this.associatedCompanyCvrNumber);
+            lookupDefinition.put(CompanyUnitBaseData.DB_FIELD_CVR_NUMBER + LookupDefinition.separator + IntegerData.DB_FIELD_VALUE, this.associatedCompanyCvrNumber, Long.class);
         }
         if (this.primaryIndustry != null) {
-            lookupDefinition.put(CompanyUnitBaseData.DB_FIELD_PRIMARY_INDUSTRY + LookupDefinition.separator + IndustryData.DB_FIELD_INDUSTRY + LookupDefinition.separator + Industry.DB_FIELD_CODE, this.primaryIndustry);
-            lookupDefinition.put(CompanyUnitBaseData.DB_FIELD_PRIMARY_INDUSTRY + LookupDefinition.separator + IndustryData.DB_FIELD_PRIMARY, true);
+            lookupDefinition.put(CompanyUnitBaseData.DB_FIELD_PRIMARY_INDUSTRY + LookupDefinition.separator + IndustryData.DB_FIELD_INDUSTRY + LookupDefinition.separator + Industry.DB_FIELD_CODE, this.primaryIndustry, String.class);
+            lookupDefinition.put(CompanyUnitBaseData.DB_FIELD_PRIMARY_INDUSTRY + LookupDefinition.separator + IndustryData.DB_FIELD_PRIMARY, true, Boolean.class);
         }
         if (this.kommunekode != null) {
             StringJoiner sj = new StringJoiner(LookupDefinition.separator);
             sj.add(CompanyUnitBaseData.DB_FIELD_LOCATION_ADDRESS);
-            sj.add("address");
+            sj.add(AddressData.DB_FIELD_ADDRESS);
             sj.add(Address.DB_FIELD_MUNICIPALITY);
             sj.add(Municipality.DB_FIELD_CODE);
-            lookupDefinition.put(sj.toString(), this.kommunekode);
+            lookupDefinition.put(sj.toString(), this.kommunekode, String.class);
         }
         return lookupDefinition;
     }

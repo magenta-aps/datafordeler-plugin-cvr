@@ -28,10 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import org.hibernate.Session;
 import org.json.JSONObject;
@@ -276,6 +273,7 @@ public class QueryTest {
         try {
             loadUnit();
             List<CompanyUnitEntity> entities = queryManager.getAllEntities(session, CompanyUnitEntity.class);
+            Assert.assertFalse(entities.isEmpty());
             JsonNode firstImport = objectMapper.valueToTree(entities);
 
             loadUnit();
@@ -294,22 +292,40 @@ public class QueryTest {
         Session session = sessionManager.getSessionFactory().openSession();
         try {
             loadUnit();
+            UUID expectedUUID = UUID.fromString("92ce7d3e-b261-31d6-a401-df408167dd1b");
+
+            CompanyUnitEntity companyUnitEntity = queryManager.getEntity(session, expectedUUID, CompanyUnitEntity.class);
+            Object wrapped = companyUnitOutputWrapper.wrapResult(companyUnitEntity);
+            Assert.assertTrue(wrapped instanceof ObjectNode);
+            ObjectNode objectNode = (ObjectNode) wrapped;
+            Assert.assertEquals(1, objectNode.get("registreringer").size());
+            System.out.println(objectNode.toString());
 
             CompanyUnitQuery query = new CompanyUnitQuery();
-            query.setPrimaryIndustry("620200");
+            query.setPrimaryIndustry("855900");
             List<CompanyUnitEntity> entities = queryManager.getAllEntities(session, query, CompanyUnitEntity.class);
-            List<Object> wrapped = companyUnitOutputWrapper.wrapResults(entities);
-            Assert.assertEquals(1, wrapped.size());
-            Assert.assertTrue(wrapped.get(0) instanceof ObjectNode);
-            ObjectNode objectNode = (ObjectNode) wrapped.get(0);
-            Assert.assertEquals(3, objectNode.get("registreringer").size());
+            Assert.assertEquals(1, entities.size());
+            Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
             query = new CompanyUnitQuery();
             query.setKommunekode(101);
             entities = queryManager.getAllEntities(session, query, CompanyUnitEntity.class);
             Assert.assertEquals(5, entities.size());
+            List<UUID> expected = Arrays.asList(new UUID[] {
+                    UUID.fromString("cd834835-384b-3026-8fd8-ec24095aa446"),
+                    UUID.fromString("ebebf16f-11a8-3276-903b-8d3b1179722b"),
+                    UUID.fromString("418c6bf2-e4fe-31d4-bf05-4d2c1e6c0380"),
+                    UUID.fromString("7aa1f12b-315a-316f-9e08-f8724d7a09d9"),
+                    UUID.fromString("c2a6a3da-c46e-3689-a39a-9727a94bb5c5")
+            });
+            for (CompanyUnitEntity e : entities) {
+                Assert.assertTrue(expected.contains(e.getUUID()));
+            }
 
-
+            query = new CompanyUnitQuery();
+            query.setAssociatedCompanyCvrNumber(36238208L);
+            entities = queryManager.getAllEntities(session, query, CompanyUnitEntity.class);
+            Assert.assertEquals(1, entities.size());
 
         } finally {
             if (session != null) {

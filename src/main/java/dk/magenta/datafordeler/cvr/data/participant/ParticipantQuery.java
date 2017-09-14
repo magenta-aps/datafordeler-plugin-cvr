@@ -5,6 +5,9 @@ import dk.magenta.datafordeler.core.fapi.ParameterMap;
 import dk.magenta.datafordeler.core.fapi.QueryField;
 import dk.magenta.datafordeler.cvr.data.CvrQuery;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
+import dk.magenta.datafordeler.cvr.data.shared.AddressData;
+import dk.magenta.datafordeler.cvr.data.shared.IntegerData;
+import dk.magenta.datafordeler.cvr.data.shared.TextData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 
@@ -24,13 +27,13 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
 
 
     @QueryField(type = QueryField.FieldType.INT, queryName = CVRNUMMER)
-    private Long CVRNummer;
+    private String CVRNummer;
 
-    public Long getCVRNummer() {
+    public String getCVRNummer() {
         return CVRNummer;
     }
 
-    public void setCVRNummer(Long CVRNummer) {
+    public void setCVRNummer(String CVRNummer) {
         this.CVRNummer = CVRNummer;
     }
 
@@ -76,7 +79,7 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
 
     @Override
     public void setFromParameters(ParameterMap parameters) {
-        this.setCVRNummer(Long.parseLong(parameters.getFirst(CVRNUMMER)));
+        this.setCVRNummer(parameters.getFirst(CVRNUMMER));
         this.setNavne(parameters.getFirst(NAVN));
         this.setKommunekode(parameters.getFirst(KOMMUNEKODE));
     }
@@ -98,20 +101,20 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
         LookupDefinition lookupDefinition = new LookupDefinition(this);
 
         if (this.CVRNummer != null) {
-            lookupDefinition.put("unitNumber.value", this.CVRNummer);
+            lookupDefinition.put(ParticipantBaseData.DB_FIELD_UNIT_NUMBER + LookupDefinition.separator + IntegerData.DB_FIELD_VALUE, this.CVRNummer, Integer.class);
         }
 
         if (this.navne != null) {
-            lookupDefinition.put("names.value", this.navne);
+            lookupDefinition.put(ParticipantBaseData.DB_FIELD_NAMES + LookupDefinition.separator + TextData.DB_FIELD_VALUE, this.navne, String.class);
         }
 
         if (this.kommunekode != null) {
             StringJoiner sj = new StringJoiner(LookupDefinition.separator);
             sj.add(ParticipantBaseData.DB_FIELD_LOCATION_ADDRESS);
-            sj.add("address");
+            sj.add(AddressData.DB_FIELD_ADDRESS);
             sj.add(Address.DB_FIELD_MUNICIPALITY);
             sj.add(Municipality.DB_FIELD_CODE);
-            lookupDefinition.put(sj.toString(), this.kommunekode);
+            lookupDefinition.put(sj.toString(), this.kommunekode, String.class);
         }
         return lookupDefinition;
     }
