@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr;
 
 import dk.magenta.datafordeler.core.configuration.ConfigurationManager;
+import dk.magenta.datafordeler.core.plugin.AreaRestrictionDefinition;
 import dk.magenta.datafordeler.core.plugin.Plugin;
 import dk.magenta.datafordeler.core.plugin.RegisterManager;
 import dk.magenta.datafordeler.core.plugin.RolesDefinition;
@@ -41,7 +42,14 @@ public class CvrPlugin extends Plugin {
     @Autowired
     private ParticipantEntityManager participantEntityManager;
 
-    private CvrRolesDefinition rolesDefinition = new CvrRolesDefinition();
+    private CvrRolesDefinition rolesDefinition;
+
+    private CvrAreaRestrictionDefinition areaRestrictionDefinition;
+
+    public CvrPlugin() {
+        this.rolesDefinition = new CvrRolesDefinition();
+        this.areaRestrictionDefinition = new CvrAreaRestrictionDefinition(this);
+    }
 
     /**
      * Plugin initialization
@@ -91,5 +99,10 @@ public class CvrPlugin extends Plugin {
     @Override
     public RolesDefinition getRolesDefinition() {
         return this.rolesDefinition;
+    }
+
+    @Override
+    public AreaRestrictionDefinition getAreaRestrictionDefinition() {
+        return this.areaRestrictionDefinition;
     }
 }

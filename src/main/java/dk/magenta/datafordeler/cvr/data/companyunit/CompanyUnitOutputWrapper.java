@@ -23,6 +23,7 @@ public class CompanyUnitOutputWrapper extends OutputWrapper<CompanyUnitEntity> {
         // Root
         ObjectNode root = objectMapper.createObjectNode();
 
+        root.put("UUID", input.getUUID().toString());
         root.put("PNummer", input.getPNumber());
         root.putPOJO("id", input.getIdentification());
 

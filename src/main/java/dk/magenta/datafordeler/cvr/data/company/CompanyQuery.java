@@ -12,9 +12,7 @@ import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 
 /**
  * Created by lars on 19-05-17.
@@ -122,18 +120,18 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
 
     @QueryField(type = QueryField.FieldType.STRING, queryName = KOMMUNEKODE)
-    private String kommunekode;
+    private List<String> kommunekoder = new ArrayList<>();
 
-    public String getKommunekode() {
-        return this.kommunekode;
+    public Collection<String> getKommunekoder() {
+        return this.kommunekoder;
     }
 
-    public void setKommunekode(String kommunekode) {
-        this.kommunekode = kommunekode;
+    public void addKommunekode(String kommunekode) {
+        this.kommunekoder.add(kommunekode);
     }
 
-    public void setKommunekode(int kommunekode) {
-        this.setKommunekode(String.format("%03d", kommunekode));
+    public void addKommunekode(int kommunekode) {
+        this.addKommunekode(String.format("%03d", kommunekode));
     }
 
     @Override
@@ -146,7 +144,7 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
         map.put(TELEFAXNUMMER, this.telefaxnummer);
         map.put(EMAILADRESSE, this.emailadresse);
         map.put(VIRKSOMHEDSFORM, this.virksomhedsform);
-        map.put(KOMMUNEKODE, this.kommunekode);
+        map.put(KOMMUNEKODE, this.kommunekoder);
         return map;
     }
 
@@ -159,7 +157,11 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
         this.setTelefaxnummer(parameters.getFirst(TELEFAXNUMMER));
         this.setEmailadresse(parameters.getFirst(EMAILADRESSE));
         this.setVirksomhedsform(parameters.getFirst(VIRKSOMHEDSFORM));
-        this.setKommunekode(parameters.getFirst(KOMMUNEKODE));
+        if (parameters.containsKey(KOMMUNEKODE)) {
+            for (String kommunekode : parameters.get(KOMMUNEKODE)) {
+                this.addKommunekode(kommunekode);
+            }
+        }
     }
 
     @Override
@@ -198,13 +200,13 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
         if (this.emailadresse != null) {
             lookupDefinition.put(CompanyBaseData.DB_FIELD_EMAIL + LookupDefinition.separator + ContactData.DB_FIELD_VALUE, this.emailadresse, String.class);
         }
-        if (this.kommunekode != null) {
+        if (!this.kommunekoder.isEmpty()) {
             StringJoiner sj = new StringJoiner(LookupDefinition.separator);
             sj.add(CompanyBaseData.DB_FIELD_LOCATION_ADDRESS);
             sj.add(AddressData.DB_FIELD_ADDRESS);
             sj.add(Address.DB_FIELD_MUNICIPALITY);
             sj.add(Municipality.DB_FIELD_CODE);
-            lookupDefinition.put(sj.toString(), this.kommunekode, String.class);
+            lookupDefinition.put(sj.toString(), this.kommunekoder, String.class);
         }
         return lookupDefinition;
     }

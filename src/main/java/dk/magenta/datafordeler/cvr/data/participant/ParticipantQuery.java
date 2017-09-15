@@ -4,16 +4,13 @@ import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.core.fapi.ParameterMap;
 import dk.magenta.datafordeler.core.fapi.QueryField;
 import dk.magenta.datafordeler.cvr.data.CvrQuery;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.shared.AddressData;
 import dk.magenta.datafordeler.cvr.data.shared.IntegerData;
 import dk.magenta.datafordeler.cvr.data.shared.TextData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 
 /**
  * Created by lars on 19-05-17.
@@ -53,18 +50,18 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
 
 
     @QueryField(type = QueryField.FieldType.STRING, queryName = KOMMUNEKODE)
-    private String kommunekode;
+    private List<String> kommunekoder = new ArrayList<>();
 
-    public String getKommunekode() {
-        return this.kommunekode;
+    public Collection<String> getKommunekoder() {
+        return this.kommunekoder;
     }
 
-    public void setKommunekode(String kommunekode) {
-        this.kommunekode = kommunekode;
+    public void addKommunekode(String kommunekode) {
+        this.kommunekoder.add(kommunekode);
     }
 
-    public void setKommunekode(int kommunekode) {
-        this.setKommunekode(String.format("%03d", kommunekode));
+    public void addKommunekode(int kommunekode) {
+        this.addKommunekode(String.format("%03d", kommunekode));
     }
 
 
@@ -73,7 +70,7 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
         HashMap<String, Object> map = new HashMap<>();
         map.put(CVRNUMMER, this.CVRNummer);
         map.put(NAVN, this.navne);
-        map.put(KOMMUNEKODE, this.kommunekode);
+        map.put(KOMMUNEKODE, this.kommunekoder);
         return map;
     }
 
@@ -81,7 +78,11 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
     public void setFromParameters(ParameterMap parameters) {
         this.setCVRNummer(parameters.getFirst(CVRNUMMER));
         this.setNavne(parameters.getFirst(NAVN));
-        this.setKommunekode(parameters.getFirst(KOMMUNEKODE));
+        if (parameters.containsKey(KOMMUNEKODE)) {
+            for (String kommunekode : parameters.get(KOMMUNEKODE)) {
+                this.addKommunekode(kommunekode);
+            }
+        }
     }
 
     @Override
@@ -108,13 +109,13 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
             lookupDefinition.put(ParticipantBaseData.DB_FIELD_NAMES + LookupDefinition.separator + TextData.DB_FIELD_VALUE, this.navne, String.class);
         }
 
-        if (this.kommunekode != null) {
+        if (!this.kommunekoder.isEmpty()) {
             StringJoiner sj = new StringJoiner(LookupDefinition.separator);
             sj.add(ParticipantBaseData.DB_FIELD_LOCATION_ADDRESS);
             sj.add(AddressData.DB_FIELD_ADDRESS);
             sj.add(Address.DB_FIELD_MUNICIPALITY);
             sj.add(Municipality.DB_FIELD_CODE);
-            lookupDefinition.put(sj.toString(), this.kommunekode, String.class);
+            lookupDefinition.put(sj.toString(), this.kommunekoder, String.class);
         }
         return lookupDefinition;
     }

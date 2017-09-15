@@ -21,6 +21,7 @@ public class ParticipantOutputWrapper extends OutputWrapper<ParticipantEntity> {
         // Root
         ObjectNode root = objectMapper.createObjectNode();
 
+        root.put("UUID", input.getUUID().toString());
         root.put("deltagerNummer", input.getParticipantNumber());
         root.putPOJO("id", input.getIdentification());
 

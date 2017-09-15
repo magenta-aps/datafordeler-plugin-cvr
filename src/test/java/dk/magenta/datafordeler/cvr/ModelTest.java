@@ -182,27 +182,27 @@ public class ModelTest {
         session = sessionManager.getSessionFactory().openSession();
         CompanyQuery companyQuery = new CompanyQuery();
         companyQuery.setVirksomhedsnavn("Some company name");
-        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
+        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class, CompanyBaseData.class).size());
 
         companyQuery = new CompanyQuery();
         companyQuery.setCVRNummer("78975790");
-        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
+        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class, CompanyBaseData.class).size());
 
         companyQuery = new CompanyQuery();
         companyQuery.setVirksomhedsform("123");
-        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
+        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class, CompanyBaseData.class).size());
 
         companyQuery = new CompanyQuery();
         companyQuery.setTelefonnummer("87654321");
-        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
+        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class, CompanyBaseData.class).size());
 
         companyQuery = new CompanyQuery();
         companyQuery.setTelefaxnummer("11112222");
-        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
+        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class, CompanyBaseData.class).size());
 
         companyQuery = new CompanyQuery();
         companyQuery.setEmailadresse("test@example.com");
-        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
+        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class, CompanyBaseData.class).size());
 
 
         transaction = session.beginTransaction();
