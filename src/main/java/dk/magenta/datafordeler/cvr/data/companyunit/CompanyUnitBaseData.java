@@ -645,7 +645,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
 
     @Override
     public LookupDefinition getLookupDefinition() {
-        LookupDefinition lookupDefinition = new LookupDefinition();
+        LookupDefinition lookupDefinition = new LookupDefinition(CompanyUnitBaseData.class);
         lookupDefinition.setMatchNulls(true);
         if (this.lifecycleData != null) {
             lookupDefinition.putAll(DB_FIELD_LIFECYCLE, this.lifecycleData.databaseFields());

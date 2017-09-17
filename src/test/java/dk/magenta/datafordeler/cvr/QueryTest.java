@@ -217,37 +217,37 @@ public class QueryTest {
 
             query = new CompanyQuery();
             query.setEmailadresse("info@magenta.dk");
-            entities = queryManager.getAllEntities(session, query, CompanyEntity.class, CompanyBaseData.class);
+            entities = queryManager.getAllEntities(session, query, CompanyEntity.class);
             Assert.assertEquals(1, entities.size());
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
             query = new CompanyQuery();
             query.addKommunekode(101);
-            entities = queryManager.getAllEntities(session, query, CompanyEntity.class, CompanyBaseData.class);
+            entities = queryManager.getAllEntities(session, query, CompanyEntity.class);
             Assert.assertEquals(1, entities.size());
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
             query = new CompanyQuery();
             query.setVirksomhedsform(80);
-            entities = queryManager.getAllEntities(session, query, CompanyEntity.class, CompanyBaseData.class);
+            entities = queryManager.getAllEntities(session, query, CompanyEntity.class);
             Assert.assertEquals(1, entities.size());
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
             query = new CompanyQuery();
             query.setCVRNummer("25052943");
-            entities = queryManager.getAllEntities(session, query, CompanyEntity.class, CompanyBaseData.class);
+            entities = queryManager.getAllEntities(session, query, CompanyEntity.class);
             Assert.assertEquals(1, entities.size());
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
             query = new CompanyQuery();
             query.setTelefonnummer("33369696");
-            entities = queryManager.getAllEntities(session, query, CompanyEntity.class, CompanyBaseData.class);
+            entities = queryManager.getAllEntities(session, query, CompanyEntity.class);
             Assert.assertEquals(1, entities.size());
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
             query = new CompanyQuery();
             query.setVirksomhedsnavn("MAGENTA ApS");
-            entities = queryManager.getAllEntities(session, query, CompanyEntity.class, CompanyBaseData.class);
+            entities = queryManager.getAllEntities(session, query, CompanyEntity.class);
             Assert.assertEquals(1, entities.size());
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
@@ -447,13 +447,13 @@ public class QueryTest {
 
             CompanyUnitQuery query = new CompanyUnitQuery();
             query.setPrimaryIndustry("855900");
-            List<CompanyUnitEntity> entities = queryManager.getAllEntities(session, query, CompanyUnitEntity.class, CompanyUnitBaseData.class);
+            List<CompanyUnitEntity> entities = queryManager.getAllEntities(session, query, CompanyUnitEntity.class);
             Assert.assertEquals(1, entities.size());
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
             query = new CompanyUnitQuery();
             query.addKommunekode(101);
-            entities = queryManager.getAllEntities(session, query, CompanyUnitEntity.class, CompanyUnitBaseData.class);
+            entities = queryManager.getAllEntities(session, query, CompanyUnitEntity.class);
             Assert.assertEquals(5, entities.size());
             List<UUID> expected = Arrays.asList(new UUID[] {
                     UUID.fromString("cd834835-384b-3026-8fd8-ec24095aa446"),
@@ -468,7 +468,7 @@ public class QueryTest {
 
             query = new CompanyUnitQuery();
             query.setAssociatedCompanyCvrNumber(36238208L);
-            entities = queryManager.getAllEntities(session, query, CompanyUnitEntity.class, CompanyUnitBaseData.class);
+            entities = queryManager.getAllEntities(session, query, CompanyUnitEntity.class);
             Assert.assertEquals(1, entities.size());
 
         } finally {
@@ -511,7 +511,7 @@ public class QueryTest {
             ParticipantQuery query = new ParticipantQuery();
             query.setNavne("Morten Kjærsgaard");
 
-            List<ParticipantEntity> entities = queryManager.getAllEntities(session, query, ParticipantEntity.class, ParticipantBaseData.class);
+            List<ParticipantEntity> entities = queryManager.getAllEntities(session, query, ParticipantEntity.class);
             List<Object> wrapped = participantOutputWrapper.wrapResults(entities);
 
             Assert.assertEquals(1, wrapped.size());
@@ -522,7 +522,7 @@ public class QueryTest {
             String firstImport = objectMapper.writeValueAsString(wrapped);
 
             loadParticipant();
-            entities = queryManager.getAllEntities(session, query, ParticipantEntity.class, ParticipantBaseData.class);
+            entities = queryManager.getAllEntities(session, query, ParticipantEntity.class);
             wrapped = participantOutputWrapper.wrapResults(entities);
             String secondImport = objectMapper.writeValueAsString(wrapped);
 
@@ -530,7 +530,7 @@ public class QueryTest {
 
             query = new ParticipantQuery();
             query.addKommunekode(101);
-            entities = queryManager.getAllEntities(session, query, ParticipantEntity.class, ParticipantBaseData.class);
+            entities = queryManager.getAllEntities(session, query, ParticipantEntity.class);
             Assert.assertEquals(1, entities.size());
 
         } finally {

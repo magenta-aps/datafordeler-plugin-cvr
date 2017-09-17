@@ -94,7 +94,7 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
 
     @Override
     public LookupDefinition getLookupDefinition() {
-        LookupDefinition lookupDefinition = new LookupDefinition(this);
+        LookupDefinition lookupDefinition = new LookupDefinition(this, CompanyUnitBaseData.class);
 /*
         if (this.pNumber != null) {
             lookupDefinition.put(LookupDefinition.entityref + ".pNumber", this.pNumber);

@@ -371,7 +371,7 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
 
     @Override
     public LookupDefinition getLookupDefinition() {
-        LookupDefinition lookupDefinition = new LookupDefinition();
+        LookupDefinition lookupDefinition = new LookupDefinition(ParticipantBaseData.class);
         lookupDefinition.setMatchNulls(true);
         if (this.names != null) {
             lookupDefinition.putAll(DB_FIELD_NAMES, this.names.databaseFields());

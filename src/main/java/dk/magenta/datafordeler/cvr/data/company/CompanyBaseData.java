@@ -782,7 +782,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
 
     @Override
     public LookupDefinition getLookupDefinition() {
-        LookupDefinition lookupDefinition = new LookupDefinition();
+        LookupDefinition lookupDefinition = new LookupDefinition(CompanyBaseData.class);
         lookupDefinition.setMatchNulls(true);
 
         if (this.lifecycleData != null) {

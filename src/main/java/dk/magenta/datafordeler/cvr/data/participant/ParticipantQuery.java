@@ -99,7 +99,7 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
 
     @Override
     public LookupDefinition getLookupDefinition() {
-        LookupDefinition lookupDefinition = new LookupDefinition(this);
+        LookupDefinition lookupDefinition = new LookupDefinition(this, ParticipantBaseData.class);
 
         if (this.CVRNummer != null) {
             lookupDefinition.put(ParticipantBaseData.DB_FIELD_UNIT_NUMBER + LookupDefinition.separator + IntegerData.DB_FIELD_VALUE, this.CVRNummer, Integer.class);
