@@ -33,6 +33,7 @@ public abstract class CvrRecord implements Comparable<CvrRecord> {
         this.lastUpdated = lastUpdated;
     }
 
+    @JsonIgnore
     public OffsetDateTime getRegistrationFrom() {
         return (this.lastUpdated != null) ? this.lastUpdated : this.lastLoaded;
     }
@@ -50,6 +51,7 @@ public abstract class CvrRecord implements Comparable<CvrRecord> {
         this.validity = validity;
     }
 
+    @JsonIgnore
     public LocalDate getValidFrom() {
         if (this.validity != null) {
             return this.validity.getValidFrom();
@@ -58,6 +60,7 @@ public abstract class CvrRecord implements Comparable<CvrRecord> {
         }
     }
 
+    @JsonIgnore
     public LocalDate getValidTo() {
         if (this.validity != null){
             return this.validity.getValidTo();

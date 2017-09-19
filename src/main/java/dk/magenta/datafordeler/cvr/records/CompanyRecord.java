@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
@@ -175,6 +176,7 @@ public class CompanyRecord extends CvrEntityRecord {
     @JsonProperty(value = "deltagerRelation")
     private List<CompanyParticipantRelationRecord> participants;
 
+    @JsonIgnore
     @Override
     public List<CvrBaseRecord> getAll() {
         ArrayList<CvrBaseRecord> list = new ArrayList<>();

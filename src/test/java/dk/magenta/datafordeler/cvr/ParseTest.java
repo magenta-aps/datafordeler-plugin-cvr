@@ -52,7 +52,7 @@ public class ParseTest {
         for (JsonNode item : itemList) {
             String type = item.get("_type").asText();
             EntityManager entityManager = plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-            List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"));
+            List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrvirksomhed").toString());
 
             Collections.sort(registrations);
             Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:47+01:00"), registrations.get(0).getRegistrationFrom());
@@ -70,7 +70,7 @@ public class ParseTest {
         for (JsonNode item : itemList) {
             String type = item.get("_type").asText();
             EntityManager entityManager = plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-            List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("VrproduktionsEnhed"));
+            List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("VrproduktionsEnhed").toString());
             System.out.println("registrations.size: "+registrations.size());
             System.out.println(objectMapper.writeValueAsString(registrations));
         }
@@ -86,7 +86,7 @@ public class ParseTest {
         for (JsonNode item : itemList) {
             String type = item.get("_type").asText();
             EntityManager entityManager = plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-            List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson"));
+            List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson").toString());
             System.out.println("registrations.size: "+registrations.size());
             System.out.println(objectMapper.writeValueAsString(registrations));
             Assert.assertEquals(4, registrations.size());

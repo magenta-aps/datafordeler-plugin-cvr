@@ -286,6 +286,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
         HashSet<R> entityRegistrations = new HashSet<>();
         ListHashMap<Bitemporality, CvrBaseRecord> groups = this.sortIntoGroups(records);
+        OffsetDateTime timestamp = OffsetDateTime.now();
 
         for (Bitemporality bitemporality : groups.keySet()) {
 
@@ -331,7 +332,11 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
             timer.start(TASK_POPULATE_DATA);
             for (CvrBaseRecord record : group) {
-                record.populateBaseData(baseData, this.getQueryManager(), session);
+                record.populateBaseData(baseData, this.getQueryManager(), session, timestamp);
+
+                RecordData recordData = new RecordData(timestamp);
+                recordData.setSourceData(objectMapper.valueToTree(record).toString());
+                baseData.addRecordData(recordData);
             }
             timer.measure(TASK_POPULATE_DATA);
         }
