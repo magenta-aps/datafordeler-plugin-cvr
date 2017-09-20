@@ -62,4 +62,9 @@ public class CvrRolesDefinition extends RolesDefinition {
 
         return roles;
     }
+
+
+    public ReadServiceRole getDefaultReadRole() {
+        return READ_CVR_ROLE;
+    }
 }
