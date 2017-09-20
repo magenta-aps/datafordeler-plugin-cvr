@@ -2,7 +2,6 @@ package dk.magenta.datafordeler.cvr.data;
 
 import dk.magenta.datafordeler.core.database.Entity;
 import dk.magenta.datafordeler.core.database.Identification;
-import dk.magenta.datafordeler.core.database.Registration;
 
 import java.util.UUID;
 

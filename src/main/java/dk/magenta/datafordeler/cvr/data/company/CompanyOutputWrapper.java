@@ -17,7 +17,6 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
 public class CompanyOutputWrapper extends OutputWrapper<CompanyEntity> {

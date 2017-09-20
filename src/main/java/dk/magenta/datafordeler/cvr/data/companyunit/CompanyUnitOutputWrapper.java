@@ -9,6 +9,7 @@ import dk.magenta.datafordeler.core.fapi.OutputWrapper;
 import dk.magenta.datafordeler.cvr.data.shared.LifecycleData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
+
 import java.time.OffsetDateTime;
 
 public class CompanyUnitOutputWrapper extends OutputWrapper<CompanyUnitEntity> {

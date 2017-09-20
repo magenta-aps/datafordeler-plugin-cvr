@@ -5,7 +5,7 @@ import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.util.ListHashMap;
 
-import javax.persistence.*;
+import javax.persistence.MappedSuperclass;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;

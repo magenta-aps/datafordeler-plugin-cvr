@@ -1,13 +1,10 @@
 package dk.magenta.datafordeler.cvr.data.participant;
 
-import dk.magenta.datafordeler.core.database.Effect;
 import dk.magenta.datafordeler.cvr.data.CvrEffect;
-import dk.magenta.datafordeler.cvr.data.company.CompanyRegistration;
 
 import javax.persistence.Table;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.time.temporal.TemporalAccessor;
 
 /**
  * Created by lars on 16-05-17.
