@@ -33,7 +33,7 @@ public abstract class CompanyNumbersRecord extends CvrBaseRecord {
 
     @JsonProperty(value = "intervalKodeAntalAnsatte")
     public void setEmployeeRange(String range) {
-        Range parsed = this.parseRange(range);
+        Range parsed = parseRange(range);
         if (parsed != null) {
             this.employeeLow = parsed.low;
             this.employeeHigh = parsed.high;
@@ -61,7 +61,7 @@ public abstract class CompanyNumbersRecord extends CvrBaseRecord {
 
     @JsonProperty(value = "intervalKodeAntalAarsvaerk")
     public void setFulltimeEquivalentRange(String range) {
-        Range parsed = this.parseRange(range);
+        Range parsed = parseRange(range);
         if (parsed != null) {
             this.fulltimeEquivalentLow = parsed.low;
             this.fulltimeEquivalentHigh = parsed.high;
@@ -89,7 +89,7 @@ public abstract class CompanyNumbersRecord extends CvrBaseRecord {
 
     @JsonProperty(value = "intervalKodeAntalInklusivEjere")
     public void setIncludingOwnersRange(String range) {
-        Range parsed = this.parseRange(range);
+        Range parsed = parseRange(range);
         if (parsed != null) {
             this.includingOwnersLow = parsed.low;
             this.includingOwnersHigh = parsed.high;

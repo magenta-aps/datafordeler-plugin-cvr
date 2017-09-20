@@ -31,7 +31,9 @@ public abstract class CvrBaseRecord extends CvrRecord {
         }
     }
 
-    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) throws ParseException {};
-    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) throws ParseException {};
-    public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) throws ParseException {};
+    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) throws ParseException {}
+
+    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) throws ParseException {}
+
+    public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) throws ParseException {}
 }

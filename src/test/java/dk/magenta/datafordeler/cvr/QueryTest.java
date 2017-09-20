@@ -455,13 +455,11 @@ public class QueryTest {
             query.addKommunekode(101);
             entities = queryManager.getAllEntities(session, query, CompanyUnitEntity.class);
             Assert.assertEquals(5, entities.size());
-            List<UUID> expected = Arrays.asList(new UUID[] {
-                    UUID.fromString("cd834835-384b-3026-8fd8-ec24095aa446"),
+            List<UUID> expected = Arrays.asList(UUID.fromString("cd834835-384b-3026-8fd8-ec24095aa446"),
                     UUID.fromString("ebebf16f-11a8-3276-903b-8d3b1179722b"),
                     UUID.fromString("418c6bf2-e4fe-31d4-bf05-4d2c1e6c0380"),
                     UUID.fromString("7aa1f12b-315a-316f-9e08-f8724d7a09d9"),
-                    UUID.fromString("c2a6a3da-c46e-3689-a39a-9727a94bb5c5")
-            });
+                    UUID.fromString("c2a6a3da-c46e-3689-a39a-9727a94bb5c5"));
             for (CompanyUnitEntity e : entities) {
                 Assert.assertTrue(expected.contains(e.getUUID()));
             }
