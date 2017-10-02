@@ -45,7 +45,7 @@ public class ParticipantRelationData extends DetailData implements Comparable<Pa
     public static final String DB_FIELD_PARTICIPANT = "participant";
     public static final String IO_FIELD_PARTICIPANT = "deltager";
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     private Identification participant;
 
     public void setParticipant(Identification participant) {

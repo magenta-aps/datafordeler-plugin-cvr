@@ -375,4 +375,8 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         return recordGroups;
     }
 
+    @Override
+    public boolean handlesOwnSaves() {
+        return true;
+    }
 }

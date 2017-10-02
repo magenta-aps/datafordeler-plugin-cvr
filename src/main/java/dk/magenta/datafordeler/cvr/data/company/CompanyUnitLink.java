@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.cvr.data.DetailData;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
@@ -37,7 +38,7 @@ public class CompanyUnitLink extends DetailData {
     public static final String DB_FIELD_IDENTIFICATION = "identification";
     public static final String IO_FIELD_IDENTIFICATION = "identification";
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JsonProperty(value = IO_FIELD_IDENTIFICATION)
     @XmlElement(name = IO_FIELD_IDENTIFICATION)
     private Identification identification;
