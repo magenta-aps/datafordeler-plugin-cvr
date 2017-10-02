@@ -3,7 +3,10 @@ package dk.magenta.datafordeler.cvr.data.shared;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
 import java.util.HashMap;
 import java.util.Map;
 

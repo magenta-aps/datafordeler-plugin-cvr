@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.data.shared;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.cvr.data.DetailData;
@@ -8,7 +9,10 @@ import org.hibernate.Session;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by lars on 30-06-17.
@@ -76,6 +80,18 @@ public class ParticipantRelationData extends DetailData implements Comparable<Pa
 
     @Override
     public Map<String, Object> asMap() {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(DB_FIELD_PARTICIPANT, this.participant);
+        map.put(DB_FIELD_ORGANIZATIONS, this.organizations);
+        return map;
+    }
+
+    /**
+     * Return a map of attributes
+     * @return
+     */
+    @JsonIgnore
+    public Map<String, Object> databaseFields() {
         HashMap<String, Object> map = new HashMap<>();
         map.put(DB_FIELD_PARTICIPANT, this.participant);
         map.put(DB_FIELD_ORGANIZATIONS, this.organizations);

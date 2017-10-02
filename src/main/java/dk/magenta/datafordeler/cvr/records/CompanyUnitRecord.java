@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
@@ -31,7 +32,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     @JsonProperty(value = "enhedsNummer")
     private int unitNumber;
 
-    @JsonProperty(value = "names")
+    @JsonProperty(value = "navne")
     public List<NameRecord> names;
 
     @JsonProperty(value = "beliggenhedsadresse")
@@ -143,8 +144,10 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     @JsonProperty(value = "deltagerRelation")
     private List<CompanyParticipantRelationRecord> participantRelations;
 
+    @JsonProperty(value = "virksomhedsrelation")
+    private List<CompanyLinkRecord> companyLinkRecords;
 
-    // TODO: Tilføj virksomhedsrelation som mangler i output json
+
     // enhedstype
     // dataAdgang
     // unitNumber
@@ -154,7 +157,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     // brancheAnsvarskode
     // naermesteFremtidigeDato
     // samtId
-
+    @JsonIgnore
     public List<CvrBaseRecord> getAll() {
         ArrayList<CvrBaseRecord> list = new ArrayList<>();
         if (this.names != null) {
@@ -203,6 +206,9 @@ public class CompanyUnitRecord extends CvrEntityRecord {
         }
         if (this.participantRelations != null) {
             list.addAll(this.participantRelations);
+        }
+        if (this.companyLinkRecords != null) {
+            list.addAll(this.companyLinkRecords);
         }
         return list;
     }

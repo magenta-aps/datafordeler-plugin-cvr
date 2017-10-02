@@ -133,7 +133,8 @@ public class CvrRegisterManager extends RegisterManager {
      * We then package each response in an Event, and feed them into a stream for 
      * returning.
      */
-    public ItemInputStream<? extends PluginSourceData> pullEvents(URI eventInterface, EntityManager entityManager) throws DataFordelerException {
+    @Override
+    protected ItemInputStream<? extends PluginSourceData> pullEvents(URI eventInterface, EntityManager entityManager) throws DataFordelerException {
         if (!(entityManager instanceof CvrEntityManager)) {
             throw new WrongSubclassException(CvrEntityManager.class, entityManager);
         }

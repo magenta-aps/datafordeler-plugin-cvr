@@ -1,6 +1,5 @@
 package dk.magenta.datafordeler.cvr.data.companyunit;
 
-import dk.magenta.datafordeler.core.database.Registration;
 import dk.magenta.datafordeler.cvr.data.CvrRegistration;
 
 import javax.persistence.Table;

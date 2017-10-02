@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
@@ -24,7 +25,7 @@ public class ParticipantRecord extends CvrEntityRecord {
     @JsonProperty(value = "enhedstype")
     public String unitType;
 
-    @JsonProperty(value = "names")
+    @JsonProperty(value = "navne")
     public List<NameRecord> names;
 
     @JsonProperty(value = "beliggenhedsadresse")
@@ -92,7 +93,7 @@ public class ParticipantRecord extends CvrEntityRecord {
     public List<AttributeRecord> attributes;
 
 
-
+    @JsonIgnore
     public List<CvrBaseRecord> getAll() {
         ArrayList<CvrBaseRecord> list = new ArrayList<>();
         list.add(this);

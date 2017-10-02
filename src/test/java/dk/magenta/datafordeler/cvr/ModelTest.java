@@ -247,8 +247,9 @@ public class ModelTest {
 
         unitBase.setName("Some company unit name");
         Assert.assertEquals("Some company unit name", unitBase.getName());
-        unitBase.setAssociatedCvrNumber(24681012);
-        Assert.assertEquals(24681012, (long) unitBase.getAssociatedCvrNumber());
+        unitBase.addAssociatedCvrNumber(24681012L);
+        System.out.println(unitBase.getAssociatedCvrNumber());
+        Assert.assertTrue(unitBase.getAssociatedCvrNumber().contains(24681012L));
 
 
 

@@ -13,7 +13,6 @@ import dk.magenta.datafordeler.cvr.data.unversioned.CompanyStatus;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.SortComparator;
 
 import javax.persistence.*;
@@ -339,7 +338,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     @JsonProperty(value = IO_FIELD_PRIMARY_INDUSTRY)
     public String getPrimaryIndustry() {
         if (primaryIndustry != null) {
-            return primaryIndustry.getBranche().getIndustryCode();
+            return primaryIndustry.getIndustry().getIndustryCode();
         } else {
             return null;
         }
@@ -349,7 +348,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
         if (this.primaryIndustry == null) {
             this.primaryIndustry = new IndustryData(true);
         }
-        this.primaryIndustry.setBranche(industry);
+        this.primaryIndustry.setIndustry(industry);
     }
 
 
@@ -364,7 +363,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_1)
     public String getSecondaryIndustry1() {
         if(secondaryIndustry1 != null)
-            return secondaryIndustry1.getBranche().getIndustryCode();
+            return secondaryIndustry1.getIndustry().getIndustryCode();
         else
             return null;
     }
@@ -373,7 +372,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
         if (this.secondaryIndustry1 == null) {
             this.secondaryIndustry1 = new IndustryData(false);
         }
-        this.secondaryIndustry1.setBranche(industry);
+        this.secondaryIndustry1.setIndustry(industry);
     }
 
 
@@ -389,7 +388,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_2)
     public String getSecondaryIndustry2() {
         if (secondaryIndustry2 != null) {
-            return secondaryIndustry2.getBranche().getIndustryCode();
+            return secondaryIndustry2.getIndustry().getIndustryCode();
         } else {
             return null;
         }
@@ -399,7 +398,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
         if (this.secondaryIndustry2 == null) {
             this.secondaryIndustry2 = new IndustryData(false);
         }
-        this.secondaryIndustry2.setBranche(industry);
+        this.secondaryIndustry2.setIndustry(industry);
     }
 
 
@@ -415,7 +414,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_3)
     public String getSecondaryIndustry3() {
         if (secondaryIndustry3 != null) {
-            return secondaryIndustry3.getBranche().getIndustryCode();
+            return secondaryIndustry3.getIndustry().getIndustryCode();
         } else {
             return null;
         }
@@ -425,7 +424,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
         if (this.secondaryIndustry3 == null) {
             this.secondaryIndustry3 = new IndustryData(false);
         }
-        this.secondaryIndustry3.setBranche(industry);
+        this.secondaryIndustry3.setIndustry(industry);
     }
 
 
@@ -736,16 +735,16 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
             map.put("maanedsbeskaeftigelse", this.monthlyEmployeeNumbersData);
         }
         if (this.primaryIndustry != null) {
-            map.put("primaryIndustry", this.primaryIndustry.getBranche());
+            map.put("primaryIndustry", this.primaryIndustry.getIndustry());
         }
         if (this.secondaryIndustry1 != null) {
-            map.put("secondaryIndustry1", this.secondaryIndustry1.getBranche());
+            map.put("secondaryIndustry1", this.secondaryIndustry1.getIndustry());
         }
         if (this.secondaryIndustry2 != null) {
-            map.put("secondaryIndustry2", this.secondaryIndustry2.getBranche());
+            map.put("secondaryIndustry2", this.secondaryIndustry2.getIndustry());
         }
         if (this.secondaryIndustry3 != null) {
-            map.put("secondaryIndustry3", this.secondaryIndustry3.getBranche());
+            map.put("secondaryIndustry3", this.secondaryIndustry3.getIndustry());
         }
         if (this.companyName != null) {
             map.put("virksomhedsnavn", this.companyName.getValue());
@@ -783,7 +782,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
 
     @Override
     public LookupDefinition getLookupDefinition() {
-        LookupDefinition lookupDefinition = new LookupDefinition();
+        LookupDefinition lookupDefinition = new LookupDefinition(CompanyBaseData.class);
         lookupDefinition.setMatchNulls(true);
 
         if (this.lifecycleData != null) {

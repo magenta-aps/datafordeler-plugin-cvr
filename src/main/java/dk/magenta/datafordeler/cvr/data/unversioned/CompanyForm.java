@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import org.hibernate.Session;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Collections;
 

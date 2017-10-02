@@ -4,7 +4,6 @@ import dk.magenta.datafordeler.core.plugin.RolesDefinition;
 import dk.magenta.datafordeler.core.role.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,13 +28,42 @@ public class CvrRolesDefinition extends RolesDefinition {
         )
     );
 
+    public static ReadCommandRole READ_CVR_PULL_ROLE = new ReadCommandRole(
+            "Pull",
+            new HashMap<String, Object>() {{
+                put("plugin", "cvr");
+            }},
+            new ReadCommandRoleVersion(
+                    1.0f,
+                    "Role that gives access to read the status of the PULL command for Cvr data"
+            )
+    );
+
+    public static StopCommandRole STOP_CVR_PULL_ROLE = new StopCommandRole(
+            "Pull",
+            new HashMap<String, Object>() {{
+                put("plugin", "cvr");
+            }},
+            new StopCommandRoleVersion(
+                    1.0f,
+                    "Role that gives access to stop the PULL command for Cvr data"
+            )
+    );
+
     @Override
     public List<SystemRole> getRoles() {
         ArrayList<SystemRole> roles = new ArrayList<>();
 
         roles.add(READ_CVR_ROLE);
         roles.add(EXECUTE_CVR_PULL_ROLE);
+        roles.add(READ_CVR_PULL_ROLE);
+        roles.add(STOP_CVR_PULL_ROLE);
 
         return roles;
+    }
+
+
+    public ReadServiceRole getDefaultReadRole() {
+        return READ_CVR_ROLE;
     }
 }

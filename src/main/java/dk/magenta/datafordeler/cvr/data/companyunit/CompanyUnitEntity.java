@@ -2,7 +2,6 @@ package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import dk.magenta.datafordeler.core.database.Entity;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.cvr.data.CvrEntity;
 

@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.cvr.data.DetailData;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,9 +30,11 @@ public class CompanyFormData extends DetailData {
     }
 
 
+    public static final String DB_FIELD_FORM = "companyForm";
+    public static final String IO_FIELD_FROM = "virksomhedsform";
     @ManyToOne
-    @JsonProperty(value = "virksomhedsform")
-    @XmlElement(name = "virksomhedsform")
+    @JsonProperty(value = IO_FIELD_FROM)
+    @XmlElement(name = IO_FIELD_FROM)
     private CompanyForm companyForm;
 
     public CompanyForm getCompanyForm() {

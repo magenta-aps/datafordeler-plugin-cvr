@@ -25,7 +25,7 @@ public class YearlyEmployeeNumbersData extends EmployeeNumbersData implements Co
     public static final String DB_FIELD_YEAR = "year";
     public static final String IO_FIELD_YEAR = "aar";
 
-    @Column
+    @Column(name = DB_FIELD_YEAR)
     @JsonProperty(value = IO_FIELD_YEAR)
     @XmlElement(name = IO_FIELD_YEAR)
     private int year;

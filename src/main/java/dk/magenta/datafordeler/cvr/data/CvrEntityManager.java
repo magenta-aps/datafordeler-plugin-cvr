@@ -10,7 +10,10 @@ import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.core.exception.WrongSubclassException;
 import dk.magenta.datafordeler.core.io.ImportMetadata;
 import dk.magenta.datafordeler.core.io.Receipt;
-import dk.magenta.datafordeler.core.plugin.*;
+import dk.magenta.datafordeler.core.plugin.Communicator;
+import dk.magenta.datafordeler.core.plugin.EntityManager;
+import dk.magenta.datafordeler.core.plugin.RegisterManager;
+import dk.magenta.datafordeler.core.plugin.ScanScrollCommunicator;
 import dk.magenta.datafordeler.core.util.ItemInputStream;
 import dk.magenta.datafordeler.core.util.ListHashMap;
 import dk.magenta.datafordeler.core.util.Stopwatch;
@@ -287,6 +290,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
         HashSet<R> entityRegistrations = new HashSet<>();
         ListHashMap<Bitemporality, CvrBaseRecord> groups = this.sortIntoGroups(records);
+        OffsetDateTime timestamp = OffsetDateTime.now();
 
         for (Bitemporality bitemporality : groups.keySet()) {
 
@@ -332,7 +336,11 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
             timer.start(TASK_POPULATE_DATA);
             for (CvrBaseRecord record : group) {
-                record.populateBaseData(baseData, this.getQueryManager(), session);
+                record.populateBaseData(baseData, this.getQueryManager(), session, timestamp);
+
+                RecordData recordData = new RecordData(timestamp);
+                recordData.setSourceData(objectMapper.valueToTree(record).toString());
+                baseData.addRecordData(recordData);
             }
             timer.measure(TASK_POPULATE_DATA);
         }

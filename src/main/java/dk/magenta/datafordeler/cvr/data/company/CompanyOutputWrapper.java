@@ -12,9 +12,11 @@ import dk.magenta.datafordeler.cvr.data.shared.ParticipantRelationData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
+
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
 public class CompanyOutputWrapper extends OutputWrapper<CompanyEntity> {
@@ -140,9 +142,9 @@ public class CompanyOutputWrapper extends OutputWrapper<CompanyEntity> {
         LifecycleData lifeCycle = dataItem.getLifecycleData();
         if (lifeCycle != null) {
             OffsetDateTime startDate = lifeCycle.getStartDate();
-            wrapper.put("virksomhedStartdato", startDate != null ? startDate.toLocalDate().toString() : null);
+            wrapper.put("virksomhedStartdato", startDate != null ? getUTCDate(startDate).toString() : null);
             OffsetDateTime endDate = lifeCycle.getEndDate();
-            wrapper.put("virksomhedOphørsdato", endDate != null ? endDate.toLocalDate().toString() : null);
+            wrapper.put("virksomhedOphørsdato", endDate != null ? getUTCDate(endDate).toString() : null);
         }
 
 
@@ -167,6 +169,10 @@ public class CompanyOutputWrapper extends OutputWrapper<CompanyEntity> {
 
 
         return wrapper.getNode();
+    }
+
+    private static LocalDate getUTCDate(OffsetDateTime offsetDateTime) {
+        return offsetDateTime.atZoneSameInstant(ZoneId.of("UTC")).toLocalDate();
     }
 
     protected ObjectNode addAdresseObject(Address adresse) {
