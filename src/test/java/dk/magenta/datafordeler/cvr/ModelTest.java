@@ -166,7 +166,7 @@ public class ModelTest {
         CompanyEffect effect3 = new CompanyEffect(registrering, OffsetDateTime.parse("2017-09-01T00:00:00+00:00"), null);
         CompanyBaseData companyBase3 = new CompanyBaseData();
         companyBase3.addEffect(effect3);
-        companyBase3.addCompanyUnit(314159265);
+        companyBase3.addCompanyUnit(314159265, null);
 
         Transaction transaction = session.beginTransaction();
 
