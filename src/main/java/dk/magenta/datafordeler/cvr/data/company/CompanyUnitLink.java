@@ -2,12 +2,10 @@ package dk.magenta.datafordeler.cvr.data.company;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.cvr.data.DetailData;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.*;
 
@@ -33,6 +31,25 @@ public class CompanyUnitLink extends DetailData {
     public void setpNumber(int pNumber) {
         this.pNumber = pNumber;
     }
+
+    //------------------------------------------------------------
+
+    public static final String DB_FIELD_IDENTIFICATION = "identification";
+    public static final String IO_FIELD_IDENTIFICATION = "identification";
+
+    @ManyToOne
+    @JsonProperty(value = IO_FIELD_IDENTIFICATION)
+    @XmlElement(name = IO_FIELD_IDENTIFICATION)
+    private Identification identification;
+
+    public void setIdentification(Identification identification) {
+        this.identification = identification;
+    }
+
+    public Identification getIdentification() {
+        return this.identification;
+    }
+
 
     //------------------------------------------------------------
 
