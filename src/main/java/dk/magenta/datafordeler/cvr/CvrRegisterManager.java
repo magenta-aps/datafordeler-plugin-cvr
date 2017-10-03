@@ -142,7 +142,16 @@ public class CvrRegisterManager extends RegisterManager {
 
         URI baseEndpoint = this.baseEndpoint;
 
-        String requestBody = "{\"query\":{\"match_all\":{}},\"size\":10}";
+        //String requestBody = "{\"query\":{\"match_all\":{}},\"size\":10}";
+        String requestBody = "{\"query\":{\"bool\":{\n" +
+                "\"must\":[{\n" +
+                "\"range\":{\n" +
+                "\"virksomhed.Vrvirksomhed.beliggenhedsadresse.kommune.kommuneKode\": {\n" +
+                "\"from\":950\n" +
+                "}\n" +
+                "}\n" +
+                "}]\n" +
+                "}},\"size\":10}";
 
         InputStream responseBody = null;
         String schema = entityManager.getSchema();

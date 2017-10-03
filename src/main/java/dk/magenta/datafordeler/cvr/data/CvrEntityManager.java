@@ -252,6 +252,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         }
         timer.measure(TASK_PARSE);
 
+
         timer.start(TASK_FIND_ENTITY);
         UUID uuid = this.generateUUID(toplevelRecord);
         E entity = this.getQueryManager().getEntity(session, uuid, this.getEntityClass());
@@ -270,7 +271,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
         registrations.addAll(entityRegistrations);
 
-        log.info("Entity "+entity.getUUID()+" now has "+entity.getRegistrations().size()+" registrations");
+        log.info("Entity " + entity.getUUID() + " now has " + entity.getRegistrations().size() + " registrations");
         transaction.commit();
         session.close();
 
@@ -281,6 +282,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         log.info(timer.formatTotal(TASK_FIND_ITEMS));
         log.info(timer.formatTotal(TASK_POPULATE_DATA));
         log.info(timer.formatTotal(TASK_SAVE));
+
         return registrations;
     }
 
