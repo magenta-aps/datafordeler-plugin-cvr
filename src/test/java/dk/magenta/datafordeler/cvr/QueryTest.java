@@ -492,7 +492,7 @@ public class QueryTest {
             }
 
             query = new CompanyUnitQuery();
-            query.setAssociatedCompanyCvrNumber(36238208L);
+            query.setAssociatedCompanyCvrNumber("36238208");
             entities = queryManager.getAllEntities(session, query, CompanyUnitEntity.class);
             Assert.assertEquals(1, entities.size());
 

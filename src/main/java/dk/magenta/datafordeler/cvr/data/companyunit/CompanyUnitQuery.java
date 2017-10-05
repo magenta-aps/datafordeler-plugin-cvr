@@ -23,13 +23,13 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
     public static final String KOMMUNEKODE = "kommunekode";
 
     @QueryField(type = QueryField.FieldType.INT, queryName = ASSOCIATED_COMPANY_CVR)
-    private Long associatedCompanyCvrNumber;
+    private String associatedCompanyCvrNumber;
 
-    public Long getAssociatedCompanyCvrNumber() {
+    public String getAssociatedCompanyCvrNumber() {
         return associatedCompanyCvrNumber;
     }
 
-    public void setAssociatedCompanyCvrNumber(Long associatedCompanyCvrNumber) {
+    public void setAssociatedCompanyCvrNumber(String associatedCompanyCvrNumber) {
         this.associatedCompanyCvrNumber = associatedCompanyCvrNumber;
     }
 
@@ -72,7 +72,7 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
 
     @Override
     public void setFromParameters(ParameterMap parameters) {
-        this.setAssociatedCompanyCvrNumber(Long.parseLong(parameters.getFirst(ASSOCIATED_COMPANY_CVR)));
+        this.setAssociatedCompanyCvrNumber(parameters.getFirst(ASSOCIATED_COMPANY_CVR));
         this.setPrimaryIndustry(parameters.getFirst(PRIMARYINDUSTRY));
         if (parameters.containsKey(KOMMUNEKODE)) {
             for (String kommunekode : parameters.get(KOMMUNEKODE)) {
