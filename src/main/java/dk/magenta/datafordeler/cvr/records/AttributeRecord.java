@@ -50,23 +50,23 @@ public class AttributeRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(CompanyBaseData baseData, Session session) {
         for (AttributeValueRecord record : values) {
-            record.populateBaseData(baseData, queryManager, session);
+            record.populateBaseData(baseData, session);
         }
     }
 
     @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
         for (AttributeValueRecord record : values) {
-            record.populateBaseData(baseData, queryManager, session);
+            record.populateBaseData(baseData, session);
         }
     }
 
     @Override
-    public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(ParticipantBaseData baseData, Session session) {
         for (AttributeValueRecord record : values) {
-            record.populateBaseData(baseData, queryManager, session);
+            record.populateBaseData(baseData, session);
         }
     }
 }

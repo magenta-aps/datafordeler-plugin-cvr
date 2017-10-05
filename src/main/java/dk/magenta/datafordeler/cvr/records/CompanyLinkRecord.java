@@ -14,7 +14,7 @@ public class CompanyLinkRecord extends CvrBaseRecord {
     private int cvrNumber;
 
     @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
         baseData.addAssociatedCvrNumber(this.cvrNumber);
     }
 

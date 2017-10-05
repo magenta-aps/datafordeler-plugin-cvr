@@ -27,8 +27,8 @@ public class CompanyIndustryRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
-        Industry industry = Industry.getIndustry(this.industryCode, this.industryText, queryManager, session);
+    public void populateBaseData(CompanyBaseData baseData, Session session) {
+        Industry industry = Industry.getIndustry(this.industryCode, this.industryText, session);
         switch (this.index) {
             case 0:
                 baseData.setPrimaryIndustry(industry);
@@ -46,8 +46,8 @@ public class CompanyIndustryRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
-        Industry industry = Industry.getIndustry(this.industryCode, this.industryText, queryManager, session);
+    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
+        Industry industry = Industry.getIndustry(this.industryCode, this.industryText, session);
         switch (this.index) {
             case 0:
                 baseData.setPrimaryIndustry(industry);

@@ -19,7 +19,7 @@ public class CompanyQuarterlyNumbersRecord extends CompanyNumbersRecord {
     private int quarter;
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) throws ParseException {
+    public void populateBaseData(CompanyBaseData baseData, Session session) throws ParseException {
         baseData.setQuarterlyEmployeeNumbers(
                 this.year,
                 this.quarter,
@@ -33,7 +33,7 @@ public class CompanyQuarterlyNumbersRecord extends CompanyNumbersRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) throws ParseException {
+    public void populateBaseData(CompanyUnitBaseData baseData, Session session) throws ParseException {
         baseData.setQuarterlyEmployeeNumbers(
                 this.year,
                 this.quarter,

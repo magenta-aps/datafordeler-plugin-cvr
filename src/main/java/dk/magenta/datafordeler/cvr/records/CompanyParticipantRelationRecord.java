@@ -31,10 +31,10 @@ public class CompanyParticipantRelationRecord extends CvrBaseRecord {
         return this.participant != null ? this.participant.getRegistrationFrom() : null;
     }
 
-    private Identification getParticipantIdentification(QueryManager queryManager, Session session) {
+    private Identification getParticipantIdentification(Session session) {
         if (this.participant != null) {
             UUID participantUUID = this.participant.generateUUID();
-            Identification participantIdentification = queryManager.getIdentification(session, participantUUID);
+            Identification participantIdentification = QueryManager.getIdentification(session, participantUUID);
             if (participantIdentification == null) {
                 participantIdentification = new Identification(participantUUID, CvrPlugin.getDomain());
                 session.save(participantIdentification);
@@ -45,11 +45,11 @@ public class CompanyParticipantRelationRecord extends CvrBaseRecord {
         }
     }
 
-    private Set<Identification> getOrganizationIdentifications(QueryManager queryManager, Session session) {
+    private Set<Identification> getOrganizationIdentifications(Session session) {
         HashSet<Identification> organizationIdentifications = new HashSet<>();
         for (OrganizationRecord organizationRecord : this.organizations) {
             UUID organizationUUID = organizationRecord.generateUUID();
-            Identification organizationIdentification = queryManager.getIdentification(session, organizationUUID);
+            Identification organizationIdentification = QueryManager.getIdentification(session, organizationUUID);
             if (organizationIdentification == null) {
                 organizationIdentification = new Identification(organizationUUID, CvrPlugin.getDomain());
                 session.save(organizationIdentification);
@@ -60,18 +60,18 @@ public class CompanyParticipantRelationRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(CompanyBaseData baseData, Session session) {
         baseData.addParticipantRelation(
-                this.getParticipantIdentification(queryManager, session),
-                this.getOrganizationIdentifications(queryManager, session)
+                this.getParticipantIdentification(session),
+                this.getOrganizationIdentifications(session)
         );
     }
 
     @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
         baseData.addParticipantRelation(
-                this.getParticipantIdentification(queryManager, session),
-                this.getOrganizationIdentifications(queryManager, session)
+                this.getParticipantIdentification(session),
+                this.getOrganizationIdentifications(session)
         );
     }
 }

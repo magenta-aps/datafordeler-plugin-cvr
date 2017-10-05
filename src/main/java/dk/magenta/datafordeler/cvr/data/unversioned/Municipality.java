@@ -60,9 +60,9 @@ public class Municipality extends UnversionedEntity {
 
     //----------------------------------------------------
 
-    public static Municipality getMunicipality(String code, String name, QueryManager queryManager, Session session) {
+    public static Municipality getMunicipality(String code, String name, Session session) {
         if (code != null) {
-            Municipality municipality = queryManager.getItem(session, Municipality.class, Collections.singletonMap(DB_FIELD_CODE, code));
+            Municipality municipality = QueryManager.getItem(session, Municipality.class, Collections.singletonMap(DB_FIELD_CODE, code));
             if (municipality == null) {
                 municipality = new Municipality();
                 municipality.setCode(code);
@@ -75,7 +75,7 @@ public class Municipality extends UnversionedEntity {
         }
     }
 
-    public static Municipality getMunicipality(Municipality old, QueryManager queryManager, Session session) {
-        return getMunicipality(old.getCode(), old.getName(), queryManager, session);
+    public static Municipality getMunicipality(Municipality old, Session session) {
+        return getMunicipality(old.getCode(), old.getName(), session);
     }
 }

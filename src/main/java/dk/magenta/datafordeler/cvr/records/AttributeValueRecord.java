@@ -24,7 +24,7 @@ public class AttributeValueRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(CompanyBaseData baseData, Session session) {
         baseData.addAttribute(
                 this.parent.getType(),
                 this.parent.getValueType(),
@@ -34,7 +34,7 @@ public class AttributeValueRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
         baseData.addAttribute(
                 this.parent.getType(),
                 this.parent.getValueType(),
@@ -44,7 +44,7 @@ public class AttributeValueRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(ParticipantBaseData baseData, Session session) {
         /*baseData.addAttribute(
                 this.parent.getType(),
                 this.parent.getValueType(),

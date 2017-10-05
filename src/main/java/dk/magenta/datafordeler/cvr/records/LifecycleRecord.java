@@ -20,7 +20,7 @@ public class LifecycleRecord extends CvrBaseRecord {
     }*/
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(CompanyBaseData baseData, Session session) {
         if (this.getValidFrom() != null) {
             baseData.setLivsforloebStart(OffsetDateTime.of(this.getValidFrom(), LocalTime.MIDNIGHT, ZoneOffset.UTC));
         }
@@ -30,7 +30,7 @@ public class LifecycleRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
         if (this.getValidFrom() != null) {
             baseData.setLifecycleStart(OffsetDateTime.of(this.getValidFrom(), LocalTime.MIDNIGHT, ZoneOffset.UTC));
         }

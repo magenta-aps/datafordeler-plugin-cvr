@@ -97,8 +97,8 @@ public class CompanyForm extends UnversionedEntity {
 
     //----------------------------------------------------
 
-    public static CompanyForm getForm(String companyFormCode, String shortDescription, String longDescription, String responsibleDataSource, QueryManager queryManager, Session session) {
-        CompanyForm form = queryManager.getItem(session, CompanyForm.class, Collections.singletonMap(DB_FIELD_CODE, companyFormCode));
+    public static CompanyForm getForm(String companyFormCode, String shortDescription, String longDescription, String responsibleDataSource, Session session) {
+        CompanyForm form = QueryManager.getItem(session, CompanyForm.class, Collections.singletonMap(DB_FIELD_CODE, companyFormCode));
         if (form == null) {
             form = new CompanyForm();
             form.setCompanyFormCode(companyFormCode);
@@ -110,7 +110,7 @@ public class CompanyForm extends UnversionedEntity {
         return form;
     }
 
-    public static CompanyForm getForm(CompanyForm oldForm, QueryManager queryManager, Session session) {
-        return getForm(oldForm.getCompanyFormCode(), oldForm.getShortDescription(), oldForm.getLongDescription(), oldForm.getResponsibleDataSource(), queryManager, session);
+    public static CompanyForm getForm(CompanyForm oldForm, Session session) {
+        return getForm(oldForm.getCompanyFormCode(), oldForm.getShortDescription(), oldForm.getLongDescription(), oldForm.getResponsibleDataSource(), session);
     }
 }
