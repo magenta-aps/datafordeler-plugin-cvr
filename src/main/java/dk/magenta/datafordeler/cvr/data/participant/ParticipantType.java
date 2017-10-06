@@ -15,11 +15,11 @@ import java.util.Collections;
 @Table(name = "cvr_participant_type", indexes = {@Index(name = "participantName", columnList = "name")})
 public class ParticipantType extends ParticipantClassification {
 
-    public static ParticipantType getType(String navn, QueryManager queryManager, Session session) {
+    public static ParticipantType getType(String navn, Session session) {
         if(navn == null) {
             return null;
         }
-        ParticipantType type = queryManager.getItem(session, ParticipantType.class, Collections.singletonMap("name", navn));
+        ParticipantType type = QueryManager.getItem(session, ParticipantType.class, Collections.singletonMap("name", navn));
         if (type == null) {
             type = new ParticipantType();
             type.setName(navn);

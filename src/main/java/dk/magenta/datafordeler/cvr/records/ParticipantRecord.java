@@ -131,8 +131,8 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
     @Override
-    public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(ParticipantBaseData baseData, Session session) {
         baseData.setUnitNumber(this.unitNumber);
-        baseData.setUnitType(ParticipantType.getType(this.unitType, queryManager, session));
+        baseData.setUnitType(ParticipantType.getType(this.unitType, session));
     }
 }

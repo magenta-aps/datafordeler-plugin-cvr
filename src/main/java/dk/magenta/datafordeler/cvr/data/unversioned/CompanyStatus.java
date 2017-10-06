@@ -42,8 +42,8 @@ public class CompanyStatus extends UnversionedEntity {
     }
 
 
-    public static CompanyStatus getStatus(String statusText, QueryManager queryManager, Session session) {
-        CompanyStatus status = queryManager.getItem(session, CompanyStatus.class, Collections.singletonMap(DB_FIELD_NAME, statusText));
+    public static CompanyStatus getStatus(String statusText, Session session) {
+        CompanyStatus status = QueryManager.getItem(session, CompanyStatus.class, Collections.singletonMap(DB_FIELD_NAME, statusText));
         if (status == null) {
             status = new CompanyStatus();
             status.setStatus(statusText);

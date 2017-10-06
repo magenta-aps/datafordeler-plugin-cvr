@@ -15,8 +15,8 @@ public class CompanyStatusRecord extends CvrBaseRecord {
     private String status;
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
-        baseData.setStatus(CompanyStatus.getStatus(this.status, queryManager, session));
+    public void populateBaseData(CompanyBaseData baseData, Session session) {
+        baseData.setStatus(CompanyStatus.getStatus(this.status, session));
     }
 
 }

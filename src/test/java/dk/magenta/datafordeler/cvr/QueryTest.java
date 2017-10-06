@@ -57,9 +57,6 @@ public class QueryTest {
     private CvrPlugin plugin;
 
     @Autowired
-    private QueryManager queryManager;
-
-    @Autowired
     private SessionManager sessionManager;
 
     @Autowired
@@ -195,11 +192,11 @@ public class QueryTest {
         try {
             loadCompany();
 
-            List<CompanyEntity> entities = queryManager.getAllEntities(session, CompanyEntity.class);
+            List<CompanyEntity> entities = QueryManager.getAllEntities(session, CompanyEntity.class);
             JsonNode firstImport = objectMapper.valueToTree(entities);
 
             loadCompany();
-            entities = queryManager.getAllEntities(session, CompanyEntity.class);
+            entities = QueryManager.getAllEntities(session, CompanyEntity.class);
             JsonNode secondImport = objectMapper.valueToTree(entities);
 
             assertJsonEquality(firstImport, secondImport, true, true);
@@ -216,7 +213,7 @@ public class QueryTest {
             loadCompany();
             UUID expectedUUID = UUID.fromString("2334456b-d2ca-372d-aa60-4a2ba7fed7cd");
 
-            CompanyEntity companyEntity = queryManager.getEntity(session, expectedUUID, CompanyEntity.class);
+            CompanyEntity companyEntity = QueryManager.getEntity(session, expectedUUID, CompanyEntity.class);
             Object wrappedEntity = companyOutputWrapper.wrapResult(companyEntity);
             Assert.assertTrue(wrappedEntity instanceof ObjectNode);
             ObjectNode objectNode = (ObjectNode) wrappedEntity;
@@ -227,37 +224,37 @@ public class QueryTest {
 
             query = new CompanyQuery();
             query.setEmailadresse("info@magenta.dk");
-            entities = queryManager.getAllEntities(session, query, CompanyEntity.class);
+            entities = QueryManager.getAllEntities(session, query, CompanyEntity.class);
             Assert.assertEquals(1, entities.size());
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
             query = new CompanyQuery();
             query.addKommunekode(101);
-            entities = queryManager.getAllEntities(session, query, CompanyEntity.class);
+            entities = QueryManager.getAllEntities(session, query, CompanyEntity.class);
             Assert.assertEquals(1, entities.size());
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
             query = new CompanyQuery();
             query.setVirksomhedsform(80);
-            entities = queryManager.getAllEntities(session, query, CompanyEntity.class);
+            entities = QueryManager.getAllEntities(session, query, CompanyEntity.class);
             Assert.assertEquals(1, entities.size());
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
             query = new CompanyQuery();
             query.setCVRNummer("25052943");
-            entities = queryManager.getAllEntities(session, query, CompanyEntity.class);
+            entities = QueryManager.getAllEntities(session, query, CompanyEntity.class);
             Assert.assertEquals(1, entities.size());
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
             query = new CompanyQuery();
             query.setTelefonnummer("33369696");
-            entities = queryManager.getAllEntities(session, query, CompanyEntity.class);
+            entities = QueryManager.getAllEntities(session, query, CompanyEntity.class);
             Assert.assertEquals(1, entities.size());
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
             query = new CompanyQuery();
             query.setVirksomhedsnavn("MAGENTA ApS");
-            entities = queryManager.getAllEntities(session, query, CompanyEntity.class);
+            entities = QueryManager.getAllEntities(session, query, CompanyEntity.class);
             Assert.assertEquals(1, entities.size());
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
@@ -443,12 +440,12 @@ public class QueryTest {
         Session session = sessionManager.getSessionFactory().openSession();
         try {
             loadUnit();
-            List<CompanyUnitEntity> entities = queryManager.getAllEntities(session, CompanyUnitEntity.class);
+            List<CompanyUnitEntity> entities = QueryManager.getAllEntities(session, CompanyUnitEntity.class);
             Assert.assertFalse(entities.isEmpty());
             JsonNode firstImport = objectMapper.valueToTree(entities);
 
             loadUnit();
-            entities = queryManager.getAllEntities(session, CompanyUnitEntity.class);
+            entities = QueryManager.getAllEntities(session, CompanyUnitEntity.class);
             JsonNode secondImport = objectMapper.valueToTree(entities);
 
             assertJsonEquality(firstImport, secondImport, true, true);
@@ -465,7 +462,7 @@ public class QueryTest {
             loadUnit();
             UUID expectedUUID = UUID.fromString("92ce7d3e-b261-31d6-a401-df408167dd1b");
 
-            CompanyUnitEntity companyUnitEntity = queryManager.getEntity(session, expectedUUID, CompanyUnitEntity.class);
+            CompanyUnitEntity companyUnitEntity = QueryManager.getEntity(session, expectedUUID, CompanyUnitEntity.class);
             Object wrapped = companyUnitOutputWrapper.wrapResult(companyUnitEntity);
             Assert.assertTrue(wrapped instanceof ObjectNode);
             ObjectNode objectNode = (ObjectNode) wrapped;
@@ -474,13 +471,13 @@ public class QueryTest {
 
             CompanyUnitQuery query = new CompanyUnitQuery();
             query.setPrimaryIndustry("855900");
-            List<CompanyUnitEntity> entities = queryManager.getAllEntities(session, query, CompanyUnitEntity.class);
+            List<CompanyUnitEntity> entities = QueryManager.getAllEntities(session, query, CompanyUnitEntity.class);
             Assert.assertEquals(1, entities.size());
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
             query = new CompanyUnitQuery();
             query.addKommunekode(101);
-            entities = queryManager.getAllEntities(session, query, CompanyUnitEntity.class);
+            entities = QueryManager.getAllEntities(session, query, CompanyUnitEntity.class);
             Assert.assertEquals(5, entities.size());
             List<UUID> expected = Arrays.asList(UUID.fromString("cd834835-384b-3026-8fd8-ec24095aa446"),
                     UUID.fromString("ebebf16f-11a8-3276-903b-8d3b1179722b"),
@@ -493,7 +490,7 @@ public class QueryTest {
 
             query = new CompanyUnitQuery();
             query.setAssociatedCompanyCvrNumber("36238208");
-            entities = queryManager.getAllEntities(session, query, CompanyUnitEntity.class);
+            entities = QueryManager.getAllEntities(session, query, CompanyUnitEntity.class);
             Assert.assertEquals(1, entities.size());
 
         } finally {
@@ -512,11 +509,11 @@ public class QueryTest {
         try {
             loadParticipant();
 
-            List<ParticipantEntity> entities = queryManager.getAllEntities(session, ParticipantEntity.class);
+            List<ParticipantEntity> entities = QueryManager.getAllEntities(session, ParticipantEntity.class);
             JsonNode firstImport = objectMapper.valueToTree(entities);
 
             loadParticipant();
-            entities = queryManager.getAllEntities(session, ParticipantEntity.class);
+            entities = QueryManager.getAllEntities(session, ParticipantEntity.class);
             JsonNode secondImport = objectMapper.valueToTree(entities);
 
             assertJsonEquality(firstImport, secondImport, true, true);
@@ -535,7 +532,7 @@ public class QueryTest {
             ParticipantQuery query = new ParticipantQuery();
             query.setNavne("Morten Kjærsgaard");
 
-            List<ParticipantEntity> entities = queryManager.getAllEntities(session, query, ParticipantEntity.class);
+            List<ParticipantEntity> entities = QueryManager.getAllEntities(session, query, ParticipantEntity.class);
             List<Object> wrapped = participantOutputWrapper.wrapResults(entities);
 
             Assert.assertEquals(1, wrapped.size());
@@ -546,7 +543,7 @@ public class QueryTest {
             String firstImport = objectMapper.writeValueAsString(wrapped);
 
             loadParticipant();
-            entities = queryManager.getAllEntities(session, query, ParticipantEntity.class);
+            entities = QueryManager.getAllEntities(session, query, ParticipantEntity.class);
             wrapped = participantOutputWrapper.wrapResults(entities);
             String secondImport = objectMapper.writeValueAsString(wrapped);
 
@@ -554,7 +551,7 @@ public class QueryTest {
 
             query = new ParticipantQuery();
             query.addKommunekode(101);
-            entities = queryManager.getAllEntities(session, query, ParticipantEntity.class);
+            entities = QueryManager.getAllEntities(session, query, ParticipantEntity.class);
             Assert.assertEquals(1, entities.size());
 
         } finally {

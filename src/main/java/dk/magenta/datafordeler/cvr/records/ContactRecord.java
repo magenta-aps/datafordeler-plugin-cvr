@@ -35,7 +35,7 @@ public class ContactRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(CompanyBaseData baseData, Session session) {
         switch (this.type) {
             case TELEFONNUMMER:
                 baseData.setPhoneNumber(this.contectInformation, this.secret);
@@ -56,7 +56,7 @@ public class ContactRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
         switch (this.type) {
             case TELEFONNUMMER:
                 baseData.setPhoneNumber(this.contectInformation, this.secret);
@@ -71,7 +71,7 @@ public class ContactRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(ParticipantBaseData baseData, Session session) {
         switch (this.type) {
             case TELEFONNUMMER:
                 baseData.setPhoneNumber(this.contectInformation, this.secret);

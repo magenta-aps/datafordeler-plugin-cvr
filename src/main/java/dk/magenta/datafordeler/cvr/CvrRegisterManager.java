@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.exception.DataStreamException;
 import dk.magenta.datafordeler.core.exception.HttpStatusException;
@@ -14,6 +15,7 @@ import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.synchronization.CvrSourceData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +23,9 @@ import javax.annotation.PostConstruct;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Created by lars on 16-05-17.
@@ -39,6 +43,9 @@ public class CvrRegisterManager extends RegisterManager {
 
     @Autowired
     private CvrPlugin plugin;
+
+    @Autowired
+    private SessionManager sessionManager;
 
     private Logger log = LogManager.getLogger("CvrRegisterManager");
 
@@ -73,6 +80,11 @@ public class CvrRegisterManager extends RegisterManager {
     @Override
     public Plugin getPlugin() {
         return this.plugin;
+    }
+
+    @Override
+    public SessionManager getSessionManager() {
+        return this.sessionManager;
     }
 
     private URI baseEndpoint;
@@ -138,23 +150,27 @@ public class CvrRegisterManager extends RegisterManager {
         if (!(entityManager instanceof CvrEntityManager)) {
             throw new WrongSubclassException(CvrEntityManager.class, entityManager);
         }
+        String schema = entityManager.getSchema();
         ScanScrollCommunicator eventCommunicator = (ScanScrollCommunicator) this.getEventFetcher();
 
         URI baseEndpoint = this.baseEndpoint;
 
-        //String requestBody = "{\"query\":{\"match_all\":{}},\"size\":10}";
-        String requestBody = "{\"query\":{\"bool\":{\n" +
-                "\"must\":[{\n" +
-                "\"range\":{\n" +
-                "\"virksomhed.Vrvirksomhed.beliggenhedsadresse.kommune.kommuneKode\": {\n" +
-                "\"from\":950\n" +
-                "}\n" +
-                "}\n" +
-                "}]\n" +
-                "}},\"size\":10}";
+        String requestBody;
+
+        Session session = this.sessionManager.getSessionFactory().openSession();
+        OffsetDateTime lastUpdateTime = entityManager.getLastUpdated(session);
+        session.close();
+
+        if (lastUpdateTime == null) {
+            requestBody = this.configurationManager.getConfiguration().getInitialQuery(schema);
+        } else {
+            requestBody = String.format(
+                    this.configurationManager.getConfiguration().getUpdateQuery(schema),
+                    lastUpdateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
+            );
+        }
 
         InputStream responseBody = null;
-        String schema = entityManager.getSchema();
 
         try {
             responseBody = eventCommunicator.fetch(

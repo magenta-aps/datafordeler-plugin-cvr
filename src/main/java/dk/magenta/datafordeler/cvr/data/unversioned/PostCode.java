@@ -58,8 +58,8 @@ public class PostCode extends UnversionedEntity {
 
     //----------------------------------------------------
 
-    public static PostCode getPostcode(int postCode, String postDistrict, QueryManager queryManager, Session session) {
-        PostCode post = queryManager.getItem(session, PostCode.class, Collections.singletonMap(DB_FIELD_CODE, postCode));
+    public static PostCode getPostcode(int postCode, String postDistrict, Session session) {
+        PostCode post = QueryManager.getItem(session, PostCode.class, Collections.singletonMap(DB_FIELD_CODE, postCode));
         if (post == null) {
             post = new PostCode();
             post.setPostCode(postCode);
@@ -69,7 +69,7 @@ public class PostCode extends UnversionedEntity {
         return post;
     }
 
-    public static PostCode getPostcode(PostCode old, QueryManager queryManager, Session session) {
-        return getPostcode(old.getPostCode(), old.getPostDistrict(), queryManager, session);
+    public static PostCode getPostcode(PostCode old, Session session) {
+        return getPostcode(old.getPostCode(), old.getPostDistrict(), session);
     }
 }

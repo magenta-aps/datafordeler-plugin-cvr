@@ -33,8 +33,8 @@ public class AddressRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
-        this.normalizeAddress(queryManager, session);
+    public void populateBaseData(CompanyBaseData baseData, Session session) {
+        this.normalizeAddress(session);
         session.saveOrUpdate(this.address);
         switch (this.type) {
             case LOCATION:
@@ -47,8 +47,8 @@ public class AddressRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) {
-        this.normalizeAddress(queryManager, session);
+    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
+        this.normalizeAddress(session);
         session.saveOrUpdate(this.address);
         switch (this.type) {
             case LOCATION:
@@ -61,8 +61,8 @@ public class AddressRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) {
-        this.normalizeAddress(queryManager, session);
+    public void populateBaseData(ParticipantBaseData baseData, Session session) {
+        this.normalizeAddress(session);
         session.saveOrUpdate(this.address);
         switch (this.type) {
             case LOCATION:
@@ -77,15 +77,15 @@ public class AddressRecord extends CvrBaseRecord {
         }
     }
 
-    private void normalizeAddress(QueryManager queryManager, Session session) {
+    private void normalizeAddress(Session session) {
         if (this.address != null) {
             Municipality oldMunicipality = this.address.getMunicipality();
             if (oldMunicipality != null) {
-                this.address.setMunicipality(Municipality.getMunicipality(oldMunicipality, queryManager, session));
+                this.address.setMunicipality(Municipality.getMunicipality(oldMunicipality, session));
             }
             int postcode = this.address.getPostnummer();
             if (postcode != 0) {
-                this.address.setPost(PostCode.getPostcode(postcode, this.address.getPostdistrikt(), queryManager, session));
+                this.address.setPost(PostCode.getPostcode(postcode, this.address.getPostdistrikt(), session));
             }
         }
     }

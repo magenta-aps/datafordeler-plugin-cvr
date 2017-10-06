@@ -219,7 +219,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) throws ParseException {
+    public void populateBaseData(CompanyUnitBaseData baseData, Session session) throws ParseException {
         baseData.setAdvertProtection(this.advertProtection);
         baseData.setPNumber(this.unitNumber);
     }
