@@ -270,17 +270,16 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
         registrations.addAll(entityRegistrations);
 
-        log.info("Entity " + entity.getUUID() + " now has " + entity.getRegistrations().size() + " registrations");
+        // log.info("Entity " + entity.getUUID() + " now has " + entity.getRegistrations().size() + " registrations");
         transaction.commit();
         session.close();
 
-
-        log.info(timer.formatTotal(TASK_PARSE));
+        /*log.info(timer.formatTotal(TASK_PARSE));
         log.info(timer.formatTotal(TASK_FIND_ENTITY));
         log.info(timer.formatTotal(TASK_FIND_REGISTRATIONS));
         log.info(timer.formatTotal(TASK_FIND_ITEMS));
         log.info(timer.formatTotal(TASK_POPULATE_DATA));
-        log.info(timer.formatTotal(TASK_SAVE));
+        log.info(timer.formatTotal(TASK_SAVE));*/
 
         return registrations;
     }
