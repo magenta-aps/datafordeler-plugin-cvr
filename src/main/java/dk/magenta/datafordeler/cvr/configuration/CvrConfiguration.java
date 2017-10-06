@@ -38,7 +38,7 @@ public class CvrConfiguration implements Configuration {
     private String companyInitialQuery = "{" +
             "    \"query\": {" +
             "        \"match_all\": {}" +
-            "    }," +
+            "    }" +
             "}";
 
     @Column
@@ -60,7 +60,7 @@ public class CvrConfiguration implements Configuration {
     private String companyUnitInitialQuery = "{" +
             "    \"query\": {" +
             "        \"match_all\": {}" +
-            "    }," +
+            "    }" +
             "}";
 
     @Column
@@ -82,7 +82,7 @@ public class CvrConfiguration implements Configuration {
     private String participantInitialQuery = "{" +
             "    \"query\": {" +
             "        \"match_all\": {}" +
-            "    }," +
+            "    }" +
             "}";
 
     @Column
