@@ -554,6 +554,11 @@ public class QueryTest {
             entities = QueryManager.getAllEntities(session, query, ParticipantEntity.class);
             Assert.assertEquals(1, entities.size());
 
+            query = new ParticipantQuery();
+            query.addKommunekode("*");
+            entities = QueryManager.getAllEntities(session, query, ParticipantEntity.class);
+            Assert.assertEquals(1, entities.size());
+
         } finally {
             if (session != null) {
                 session.close();
