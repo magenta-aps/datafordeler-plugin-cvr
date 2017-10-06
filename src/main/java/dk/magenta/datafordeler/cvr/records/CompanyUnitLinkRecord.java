@@ -19,13 +19,13 @@ public class CompanyUnitLinkRecord extends CvrBaseRecord {
     private int pNumber;
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
-        baseData.addCompanyUnit(this.pNumber, this.getUnitIdentification(queryManager, session));
+    public void populateBaseData(CompanyBaseData baseData, Session session) {
+        baseData.addCompanyUnit(this.pNumber, this.getUnitIdentification(session));
     }
 
-    private Identification getUnitIdentification(QueryManager queryManager, Session session) {
+    private Identification getUnitIdentification(Session session) {
         UUID unitUUID = CompanyUnitEntity.generateUUID(this.pNumber);
-        Identification unitIdentification = queryManager.getIdentification(session, unitUUID);
+        Identification unitIdentification = QueryManager.getIdentification(session, unitUUID);
         if (unitIdentification == null) {
             unitIdentification = new Identification(unitUUID, CvrPlugin.getDomain());
             session.save(unitIdentification);

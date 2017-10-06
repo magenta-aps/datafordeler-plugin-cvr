@@ -172,7 +172,6 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
     }
 
     protected abstract SessionManager getSessionManager();
-    protected abstract QueryManager getQueryManager();
     protected abstract String getJsonTypeName(); // VrproduktionsEnhed
     protected abstract Class<T> getRecordClass();
     protected abstract Class<E> getEntityClass();
@@ -255,7 +254,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
         timer.start(TASK_FIND_ENTITY);
         UUID uuid = this.generateUUID(toplevelRecord);
-        E entity = this.getQueryManager().getEntity(session, uuid, this.getEntityClass());
+        E entity = QueryManager.getEntity(session, uuid, this.getEntityClass());
         if (entity == null) {
             log.debug("Creating new Entity");
             entity = this.createBasicEntity(toplevelRecord);
@@ -267,7 +266,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         timer.measure(TASK_FIND_ENTITY);
 
 
-        Collection<R> entityRegistrations = this.parseRegistration(entity, toplevelRecord.getAll(), getQueryManager(), session, importMetadata);
+        Collection<R> entityRegistrations = this.parseRegistration(entity, toplevelRecord.getAll(), session, importMetadata);
 
         registrations.addAll(entityRegistrations);
 
@@ -288,7 +287,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
 
 
-    private Collection<R> parseRegistration(E entity, List<CvrBaseRecord> records, QueryManager queryManager, Session session, ImportMetadata importMetadata) throws ParseException {
+    private Collection<R> parseRegistration(E entity, List<CvrBaseRecord> records, Session session, ImportMetadata importMetadata) throws ParseException {
 
         HashSet<R> entityRegistrations = new HashSet<>();
         ListHashMap<Bitemporality, CvrBaseRecord> groups = this.sortIntoGroups(records);
@@ -338,7 +337,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
             timer.start(TASK_POPULATE_DATA);
             for (CvrBaseRecord record : group) {
-                record.populateBaseData(baseData, this.getQueryManager(), session, timestamp);
+                record.populateBaseData(baseData, session, timestamp);
 
                 RecordData recordData = new RecordData(timestamp);
                 recordData.setSourceData(objectMapper.valueToTree(record).toString());
@@ -354,7 +353,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             registration.setLastImportTime(importMetadata.getImportTime());
             session.saveOrUpdate(registration);
             /*try {
-                queryManager.saveRegistration(session, entity, registration, false, false);
+                QueryManager.saveRegistration(session, entity, registration, false, false);
             } catch (DataFordelerException e) {
                 e.printStackTrace();
                 log.error(e);

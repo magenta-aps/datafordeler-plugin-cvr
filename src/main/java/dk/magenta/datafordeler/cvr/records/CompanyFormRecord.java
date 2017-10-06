@@ -24,8 +24,8 @@ public class CompanyFormRecord extends CvrBaseRecord {
     private String responsibleDatasource;
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
-        CompanyForm form = CompanyForm.getForm(this.companyFormCode, this.shortDescription, this.longDescription, this.responsibleDatasource, queryManager, session);
+    public void populateBaseData(CompanyBaseData baseData, Session session) {
+        CompanyForm form = CompanyForm.getForm(this.companyFormCode, this.shortDescription, this.longDescription, this.responsibleDatasource, session);
         baseData.setCompanyForm(form);
     }
 

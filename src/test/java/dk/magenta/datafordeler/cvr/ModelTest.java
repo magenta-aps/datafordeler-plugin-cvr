@@ -40,9 +40,6 @@ public class ModelTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private QueryManager queryManager;
-
-    @Autowired
     private SessionManager sessionManager;
 
     @Test
@@ -72,14 +69,14 @@ public class ModelTest {
 
 
 
-        Municipality municipality = Municipality.getMunicipality("101", "Copenhagen", queryManager, session);
+        Municipality municipality = Municipality.getMunicipality("101", "Copenhagen", session);
 
         HashMap<String, Object> adresse1 = new HashMap<>();
         adresse1.put(Address.DB_FIELD_ROADNAME, "FoobarRoad");
         adresse1.put(Address.DB_FIELD_ROADCODE, "1234");
         adresse1.put(Address.DB_FIELD_HOUSE_FROM, "12");
         adresse1.put(Address.DB_FIELD_MUNICIPALITY, municipality);
-        Address locationAddress = queryManager.getItem(session, Address.class, adresse1);
+        Address locationAddress = QueryManager.getItem(session, Address.class, adresse1);
         if (locationAddress == null) {
             locationAddress = new Address();
             locationAddress.setRoadName((String)adresse1.get(Address.DB_FIELD_ROADNAME));
@@ -97,7 +94,7 @@ public class ModelTest {
         adresse2.put(Address.DB_FIELD_ROADCODE, "5678");
         adresse2.put(Address.DB_FIELD_HOUSE_FROM, "34");
         adresse2.put(Address.DB_FIELD_MUNICIPALITY, municipality);
-        Address postalAddress = queryManager.getItem(session, Address.class, adresse2);
+        Address postalAddress = QueryManager.getItem(session, Address.class, adresse2);
         if (postalAddress == null) {
             postalAddress = new Address();
             postalAddress.setRoadName((String)adresse2.get(Address.DB_FIELD_ROADNAME));
@@ -109,7 +106,7 @@ public class ModelTest {
         companyBase1.setPostalAddress(postalAddress);
 
 
-        Industry primaryIndustry = queryManager.getItem(session, Industry.class, Collections.singletonMap(Industry.DB_FIELD_CODE, "123456"));
+        Industry primaryIndustry = QueryManager.getItem(session, Industry.class, Collections.singletonMap(Industry.DB_FIELD_CODE, "123456"));
         if (primaryIndustry == null) {
             primaryIndustry = new Industry();
             primaryIndustry.setIndustryCode("123456");
@@ -119,7 +116,7 @@ public class ModelTest {
         companyBase2.setPrimaryIndustry(primaryIndustry);
 
 
-        Industry secondaryIndustry1 = queryManager.getItem(session, Industry.class, Collections.singletonMap(Industry.DB_FIELD_CODE, "112358"));
+        Industry secondaryIndustry1 = QueryManager.getItem(session, Industry.class, Collections.singletonMap(Industry.DB_FIELD_CODE, "112358"));
         if (secondaryIndustry1 == null) {
             secondaryIndustry1 = new Industry();
             secondaryIndustry1.setIndustryCode("112358");
@@ -132,7 +129,7 @@ public class ModelTest {
         companyBase1.setFaxNumber("11112222", false);
         companyBase1.setEmailAddress("test@example.com", false);
 
-        CompanyForm companyForm = queryManager.getItem(session, CompanyForm.class, Collections.singletonMap(CompanyForm.DB_FIELD_CODE, "123"));
+        CompanyForm companyForm = QueryManager.getItem(session, CompanyForm.class, Collections.singletonMap(CompanyForm.DB_FIELD_CODE, "123"));
         if (companyForm == null) {
             companyForm = new CompanyForm();
             companyForm.setCompanyFormCode("123");
@@ -147,7 +144,7 @@ public class ModelTest {
         companyBase1.setQuarterlyEmployeeNumbers(2017,2,1,2,1,2,1,2);
 
 
-        ParticipantLink participantLink = queryManager.getItem(session, ParticipantLink.class, Collections.singletonMap(ParticipantLink.DB_FIELD_VALUE, 44446666));
+        ParticipantLink participantLink = QueryManager.getItem(session, ParticipantLink.class, Collections.singletonMap(ParticipantLink.DB_FIELD_VALUE, 44446666));
         if (participantLink == null) {
             participantLink = new ParticipantLink();
             participantLink.setValue(44446666);
@@ -156,7 +153,7 @@ public class ModelTest {
         companyBase1.addParticipant(participantLink);
 
 
-        CompanyUnitLink productionUnit = queryManager.getItem(session, CompanyUnitLink.class, Collections.singletonMap(CompanyUnitLink.DB_FIELD_PNUMBER, 314159265));
+        CompanyUnitLink productionUnit = QueryManager.getItem(session, CompanyUnitLink.class, Collections.singletonMap(CompanyUnitLink.DB_FIELD_PNUMBER, 314159265));
         if (productionUnit == null) {
             productionUnit = new CompanyUnitLink();
             productionUnit.setpNumber(314159265);
@@ -171,7 +168,7 @@ public class ModelTest {
         Transaction transaction = session.beginTransaction();
 
         try {
-            queryManager.saveRegistration(session, company, registrering);
+            QueryManager.saveRegistration(session, company, registrering);
             transaction.commit();
         } catch (DataFordelerException e) {
             transaction.rollback();
@@ -182,27 +179,27 @@ public class ModelTest {
         session = sessionManager.getSessionFactory().openSession();
         CompanyQuery companyQuery = new CompanyQuery();
         companyQuery.setVirksomhedsnavn("Some company name");
-        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
+        Assert.assertEquals(1, QueryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
         companyQuery = new CompanyQuery();
         companyQuery.setCVRNummer("78975790");
-        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
+        Assert.assertEquals(1, QueryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
         companyQuery = new CompanyQuery();
         companyQuery.setVirksomhedsform("123");
-        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
+        Assert.assertEquals(1, QueryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
         companyQuery = new CompanyQuery();
         companyQuery.setTelefonnummer("87654321");
-        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
+        Assert.assertEquals(1, QueryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
         companyQuery = new CompanyQuery();
         companyQuery.setTelefaxnummer("11112222");
-        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
+        Assert.assertEquals(1, QueryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
         companyQuery = new CompanyQuery();
         companyQuery.setEmailadresse("test@example.com");
-        Assert.assertEquals(1, queryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
+        Assert.assertEquals(1, QueryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
 
         transaction = session.beginTransaction();
@@ -253,7 +250,7 @@ public class ModelTest {
 
 
 
-        Municipality kommune = queryManager.getItem(session, Municipality.class, Collections.singletonMap(Municipality.DB_FIELD_CODE, "101"));
+        Municipality kommune = QueryManager.getItem(session, Municipality.class, Collections.singletonMap(Municipality.DB_FIELD_CODE, "101"));
         if (kommune == null) {
             kommune = new Municipality();
             kommune.setCode("101");
@@ -266,7 +263,7 @@ public class ModelTest {
         adresse.put(Address.DB_FIELD_ROADCODE, "1234");
         adresse.put(Address.DB_FIELD_HOUSE_FROM, "12");
         adresse.put(Address.DB_FIELD_MUNICIPALITY, kommune);
-        Address beliggenhedsadresse = queryManager.getItem(session, Address.class, adresse);
+        Address beliggenhedsadresse = QueryManager.getItem(session, Address.class, adresse);
         if (beliggenhedsadresse == null) {
             beliggenhedsadresse = new Address();
             beliggenhedsadresse.setRoadName((String)adresse.get(Address.DB_FIELD_ROADNAME));
@@ -284,7 +281,7 @@ public class ModelTest {
 
 
 
-        Industry primaryIndustry = queryManager.getItem(session, Industry.class, Collections.singletonMap(Industry.DB_FIELD_CODE, "123456"));
+        Industry primaryIndustry = QueryManager.getItem(session, Industry.class, Collections.singletonMap(Industry.DB_FIELD_CODE, "123456"));
         if (primaryIndustry == null) {
             primaryIndustry = new Industry();
             primaryIndustry.setIndustryCode("123456");
@@ -308,7 +305,7 @@ public class ModelTest {
 
         unitBase.setQuarterlyEmployeeNumbers(2017,2,1,1,1,1,1,1);
 
-        ParticipantLink deltagerlink = queryManager.getItem(session, ParticipantLink.class, Collections.singletonMap(ParticipantLink.DB_FIELD_VALUE, 44446666));
+        ParticipantLink deltagerlink = QueryManager.getItem(session, ParticipantLink.class, Collections.singletonMap(ParticipantLink.DB_FIELD_VALUE, 44446666));
         if (deltagerlink == null) {
             deltagerlink = new ParticipantLink();
             deltagerlink.setValue(44446666);
@@ -321,7 +318,7 @@ public class ModelTest {
         session.saveOrUpdate(company);
 
         try {
-            queryManager.saveRegistration(session, unit, registrering);
+            QueryManager.saveRegistration(session, unit, registrering);
             transaction.commit();
         } catch (DataFordelerException e) {
             transaction.rollback();
@@ -361,7 +358,7 @@ public class ModelTest {
 
 
 
-        ParticipantType type = queryManager.getItem(session, ParticipantType.class, Collections.singletonMap(ParticipantType.DB_FIELD_NAME, "Person"));
+        ParticipantType type = QueryManager.getItem(session, ParticipantType.class, Collections.singletonMap(ParticipantType.DB_FIELD_NAME, "Person"));
         if (type == null) {
             type = new ParticipantType();
             type.setName("Person");
@@ -373,7 +370,7 @@ public class ModelTest {
 
 
 
-        ParticipantRole role = queryManager.getItem(session, ParticipantRole.class, Collections.singletonMap(ParticipantType.DB_FIELD_NAME, "CEO"));
+        ParticipantRole role = QueryManager.getItem(session, ParticipantRole.class, Collections.singletonMap(ParticipantType.DB_FIELD_NAME, "CEO"));
         if (role == null) {
             role = new ParticipantRole();
             role.setName("CEO");
@@ -384,7 +381,7 @@ public class ModelTest {
 
 
 
-        ParticipantStatus status = queryManager.getItem(session, ParticipantStatus.class, Collections.singletonMap(ParticipantType.DB_FIELD_NAME, "Deceased"));
+        ParticipantStatus status = QueryManager.getItem(session, ParticipantStatus.class, Collections.singletonMap(ParticipantType.DB_FIELD_NAME, "Deceased"));
         if (status == null) {
             status = new ParticipantStatus();
             status.setName("Deceased");
@@ -393,7 +390,7 @@ public class ModelTest {
         participantBase.setStatus(status);
         Assert.assertEquals("Deceased", participantBase.getStatus());
 
-        queryManager.saveRegistration(session, participant, registration);
+        QueryManager.saveRegistration(session, participant, registration);
 
         System.out.println("--------------------------------------");
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(participant));

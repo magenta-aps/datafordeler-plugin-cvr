@@ -31,9 +31,6 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
     private CompanyEntityService companyEntityService;
 
     @Autowired
-    private QueryManager queryManager;
-
-    @Autowired
     private SessionManager sessionManager;
 
     private Logger log = LogManager.getLogger(CompanyEntityManager.class);
@@ -68,11 +65,6 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
     @Override
     protected SessionManager getSessionManager() {
         return this.sessionManager;
-    }
-
-    @Override
-    protected QueryManager getQueryManager() {
-        return this.queryManager;
     }
 
     @Override

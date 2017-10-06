@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.configuration;
 
 import dk.magenta.datafordeler.core.configuration.ConfigurationManager;
+import dk.magenta.datafordeler.core.database.ConfigurationSessionManager;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +17,7 @@ import javax.annotation.PostConstruct;
 public class CvrConfigurationManager extends ConfigurationManager<CvrConfiguration> {
 
     @Autowired
-    private SessionManager sessionManager;
+    private ConfigurationSessionManager sessionManager;
 
     private Logger log = LogManager.getLogger("CvrConfigurationManager");
 
@@ -37,7 +38,7 @@ public class CvrConfigurationManager extends ConfigurationManager<CvrConfigurati
     }
 
     @Override
-    protected SessionManager getSessionManager() {
+    protected ConfigurationSessionManager getSessionManager() {
         return this.sessionManager;
     }
 

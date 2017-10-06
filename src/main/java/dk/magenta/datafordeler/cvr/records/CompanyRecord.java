@@ -254,7 +254,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) {
+    public void populateBaseData(CompanyBaseData baseData, Session session) {
         baseData.setAdvertProtection(this.advertProtection);
         baseData.setCvrNumber(this.cvrNumber);
     }

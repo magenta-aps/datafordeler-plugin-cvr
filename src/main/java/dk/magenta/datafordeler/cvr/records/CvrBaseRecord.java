@@ -16,24 +16,24 @@ import java.time.OffsetDateTime;
  */
 public abstract class CvrBaseRecord extends CvrRecord {
 
-    public void populateBaseData(DataItem baseData, QueryManager queryManager, Session session, OffsetDateTime timestamp) throws ParseException {
+    public void populateBaseData(DataItem baseData, Session session, OffsetDateTime timestamp) throws ParseException {
         if (baseData instanceof CompanyBaseData) {
             CompanyBaseData companyBaseData = (CompanyBaseData) baseData;
-            this.populateBaseData(companyBaseData, queryManager, session);
+            this.populateBaseData(companyBaseData, session);
         }
         if (baseData instanceof CompanyUnitBaseData) {
             CompanyUnitBaseData companyUnitBaseData = (CompanyUnitBaseData) baseData;
-            this.populateBaseData(companyUnitBaseData, queryManager, session);
+            this.populateBaseData(companyUnitBaseData, session);
         }
         if (baseData instanceof ParticipantBaseData) {
             ParticipantBaseData participantBaseData = (ParticipantBaseData) baseData;
-            this.populateBaseData(participantBaseData, queryManager, session);
+            this.populateBaseData(participantBaseData, session);
         }
     }
 
-    public void populateBaseData(CompanyBaseData baseData, QueryManager queryManager, Session session) throws ParseException {}
+    public void populateBaseData(CompanyBaseData baseData, Session session) throws ParseException {}
 
-    public void populateBaseData(CompanyUnitBaseData baseData, QueryManager queryManager, Session session) throws ParseException {}
+    public void populateBaseData(CompanyUnitBaseData baseData, Session session) throws ParseException {}
 
-    public void populateBaseData(ParticipantBaseData baseData, QueryManager queryManager, Session session) throws ParseException {}
+    public void populateBaseData(ParticipantBaseData baseData, Session session) throws ParseException {}
 }
