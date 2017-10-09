@@ -6,15 +6,21 @@ import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.cvr.data.CvrEntity;
 
 import javax.persistence.Column;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.UUID;
+
+import static dk.magenta.datafordeler.cvr.data.company.CompanyEntity.DB_FIELD_CVR;
 
 /**
  * Created by lars on 16-05-17.
  */
 @javax.persistence.Entity
-@Table(name="cvr_participant_entity")
+@Table(name="cvr_participant_entity", indexes = {
+        @Index(name = "identification", columnList = "identification_id"),
+        @Index(name = "participantNumber", columnList = "participantNumber")
+})
 public class ParticipantEntity extends CvrEntity<ParticipantEntity, ParticipantRegistration> {
 
     @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="type")
