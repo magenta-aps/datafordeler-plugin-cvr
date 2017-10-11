@@ -29,14 +29,28 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
     public static final String KOMMUNEKODE = "kommunekode";
 
     @QueryField(type = QueryField.FieldType.STRING, queryName = CVRNUMMER)
-    private String CVRNummer;
+    private List<String> cvrNumre = new ArrayList<>();
 
-    public String getCVRNummer() {
-        return CVRNummer;
+    public Collection<String> getCvrNumre() {
+        return cvrNumre;
     }
 
-    public void setCVRNummer(String CVRNummer) {
-        this.CVRNummer = CVRNummer;
+    public void addCVRNummer(String CVRNummer) {
+        this.cvrNumre.add(CVRNummer);
+    }
+
+    public void setCvrNumre(String cvrNumre) {
+        this.cvrNumre.clear();
+        this.addCVRNummer(cvrNumre);
+    }
+
+    public void setCvrNumre(Collection<String> cvrNumre) {
+        this.cvrNumre.clear();
+        if (cvrNumre != null) {
+            for (String cvrNummer : cvrNumre) {
+                this.addCVRNummer(cvrNummer);
+            }
+        }
     }
 
 
@@ -134,10 +148,29 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
         this.addKommunekode(String.format("%03d", kommunekode));
     }
 
+    public void setKommunekoder(String kommunekode) {
+        this.kommunekoder.clear();
+        this.addKommunekode(kommunekode);
+    }
+
+    public void setKommunekoder(Collection<String> kommunekoder) {
+        this.kommunekoder.clear();
+        if (kommunekoder != null) {
+            for (String kommunekode : kommunekoder) {
+                this.addKommunekode(kommunekode);
+            }
+        }
+    }
+
+    public void setKommunekoder(int kommunekode) {
+        this.setKommunekoder(String.format("%03d", kommunekode));
+    }
+
+
     @Override
     public Map<String, Object> getSearchParameters() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put(CVRNUMMER, this.CVRNummer);
+        map.put(CVRNUMMER, this.cvrNumre);
         map.put(REKLAMEBESKYTTELSE, this.reklamebeskyttelse);
         map.put(NAVN, this.virksomhedsnavn);
         map.put(TELEFONNUMMER, this.telefonnummer);
@@ -150,18 +183,14 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     @Override
     public void setFromParameters(ParameterMap parameters) {
-        this.setCVRNummer(parameters.getFirst(CVRNUMMER));
+        this.setCvrNumre(parameters.get(CVRNUMMER));
         this.setReklamebeskyttelse(parameters.getFirst(REKLAMEBESKYTTELSE));
         this.setVirksomhedsnavn(parameters.getFirst(NAVN));
         this.setTelefonnummer(parameters.getFirst(TELEFONNUMMER));
         this.setTelefaxnummer(parameters.getFirst(TELEFAXNUMMER));
         this.setEmailadresse(parameters.getFirst(EMAILADRESSE));
         this.setVirksomhedsform(parameters.getFirst(VIRKSOMHEDSFORM));
-        if (parameters.containsKey(KOMMUNEKODE)) {
-            for (String kommunekode : parameters.get(KOMMUNEKODE)) {
-                this.addKommunekode(kommunekode);
-            }
-        }
+        this.setKommunekoder(parameters.get(KOMMUNEKODE));
     }
 
     @Override
@@ -179,8 +208,8 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
     public LookupDefinition getLookupDefinition() {
         LookupDefinition lookupDefinition = new LookupDefinition(this, CompanyBaseData.class);
 
-        if (this.CVRNummer != null) {
-            lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + CompanyEntity.DB_FIELD_CVR, this.CVRNummer, Integer.class);
+        if (!this.cvrNumre.isEmpty()) {
+            lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + CompanyEntity.DB_FIELD_CVR, this.cvrNumre, Integer.class);
         }
         if (this.virksomhedsform != null) {
             lookupDefinition.put(CompanyBaseData.DB_FIELD_FORM + LookupDefinition.separator + CompanyFormData.DB_FIELD_FORM + LookupDefinition.separator + CompanyForm.DB_FIELD_CODE, this.virksomhedsform, String.class);

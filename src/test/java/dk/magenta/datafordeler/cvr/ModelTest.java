@@ -182,7 +182,7 @@ public class ModelTest {
         Assert.assertEquals(1, QueryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
         companyQuery = new CompanyQuery();
-        companyQuery.setCVRNummer("78975790");
+        companyQuery.setCvrNumre("78975790");
         Assert.assertEquals(1, QueryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
         companyQuery = new CompanyQuery();
