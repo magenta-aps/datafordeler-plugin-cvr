@@ -66,6 +66,16 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
         return status;
     }
 
+    public String getStatusCode() {
+        if (this.status != null) {
+            CompanyStatus companyStatus = this.status.getStatus();
+            if (companyStatus != null) {
+                return companyStatus.getStatus();
+            }
+        }
+        return null;
+    }
+
     public void setStatus(CompanyStatus status) {
         if (this.status == null) {
             this.status = new CompanyStatusData();
