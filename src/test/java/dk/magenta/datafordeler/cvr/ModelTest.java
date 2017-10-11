@@ -69,18 +69,18 @@ public class ModelTest {
 
 
 
-        Municipality municipality = Municipality.getMunicipality("101", "Copenhagen", session);
+        Municipality municipality = Municipality.getMunicipality(101, "Copenhagen", session);
 
         HashMap<String, Object> adresse1 = new HashMap<>();
         adresse1.put(Address.DB_FIELD_ROADNAME, "FoobarRoad");
-        adresse1.put(Address.DB_FIELD_ROADCODE, "1234");
+        adresse1.put(Address.DB_FIELD_ROADCODE, 1234);
         adresse1.put(Address.DB_FIELD_HOUSE_FROM, "12");
         adresse1.put(Address.DB_FIELD_MUNICIPALITY, municipality);
         Address locationAddress = QueryManager.getItem(session, Address.class, adresse1);
         if (locationAddress == null) {
             locationAddress = new Address();
             locationAddress.setRoadName((String)adresse1.get(Address.DB_FIELD_ROADNAME));
-            locationAddress.setRoadCode((String)adresse1.get(Address.DB_FIELD_ROADCODE));
+            locationAddress.setRoadCode((Integer)adresse1.get(Address.DB_FIELD_ROADCODE));
             locationAddress.setHouseNumberFrom((String)adresse1.get(Address.DB_FIELD_HOUSE_FROM));
             locationAddress.setMunicipality(municipality);
             session.saveOrUpdate(locationAddress);
@@ -91,14 +91,14 @@ public class ModelTest {
 
         HashMap<String, Object> adresse2 = new HashMap<>();
         adresse2.put(Address.DB_FIELD_ROADNAME, "HelloWorldRoad");
-        adresse2.put(Address.DB_FIELD_ROADCODE, "5678");
+        adresse2.put(Address.DB_FIELD_ROADCODE, 5678);
         adresse2.put(Address.DB_FIELD_HOUSE_FROM, "34");
         adresse2.put(Address.DB_FIELD_MUNICIPALITY, municipality);
         Address postalAddress = QueryManager.getItem(session, Address.class, adresse2);
         if (postalAddress == null) {
             postalAddress = new Address();
             postalAddress.setRoadName((String)adresse2.get(Address.DB_FIELD_ROADNAME));
-            postalAddress.setRoadCode((String)adresse2.get(Address.DB_FIELD_ROADCODE));
+            postalAddress.setRoadCode((Integer)adresse2.get(Address.DB_FIELD_ROADCODE));
             postalAddress.setHouseNumberFrom((String)adresse2.get(Address.DB_FIELD_HOUSE_FROM));
             postalAddress.setMunicipality(municipality);
             session.saveOrUpdate(postalAddress);
@@ -250,33 +250,33 @@ public class ModelTest {
 
 
 
-        Municipality kommune = QueryManager.getItem(session, Municipality.class, Collections.singletonMap(Municipality.DB_FIELD_CODE, "101"));
+        Municipality kommune = QueryManager.getItem(session, Municipality.class, Collections.singletonMap(Municipality.DB_FIELD_CODE, 101));
         if (kommune == null) {
             kommune = new Municipality();
-            kommune.setCode("101");
+            kommune.setCode(101);
             kommune.setName("Copenhagen");
             session.saveOrUpdate(kommune);
         }
 
         HashMap<String, Object> adresse = new HashMap<>();
         adresse.put(Address.DB_FIELD_ROADNAME, "FoobarRoad");
-        adresse.put(Address.DB_FIELD_ROADCODE, "1234");
+        adresse.put(Address.DB_FIELD_ROADCODE, 1234);
         adresse.put(Address.DB_FIELD_HOUSE_FROM, "12");
         adresse.put(Address.DB_FIELD_MUNICIPALITY, kommune);
         Address beliggenhedsadresse = QueryManager.getItem(session, Address.class, adresse);
         if (beliggenhedsadresse == null) {
             beliggenhedsadresse = new Address();
             beliggenhedsadresse.setRoadName((String)adresse.get(Address.DB_FIELD_ROADNAME));
-            beliggenhedsadresse.setRoadCode((String)adresse.get(Address.DB_FIELD_ROADCODE));
+            beliggenhedsadresse.setRoadCode((Integer)adresse.get(Address.DB_FIELD_ROADCODE));
             beliggenhedsadresse.setHouseNumberFrom((String)adresse.get(Address.DB_FIELD_HOUSE_FROM));
             beliggenhedsadresse.setMunicipality(kommune);
             session.saveOrUpdate(beliggenhedsadresse);
         }
         unitBase.setLocationAddress(beliggenhedsadresse);
-        Assert.assertEquals("101", unitBase.getLocationAddress().getMunicipality().getCode());
+        Assert.assertEquals(101, unitBase.getLocationAddress().getMunicipality().getCode());
         Assert.assertEquals("Copenhagen", unitBase.getLocationAddress().getMunicipality().getName());
         Assert.assertEquals("FoobarRoad", unitBase.getLocationAddress().getRoadName());
-        Assert.assertEquals("1234", unitBase.getLocationAddress().getRoadCode());
+        Assert.assertEquals(1234, unitBase.getLocationAddress().getRoadCode());
         Assert.assertEquals("12", unitBase.getLocationAddress().getHouseNumberFrom());
 
 

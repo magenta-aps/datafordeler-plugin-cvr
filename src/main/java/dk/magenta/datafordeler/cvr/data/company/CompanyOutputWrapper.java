@@ -215,15 +215,13 @@ public class CompanyOutputWrapper extends OutputWrapper<CompanyEntity> {
         adresseNode.put("etagebetegnelse", adresse.getFloor());
         adresseNode.put("dørbetegnelse", adresse.getDoor());
 
-        String kommunekode = null;
+        int kommunekode;
         String kommunenavn = null;
         Municipality kommune = adresse.getMunicipality();
         if (kommune != null) {
-            kommunekode = kommune.getCode();
-            kommunenavn = kommune.getName();
+            adresseNode.put("kommunekode", kommune.getCode());
+            adresseNode.put("kommunenavn", kommune.getName());
         }
-        adresseNode.put("kommunekode", kommunekode);
-        adresseNode.put("kommunenavn", kommunenavn);
 
         adresseNode.put("postdistrikt", adresse.getPostdistrikt());
         adresseNode.put("vejnavn", adresse.getRoadName());

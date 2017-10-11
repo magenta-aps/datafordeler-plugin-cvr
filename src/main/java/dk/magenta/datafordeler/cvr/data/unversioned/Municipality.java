@@ -30,13 +30,13 @@ public class Municipality extends UnversionedEntity {
     @JsonProperty(value = IO_FIELD_CODE)
     @XmlElement(name = IO_FIELD_CODE)
     @Column(nullable = false, unique = true)
-    private String code;
+    private int code;
 
-    public String getCode() {
+    public int getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(int code) {
         this.code = code;
     }
 
@@ -60,8 +60,8 @@ public class Municipality extends UnversionedEntity {
 
     //----------------------------------------------------
 
-    public static Municipality getMunicipality(String code, String name, Session session) {
-        if (code != null) {
+    public static Municipality getMunicipality(int code, String name, Session session) {
+        if (code > 0) {
             Municipality municipality = QueryManager.getItem(session, Municipality.class, Collections.singletonMap(DB_FIELD_CODE, code));
             if (municipality == null) {
                 municipality = new Municipality();

@@ -50,14 +50,18 @@ public class Address extends UnversionedEntity {
     @JsonProperty(value = IO_FIELD_ROADCODE)
     @XmlElement(name = IO_FIELD_ROADCODE)
     @Column(name = DB_FIELD_ROADCODE)
-    private String roadCode;
+    private int roadCode;
 
-    public String getRoadCode() {
+    public int getRoadCode() {
         return this.roadCode;
     }
 
-    public void setRoadCode(String roadCode) {
+    public void setRoadCode(int roadCode) {
         this.roadCode = roadCode;
+    }
+
+    public void setRoadCode(String roadCode) {
+        this.setRoadCode(Integer.parseInt(roadCode));
     }
 
     //----------------------------------------------------
