@@ -35,20 +35,20 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
         return cvrNumre;
     }
 
-    public void addCVRNummer(String CVRNummer) {
+    public void addCvrNummer(String CVRNummer) {
         this.cvrNumre.add(CVRNummer);
     }
 
     public void setCvrNumre(String cvrNumre) {
         this.cvrNumre.clear();
-        this.addCVRNummer(cvrNumre);
+        this.addCvrNummer(cvrNumre);
     }
 
     public void setCvrNumre(Collection<String> cvrNumre) {
         this.cvrNumre.clear();
         if (cvrNumre != null) {
             for (String cvrNummer : cvrNumre) {
-                this.addCVRNummer(cvrNummer);
+                this.addCvrNummer(cvrNummer);
             }
         }
     }
