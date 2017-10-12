@@ -17,7 +17,9 @@ import static dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm.DB_FIELD_
  * Created by lars on 26-01-15.
  */
 @Entity
-@Table(name = "cvr_form", indexes = {@Index(name = "companyFormCode", columnList = DB_FIELD_CODE)})
+@Table(name = "cvr_form", indexes = {
+        @Index(name = "cvr_company_form_code", columnList = DB_FIELD_CODE)
+})
 public class CompanyForm extends UnversionedEntity {
 
     public CompanyForm() {

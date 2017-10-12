@@ -12,13 +12,17 @@ import javax.xml.bind.annotation.XmlTransient;
 import java.util.HashMap;
 import java.util.Map;
 
+import static dk.magenta.datafordeler.cvr.data.shared.ContactData.DB_FIELD_TYPE;
+import static dk.magenta.datafordeler.cvr.data.shared.SingleData.DB_FIELD_VALUE;
+
 /**
  * Created by lars on 16-05-17.
  */
 @Entity
 @Table(name = "cvr_company_contact", indexes = {
-        @Index(name = "companyContactType", columnList = "type"),
-        @Index(name = "companyContactData", columnList = "type, value")
+        @Index(name = "cvr_company_contact_type", columnList = DB_FIELD_TYPE),
+        @Index(name = "cvr_company_contact_value", columnList = DB_FIELD_VALUE),
+        @Index(name = "cvr_company_contact_data", columnList = DB_FIELD_TYPE + ", " + DB_FIELD_VALUE)
 })
 public class ContactData extends SingleData<String> {
 

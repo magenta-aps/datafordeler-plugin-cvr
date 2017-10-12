@@ -20,12 +20,16 @@ import java.lang.reflect.Field;
 import java.time.OffsetDateTime;
 import java.util.*;
 
+import static dk.magenta.datafordeler.cvr.data.company.CompanyBaseData.*;
+
 
 /**
  * Created by lars on 12-06-17.
  */
 @Entity
-@Table(name="cvr_company_basedata")
+@Table(name="cvr_company_basedata", indexes = {
+        @Index(name = "cvr_company_lastUpdated", columnList = "lastUpdated")
+})
 public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
 
     public static final String DB_FIELD_FORM = "companyForm";

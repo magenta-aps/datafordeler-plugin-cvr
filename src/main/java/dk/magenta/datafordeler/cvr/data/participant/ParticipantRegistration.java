@@ -12,7 +12,9 @@ import java.time.temporal.TemporalAccessor;
  */
 @javax.persistence.Entity
 @Table(name="cvr_participant_registration", indexes = {
-        @Index(name = "entity", columnList = "entity_id")
+        @Index(name = "cvr_participant_entity", columnList = "entity_id"),
+        @Index(name = "cvr_participant_registration_from", columnList = "registrationFrom"),
+        @Index(name = "cvr_participant_registration_to", columnList = "registrationTo")
 })
 public class ParticipantRegistration extends CvrRegistration<ParticipantEntity, ParticipantRegistration, ParticipantEffect> {
     public ParticipantRegistration() {

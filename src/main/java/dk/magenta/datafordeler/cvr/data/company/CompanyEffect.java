@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.data.company;
 import dk.magenta.datafordeler.cvr.data.CvrEffect;
 
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -11,7 +12,10 @@ import java.time.OffsetDateTime;
  * Created by lars on 16-05-17.
  */
 @Entity
-@Table(name="cvr_company_effect")
+@Table(name="cvr_company_effect", indexes = {
+        @Index(name = "cvr_company_effect_from", columnList = "effectFrom"),
+        @Index(name = "cvr_company_effect_to", columnList = "effectTo")
+})
 public class CompanyEffect extends CvrEffect<CompanyRegistration, CompanyEffect, CompanyBaseData> {
     public CompanyEffect() {
     }
