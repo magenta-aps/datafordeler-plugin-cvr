@@ -18,12 +18,14 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import sun.misc.IOUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -191,8 +193,28 @@ public class CvrRegisterManager extends RegisterManager {
         } catch (DataStreamException e1) {
             e1.printStackTrace();
         }
-        return this.parseEventResponse(responseBody, entityManager);
 
+        File cacheFile = new File("cache/cvr"+ LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
+
+        try {
+            cacheFile.createNewFile();
+            FileWriter fileWriter = new FileWriter(cacheFile);
+            org.apache.commons.io.IOUtils.copy(responseBody, fileWriter);
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            FileInputStream cachedData = new FileInputStream(cacheFile);
+            return this.parseEventResponse(cachedData, entityManager);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+        //return this.parseEventResponse(responseBody, entityManager);
+        return null;
     }
     @Override
     protected ItemInputStream<? extends PluginSourceData> parseEventResponse(final InputStream responseBody, EntityManager entityManager) throws DataFordelerException {
