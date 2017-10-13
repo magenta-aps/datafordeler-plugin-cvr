@@ -241,7 +241,7 @@ public class QueryTest {
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
             query = new CompanyQuery();
-            query.setCVRNummer("25052943");
+            query.setCvrNumre("25052943");
             entities = QueryManager.getAllEntities(session, query, CompanyEntity.class);
             Assert.assertEquals(1, entities.size());
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());

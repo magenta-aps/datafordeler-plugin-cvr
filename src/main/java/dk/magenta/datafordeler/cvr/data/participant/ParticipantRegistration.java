@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.data.participant;
 
 import dk.magenta.datafordeler.cvr.data.CvrRegistration;
 
+import javax.persistence.Index;
 import javax.persistence.Table;
 import java.time.OffsetDateTime;
 import java.time.temporal.TemporalAccessor;
@@ -10,7 +11,11 @@ import java.time.temporal.TemporalAccessor;
  * Created by lars on 16-05-17.
  */
 @javax.persistence.Entity
-@Table(name="cvr_participant_registration")
+@Table(name="cvr_participant_registration", indexes = {
+        @Index(name = "cvr_participant_entity", columnList = "entity_id"),
+        @Index(name = "cvr_participant_registration_from", columnList = "registrationFrom"),
+        @Index(name = "cvr_participant_registration_to", columnList = "registrationTo")
+})
 public class ParticipantRegistration extends CvrRegistration<ParticipantEntity, ParticipantRegistration, ParticipantEffect> {
     public ParticipantRegistration() {
     }

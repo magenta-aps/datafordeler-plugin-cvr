@@ -18,8 +18,8 @@ import static dk.magenta.datafordeler.cvr.data.shared.TextData.DB_FIELD_TYPE;
  */
 @Entity
 @Table(name = "cvr_text", indexes = {
-        @Index(name = "companyTextType", columnList = DB_FIELD_TYPE),
-        @Index(name = "companyTextData", columnList = DB_FIELD_TYPE + ", " + DB_FIELD_VALUE)
+        @Index(name = "cvr_company_text_type", columnList = DB_FIELD_TYPE),
+        @Index(name = "cvr_company_text_data", columnList = DB_FIELD_TYPE + ", " + DB_FIELD_VALUE)
 })
 public class TextData extends SingleData<String> {
 

@@ -115,7 +115,7 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
             sj.add(AddressData.DB_FIELD_ADDRESS);
             sj.add(Address.DB_FIELD_MUNICIPALITY);
             sj.add(Municipality.DB_FIELD_CODE);
-            lookupDefinition.put(sj.toString(), this.kommunekoder, String.class);
+            lookupDefinition.put(sj.toString(), this.kommunekoder, Integer.class);
         }
         return lookupDefinition;
     }

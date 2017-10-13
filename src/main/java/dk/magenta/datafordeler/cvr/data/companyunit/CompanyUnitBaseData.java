@@ -20,7 +20,9 @@ import java.util.*;
  * Created by lars on 12-06-17.
  */
 @Entity
-@Table(name="cvr_companyunit_basedata")
+@Table(name="cvr_companyunit_basedata", indexes = {
+        @Index(name = "cvr_companyunit_lastUpdated", columnList = "lastUpdated")
+})
 public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitBaseData> {
 
 

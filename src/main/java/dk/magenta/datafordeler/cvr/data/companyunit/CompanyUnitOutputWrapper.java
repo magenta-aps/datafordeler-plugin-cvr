@@ -151,15 +151,11 @@ public class CompanyUnitOutputWrapper extends OutputWrapper<CompanyUnitEntity> {
             json.put("etagebetegnelse", adresse.getFloor());
             json.put("dørbetegnelse", adresse.getDoor());
 
-            String kommunekode = null;
-            String kommunenavn = null;
             Municipality kommune = adresse.getMunicipality();
             if (kommune != null) {
-                kommunekode = kommune.getCode();
-                kommunenavn = kommune.getName();
+                json.put("kommunekode", kommune.getCode());
+                json.put("kommunenavn", kommune.getName());
             }
-            json.put("kommunekode", kommunekode);
-            json.put("kommunenavn", kommunenavn);
 
             json.put("postdistrikt", adresse.getPostdistrikt());
             json.put("vejnavn", adresse.getRoadName());

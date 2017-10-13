@@ -10,6 +10,8 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import java.util.StringJoiner;
+
 import static dk.magenta.datafordeler.cvr.data.unversioned.Address.DB_FIELD_ROADCODE;
 import static dk.magenta.datafordeler.cvr.data.unversioned.Address.DB_FIELD_ROADNAME;
 
@@ -48,14 +50,18 @@ public class Address extends UnversionedEntity {
     @JsonProperty(value = IO_FIELD_ROADCODE)
     @XmlElement(name = IO_FIELD_ROADCODE)
     @Column(name = DB_FIELD_ROADCODE)
-    private String roadCode;
+    private int roadCode;
 
-    public String getRoadCode() {
+    public int getRoadCode() {
         return this.roadCode;
     }
 
-    public void setRoadCode(String roadCode) {
+    public void setRoadCode(int roadCode) {
         this.roadCode = roadCode;
+    }
+
+    public void setRoadCode(String roadCode) {
+        this.setRoadCode(Integer.parseInt(roadCode));
     }
 
     //----------------------------------------------------
@@ -366,6 +372,45 @@ public class Address extends UnversionedEntity {
 
     public void setLastValidated(String lastValidated) {
         this.lastValidated = lastValidated;
+    }
+
+    //----------------------------------------------------
+
+    public String getAddressFormatted() {
+//        if (this.addressText != null) {
+//            return this.addressText;
+//        }
+        StringBuilder out = new StringBuilder();
+
+        if (this.roadName != null) {
+            out.append(this.roadName);
+        }
+
+        if (this.houseNumberFrom != null) {
+            out.append(" " + this.houseNumberFrom + emptyIfNull(this.letterFrom));
+            if (this.houseNumberTo != null) {
+                out.append("-");
+                if (this.houseNumberTo.equals(this.houseNumberFrom)) {
+                    out.append(emptyIfNull(this.letterTo));
+                } else {
+                    out.append(this.houseNumberTo + emptyIfNull(this.letterTo));
+                }
+            }
+
+            if (this.floor != null) {
+                out.append(", " + this.floor + ".");
+                if (this.door != null) {
+                    out.append(" " + this.door);
+                }
+            }
+
+        }
+        return out.toString();
+    }
+
+    private String emptyIfNull(String text) {
+        if (text == null) return "";
+        return text;
     }
 
 }

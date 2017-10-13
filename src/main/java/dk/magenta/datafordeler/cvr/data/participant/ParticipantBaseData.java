@@ -18,7 +18,9 @@ import java.util.Set;
  * Created by lars on 16-05-17.
  */
 @javax.persistence.Entity
-@Table(name="cvr_participant_data")
+@Table(name="cvr_participant_data", indexes = {
+        @Index(name = "cvr_participant_lastUpdated", columnList = "lastUpdated")
+})
 public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantBaseData> {
 
     public static final String DB_FIELD_NAMES = "names";
