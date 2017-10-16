@@ -29,10 +29,10 @@ public class CvrConfiguration implements Configuration {
     private String registerAddress = "http://distribution.virk.dk";
 
     @Column
-    private String username = "Magenta_CVR_I_SKYEN";
+    private String username = "";
 
     @Column
-    private String password = "20ce0f61-3f04-43ec-8119-3a67384e269c";
+    private String password = "";
 
     @Column
     private String companyInitialQuery = "{" +
