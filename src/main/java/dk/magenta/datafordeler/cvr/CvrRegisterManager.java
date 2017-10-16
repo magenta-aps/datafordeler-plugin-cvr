@@ -211,15 +211,15 @@ public class CvrRegisterManager extends RegisterManager {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
+        return null;
 
         //return this.parseEventResponse(responseBody, entityManager);
-        return null;
     }
     @Override
     protected ItemInputStream<? extends PluginSourceData> parseEventResponse(final InputStream responseBody, EntityManager entityManager) throws DataFordelerException {
         PipedInputStream inputStream = new PipedInputStream();
         final PipedOutputStream outputStream;
+        final String charsetName = "UTF-8";
         try {
             outputStream = new PipedOutputStream(inputStream);
             final ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
@@ -229,14 +229,11 @@ public class CvrRegisterManager extends RegisterManager {
                 public void run() {
                     if (responseBody != null) {
                         final int dataBaseId = responseBody.hashCode();
-
-                        final BufferedReader responseReader = new BufferedReader(new InputStreamReader(responseBody));
-
+                        BufferedReader responseReader = null;
                         int count = 0;
                         try {
+                            responseReader = new BufferedReader(new InputStreamReader(responseBody, charsetName));
                             String line;
-
-                            // One line per event
                             while ((line = responseReader.readLine()) != null) {
                                 objectOutputStream.writeObject(new CvrSourceData(entityManager.getSchema(), line, dataBaseId + ":" + count));
                                 count++;
@@ -246,7 +243,9 @@ public class CvrRegisterManager extends RegisterManager {
                         } finally {
                             log.debug("Wrote " + count + " events");
                             try {
-                                responseReader.close();
+                                if (responseReader != null) {
+                                    responseReader.close();
+                                }
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }

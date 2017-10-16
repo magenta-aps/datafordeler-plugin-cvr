@@ -18,8 +18,8 @@ import static dk.magenta.datafordeler.cvr.data.company.CompanyEntity.DB_FIELD_CV
  */
 @javax.persistence.Entity
 @Table(name="cvr_participant_entity", indexes = {
-        @Index(name = "identification", columnList = "identification_id"),
-        @Index(name = "participantNumber", columnList = "participantNumber")
+        @Index(name = "cvr_participant_identification", columnList = "identification_id"),
+        @Index(name = "cvr_participant_participantNumber", columnList = "participantNumber")
 })
 public class ParticipantEntity extends CvrEntity<ParticipantEntity, ParticipantRegistration> {
 

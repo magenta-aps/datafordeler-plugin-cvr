@@ -20,8 +20,8 @@ import static dk.magenta.datafordeler.cvr.data.company.CompanyEntity.IO_FIELD_CV
  */
 @javax.persistence.Entity
 @Table(name="cvr_company_entity", indexes = {
-        @Index(name = "identification", columnList = "identification_id"),
-        @Index(name = "cvr", columnList = DB_FIELD_CVR)
+        @Index(name = "cvr_company_identification", columnList = "identification_id"),
+        @Index(name = "cvr_company_cvrnumber", columnList = DB_FIELD_CVR)
 })
 @JsonPropertyOrder({IO_FIELD_CVR, "uuid", "domain"})
 public class CompanyEntity extends CvrEntity<CompanyEntity, CompanyRegistration> {
