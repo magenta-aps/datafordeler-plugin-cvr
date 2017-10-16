@@ -66,7 +66,6 @@ public class CvrRegisterManager extends RegisterManager {
                 configuration.getPassword()
         );
         this.commonFetcher.setScrollIdJsonKey("_scroll_id");
-        this.commonFetcher.setThrottle(2000);
         try {
             this.baseEndpoint = new URI(configuration.getRegisterAddress());
         } catch (URISyntaxException e) {
