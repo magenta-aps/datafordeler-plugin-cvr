@@ -93,7 +93,7 @@ public class ParseTest {
             EntityManager entityManager = plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
             List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson"), importMetadata);
             System.out.println("registrations.size: "+registrations.size());
-            System.out.println(objectMapper.writeValueAsString(registrations));
+            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations));
             Assert.assertEquals(4, registrations.size());
         }
     }

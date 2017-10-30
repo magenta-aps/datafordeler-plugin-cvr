@@ -2,10 +2,7 @@ package dk.magenta.datafordeler.cvr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.magenta.datafordeler.core.database.SessionManager;
-import dk.magenta.datafordeler.core.exception.DataFordelerException;
-import dk.magenta.datafordeler.core.exception.DataStreamException;
-import dk.magenta.datafordeler.core.exception.HttpStatusException;
-import dk.magenta.datafordeler.core.exception.WrongSubclassException;
+import dk.magenta.datafordeler.core.exception.*;
 import dk.magenta.datafordeler.core.io.PluginSourceData;
 import dk.magenta.datafordeler.core.plugin.*;
 import dk.magenta.datafordeler.core.util.ItemInputStream;
@@ -28,6 +25,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 /**
  * Created by lars on 16-05-17.
@@ -172,8 +170,15 @@ public class CvrRegisterManager extends RegisterManager {
         }
 
         InputStream responseBody = null;
+        final ArrayList<Throwable> errors = new ArrayList<>();
 
         try {
+            eventCommunicator.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+                @Override
+                public void uncaughtException(Thread t, Throwable e) {
+                    errors.add(e);
+                }
+            });
             responseBody = eventCommunicator.fetch(
                     new URI(
                             baseEndpoint.getScheme(), baseEndpoint.getHost(),
@@ -186,11 +191,9 @@ public class CvrRegisterManager extends RegisterManager {
                     requestBody
             );
         } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } catch (HttpStatusException e1) {
-            e1.printStackTrace();
-        } catch (DataStreamException e1) {
-            e1.printStackTrace();
+            throw new ConfigurationException("Invalid pull URI '"+e.getInput()+"'");
+        } catch (IOException e) {
+            throw new DataStreamException(e);
         }
 
         File cacheFile = new File("cache/cvr"+ LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
@@ -204,15 +207,18 @@ public class CvrRegisterManager extends RegisterManager {
             e.printStackTrace();
         }
 
+        eventCommunicator.wait(responseBody);
+        if (!errors.isEmpty()) {
+            throw new ParseException("Error while loading data for "+entityManager.getSchema(), errors.get(0));
+        }
+
         try {
             FileInputStream cachedData = new FileInputStream(cacheFile);
             return this.parseEventResponse(cachedData, entityManager);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
-
-        //return this.parseEventResponse(responseBody, entityManager);
     }
     @Override
     protected ItemInputStream<? extends PluginSourceData> parseEventResponse(final InputStream responseBody, EntityManager entityManager) throws DataFordelerException {
