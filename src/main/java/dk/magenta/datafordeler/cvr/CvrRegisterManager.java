@@ -147,13 +147,12 @@ public class CvrRegisterManager extends RegisterManager {
         if (configuration.getRegisterType(schema) == CvrConfiguration.RegisterType.REMOTE_HTTP) {
 
             if (lastUpdateTime == null) {
-                requestBody = configuration.getInitialQuery(schema);
-            } else {
-                requestBody = String.format(
-                        configuration.getUpdateQuery(schema),
-                        lastUpdateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
-                );
+                lastUpdateTime = OffsetDateTime.parse("0000-01-01T00:00:00Z");
             }
+            requestBody = String.format(
+                configuration.getQuery(schema),
+                lastUpdateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
+            );
 
             eventCommunicator.setUsername(configuration.getUsername(schema));
             eventCommunicator.setPassword(configuration.getPassword(schema));

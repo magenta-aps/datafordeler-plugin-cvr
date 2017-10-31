@@ -48,7 +48,6 @@ public abstract class DetailData extends DatabaseEntry {
         for (String key : map.keySet()) {
             out.put(key, map.get(key));
         }
-        System.out.println(out);
         return out;
     }
 }

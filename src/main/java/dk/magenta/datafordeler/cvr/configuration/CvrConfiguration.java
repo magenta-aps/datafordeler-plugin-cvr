@@ -61,14 +61,7 @@ public class CvrConfiguration implements Configuration {
     private String companyPassword= "";
 
     @Column
-    private String companyInitialQuery = "{" +
-            "    \"query\": {" +
-            "        \"match_all\": {}" +
-            "    }" +
-            "}";
-
-    @Column
-    private String companyUpdateQuery = "{" +
+    private String companyQuery = "{" +
             "    \"query\": {" +
             "        \"filtered\": {" +
             "            \"filter\": {" +
@@ -103,12 +96,8 @@ public class CvrConfiguration implements Configuration {
         return this.companyPassword;
     }
 
-    public String getCompanyInitialQuery() {
-        return this.companyInitialQuery;
-    }
-
-    public String getCompanyUpdateQuery() {
-        return this.companyUpdateQuery;
+    public String getCompanyQuery() {
+        return this.companyQuery;
     }
 
 
@@ -133,16 +122,8 @@ public class CvrConfiguration implements Configuration {
     @Column
     private String companyUnitPassword= "";
 
-
     @Column
-    private String companyUnitInitialQuery = "{" +
-            "    \"query\": {" +
-            "        \"match_all\": {}" +
-            "    }" +
-            "}";
-
-    @Column
-    private String companyUnitUpdateQuery = "{" +
+    private String companyUnitQuery = "{" +
             "    \"query\": {" +
             "        \"filtered\": {" +
             "            \"filter\": {" +
@@ -176,12 +157,8 @@ public class CvrConfiguration implements Configuration {
         return this.companyUnitPassword;
     }
 
-    public String getCompanyUnitInitialQuery() {
-        return this.companyUnitInitialQuery;
-    }
-
-    public String getCompanyUnitUpdateQuery() {
-        return this.companyUnitUpdateQuery;
+    public String getCompanyUnitQuery() {
+        return this.companyUnitQuery;
     }
 
 
@@ -203,16 +180,8 @@ public class CvrConfiguration implements Configuration {
     @Column
     private String participantPassword= "";
 
-
     @Column
-    private String participantInitialQuery = "{" +
-            "    \"query\": {" +
-            "        \"match_all\": {}" +
-            "    }" +
-            "}";
-
-    @Column
-    private String participantUpdateQuery = "{" +
+    private String participantQuery = "{" +
             "    \"query\": {" +
             "        \"filtered\": {" +
             "            \"filter\": {" +
@@ -247,12 +216,8 @@ public class CvrConfiguration implements Configuration {
         return this.participantPassword;
     }
 
-    public String getParticipantInitialQuery() {
-        return this.participantInitialQuery;
-    }
-
-    public String getParticipantUpdateQuery() {
-        return this.participantUpdateQuery;
+    public String getParticipantQuery() {
+        return this.participantQuery;
     }
 
 
@@ -274,26 +239,14 @@ public class CvrConfiguration implements Configuration {
 
 
 
-    public String getInitialQuery(String schema) {
+    public String getQuery(String schema) {
         switch (schema) {
             case CompanyEntity.schema:
-                return this.getCompanyInitialQuery();
+                return this.getCompanyQuery();
             case CompanyUnitEntity.schema:
-                return this.getCompanyUnitInitialQuery();
+                return this.getCompanyUnitQuery();
             case ParticipantEntity.schema:
-                return this.getParticipantInitialQuery();
-        }
-        return null;
-    }
-
-    public String getUpdateQuery(String schema) {
-        switch (schema) {
-            case CompanyEntity.schema:
-                return this.getCompanyUpdateQuery();
-            case CompanyUnitEntity.schema:
-                return this.getCompanyUnitUpdateQuery();
-            case ParticipantEntity.schema:
-                return this.getParticipantUpdateQuery();
+                return this.getParticipantQuery();
         }
         return null;
     }
