@@ -124,16 +124,21 @@ public class CvrRegisterManager extends RegisterManager {
 
     @Override
     public URI getEventInterface(EntityManager entityManager) {
-        URI base = this.getBaseEndpoint();
-        try {
-            return new URI(
-                    base.getScheme(), base.getHost(),
-                    "/cvr-permanent/" + entityManager.getSchema() + "/_search", ""
-            );
-        } catch (URISyntaxException e) {
-            this.log.error(e);
-            return null;
+        CvrConfiguration configuration = this.configurationManager.getConfiguration();
+        if (configuration.getRegisterType(entityManager.getSchema()) == CvrConfiguration.RegisterType.REMOTE_HTTP) {
+            URI base = this.getBaseEndpoint();
+            if (base != null) {
+                try {
+                    return new URI(
+                            base.getScheme(), base.getHost(),
+                            "/cvr-permanent/" + entityManager.getSchema() + "/_search", ""
+                    );
+                } catch (URISyntaxException e) {
+                    this.log.error(e);
+                }
+            }
         }
+        return null;
     }
 
     /**
@@ -162,66 +167,70 @@ public class CvrRegisterManager extends RegisterManager {
         session.close();
 
         CvrConfiguration configuration = this.configurationManager.getConfiguration();
-        if (lastUpdateTime == null) {
-            requestBody = configuration.getInitialQuery(schema);
-        } else {
-            requestBody = String.format(
-                    configuration.getUpdateQuery(schema),
-                    lastUpdateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
-            );
+        if (configuration.getRegisterType(entityManager.getSchema()) == CvrConfiguration.RegisterType.REMOTE_HTTP) {
+
+            if (lastUpdateTime == null) {
+                requestBody = configuration.getInitialQuery(schema);
+            } else {
+                requestBody = String.format(
+                        configuration.getUpdateQuery(schema),
+                        lastUpdateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                );
+            }
+
+            InputStream responseBody = null;
+            final ArrayList<Throwable> errors = new ArrayList<>();
+
+            try {
+                eventCommunicator.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+                    @Override
+                    public void uncaughtException(Thread t, Throwable e) {
+                        errors.add(e);
+                    }
+                });
+                responseBody = eventCommunicator.fetch(
+                        new URI(
+                                baseEndpoint.getScheme(), baseEndpoint.getHost(),
+                                "/cvr-permanent/" + schema + "/_search", ""
+                        ),
+                        new URI(
+                                baseEndpoint.getScheme(), baseEndpoint.getHost(),
+                                "/_search/scroll", ""
+                        ),
+                        requestBody
+                );
+            } catch (URISyntaxException e) {
+                throw new ConfigurationException("Invalid pull URI '"+e.getInput()+"'");
+            } catch (IOException e) {
+                throw new DataStreamException(e);
+            }
+
+            File cacheFile = new File("cache/cvr"+ LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
+
+            try {
+                cacheFile.createNewFile();
+                FileWriter fileWriter = new FileWriter(cacheFile);
+                org.apache.commons.io.IOUtils.copy(responseBody, fileWriter);
+                fileWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            eventCommunicator.wait(responseBody);
+            if (!errors.isEmpty()) {
+                throw new ParseException("Error while loading data for "+entityManager.getSchema(), errors.get(0));
+            }
+
+            try {
+                FileInputStream cachedData = new FileInputStream(cacheFile);
+                return this.parseEventResponse(cachedData, entityManager);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
-
-        InputStream responseBody = null;
-        final ArrayList<Throwable> errors = new ArrayList<>();
-
-        try {
-            eventCommunicator.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-                @Override
-                public void uncaughtException(Thread t, Throwable e) {
-                    errors.add(e);
-                }
-            });
-            responseBody = eventCommunicator.fetch(
-                    new URI(
-                            baseEndpoint.getScheme(), baseEndpoint.getHost(),
-                            "/cvr-permanent/" + schema + "/_search", ""
-                    ),
-                    new URI(
-                            baseEndpoint.getScheme(), baseEndpoint.getHost(),
-                            "/_search/scroll", ""
-                    ),
-                    requestBody
-            );
-        } catch (URISyntaxException e) {
-            throw new ConfigurationException("Invalid pull URI '"+e.getInput()+"'");
-        } catch (IOException e) {
-            throw new DataStreamException(e);
-        }
-
-        File cacheFile = new File("cache/cvr"+ LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
-
-        try {
-            cacheFile.createNewFile();
-            FileWriter fileWriter = new FileWriter(cacheFile);
-            org.apache.commons.io.IOUtils.copy(responseBody, fileWriter);
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        eventCommunicator.wait(responseBody);
-        if (!errors.isEmpty()) {
-            throw new ParseException("Error while loading data for "+entityManager.getSchema(), errors.get(0));
-        }
-
-        try {
-            FileInputStream cachedData = new FileInputStream(cacheFile);
-            return this.parseEventResponse(cachedData, entityManager);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return null;
     }
+
     @Override
     protected ItemInputStream<? extends PluginSourceData> parseEventResponse(final InputStream responseBody, EntityManager entityManager) throws DataFordelerException {
         PipedInputStream inputStream = new PipedInputStream();

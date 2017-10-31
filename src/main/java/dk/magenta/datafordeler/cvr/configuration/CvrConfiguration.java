@@ -6,9 +6,7 @@ import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by lars on 16-05-17.
@@ -16,6 +14,22 @@ import javax.persistence.Table;
 @javax.persistence.Entity
 @Table(name="cvr_config")
 public class CvrConfiguration implements Configuration {
+
+    public enum RegisterType {
+        DISABLED(-1),
+        //LOCAL_FILE(0),
+        REMOTE_HTTP(1);
+
+        private int value;
+        RegisterType(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return this.value;
+        }
+    }
+
 
     @Id
     @Column(name = "id")
@@ -33,6 +47,10 @@ public class CvrConfiguration implements Configuration {
 
     @Column
     private String password = "";
+
+    @Column
+    @Enumerated(EnumType.ORDINAL)
+    private RegisterType companyRegisterType = RegisterType.REMOTE_HTTP;
 
     @Column
     private String companyInitialQuery = "{" +
@@ -57,6 +75,10 @@ public class CvrConfiguration implements Configuration {
             "}";
 
     @Column
+    @Enumerated(EnumType.ORDINAL)
+    private RegisterType companyUnitRegisterType = RegisterType.REMOTE_HTTP;
+
+    @Column
     private String companyUnitInitialQuery = "{" +
             "    \"query\": {" +
             "        \"match_all\": {}" +
@@ -77,6 +99,11 @@ public class CvrConfiguration implements Configuration {
             "        }" +
             "    }" +
             "}";
+
+
+    @Column
+    @Enumerated(EnumType.ORDINAL)
+    private RegisterType participantRegisterType = RegisterType.REMOTE_HTTP;
 
     @Column
     private String participantInitialQuery = "{" +
@@ -116,6 +143,10 @@ public class CvrConfiguration implements Configuration {
         return this.password;
     }
 
+    public RegisterType getCompanyRegisterType() {
+        return this.companyRegisterType;
+    }
+
     public String getCompanyInitialQuery() {
         return this.companyInitialQuery;
     }
@@ -124,12 +155,20 @@ public class CvrConfiguration implements Configuration {
         return this.companyUpdateQuery;
     }
 
+    public RegisterType getCompanyUnitRegisterType() {
+        return this.companyUnitRegisterType;
+    }
+
     public String getCompanyUnitInitialQuery() {
         return this.companyUnitInitialQuery;
     }
 
     public String getCompanyUnitUpdateQuery() {
         return this.companyUnitUpdateQuery;
+    }
+
+    public RegisterType getParticipantRegisterType() {
+        return this.participantRegisterType;
     }
 
     public String getParticipantInitialQuery() {
@@ -160,6 +199,18 @@ public class CvrConfiguration implements Configuration {
                 return this.getCompanyUnitUpdateQuery();
             case ParticipantEntity.schema:
                 return this.getParticipantUpdateQuery();
+        }
+        return null;
+    }
+
+    public RegisterType getRegisterType(String schema) {
+        switch (schema) {
+            case CompanyEntity.schema:
+                return this.getCompanyRegisterType();
+            case CompanyUnitEntity.schema:
+                return this.getCompanyUnitRegisterType();
+            case ParticipantEntity.schema:
+                return this.getParticipantRegisterType();
         }
         return null;
     }
