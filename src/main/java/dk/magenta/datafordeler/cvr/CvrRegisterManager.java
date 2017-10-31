@@ -64,11 +64,7 @@ public class CvrRegisterManager extends RegisterManager {
                 configuration.getPassword()
         );
         this.commonFetcher.setScrollIdJsonKey("_scroll_id");
-        try {
-            this.baseEndpoint = new URI(configuration.getRegisterAddress());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+
     }
 
     @Override
@@ -86,17 +82,22 @@ public class CvrRegisterManager extends RegisterManager {
         return this.sessionManager;
     }
 
-    private URI baseEndpoint;
-
     @Override
     public URI getBaseEndpoint() {
-        return this.baseEndpoint;
+        CvrConfiguration configuration = configurationManager.getConfiguration();
+        try {
+            return new URI(configuration.getRegisterAddress());
+        } catch (URISyntaxException e) {
+            this.log.error(e);
+            return null;
+        }
     }
-
-
 
     @Override
     protected Communicator getEventFetcher() {
+        CvrConfiguration configuration = configurationManager.getConfiguration();
+        this.commonFetcher.setUsername(configuration.getUsername());
+        this.commonFetcher.setPassword(configuration.getPassword());
         return this.commonFetcher;
     }
 
@@ -108,7 +109,7 @@ public class CvrRegisterManager extends RegisterManager {
 
     @Override
     protected Communicator getChecksumFetcher() {
-        return this.commonFetcher;
+        return this.getEventFetcher();
     }
 
     @Override
@@ -152,7 +153,7 @@ public class CvrRegisterManager extends RegisterManager {
         String schema = entityManager.getSchema();
         ScanScrollCommunicator eventCommunicator = (ScanScrollCommunicator) this.getEventFetcher();
 
-        URI baseEndpoint = this.baseEndpoint;
+        URI baseEndpoint = this.getBaseEndpoint();
 
         String requestBody;
 
@@ -160,11 +161,12 @@ public class CvrRegisterManager extends RegisterManager {
         OffsetDateTime lastUpdateTime = entityManager.getLastUpdated(session);
         session.close();
 
+        CvrConfiguration configuration = this.configurationManager.getConfiguration();
         if (lastUpdateTime == null) {
-            requestBody = this.configurationManager.getConfiguration().getInitialQuery(schema);
+            requestBody = configuration.getInitialQuery(schema);
         } else {
             requestBody = String.format(
-                    this.configurationManager.getConfiguration().getUpdateQuery(schema),
+                    configuration.getUpdateQuery(schema),
                     lastUpdateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
             );
         }
