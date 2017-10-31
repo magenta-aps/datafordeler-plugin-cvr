@@ -49,55 +49,55 @@ public class CvrConfiguration implements Configuration {
     private RegisterType companyRegisterType = RegisterType.REMOTE_HTTP;
 
     @Column
-    private String companyStartAddress = "http://distribution.virk.dk/cvr-permanent/virksomhed/_search";
+    private String companyRegisterStartAddress = "http://distribution.virk.dk/cvr-permanent/virksomhed/_search";
 
     @Column
-    private String companyScrollAddress = "http://distribution.virk.dk/_search/scroll";
+    private String companyRegisterScrollAddress = "http://distribution.virk.dk/_search/scroll";
 
     @Column
-    private String companyUsername = "";
+    private String companyRegisterUsername = "";
 
     @Column
-    private String companyPassword= "";
+    private String companyRegisterPassword = "";
 
-    @Column
-    private String companyQuery = "{" +
-            "    \"query\": {" +
-            "        \"filtered\": {" +
-            "            \"filter\": {" +
-            "                \"range\": {" +
-            "                    \"Vrvirksomhed.sidstIndlaest\": {" +
-            "                        \"gte\": \"%s\"" +
-            "                    }" +
-            "                }" +
-            "            }" +
-            "        }" +
-            "    }" +
-            "}";
+    @Column(length = 1024)
+    private String companyRegisterQuery = "{\n" +
+            "    \"query\": {\n" +
+            "        \"filtered\": {\n" +
+            "            \"filter\": {\n" +
+            "                \"range\": {\n" +
+            "                    \"Vrvirksomhed.sidstIndlaest\": {\n" +
+            "                        \"gte\": \"%s\"\n" +
+            "                    }\n" +
+            "                }\n" +
+            "            }\n" +
+            "        }\n" +
+            "    }\n" +
+            "}\n";
 
 
     public RegisterType getCompanyRegisterType() {
         return this.companyRegisterType;
     }
 
-    public String getCompanyStartAddress() {
-        return this.companyStartAddress;
+    public String getCompanyRegisterStartAddress() {
+        return this.companyRegisterStartAddress;
     }
 
-    public String getCompanyScrollAddress() {
-        return this.companyScrollAddress;
+    public String getCompanyRegisterScrollAddress() {
+        return this.companyRegisterScrollAddress;
     }
 
-    public String getCompanyUsername() {
-        return this.companyUsername;
+    public String getCompanyRegisterUsername() {
+        return this.companyRegisterUsername;
     }
 
-    public String getCompanyPassword() {
-        return this.companyPassword;
+    public String getCompanyRegisterPassword() {
+        return this.companyRegisterPassword;
     }
 
-    public String getCompanyQuery() {
-        return this.companyQuery;
+    public String getCompanyRegisterQuery() {
+        return this.companyRegisterQuery;
     }
 
 
@@ -111,54 +111,54 @@ public class CvrConfiguration implements Configuration {
     private RegisterType companyUnitRegisterType = RegisterType.REMOTE_HTTP;
 
     @Column
-    private String companyUnitStartAddress = "http://distribution.virk.dk/cvr-permanent/produktionsenhed/_search";
+    private String companyUnitRegisterStartAddress = "http://distribution.virk.dk/cvr-permanent/produktionsenhed/_search";
 
     @Column
-    private String companyUnitScrollAddress = "http://distribution.virk.dk/_search/scroll";
+    private String companyUnitRegisterScrollAddress = "http://distribution.virk.dk/_search/scroll";
 
     @Column
-    private String companyUnitUsername = "";
+    private String companyUnitRegisterUsername = "";
 
     @Column
-    private String companyUnitPassword= "";
+    private String companyUnitRegisterPassword = "";
 
-    @Column
-    private String companyUnitQuery = "{" +
-            "    \"query\": {" +
-            "        \"filtered\": {" +
-            "            \"filter\": {" +
-            "                \"range\": {" +
-            "                    \"VrproduktionsEnhed.sidstIndlaest\": {" +
-            "                        \"gte\": \"%s\"" +
-            "                    }" +
-            "                }" +
-            "            }" +
-            "        }" +
-            "    }" +
-            "}";
+    @Column(length = 1024)
+    private String companyUnitRegisterQuery = "{\n" +
+            "    \"query\": {\n" +
+            "        \"filtered\": {\n" +
+            "            \"filter\": {\n" +
+            "                \"range\": {\n" +
+            "                    \"VrproduktionsEnhed.sidstIndlaest\": {\n" +
+            "                        \"gte\": \"%s\"\n" +
+            "                    }\n" +
+            "                }\n" +
+            "            }\n" +
+            "        }\n" +
+            "    }\n" +
+            "}\n";
 
     public RegisterType getCompanyUnitRegisterType() {
         return this.companyUnitRegisterType;
     }
 
-    public String getCompanyUnitStartAddress() {
-        return this.companyUnitStartAddress;
+    public String getCompanyUnitRegisterStartAddress() {
+        return this.companyUnitRegisterStartAddress;
     }
 
-    public String getCompanyUnitScrollAddress() {
-        return this.companyUnitScrollAddress;
+    public String getCompanyUnitRegisterScrollAddress() {
+        return this.companyUnitRegisterScrollAddress;
     }
 
-    public String getCompanyUnitUsername() {
-        return this.companyUnitUsername;
+    public String getCompanyUnitRegisterUsername() {
+        return this.companyUnitRegisterUsername;
     }
 
-    public String getCompanyUnitPassword() {
-        return this.companyUnitPassword;
+    public String getCompanyUnitRegisterPassword() {
+        return this.companyUnitRegisterPassword;
     }
 
-    public String getCompanyUnitQuery() {
-        return this.companyUnitQuery;
+    public String getCompanyUnitRegisterQuery() {
+        return this.companyUnitRegisterQuery;
     }
 
 
@@ -169,55 +169,55 @@ public class CvrConfiguration implements Configuration {
     private RegisterType participantRegisterType = RegisterType.REMOTE_HTTP;
 
     @Column
-    private String participantStartAddress = "http://distribution.virk.dk/cvr-permanent/deltager/_search";
+    private String participantRegisterStartAddress = "http://distribution.virk.dk/cvr-permanent/deltager/_search";
 
     @Column
-    private String participantScrollAddress = "http://distribution.virk.dk/_search/scroll";
+    private String participantRegisterScrollAddress = "http://distribution.virk.dk/_search/scroll";
 
     @Column
-    private String participantUsername = "";
+    private String participantRegisterUsername = "";
 
     @Column
-    private String participantPassword= "";
+    private String participantRegisterPassword = "";
 
-    @Column
-    private String participantQuery = "{" +
-            "    \"query\": {" +
-            "        \"filtered\": {" +
-            "            \"filter\": {" +
-            "                \"range\": {" +
-            "                    \"Vrdeltagerperson.sidstIndlaest\": {" +
-            "                        \"gte\": \"%s\"" +
-            "                    }" +
-            "                }" +
-            "            }" +
-            "        }" +
-            "    }" +
-            "}";
+    @Column(length = 1024)
+    private String participantRegisterQuery = "{\n" +
+            "    \"query\": {\n" +
+            "        \"filtered\": {\n" +
+            "            \"filter\": {\n" +
+            "                \"range\": {\n" +
+            "                    \"Vrdeltagerperson.sidstIndlaest\": {\n" +
+            "                        \"gte\": \"%s\"\n" +
+            "                    }\n" +
+            "                }\n" +
+            "            }\n" +
+            "        }\n" +
+            "    }\n" +
+            "}\n";
 
 
     public RegisterType getParticipantRegisterType() {
         return this.participantRegisterType;
     }
 
-    public String getParticipantStartAddress() {
-        return this.participantStartAddress;
+    public String getParticipantRegisterStartAddress() {
+        return this.participantRegisterStartAddress;
     }
 
-    public String getParticipantScrollAddress() {
-        return this.participantScrollAddress;
+    public String getParticipantRegisterScrollAddress() {
+        return this.participantRegisterScrollAddress;
     }
 
-    public String getParticipantUsername() {
-        return this.participantUsername;
+    public String getParticipantRegisterUsername() {
+        return this.participantRegisterUsername;
     }
 
-    public String getParticipantPassword() {
-        return this.participantPassword;
+    public String getParticipantRegisterPassword() {
+        return this.participantRegisterPassword;
     }
 
-    public String getParticipantQuery() {
-        return this.participantQuery;
+    public String getParticipantRegisterQuery() {
+        return this.participantRegisterQuery;
     }
 
 
@@ -242,11 +242,11 @@ public class CvrConfiguration implements Configuration {
     public String getQuery(String schema) {
         switch (schema) {
             case CompanyEntity.schema:
-                return this.getCompanyQuery();
+                return this.getCompanyRegisterQuery();
             case CompanyUnitEntity.schema:
-                return this.getCompanyUnitQuery();
+                return this.getCompanyUnitRegisterQuery();
             case ParticipantEntity.schema:
-                return this.getParticipantQuery();
+                return this.getParticipantRegisterQuery();
         }
         return null;
     }
@@ -266,11 +266,11 @@ public class CvrConfiguration implements Configuration {
     public String getStartAddress(String schema) {
         switch (schema) {
             case CompanyEntity.schema:
-                return this.getCompanyStartAddress();
+                return this.getCompanyRegisterStartAddress();
             case CompanyUnitEntity.schema:
-                return this.getCompanyUnitStartAddress();
+                return this.getCompanyUnitRegisterStartAddress();
             case ParticipantEntity.schema:
-                return this.getParticipantStartAddress();
+                return this.getParticipantRegisterStartAddress();
         }
         return null;
     }
@@ -278,11 +278,11 @@ public class CvrConfiguration implements Configuration {
     public String getScrollAddress(String schema) {
         switch (schema) {
             case CompanyEntity.schema:
-                return this.getCompanyScrollAddress();
+                return this.getCompanyRegisterScrollAddress();
             case CompanyUnitEntity.schema:
-                return this.getCompanyUnitScrollAddress();
+                return this.getCompanyUnitRegisterScrollAddress();
             case ParticipantEntity.schema:
-                return this.getParticipantScrollAddress();
+                return this.getParticipantRegisterScrollAddress();
         }
         return null;
     }
@@ -290,11 +290,11 @@ public class CvrConfiguration implements Configuration {
     public String getUsername(String schema) {
         switch (schema) {
             case CompanyEntity.schema:
-                return this.getCompanyUsername();
+                return this.getCompanyRegisterUsername();
             case CompanyUnitEntity.schema:
-                return this.getCompanyUnitUsername();
+                return this.getCompanyUnitRegisterUsername();
             case ParticipantEntity.schema:
-                return this.getParticipantUsername();
+                return this.getParticipantRegisterUsername();
         }
         return null;
     }
@@ -302,11 +302,11 @@ public class CvrConfiguration implements Configuration {
     public String getPassword(String schema) {
         switch (schema) {
             case CompanyEntity.schema:
-                return this.getCompanyPassword();
+                return this.getCompanyRegisterPassword();
             case CompanyUnitEntity.schema:
-                return this.getCompanyUnitPassword();
+                return this.getCompanyUnitRegisterPassword();
             case ParticipantEntity.schema:
-                return this.getParticipantPassword();
+                return this.getParticipantRegisterPassword();
         }
         return null;
     }
