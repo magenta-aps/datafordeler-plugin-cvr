@@ -42,15 +42,23 @@ public class CvrConfiguration implements Configuration {
     @Column
     private String registerAddress = "http://distribution.virk.dk";
 
-    @Column
-    private String username = "";
 
-    @Column
-    private String password = "";
 
     @Column
     @Enumerated(EnumType.ORDINAL)
     private RegisterType companyRegisterType = RegisterType.REMOTE_HTTP;
+
+    @Column
+    private String companyStartAddress = "http://distribution.virk.dk/cvr-permanent/virksomhed/_search";
+
+    @Column
+    private String companyScrollAddress = "http://distribution.virk.dk/_search/scroll";
+
+    @Column
+    private String companyUsername = "";
+
+    @Column
+    private String companyPassword= "";
 
     @Column
     private String companyInitialQuery = "{" +
@@ -74,9 +82,57 @@ public class CvrConfiguration implements Configuration {
             "    }" +
             "}";
 
+
+    public RegisterType getCompanyRegisterType() {
+        return this.companyRegisterType;
+    }
+
+    public String getCompanyStartAddress() {
+        return this.companyStartAddress;
+    }
+
+    public String getCompanyScrollAddress() {
+        return this.companyScrollAddress;
+    }
+
+    public String getCompanyUsername() {
+        return this.companyUsername;
+    }
+
+    public String getCompanyPassword() {
+        return this.companyPassword;
+    }
+
+    public String getCompanyInitialQuery() {
+        return this.companyInitialQuery;
+    }
+
+    public String getCompanyUpdateQuery() {
+        return this.companyUpdateQuery;
+    }
+
+
+
+
+
+
+
     @Column
     @Enumerated(EnumType.ORDINAL)
     private RegisterType companyUnitRegisterType = RegisterType.REMOTE_HTTP;
+
+    @Column
+    private String companyUnitStartAddress = "http://distribution.virk.dk/cvr-permanent/produktionsenhed/_search";
+
+    @Column
+    private String companyUnitScrollAddress = "http://distribution.virk.dk/_search/scroll";
+
+    @Column
+    private String companyUnitUsername = "";
+
+    @Column
+    private String companyUnitPassword= "";
+
 
     @Column
     private String companyUnitInitialQuery = "{" +
@@ -100,10 +156,53 @@ public class CvrConfiguration implements Configuration {
             "    }" +
             "}";
 
+    public RegisterType getCompanyUnitRegisterType() {
+        return this.companyUnitRegisterType;
+    }
+
+    public String getCompanyUnitStartAddress() {
+        return this.companyUnitStartAddress;
+    }
+
+    public String getCompanyUnitScrollAddress() {
+        return this.companyUnitScrollAddress;
+    }
+
+    public String getCompanyUnitUsername() {
+        return this.companyUnitUsername;
+    }
+
+    public String getCompanyUnitPassword() {
+        return this.companyUnitPassword;
+    }
+
+    public String getCompanyUnitInitialQuery() {
+        return this.companyUnitInitialQuery;
+    }
+
+    public String getCompanyUnitUpdateQuery() {
+        return this.companyUnitUpdateQuery;
+    }
+
+
+
 
     @Column
     @Enumerated(EnumType.ORDINAL)
     private RegisterType participantRegisterType = RegisterType.REMOTE_HTTP;
+
+    @Column
+    private String participantStartAddress = "http://distribution.virk.dk/cvr-permanent/deltager/_search";
+
+    @Column
+    private String participantScrollAddress = "http://distribution.virk.dk/_search/scroll";
+
+    @Column
+    private String participantUsername = "";
+
+    @Column
+    private String participantPassword= "";
+
 
     @Column
     private String participantInitialQuery = "{" +
@@ -127,48 +226,25 @@ public class CvrConfiguration implements Configuration {
             "    }" +
             "}";
 
-    public String getPullCronSchedule() {
-        return this.pullCronSchedule;
-    }
-
-    public String getRegisterAddress() {
-        return this.registerAddress;
-    }
-
-    public String getUsername() {
-        return this.username;
-    }
-
-    public String getPassword() {
-        return this.password;
-    }
-
-    public RegisterType getCompanyRegisterType() {
-        return this.companyRegisterType;
-    }
-
-    public String getCompanyInitialQuery() {
-        return this.companyInitialQuery;
-    }
-
-    public String getCompanyUpdateQuery() {
-        return this.companyUpdateQuery;
-    }
-
-    public RegisterType getCompanyUnitRegisterType() {
-        return this.companyUnitRegisterType;
-    }
-
-    public String getCompanyUnitInitialQuery() {
-        return this.companyUnitInitialQuery;
-    }
-
-    public String getCompanyUnitUpdateQuery() {
-        return this.companyUnitUpdateQuery;
-    }
 
     public RegisterType getParticipantRegisterType() {
         return this.participantRegisterType;
+    }
+
+    public String getParticipantStartAddress() {
+        return this.participantStartAddress;
+    }
+
+    public String getParticipantScrollAddress() {
+        return this.participantScrollAddress;
+    }
+
+    public String getParticipantUsername() {
+        return this.participantUsername;
+    }
+
+    public String getParticipantPassword() {
+        return this.participantPassword;
     }
 
     public String getParticipantInitialQuery() {
@@ -178,6 +254,25 @@ public class CvrConfiguration implements Configuration {
     public String getParticipantUpdateQuery() {
         return this.participantUpdateQuery;
     }
+
+
+
+
+
+
+
+
+
+    public String getPullCronSchedule() {
+        return this.pullCronSchedule;
+    }
+
+    public String getRegisterAddress() {
+        return this.registerAddress;
+    }
+
+
+
 
     public String getInitialQuery(String schema) {
         switch (schema) {
@@ -211,6 +306,54 @@ public class CvrConfiguration implements Configuration {
                 return this.getCompanyUnitRegisterType();
             case ParticipantEntity.schema:
                 return this.getParticipantRegisterType();
+        }
+        return null;
+    }
+
+    public String getStartAddress(String schema) {
+        switch (schema) {
+            case CompanyEntity.schema:
+                return this.getCompanyStartAddress();
+            case CompanyUnitEntity.schema:
+                return this.getCompanyUnitStartAddress();
+            case ParticipantEntity.schema:
+                return this.getParticipantStartAddress();
+        }
+        return null;
+    }
+
+    public String getScrollAddress(String schema) {
+        switch (schema) {
+            case CompanyEntity.schema:
+                return this.getCompanyScrollAddress();
+            case CompanyUnitEntity.schema:
+                return this.getCompanyUnitScrollAddress();
+            case ParticipantEntity.schema:
+                return this.getParticipantScrollAddress();
+        }
+        return null;
+    }
+
+    public String getUsername(String schema) {
+        switch (schema) {
+            case CompanyEntity.schema:
+                return this.getCompanyUsername();
+            case CompanyUnitEntity.schema:
+                return this.getCompanyUnitUsername();
+            case ParticipantEntity.schema:
+                return this.getParticipantUsername();
+        }
+        return null;
+    }
+
+    public String getPassword(String schema) {
+        switch (schema) {
+            case CompanyEntity.schema:
+                return this.getCompanyPassword();
+            case CompanyUnitEntity.schema:
+                return this.getCompanyUnitPassword();
+            case ParticipantEntity.schema:
+                return this.getParticipantPassword();
         }
         return null;
     }

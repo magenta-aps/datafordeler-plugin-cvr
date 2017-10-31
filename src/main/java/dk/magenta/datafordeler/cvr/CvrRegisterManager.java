@@ -58,11 +58,7 @@ public class CvrRegisterManager extends RegisterManager {
     */
     @PostConstruct
     public void init() {
-        CvrConfiguration configuration = configurationManager.getConfiguration();
-        this.commonFetcher = new ScanScrollCommunicator(
-                configuration.getUsername(),
-                configuration.getPassword()
-        );
+        this.commonFetcher = new ScanScrollCommunicator();
         this.commonFetcher.setScrollIdJsonKey("_scroll_id");
 
     }
@@ -95,9 +91,6 @@ public class CvrRegisterManager extends RegisterManager {
 
     @Override
     protected Communicator getEventFetcher() {
-        CvrConfiguration configuration = configurationManager.getConfiguration();
-        this.commonFetcher.setUsername(configuration.getUsername());
-        this.commonFetcher.setPassword(configuration.getPassword());
         return this.commonFetcher;
     }
 
@@ -124,20 +117,6 @@ public class CvrRegisterManager extends RegisterManager {
 
     @Override
     public URI getEventInterface(EntityManager entityManager) {
-        CvrConfiguration configuration = this.configurationManager.getConfiguration();
-        if (configuration.getRegisterType(entityManager.getSchema()) == CvrConfiguration.RegisterType.REMOTE_HTTP) {
-            URI base = this.getBaseEndpoint();
-            if (base != null) {
-                try {
-                    return new URI(
-                            base.getScheme(), base.getHost(),
-                            "/cvr-permanent/" + entityManager.getSchema() + "/_search", ""
-                    );
-                } catch (URISyntaxException e) {
-                    this.log.error(e);
-                }
-            }
-        }
         return null;
     }
 
@@ -158,8 +137,6 @@ public class CvrRegisterManager extends RegisterManager {
         String schema = entityManager.getSchema();
         ScanScrollCommunicator eventCommunicator = (ScanScrollCommunicator) this.getEventFetcher();
 
-        URI baseEndpoint = this.getBaseEndpoint();
-
         String requestBody;
 
         Session session = this.sessionManager.getSessionFactory().openSession();
@@ -167,7 +144,7 @@ public class CvrRegisterManager extends RegisterManager {
         session.close();
 
         CvrConfiguration configuration = this.configurationManager.getConfiguration();
-        if (configuration.getRegisterType(entityManager.getSchema()) == CvrConfiguration.RegisterType.REMOTE_HTTP) {
+        if (configuration.getRegisterType(schema) == CvrConfiguration.RegisterType.REMOTE_HTTP) {
 
             if (lastUpdateTime == null) {
                 requestBody = configuration.getInitialQuery(schema);
@@ -178,7 +155,10 @@ public class CvrRegisterManager extends RegisterManager {
                 );
             }
 
-            InputStream responseBody = null;
+            eventCommunicator.setUsername(configuration.getUsername(schema));
+            eventCommunicator.setPassword(configuration.getPassword(schema));
+
+            InputStream responseBody;
             final ArrayList<Throwable> errors = new ArrayList<>();
 
             try {
@@ -189,14 +169,8 @@ public class CvrRegisterManager extends RegisterManager {
                     }
                 });
                 responseBody = eventCommunicator.fetch(
-                        new URI(
-                                baseEndpoint.getScheme(), baseEndpoint.getHost(),
-                                "/cvr-permanent/" + schema + "/_search", ""
-                        ),
-                        new URI(
-                                baseEndpoint.getScheme(), baseEndpoint.getHost(),
-                                "/_search/scroll", ""
-                        ),
+                        new URI(configuration.getStartAddress(schema)),
+                        new URI(configuration.getScrollAddress(schema)),
                         requestBody
                 );
             } catch (URISyntaxException e) {

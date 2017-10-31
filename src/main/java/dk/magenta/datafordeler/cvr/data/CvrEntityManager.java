@@ -55,7 +55,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
     protected abstract String getBaseName();
 
     public CvrEntityManager() {
-        this.commonFetcher = new ScanScrollCommunicator("username", "password");
+        this.commonFetcher = new ScanScrollCommunicator();
         this.handledURISubstrings = new ArrayList<>();
     }
 
