@@ -67,7 +67,7 @@ public class CvrConfiguration implements Configuration {
             "            \"filter\": {" +
             "                \"range\": {" +
             "                    \"Vrvirksomhed.sidstIndlaest\": {" +
-            "                        \"gte\": \"%s\"," +
+            "                        \"gte\": \"%s\"" +
             "                    }" +
             "                }" +
             "            }" +
@@ -129,7 +129,7 @@ public class CvrConfiguration implements Configuration {
             "            \"filter\": {" +
             "                \"range\": {" +
             "                    \"VrproduktionsEnhed.sidstIndlaest\": {" +
-            "                        \"gte\": \"%s\"," +
+            "                        \"gte\": \"%s\"" +
             "                    }" +
             "                }" +
             "            }" +
@@ -187,7 +187,7 @@ public class CvrConfiguration implements Configuration {
             "            \"filter\": {" +
             "                \"range\": {" +
             "                    \"Vrdeltagerperson.sidstIndlaest\": {" +
-            "                        \"gte\": \"%s\"," +
+            "                        \"gte\": \"%s\"" +
             "                    }" +
             "                }" +
             "            }" +
