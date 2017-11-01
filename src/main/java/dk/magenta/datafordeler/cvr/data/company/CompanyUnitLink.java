@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.cvr.data.DetailData;
-import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;

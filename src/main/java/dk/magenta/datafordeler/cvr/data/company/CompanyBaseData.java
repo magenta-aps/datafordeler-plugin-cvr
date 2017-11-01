@@ -20,8 +20,6 @@ import java.lang.reflect.Field;
 import java.time.OffsetDateTime;
 import java.util.*;
 
-import static dk.magenta.datafordeler.cvr.data.company.CompanyBaseData.*;
-
 
 /**
  * Created by lars on 12-06-17.

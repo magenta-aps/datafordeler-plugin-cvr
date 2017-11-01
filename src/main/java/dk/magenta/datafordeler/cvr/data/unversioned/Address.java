@@ -10,8 +10,6 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import java.util.StringJoiner;
-
 import static dk.magenta.datafordeler.cvr.data.unversioned.Address.DB_FIELD_ROADCODE;
 import static dk.magenta.datafordeler.cvr.data.unversioned.Address.DB_FIELD_ROADNAME;
 

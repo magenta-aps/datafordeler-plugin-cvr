@@ -1,6 +1,5 @@
 package dk.magenta.datafordeler.cvr.records;
 
-import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import org.hibernate.Session;

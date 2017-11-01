@@ -14,7 +14,6 @@ import dk.magenta.datafordeler.cvr.CvrAccessChecker;
 import dk.magenta.datafordeler.cvr.CvrAreaRestrictionDefinition;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
 import dk.magenta.datafordeler.cvr.CvrRolesDefinition;
-import dk.magenta.datafordeler.cvr.data.company.CompanyQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -71,13 +70,15 @@ public class CompanyUnitEntityService extends FapiService<CompanyUnitEntity, Com
         return new CompanyUnitQuery();
     }
 
-    protected void applyAreaRestrictionsToQuery(CompanyQuery query, DafoUserDetails user) throws InvalidClientInputException {
+    protected void applyAreaRestrictionsToQuery(CompanyUnitQuery query, DafoUserDetails user) throws InvalidClientInputException {
+        System.out.println("applyAreaRestrictionsToQuery");
         Collection<AreaRestriction> restrictions = user.getAreaRestrictionsForRole(CvrRolesDefinition.READ_CVR_ROLE);
         AreaRestrictionDefinition areaRestrictionDefinition = this.cvrPlugin.getAreaRestrictionDefinition();
         AreaRestrictionType municipalityType = areaRestrictionDefinition.getAreaRestrictionTypeByName(CvrAreaRestrictionDefinition.RESTRICTIONTYPE_KOMMUNEKODER);
+        System.out.println("municipalityType: "+municipalityType);
         for (AreaRestriction restriction : restrictions) {
             if (restriction.getType() == municipalityType) {
-                query.addKommunekode(restriction.getValue());
+                query.addKommunekodeRestriction(restriction.getValue());
             }
         }
     }

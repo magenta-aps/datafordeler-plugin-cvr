@@ -76,7 +76,7 @@ public class CompanyEntityService extends FapiService<CompanyEntity, CompanyQuer
         AreaRestrictionType municipalityType = areaRestrictionDefinition.getAreaRestrictionTypeByName(CvrAreaRestrictionDefinition.RESTRICTIONTYPE_KOMMUNEKODER);
         for (AreaRestriction restriction : restrictions) {
             if (restriction.getType() == municipalityType) {
-                query.addKommunekode(restriction.getValue());
+                query.addKommunekodeRestriction(restriction.getValue());
             }
         }
     }

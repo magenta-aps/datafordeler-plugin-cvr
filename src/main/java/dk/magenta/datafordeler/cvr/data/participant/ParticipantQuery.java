@@ -117,6 +117,14 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
             sj.add(Municipality.DB_FIELD_CODE);
             lookupDefinition.put(sj.toString(), this.kommunekoder, Integer.class);
         }
+        if (!this.getKommunekodeRestriction().isEmpty()) {
+            StringJoiner sj = new StringJoiner(LookupDefinition.separator);
+            sj.add(ParticipantBaseData.DB_FIELD_LOCATION_ADDRESS);
+            sj.add(AddressData.DB_FIELD_ADDRESS);
+            sj.add(Address.DB_FIELD_MUNICIPALITY);
+            sj.add(Municipality.DB_FIELD_CODE);
+            lookupDefinition.put(sj.toString(), this.getKommunekodeRestriction(), Integer.class);
+        }
         return lookupDefinition;
     }
 

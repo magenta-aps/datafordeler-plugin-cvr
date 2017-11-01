@@ -1,6 +1,5 @@
 package dk.magenta.datafordeler.cvr.data.participant;
 
-import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.core.database.RegistrationReference;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.fapi.FapiService;

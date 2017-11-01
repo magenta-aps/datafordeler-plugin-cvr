@@ -359,7 +359,7 @@ public class QueryTest {
         testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
         this.applyAccess(testUserDetails);
 
-        searchParameters.add("kommune", "101");
+        searchParameters.add("kommunekode", "101");
         response = restSearch(searchParameters, "company");
         Assert.assertEquals(200, response.getStatusCode().value());
         JsonNode jsonBody = objectMapper.readTree(response.getBody());
@@ -387,12 +387,14 @@ public class QueryTest {
         );
         this.applyAccess(testUserDetails);
 
+        searchParameters.add("kommunekode", "10*");
         response = restSearch(searchParameters, "company");
         Assert.assertEquals(200, response.getStatusCode().value());
         jsonBody = objectMapper.readTree(response.getBody());
         results = jsonBody.get("results");
         Assert.assertTrue(results.isArray());
         Assert.assertEquals(0, results.size());
+
 
         testUserDetails.giveAccess(
                 plugin.getAreaRestrictionDefinition().getAreaRestrictionTypeByName(
@@ -413,21 +415,6 @@ public class QueryTest {
         Assert.assertEquals(1, results.size());
         Assert.assertEquals(CompanyEntity.generateUUID(25052943).toString(), results.get(0).get("UUID").asText());
 
-/*
-        String queryString = "SELECT DISTINCT e from dk.magenta.datafordeler.cvr.data.company.CompanyEntity e " +
-                "WHERE e.identification.uuid IS NOT null " +
-                "AND e in (select e from dk.magenta.datafordeler.cvr.data.company.CompanyBaseData d join d.effects v join v.registration r join r.entity e where d.companyName.value = :d_companyName_value) " +
-                "AND e in (select e from dk.magenta.datafordeler.cvr.data.company.CompanyBaseData d join d.effects v join v.registration r join r.entity e where d.locationAddress.address.municipality.code = :d_locationAddress_address_municipality_code)" +
-                "";
-        Session session = sessionManager.getSessionFactory().openSession();
-        Query<CompanyEntity> query = session.createQuery(queryString);
-        query.setParameter("d_companyName_value", "MAGENTA ApS");
-        query.setParameter("d_locationAddress_address_municipality_code", "101");
-
-        List<CompanyEntity> resultList = query.getResultList();
-        System.out.println(resultList);
-        session.close();
-        */
     }
 
 
@@ -467,7 +454,6 @@ public class QueryTest {
             Assert.assertTrue(wrapped instanceof ObjectNode);
             ObjectNode objectNode = (ObjectNode) wrapped;
             Assert.assertEquals(1, objectNode.get("registreringer").size());
-            System.out.println(objectNode.toString());
 
             CompanyUnitQuery query = new CompanyUnitQuery();
             query.setPrimaryIndustry("855900");
@@ -498,6 +484,79 @@ public class QueryTest {
                 session.close();
             }
         }
+    }
+
+    @Test
+    public void testCompanyUnitAccess() throws Exception {
+        loadUnit();
+        addTestMunicipalityAreaRestriction();
+        TestUserDetails testUserDetails = new TestUserDetails();
+
+        ParameterMap searchParameters = new ParameterMap();
+        ResponseEntity<String> response;
+
+        testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
+        this.applyAccess(testUserDetails);
+
+        searchParameters.add("kommunekode", "101");
+        response = restSearch(searchParameters, "companyunit");
+        Assert.assertEquals(200, response.getStatusCode().value());
+        JsonNode jsonBody = objectMapper.readTree(response.getBody());
+        JsonNode results = jsonBody.get("results");
+        Assert.assertTrue(results.isArray());
+        Assert.assertEquals(5, results.size());
+        boolean found = false;
+        String expected = CompanyUnitEntity.generateUUID(1010255879).toString();
+        for (JsonNode j : results) {
+            if (expected.equals(j.get("UUID").asText())) {
+                found = true;
+            }
+        }
+        Assert.assertTrue(found);
+
+        testUserDetails.giveAccess(
+                plugin.getAreaRestrictionDefinition().getAreaRestrictionTypeByName(
+                        CvrAreaRestrictionDefinition.RESTRICTIONTYPE_KOMMUNEKODER
+                ).getRestriction(
+                        CvrAreaRestrictionDefinition.RESTRICTION_KOMMUNE_SERMERSOOQ
+                )
+        );
+        this.applyAccess(testUserDetails);
+
+        searchParameters = new ParameterMap();
+        searchParameters.add("kommunekode", "10*");
+        response = restSearch(searchParameters, "companyunit");
+        Assert.assertEquals(200, response.getStatusCode().value());
+        jsonBody = objectMapper.readTree(response.getBody());
+        results = jsonBody.get("results");
+        Assert.assertTrue(results.isArray());
+        Assert.assertEquals(0, results.size());
+
+
+        testUserDetails.giveAccess(
+                plugin.getAreaRestrictionDefinition().getAreaRestrictionTypeByName(
+                        CvrAreaRestrictionDefinition.RESTRICTIONTYPE_KOMMUNEKODER
+                ).getRestriction(
+                        RESTRICTION_KOMMUNE_TEST
+                )
+        );
+        this.applyAccess(testUserDetails);
+
+        response = restSearch(searchParameters, "companyunit");
+        Assert.assertEquals(200, response.getStatusCode().value());
+        jsonBody = objectMapper.readTree(response.getBody());
+        results = jsonBody.get("results");
+        Assert.assertTrue(results.isArray());
+
+
+        Assert.assertEquals(5, results.size());
+        expected = CompanyUnitEntity.generateUUID(1010255879).toString();
+        for (JsonNode j : results) {
+            if (expected.equals(j.get("UUID").asText())) {
+                found = true;
+            }
+        }
+        Assert.assertTrue(found);
     }
 
     /*
@@ -564,6 +623,68 @@ public class QueryTest {
                 session.close();
             }
         }
+    }
+
+
+    @Test
+    public void testParticipantAccess() throws Exception {
+        loadParticipant();
+        addTestMunicipalityAreaRestriction();
+        TestUserDetails testUserDetails = new TestUserDetails();
+
+        ParameterMap searchParameters = new ParameterMap();
+        ResponseEntity<String> response;
+
+        testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
+        this.applyAccess(testUserDetails);
+
+        searchParameters.add("kommunekode", "101");
+        response = restSearch(searchParameters, "participant");
+        Assert.assertEquals(200, response.getStatusCode().value());
+        JsonNode jsonBody = objectMapper.readTree(response.getBody());
+        JsonNode results = jsonBody.get("results");
+        Assert.assertTrue(results.isArray());
+        Assert.assertEquals(1, results.size());
+        Assert.assertEquals(ParticipantEntity.generateUUID("PERSON",4000004988L).toString(), results.get(0).get("UUID").asText());
+
+        testUserDetails.giveAccess(
+                plugin.getAreaRestrictionDefinition().getAreaRestrictionTypeByName(
+                        CvrAreaRestrictionDefinition.RESTRICTIONTYPE_KOMMUNEKODER
+                ).getRestriction(
+                        CvrAreaRestrictionDefinition.RESTRICTION_KOMMUNE_SERMERSOOQ
+                )
+        );
+        this.applyAccess(testUserDetails);
+
+        searchParameters = new ParameterMap();
+        searchParameters.add("kommunekode", "10*");
+        response = restSearch(searchParameters, "participant");
+        Assert.assertEquals(200, response.getStatusCode().value());
+        jsonBody = objectMapper.readTree(response.getBody());
+        results = jsonBody.get("results");
+        Assert.assertTrue(results.isArray());
+        Assert.assertEquals(0, results.size());
+
+
+        testUserDetails.giveAccess(
+                plugin.getAreaRestrictionDefinition().getAreaRestrictionTypeByName(
+                        CvrAreaRestrictionDefinition.RESTRICTIONTYPE_KOMMUNEKODER
+                ).getRestriction(
+                        RESTRICTION_KOMMUNE_TEST
+                )
+        );
+        this.applyAccess(testUserDetails);
+
+        response = restSearch(searchParameters, "participant");
+        Assert.assertEquals(200, response.getStatusCode().value());
+        jsonBody = objectMapper.readTree(response.getBody());
+        results = jsonBody.get("results");
+        Assert.assertTrue(results.isArray());
+
+
+        Assert.assertEquals(1, results.size());
+        Assert.assertEquals(ParticipantEntity.generateUUID("PERSON",4000004988L).toString(), results.get(0).get("UUID").asText());
+
     }
 
 }

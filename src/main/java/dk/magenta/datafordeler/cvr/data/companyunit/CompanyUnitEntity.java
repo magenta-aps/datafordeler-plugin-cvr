@@ -11,8 +11,6 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.UUID;
 
-import static dk.magenta.datafordeler.cvr.data.company.CompanyEntity.DB_FIELD_CVR;
-
 /**
  * Created by lars on 16-05-17.
  */
