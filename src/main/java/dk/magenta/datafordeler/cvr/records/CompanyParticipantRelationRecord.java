@@ -32,13 +32,10 @@ public class CompanyParticipantRelationRecord extends CvrBaseRecord {
     }
 
     private Identification getParticipantIdentification(Session session) {
+        System.out.println("getParticipantIdentification");
         if (this.participant != null) {
             UUID participantUUID = this.participant.generateUUID();
-            Identification participantIdentification = QueryManager.getIdentification(session, participantUUID);
-            if (participantIdentification == null) {
-                participantIdentification = new Identification(participantUUID, CvrPlugin.getDomain());
-                session.save(participantIdentification);
-            }
+            Identification participantIdentification = QueryManager.getOrCreateIdentification(session, participantUUID, CvrPlugin.getDomain());
             return participantIdentification;
         } else {
             return null;
@@ -46,14 +43,11 @@ public class CompanyParticipantRelationRecord extends CvrBaseRecord {
     }
 
     private Set<Identification> getOrganizationIdentifications(Session session) {
+        System.out.println("getOrganizationIdentifications");
         HashSet<Identification> organizationIdentifications = new HashSet<>();
         for (OrganizationRecord organizationRecord : this.organizations) {
             UUID organizationUUID = organizationRecord.generateUUID();
-            Identification organizationIdentification = QueryManager.getIdentification(session, organizationUUID);
-            if (organizationIdentification == null) {
-                organizationIdentification = new Identification(organizationUUID, CvrPlugin.getDomain());
-                session.save(organizationIdentification);
-            }
+            Identification organizationIdentification = QueryManager.getOrCreateIdentification(session, organizationUUID, CvrPlugin.getDomain());
             organizationIdentifications.add(organizationIdentification);
         }
         return organizationIdentifications;

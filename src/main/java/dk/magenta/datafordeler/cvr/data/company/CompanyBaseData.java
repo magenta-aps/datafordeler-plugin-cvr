@@ -225,12 +225,12 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public static final String DB_FIELD_YEARLY_NUMBERS = "yearlyEmployeeNumbersData";
     public static final String IO_FIELD_YEARLY_NUMBERS = "aarsbeskaeftigelse";
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @OrderBy(value = YearlyEmployeeNumbersData.DB_FIELD_YEAR + " asc")
-    private List<YearlyEmployeeNumbersData> yearlyEmployeeNumbersData;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "companyBaseData")
+    @OrderBy(value = CompanyYearlyEmployeeNumbersData.DB_FIELD_YEAR + " asc")
+    private List<CompanyYearlyEmployeeNumbersData> yearlyEmployeeNumbersData;
 
     @JsonProperty(value = IO_FIELD_YEARLY_NUMBERS)
-    public List<YearlyEmployeeNumbersData> getYearlyEmployeeNumbersData() {
+    public List<CompanyYearlyEmployeeNumbersData> getYearlyEmployeeNumbersData() {
         return yearlyEmployeeNumbersData;
     }
 
@@ -238,14 +238,15 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
         if (this.yearlyEmployeeNumbersData == null) {
             this.yearlyEmployeeNumbersData = new ArrayList<>();
         }
-        YearlyEmployeeNumbersData yearlyEmployeeNumbersData = null;
-        for (YearlyEmployeeNumbersData data : this.yearlyEmployeeNumbersData) {
+        CompanyYearlyEmployeeNumbersData yearlyEmployeeNumbersData = null;
+        for (CompanyYearlyEmployeeNumbersData data : this.yearlyEmployeeNumbersData) {
             if (data.getYear() == year) {
                 yearlyEmployeeNumbersData = data;
             }
         }
         if (yearlyEmployeeNumbersData == null) {
-            yearlyEmployeeNumbersData = new YearlyEmployeeNumbersData();
+            yearlyEmployeeNumbersData = new CompanyYearlyEmployeeNumbersData();
+            yearlyEmployeeNumbersData.setCompanyBaseData(this);
             this.yearlyEmployeeNumbersData.add(yearlyEmployeeNumbersData);
         }
         yearlyEmployeeNumbersData.setYear(year);
@@ -264,12 +265,12 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public static final String DB_FIELD_QUARTERLY_NUMBERS = "quarterlyEmployeeNumbersData";
     public static final String IO_FIELD_QUARTERLY_NUMBERS = "kvartalsbeskaeftigelse";
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @OrderBy(value = QuarterlyEmployeeNumbersData.DB_FIELD_YEAR + " asc, " + QuarterlyEmployeeNumbersData.DB_FIELD_QUARTER + " asc")
-    private List<QuarterlyEmployeeNumbersData> quarterlyEmployeeNumbersData;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "companyBaseData")
+    @OrderBy(value = CompanyQuarterlyEmployeeNumbersData.DB_FIELD_YEAR + " asc, " + CompanyQuarterlyEmployeeNumbersData.DB_FIELD_QUARTER + " asc")
+    private List<CompanyQuarterlyEmployeeNumbersData> quarterlyEmployeeNumbersData;
 
     @JsonProperty(value = IO_FIELD_QUARTERLY_NUMBERS)
-    public List<QuarterlyEmployeeNumbersData> getQuarterlyEmployeeNumbersData() {
+    public List<CompanyQuarterlyEmployeeNumbersData> getQuarterlyEmployeeNumbersData() {
         return quarterlyEmployeeNumbersData;
     }
 
@@ -277,14 +278,15 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
         if (this.quarterlyEmployeeNumbersData == null) {
             this.quarterlyEmployeeNumbersData = new ArrayList<>();
         }
-        QuarterlyEmployeeNumbersData quarterlyEmployeeNumbersData = null;
-        for (QuarterlyEmployeeNumbersData data : this.quarterlyEmployeeNumbersData) {
+        CompanyQuarterlyEmployeeNumbersData quarterlyEmployeeNumbersData = null;
+        for (CompanyQuarterlyEmployeeNumbersData data : this.quarterlyEmployeeNumbersData) {
             if (data.getYear() == year && data.getQuarter() == quarter) {
                 quarterlyEmployeeNumbersData = data;
             }
         }
         if (quarterlyEmployeeNumbersData == null) {
-            quarterlyEmployeeNumbersData = new QuarterlyEmployeeNumbersData();
+            quarterlyEmployeeNumbersData = new CompanyQuarterlyEmployeeNumbersData();
+            quarterlyEmployeeNumbersData.setCompanyBaseData(this);
             this.quarterlyEmployeeNumbersData.add(quarterlyEmployeeNumbersData);
         }
         quarterlyEmployeeNumbersData.setYear(year);
@@ -304,12 +306,12 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public static final String DB_FIELD_MONTHLY_NUMBERS = "monthlyEmployeeNumbersData";
     public static final String IO_FIELD_MONTHLY_NUMBERS = "maanedsbeskaeftigelse";
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "companyBaseData")
     @OrderBy(value = MonthlyEmployeeNumbersData.DB_FIELD_YEAR + " asc, "+MonthlyEmployeeNumbersData.DB_FIELD_MONTH+" asc")
-    private List<MonthlyEmployeeNumbersData> monthlyEmployeeNumbersData;
+    private List<CompanyMonthlyEmployeeNumbersData> monthlyEmployeeNumbersData;
 
     @JsonProperty(value = IO_FIELD_MONTHLY_NUMBERS)
-    public List<MonthlyEmployeeNumbersData> getMonthlyEmployeeNumbersData() {
+    public List<CompanyMonthlyEmployeeNumbersData> getMonthlyEmployeeNumbersData() {
         return monthlyEmployeeNumbersData;
     }
 
@@ -317,14 +319,15 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
         if (this.monthlyEmployeeNumbersData == null) {
             this.monthlyEmployeeNumbersData = new ArrayList<>();
         }
-        MonthlyEmployeeNumbersData monthlyEmployeeNumbersData = null;
-        for (MonthlyEmployeeNumbersData data : this.monthlyEmployeeNumbersData) {
+        CompanyMonthlyEmployeeNumbersData monthlyEmployeeNumbersData = null;
+        for (CompanyMonthlyEmployeeNumbersData data : this.monthlyEmployeeNumbersData) {
             if (data.getYear() == year && data.getMonth() == month) {
                 monthlyEmployeeNumbersData = data;
             }
         }
         if (monthlyEmployeeNumbersData == null) {
-            monthlyEmployeeNumbersData = new MonthlyEmployeeNumbersData();
+            monthlyEmployeeNumbersData = new CompanyMonthlyEmployeeNumbersData();
+            monthlyEmployeeNumbersData.setCompanyBaseData(this);
             this.monthlyEmployeeNumbersData.add(monthlyEmployeeNumbersData);
         }
         monthlyEmployeeNumbersData.setYear(year);
@@ -645,7 +648,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public static final String DB_FIELD_ATTRIBUTES = "attributeData";
     public static final String IO_FIELD_ATTRIBUTES = "attributter";
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "companyBaseData")
     @OrderBy(value = AttributeData.DB_FIELD_TYPE)
     private SortedSet<AttributeData> attributeData = new TreeSet<>();
 
@@ -672,6 +675,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     }
 
     public void addAttribute(AttributeData attributeData) {
+        attributeData.setCompanyBaseData(this);
         this.attributeData.add(attributeData);
     }
 

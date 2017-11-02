@@ -5,11 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import org.hibernate.Session;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
+import java.time.Instant;
 import java.util.Collections;
 
 import static dk.magenta.datafordeler.cvr.data.unversioned.Municipality.DB_FIELD_CODE;
@@ -62,6 +60,7 @@ public class Municipality extends UnversionedEntity {
 
     public static Municipality getMunicipality(int code, String name, Session session) {
         if (code > 0) {
+            long start = System.nanoTime();
             Municipality municipality = QueryManager.getItem(session, Municipality.class, Collections.singletonMap(DB_FIELD_CODE, code));
             if (municipality == null) {
                 municipality = new Municipality();

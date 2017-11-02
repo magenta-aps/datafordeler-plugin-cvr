@@ -34,7 +34,7 @@ public class AddressRecord extends CvrBaseRecord {
     @Override
     public void populateBaseData(CompanyBaseData baseData, Session session) {
         this.normalizeAddress(session);
-        session.saveOrUpdate(this.address);
+        //session.saveOrUpdate(this.address);
         switch (this.type) {
             case LOCATION:
                 baseData.setLocationAddress(this.address);
@@ -48,7 +48,7 @@ public class AddressRecord extends CvrBaseRecord {
     @Override
     public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
         this.normalizeAddress(session);
-        session.saveOrUpdate(this.address);
+        //session.saveOrUpdate(this.address);
         switch (this.type) {
             case LOCATION:
                 baseData.setLocationAddress(this.address);
@@ -62,7 +62,7 @@ public class AddressRecord extends CvrBaseRecord {
     @Override
     public void populateBaseData(ParticipantBaseData baseData, Session session) {
         this.normalizeAddress(session);
-        session.saveOrUpdate(this.address);
+        //session.saveOrUpdate(this.address);
         switch (this.type) {
             case LOCATION:
                 baseData.setLocationAddress(this.address);

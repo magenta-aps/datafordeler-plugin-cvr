@@ -10,6 +10,7 @@ import dk.magenta.datafordeler.cvr.configuration.CvrConfiguration;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfigurationManager;
 import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.synchronization.CvrSourceData;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
@@ -144,47 +145,52 @@ public class CvrRegisterManager extends RegisterManager {
         CvrConfiguration configuration = this.configurationManager.getConfiguration();
         if (configuration.getRegisterType(schema) == CvrConfiguration.RegisterType.REMOTE_HTTP) {
 
-            if (lastUpdateTime == null) {
-                lastUpdateTime = OffsetDateTime.parse("0000-01-01T00:00:00Z");
-            }
-            requestBody = String.format(
-                configuration.getQuery(schema),
-                lastUpdateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
-            );
-
-            eventCommunicator.setUsername(configuration.getUsername(schema));
-            eventCommunicator.setPassword(configuration.getPassword(schema));
-
-            InputStream responseBody;
             final ArrayList<Throwable> errors = new ArrayList<>();
-
+            InputStream responseBody;
+            File cacheFile = new File("cache/cvr"+ LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
             try {
-                eventCommunicator.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-                    @Override
-                    public void uncaughtException(Thread t, Throwable e) {
-                        errors.add(e);
-                    }
-                });
-                responseBody = eventCommunicator.fetch(
-                        new URI(configuration.getStartAddress(schema)),
-                        new URI(configuration.getScrollAddress(schema)),
-                        requestBody
-                );
+                if (cacheFile.exists()) {
+
+                    responseBody = new FileInputStream(cacheFile);
+
+                } else {
+
+System.out.println("lastUpdateTime: "+lastUpdateTime);
+                    //if (lastUpdateTime == null) {
+                        lastUpdateTime = OffsetDateTime.parse("0000-01-01T00:00:00Z");
+                    //}
+                    requestBody = String.format(
+                            configuration.getQuery(schema),
+                            lastUpdateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                    );
+
+                    eventCommunicator.setUsername(configuration.getUsername(schema));
+                    eventCommunicator.setPassword(configuration.getPassword(schema));
+
+                    System.out.println("Querying remote");
+                    eventCommunicator.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+                        @Override
+                        public void uncaughtException(Thread t, Throwable e) {
+                            errors.add(e);
+                        }
+                    });
+                    responseBody = eventCommunicator.fetch(
+                            new URI(configuration.getStartAddress(schema)),
+                            new URI(configuration.getScrollAddress(schema)),
+                            requestBody
+                    );
+
+
+
+                    cacheFile.createNewFile();
+                    FileWriter fileWriter = new FileWriter(cacheFile);
+                    IOUtils.copy(responseBody, fileWriter);
+                    fileWriter.close();
+                }
             } catch (URISyntaxException e) {
                 throw new ConfigurationException("Invalid pull URI '"+e.getInput()+"'");
             } catch (IOException e) {
                 throw new DataStreamException(e);
-            }
-
-            File cacheFile = new File("cache/cvr"+ LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
-
-            try {
-                cacheFile.createNewFile();
-                FileWriter fileWriter = new FileWriter(cacheFile);
-                org.apache.commons.io.IOUtils.copy(responseBody, fileWriter);
-                fileWriter.close();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
 
             eventCommunicator.wait(responseBody);
@@ -228,7 +234,7 @@ public class CvrRegisterManager extends RegisterManager {
                         } catch (IOException e) {
                             e.printStackTrace();
                         } finally {
-                            log.debug("Wrote " + count + " events");
+                            System.out.println("Wrote " + count + " events");
                             try {
                                 if (responseReader != null) {
                                     responseReader.close();
