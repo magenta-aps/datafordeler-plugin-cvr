@@ -4,25 +4,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import javax.persistence.MappedSuperclass;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.HashMap;
 import java.util.Map;
 
-import static dk.magenta.datafordeler.cvr.data.shared.MonthlyEmployeeNumbersData.DB_FIELD_MONTH;
-import static dk.magenta.datafordeler.cvr.data.shared.MonthlyEmployeeNumbersData.DB_FIELD_YEAR;
-
 /**
  * Created by lars on 15-06-17.
  */
-@Entity
-@Table(name = "cvr_company_monthly_employees", indexes = {
-        @Index(name = "companyMonthlyEmployeesYear", columnList = DB_FIELD_YEAR),
-        @Index(name = "companyMonthlyEmployeesMonth", columnList = DB_FIELD_MONTH + ", " + DB_FIELD_YEAR)
-})
-public class MonthlyEmployeeNumbersData extends EmployeeNumbersData implements Comparable<MonthlyEmployeeNumbersData> {
+@MappedSuperclass
+public abstract class MonthlyEmployeeNumbersData extends EmployeeNumbersData implements Comparable<MonthlyEmployeeNumbersData> {
 
     public static final String DB_FIELD_YEAR = "year";
     public static final String IO_FIELD_YEAR = "aar";

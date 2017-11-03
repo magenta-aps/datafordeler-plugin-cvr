@@ -3,9 +3,12 @@ package dk.magenta.datafordeler.cvr.data.shared;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.cvr.data.DetailData;
+import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
+import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.HashMap;
@@ -17,6 +20,21 @@ import java.util.Map;
 @Entity
 @Table(name = "cvr_company_attributes")
 public class AttributeData extends DetailData implements Comparable<AttributeData> {
+
+    @ManyToOne(targetEntity = CompanyBaseData.class, optional = true)
+    private CompanyBaseData companyBaseData;
+
+    public void setCompanyBaseData(CompanyBaseData companyBaseData) {
+        this.companyBaseData = companyBaseData;
+    }
+
+    @ManyToOne(targetEntity = CompanyUnitBaseData.class, optional = true)
+    private CompanyUnitBaseData companyUnitBaseData;
+
+    public void setCompanyUnitBaseData(CompanyUnitBaseData companyUnitBaseData) {
+        this.companyUnitBaseData = companyUnitBaseData;
+    }
+
 
     public static final String DB_FIELD_SEQNO = "sequenceNumber";
     public static final String IO_FIELD_SEQNO = "sekvensNummer";

@@ -62,6 +62,7 @@ public class Municipality extends UnversionedEntity {
 
     public static Municipality getMunicipality(int code, String name, Session session) {
         if (code > 0) {
+            long start = System.nanoTime();
             Municipality municipality = QueryManager.getItem(session, Municipality.class, Collections.singletonMap(DB_FIELD_CODE, code));
             if (municipality == null) {
                 municipality = new Municipality();

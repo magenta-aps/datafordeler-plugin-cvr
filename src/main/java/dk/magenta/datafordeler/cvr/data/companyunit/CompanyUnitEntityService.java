@@ -71,11 +71,9 @@ public class CompanyUnitEntityService extends FapiService<CompanyUnitEntity, Com
     }
 
     protected void applyAreaRestrictionsToQuery(CompanyUnitQuery query, DafoUserDetails user) throws InvalidClientInputException {
-        System.out.println("applyAreaRestrictionsToQuery");
         Collection<AreaRestriction> restrictions = user.getAreaRestrictionsForRole(CvrRolesDefinition.READ_CVR_ROLE);
         AreaRestrictionDefinition areaRestrictionDefinition = this.cvrPlugin.getAreaRestrictionDefinition();
         AreaRestrictionType municipalityType = areaRestrictionDefinition.getAreaRestrictionTypeByName(CvrAreaRestrictionDefinition.RESTRICTIONTYPE_KOMMUNEKODER);
-        System.out.println("municipalityType: "+municipalityType);
         for (AreaRestriction restriction : restrictions) {
             if (restriction.getType() == municipalityType) {
                 query.addKommunekodeRestriction(restriction.getValue());
