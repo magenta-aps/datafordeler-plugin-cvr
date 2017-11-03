@@ -155,7 +155,6 @@ public class CvrRegisterManager extends RegisterManager {
 
                 } else {
 
-System.out.println("lastUpdateTime: "+lastUpdateTime);
                     //if (lastUpdateTime == null) {
                         lastUpdateTime = OffsetDateTime.parse("0000-01-01T00:00:00Z");
                     //}
@@ -167,7 +166,6 @@ System.out.println("lastUpdateTime: "+lastUpdateTime);
                     eventCommunicator.setUsername(configuration.getUsername(schema));
                     eventCommunicator.setPassword(configuration.getPassword(schema));
 
-                    System.out.println("Querying remote");
                     eventCommunicator.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
                         @Override
                         public void uncaughtException(Thread t, Throwable e) {
@@ -179,8 +177,6 @@ System.out.println("lastUpdateTime: "+lastUpdateTime);
                             new URI(configuration.getScrollAddress(schema)),
                             requestBody
                     );
-
-
 
                     cacheFile.createNewFile();
                     FileWriter fileWriter = new FileWriter(cacheFile);
