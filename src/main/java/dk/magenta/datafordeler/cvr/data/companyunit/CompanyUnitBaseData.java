@@ -609,7 +609,6 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     }
 
     public void addAssociatedCvrNumber(long cvrNumber) {
-        System.out.println("adding assoc cvr "+cvrNumber);
         if (this.associatedCvrNumber == null) {
             this.associatedCvrNumber = new ArrayList<>();
         }

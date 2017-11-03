@@ -24,7 +24,6 @@ public class CompanyUnitLinkRecord extends CvrBaseRecord {
     }
 
     private Identification getUnitIdentification(Session session) {
-        System.out.println("getUnitIdentification");
         UUID unitUUID = CompanyUnitEntity.generateUUID(this.pNumber);
         Identification unitIdentification = QueryManager.getOrCreateIdentification(session, unitUUID, CvrPlugin.getDomain());
         return unitIdentification;

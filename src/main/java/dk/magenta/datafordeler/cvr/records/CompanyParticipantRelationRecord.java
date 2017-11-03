@@ -32,7 +32,6 @@ public class CompanyParticipantRelationRecord extends CvrBaseRecord {
     }
 
     private Identification getParticipantIdentification(Session session) {
-        System.out.println("getParticipantIdentification");
         if (this.participant != null) {
             UUID participantUUID = this.participant.generateUUID();
             Identification participantIdentification = QueryManager.getOrCreateIdentification(session, participantUUID, CvrPlugin.getDomain());
@@ -43,7 +42,6 @@ public class CompanyParticipantRelationRecord extends CvrBaseRecord {
     }
 
     private Set<Identification> getOrganizationIdentifications(Session session) {
-        System.out.println("getOrganizationIdentifications");
         HashSet<Identification> organizationIdentifications = new HashSet<>();
         for (OrganizationRecord organizationRecord : this.organizations) {
             UUID organizationUUID = organizationRecord.generateUUID();

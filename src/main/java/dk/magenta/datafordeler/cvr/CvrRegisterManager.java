@@ -230,7 +230,7 @@ public class CvrRegisterManager extends RegisterManager {
                         } catch (IOException e) {
                             e.printStackTrace();
                         } finally {
-                            System.out.println("Wrote " + count + " events");
+                            log.info("Wrote " + count + " events");
                             try {
                                 if (responseReader != null) {
                                     responseReader.close();

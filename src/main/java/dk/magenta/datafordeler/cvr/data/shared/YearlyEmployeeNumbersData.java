@@ -3,12 +3,11 @@ package dk.magenta.datafordeler.cvr.data.shared;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.HashMap;
 import java.util.Map;
-
-import static dk.magenta.datafordeler.cvr.data.shared.YearlyEmployeeNumbersData.DB_FIELD_YEAR;
 
 /**
  * Created by lars on 15-06-17.

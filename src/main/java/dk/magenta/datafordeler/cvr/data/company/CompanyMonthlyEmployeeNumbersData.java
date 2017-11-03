@@ -1,6 +1,5 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.shared.MonthlyEmployeeNumbersData;
 
 import javax.persistence.Entity;

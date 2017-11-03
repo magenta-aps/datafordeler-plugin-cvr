@@ -212,7 +212,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                 if (jsonNode.size() == 0) {
                     throw new DataStreamException("No input data");
                 }
-                System.out.println("Node contains "+jsonNode.size()+" subnodes");
+                log.debug("Node contains "+jsonNode.size()+" subnodes");
                 // We have a list of results
                 for (JsonNode item : jsonNode) {
                     registrations.addAll(this.parseRegistration(item, importMetadata));
@@ -275,13 +275,12 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         transaction.commit();
         session.close();
 
-        System.out.println(timer.formatTotal(TASK_PARSE));
-        System.out.println(timer.formatTotal(TASK_FIND_ENTITY));
-        System.out.println(timer.formatTotal(TASK_FIND_REGISTRATIONS));
-        System.out.println(timer.formatTotal(TASK_FIND_ITEMS));
-        System.out.println(timer.formatTotal(TASK_POPULATE_DATA));
-        System.out.println(timer.formatTotal(TASK_SAVE));
-        System.out.println("-------------------");
+        log.info(timer.formatTotal(TASK_PARSE));
+        log.info(timer.formatTotal(TASK_FIND_ENTITY));
+        log.info(timer.formatTotal(TASK_FIND_REGISTRATIONS));
+        log.info(timer.formatTotal(TASK_FIND_ITEMS));
+        log.info(timer.formatTotal(TASK_POPULATE_DATA));
+        log.info(timer.formatTotal(TASK_SAVE));
         return registrations;
     }
 

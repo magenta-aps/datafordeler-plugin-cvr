@@ -2,7 +2,6 @@ package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.shared.MonthlyEmployeeNumbersData;
-import dk.magenta.datafordeler.cvr.data.shared.QuarterlyEmployeeNumbersData;
 
 import javax.persistence.Entity;
 import javax.persistence.Index;
@@ -10,7 +9,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import static dk.magenta.datafordeler.cvr.data.shared.MonthlyEmployeeNumbersData.DB_FIELD_MONTH;
-import static dk.magenta.datafordeler.cvr.data.shared.QuarterlyEmployeeNumbersData.DB_FIELD_QUARTER;
 import static dk.magenta.datafordeler.cvr.data.shared.QuarterlyEmployeeNumbersData.DB_FIELD_YEAR;
 
 @Entity
