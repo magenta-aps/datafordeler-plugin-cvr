@@ -155,9 +155,9 @@ public class CvrRegisterManager extends RegisterManager {
 
                 } else {
 
-                    //if (lastUpdateTime == null) {
+                    if (lastUpdateTime == null) {
                         lastUpdateTime = OffsetDateTime.parse("0000-01-01T00:00:00Z");
-                    //}
+                    }
                     requestBody = String.format(
                             configuration.getQuery(schema),
                             lastUpdateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)

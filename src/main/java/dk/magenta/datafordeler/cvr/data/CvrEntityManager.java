@@ -195,6 +195,11 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
      */
     @Override
     public List<? extends Registration> parseRegistration(JsonNode jsonNode, ImportMetadata importMetadata) throws DataFordelerException {
+        return this.parseRegistration(jsonNode, importMetadata, null);
+    }
+
+    public List<? extends Registration> parseRegistration(JsonNode jsonNode, ImportMetadata importMetadata, Session session) throws DataFordelerException {
+
         /*timer.reset(TASK_PARSE);
         timer.reset(TASK_FIND_ENTITY);
         timer.reset(TASK_FIND_REGISTRATIONS);
@@ -202,6 +207,13 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         timer.reset(TASK_POPULATE_DATA);
         timer.reset(TASK_SAVE);*/
         ArrayList<Registration> registrations = new ArrayList<>();
+
+        Transaction transaction = null;
+        if (session == null) {
+            System.out.println("starting session");
+            session = this.getSessionManager().getSessionFactory().openSession();
+            transaction = session.beginTransaction();
+        }
 
         if (jsonNode.has("hits")) {
             jsonNode = jsonNode.get("hits");
@@ -212,10 +224,16 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                 if (jsonNode.size() == 0) {
                     throw new DataStreamException("No input data");
                 }
-                log.debug("Node contains "+jsonNode.size()+" subnodes");
+                System.out.println("Node contains "+jsonNode.size()+" subnodes");
                 // We have a list of results
+
                 for (JsonNode item : jsonNode) {
-                    registrations.addAll(this.parseRegistration(item, importMetadata));
+                    registrations.addAll(this.parseRegistration(item, importMetadata, session));
+                }
+                if (transaction != null) {
+                    transaction.commit();
+                    session.close();
+                    System.out.println("ending session");
                 }
                 return registrations;
             }
@@ -239,8 +257,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             jsonNode = jsonNode.get(jsonTypeName);
         }
 
-        Session session = this.getSessionManager().getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
+
 
         timer.start(TASK_PARSE);
         T toplevelRecord;
@@ -272,8 +289,11 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         registrations.addAll(entityRegistrations);
 
         // log.info("Entity " + entity.getUUID() + " now has " + entity.getRegistrations().size() + " registrations");
-        transaction.commit();
-        session.close();
+        if (transaction != null) {
+            transaction.commit();
+            session.close();
+            System.out.println("ending session");
+        }
 
         log.info(timer.formatTotal(TASK_PARSE));
         log.info(timer.formatTotal(TASK_FIND_ENTITY));

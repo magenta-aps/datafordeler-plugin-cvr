@@ -37,7 +37,7 @@ public class CvrConfiguration implements Configuration {
 
     // Midnight every january 1st
     @Column
-    private String pullCronSchedule = "0 0 0 1 1 ?";
+    private String pullCronSchedule = null;//"0 0 0 1 1 ?";
 
     @Column
     private String registerAddress = "http://distribution.virk.dk";
@@ -108,7 +108,7 @@ public class CvrConfiguration implements Configuration {
 
     @Column
     @Enumerated(EnumType.ORDINAL)
-    private RegisterType companyUnitRegisterType = RegisterType.REMOTE_HTTP;
+    private RegisterType companyUnitRegisterType = RegisterType.DISABLED;
 
     @Column
     private String companyUnitRegisterStartAddress = "http://distribution.virk.dk/cvr-permanent/produktionsenhed/_search";
@@ -166,7 +166,7 @@ public class CvrConfiguration implements Configuration {
 
     @Column
     @Enumerated(EnumType.ORDINAL)
-    private RegisterType participantRegisterType = RegisterType.REMOTE_HTTP;
+    private RegisterType participantRegisterType = RegisterType.DISABLED;
 
     @Column
     private String participantRegisterStartAddress = "http://distribution.virk.dk/cvr-permanent/deltager/_search";
