@@ -119,22 +119,23 @@ public class CvrRegisterManager extends RegisterManager {
         return null;
     }
 
+
     /**
-     * Pull data from the data source denoted by eventInterface, using the 
+     * Pull data from the data source denoted by eventInterface, using the
      * mechanism appropriate for the source.
-     * For CVR, this is done using a ScanScrollCommunicator, where we specify the 
-     * query in a POST, then get a handle back that we can use in a series of 
+     * For CVR, this is done using a ScanScrollCommunicator, where we specify the
+     * query in a POST, then get a handle back that we can use in a series of
      * subsequent GET requests to get all the data.
-     * We then package each response in an Event, and feed them into a stream for 
+     * We then package each response in an Event, and feed them into a stream for
      * returning.
      */
-    @Override
-    public ItemInputStream<? extends PluginSourceData> pullEvents(URI eventInterface, EntityManager entityManager) throws DataFordelerException {
+    public InputStream pullRawData(URI eventInterface, EntityManager entityManager) throws DataFordelerException {
         if (!(entityManager instanceof CvrEntityManager)) {
             throw new WrongSubclassException(CvrEntityManager.class, entityManager);
         }
         String schema = entityManager.getSchema();
         ScanScrollCommunicator eventCommunicator = (ScanScrollCommunicator) this.getEventFetcher();
+        eventCommunicator.setThrottle(0);
 
         String requestBody;
 
@@ -143,63 +144,62 @@ public class CvrRegisterManager extends RegisterManager {
         session.close();
 
         CvrConfiguration configuration = this.configurationManager.getConfiguration();
-        if (configuration.getRegisterType(schema) == CvrConfiguration.RegisterType.REMOTE_HTTP) {
+        switch (configuration.getRegisterType(schema)) {
+            case DISABLED:
+                break;
+            case REMOTE_HTTP:
+                final ArrayList<Throwable> errors = new ArrayList<>();
+                InputStream responseBody;
+                File cacheFile = new File("cache/cvr" + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
+                try {
+                    if (!cacheFile.exists()) {
 
-            final ArrayList<Throwable> errors = new ArrayList<>();
-            InputStream responseBody;
-            File cacheFile = new File("cache/cvr"+ LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
-            try {
-                if (cacheFile.exists()) {
-
-                    responseBody = new FileInputStream(cacheFile);
-
-                } else {
-
-                    if (lastUpdateTime == null) {
-                        lastUpdateTime = OffsetDateTime.parse("0000-01-01T00:00:00Z");
-                    }
-                    requestBody = String.format(
-                            configuration.getQuery(schema),
-                            lastUpdateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
-                    );
-
-                    eventCommunicator.setUsername(configuration.getUsername(schema));
-                    eventCommunicator.setPassword(configuration.getPassword(schema));
-
-                    eventCommunicator.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-                        @Override
-                        public void uncaughtException(Thread t, Throwable e) {
-                            errors.add(e);
+                        if (lastUpdateTime == null) {
+                            lastUpdateTime = OffsetDateTime.parse("0000-01-01T00:00:00Z");
                         }
-                    });
-                    responseBody = eventCommunicator.fetch(
-                            new URI(configuration.getStartAddress(schema)),
-                            new URI(configuration.getScrollAddress(schema)),
-                            requestBody
-                    );
+                        requestBody = String.format(
+                                configuration.getQuery(schema),
+                                lastUpdateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                        );
 
-                    cacheFile.createNewFile();
-                    FileWriter fileWriter = new FileWriter(cacheFile);
-                    IOUtils.copy(responseBody, fileWriter);
-                    fileWriter.close();
+                        eventCommunicator.setUsername(configuration.getUsername(schema));
+                        eventCommunicator.setPassword(configuration.getPassword(schema));
+
+                        eventCommunicator.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+                            @Override
+                            public void uncaughtException(Thread t, Throwable e) {
+                                errors.add(e);
+                            }
+                        });
+                        responseBody = eventCommunicator.fetch(
+                                new URI(configuration.getStartAddress(schema)),
+                                new URI(configuration.getScrollAddress(schema)),
+                                requestBody
+                        );
+
+                        cacheFile.createNewFile();
+                        FileWriter fileWriter = new FileWriter(cacheFile);
+                        IOUtils.copy(responseBody, fileWriter);
+                        fileWriter.close();
+                        eventCommunicator.wait(responseBody);
+                        responseBody.close();
+                        log.info("Loaded into cache file");
+                    }
+                } catch (URISyntaxException e) {
+                    throw new ConfigurationException("Invalid pull URI '" + e.getInput() + "'");
+                } catch (IOException e) {
+                    throw new DataStreamException(e);
                 }
-            } catch (URISyntaxException e) {
-                throw new ConfigurationException("Invalid pull URI '"+e.getInput()+"'");
-            } catch (IOException e) {
-                throw new DataStreamException(e);
-            }
 
-            eventCommunicator.wait(responseBody);
-            if (!errors.isEmpty()) {
-                throw new ParseException("Error while loading data for "+entityManager.getSchema(), errors.get(0));
-            }
+                if (!errors.isEmpty()) {
+                    throw new ParseException("Error while loading data for " + entityManager.getSchema(), errors.get(0));
+                }
 
-            try {
-                FileInputStream cachedData = new FileInputStream(cacheFile);
-                return this.parseEventResponse(cachedData, entityManager);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+                try {
+                    return new FileInputStream(cacheFile);
+                } catch (FileNotFoundException e1) {
+                    throw new DataStreamException(e1);
+                }
         }
         return null;
     }
@@ -235,6 +235,11 @@ public class CvrRegisterManager extends RegisterManager {
                                 if (responseReader != null) {
                                     responseReader.close();
                                 }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            try {
+                                responseBody.close();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }

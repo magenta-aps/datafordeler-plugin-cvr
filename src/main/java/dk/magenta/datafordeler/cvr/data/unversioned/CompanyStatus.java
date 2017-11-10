@@ -10,6 +10,7 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Collections;
+import java.util.HashMap;
 
 import static dk.magenta.datafordeler.cvr.data.unversioned.CompanyStatus.DB_FIELD_NAME;
 
@@ -41,17 +42,25 @@ public class CompanyStatus extends UnversionedEntity {
         this.status = status;
     }
 
+    private static HashMap<String, CompanyStatus> statusCache = new HashMap<>();
 
     public static CompanyStatus getStatus(String statusText, Session session) {
-        CompanyStatus status = QueryManager.getItem(session, CompanyStatus.class, Collections.singletonMap(DB_FIELD_NAME, statusText));
-        if (status == null) {
-            status = new CompanyStatus();
-            status.setStatus(statusText);
-            session.save(status);
+        if (statusText != null) {
+            CompanyStatus status = statusCache.get(statusText);
+            if (status == null) {
+                status = QueryManager.getItem(session, CompanyStatus.class, Collections.singletonMap(DB_FIELD_NAME, statusText));
+                if (status == null) {
+                    status = new CompanyStatus();
+                    status.setStatus(statusText);
+                    session.save(status);
+                }
+                statusCache.put(statusText, status);
+            }
+            return status;
+        } else {
+            return null;
         }
-        return status;
     }
-
 
     public void save(Session session) {
         session.saveOrUpdate(this);

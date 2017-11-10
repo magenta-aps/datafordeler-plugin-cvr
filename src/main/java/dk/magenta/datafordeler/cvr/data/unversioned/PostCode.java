@@ -10,6 +10,7 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Collections;
+import java.util.HashMap;
 
 import static dk.magenta.datafordeler.cvr.data.unversioned.PostCode.DB_FIELD_CODE;
 
@@ -58,15 +59,24 @@ public class PostCode extends UnversionedEntity {
 
     //----------------------------------------------------
 
+    private static HashMap<Integer, PostCode> postCodeCache = new HashMap<>();
+
     public static PostCode getPostcode(int postCode, String postDistrict, Session session) {
-        PostCode post = QueryManager.getItem(session, PostCode.class, Collections.singletonMap(DB_FIELD_CODE, postCode));
-        if (post == null) {
-            post = new PostCode();
-            post.setPostCode(postCode);
-            post.setPostDistrict(postDistrict);
-            session.save(post);
+        if (postCode > 0) {
+            PostCode post = postCodeCache.get(postCode);
+            if (post == null) {
+                QueryManager.getItem(session, PostCode.class, Collections.singletonMap(DB_FIELD_CODE, postCode));
+                if (post == null) {
+                    post = new PostCode();
+                    post.setPostCode(postCode);
+                    post.setPostDistrict(postDistrict);
+                }
+                postCodeCache.put(postCode, post);
+            }
+            return post;
+        } else {
+            return null;
         }
-        return post;
     }
 
     public static PostCode getPostcode(PostCode old, Session session) {

@@ -24,11 +24,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.internal.SessionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.*;
@@ -163,16 +163,30 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
     @Override
     public List<? extends Registration> parseRegistration(InputStream registrationData, ImportMetadata importMetadata) throws DataFordelerException {
-        String dataChunk = new Scanner(registrationData, "UTF-8").useDelimiter(new String(this.commonFetcher.getDelimiter())).next();
+        /*String dataChunk = new Scanner(registrationData, "UTF-8").useDelimiter(new String(this.commonFetcher.getDelimiter())).next();
         try {
             return this.parseRegistration(this.getObjectMapper().readTree(dataChunk), importMetadata);
         } catch (IOException e) {
             throw new DataStreamException(e);
+        }*/
+        BufferedReader responseReader = null;
+        try {
+            responseReader = new BufferedReader(new InputStreamReader(registrationData, "UTF-8"));
+            String line;
+            while ((line = responseReader.readLine()) != null) {
+                log.info("reading line");
+                this.parseRegistration(this.objectMapper.readTree(line), importMetadata);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
     protected abstract SessionManager getSessionManager();
-    protected abstract String getJsonTypeName(); // VrproduktionsEnhed
+    protected abstract String getJsonTypeName();
     protected abstract Class<T> getRecordClass();
     protected abstract Class<E> getEntityClass();
     protected abstract UUID generateUUID(T record);
@@ -185,6 +199,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
     private static final String TASK_FIND_REGISTRATIONS = "CvrFindRegistrations";
     private static final String TASK_FIND_ITEMS = "CvrFindItems";
     private static final String TASK_POPULATE_DATA = "CvrPopulateData";
+    private static final String ADD_RECORD_DATA = "CvrAddRecordData";
     private static final String TASK_SAVE = "CvrSave";
     /**
      * Parse an incoming JsonNode into registrations (and save them)
@@ -193,12 +208,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
      * @return A list of registrations that have been saved to the database
      * @throws ParseException
      */
-    @Override
     public List<? extends Registration> parseRegistration(JsonNode jsonNode, ImportMetadata importMetadata) throws DataFordelerException {
-        return this.parseRegistration(jsonNode, importMetadata, null);
-    }
-
-    public List<? extends Registration> parseRegistration(JsonNode jsonNode, ImportMetadata importMetadata, Session session) throws DataFordelerException {
 
         /*timer.reset(TASK_PARSE);
         timer.reset(TASK_FIND_ENTITY);
@@ -208,12 +218,21 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         timer.reset(TASK_SAVE);*/
         ArrayList<Registration> registrations = new ArrayList<>();
 
-        Transaction transaction = null;
-        if (session == null) {
+        //Transaction transaction = null;
+        /*if (session == null) {
             System.out.println("starting session");
             session = this.getSessionManager().getSessionFactory().openSession();
             transaction = session.beginTransaction();
+        } else {
+            //System.out.println("session already exists");
         }
+*/
+
+        Session session = importMetadata.getSession();
+        if (session == null) {
+            session = this.getSessionManager().getSessionFactory().getCurrentSession();
+        }
+
 
         if (jsonNode.has("hits")) {
             jsonNode = jsonNode.get("hits");
@@ -228,18 +247,25 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                 // We have a list of results
 
                 for (JsonNode item : jsonNode) {
-                    registrations.addAll(this.parseRegistration(item, importMetadata, session));
+                    registrations.addAll(this.parseRegistration(item, importMetadata));
+                    //registrations.addAll(this.parseRegistration(item, importMetadata, null));
                 }
-                if (transaction != null) {
-                    transaction.commit();
-                    session.close();
-                    System.out.println("ending session");
-                }
+                //if (transaction != null) {
+                //    transaction.commit();
+                    session.flush();
+                    session.clear();
+                    //session.close();
+                    //transaction = null;
+                    //session = null;
+                    //System.out.println("ending session");
+                    System.out.println(timer.formatAllTotal());
+                //}
+                System.gc();
                 return registrations;
             }
         }
 
-        String type = jsonNode.has("_type") ? jsonNode.get("_type").asText() : null;
+        /*String type = jsonNode.has("_type") ? jsonNode.get("_type").asText() : null;
         if (type != null && !type.equals(this.getSchema())) {
             // Wrong type. See if we have another EntityManager that can handle it
             EntityManager otherManager = this.getRegisterManager().getEntityManager(type);
@@ -247,7 +273,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                 return otherManager.parseRegistration(jsonNode, importMetadata);
             }
             return null;
-        }
+        }*/
 
         if (jsonNode.has("_source")) {
             jsonNode = jsonNode.get("_source");
@@ -276,31 +302,34 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         if (entity == null) {
             log.debug("Creating new Entity");
             entity = this.createBasicEntity(toplevelRecord);
-            entity.setDomain(CvrPlugin.getDomain());
-            entity.setUUID(uuid);
+            entity.setIdentifikation(
+                    QueryManager.getOrCreateIdentification(session, uuid, CvrPlugin.getDomain())
+            );
         } else {
             log.debug("Using existing entity");
         }
         timer.measure(TASK_FIND_ENTITY);
 
-
         Collection<R> entityRegistrations = this.parseRegistration(entity, toplevelRecord.getAll(), session, importMetadata);
 
-        registrations.addAll(entityRegistrations);
-
         // log.info("Entity " + entity.getUUID() + " now has " + entity.getRegistrations().size() + " registrations");
-        if (transaction != null) {
+        /*if (transaction != null) {
             transaction.commit();
             session.close();
             System.out.println("ending session");
-        }
+            System.out.println(timer.formatAllTotal());
+            System.gc();
+        }*/
 
-        log.info(timer.formatTotal(TASK_PARSE));
-        log.info(timer.formatTotal(TASK_FIND_ENTITY));
-        log.info(timer.formatTotal(TASK_FIND_REGISTRATIONS));
-        log.info(timer.formatTotal(TASK_FIND_ITEMS));
-        log.info(timer.formatTotal(TASK_POPULATE_DATA));
-        log.info(timer.formatTotal(TASK_SAVE));
+        registrations.addAll(entityRegistrations);
+
+
+//        log.info(timer.formatTotal(TASK_PARSE));
+//        log.info(timer.formatTotal(TASK_FIND_ENTITY));
+//        log.info(timer.formatTotal(TASK_FIND_REGISTRATIONS));
+//        log.info(timer.formatTotal(TASK_FIND_ITEMS));
+//        log.info(timer.formatTotal(TASK_POPULATE_DATA));
+//        log.info(timer.formatTotal(TASK_SAVE));
         return registrations;
     }
 
@@ -354,32 +383,28 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             }
             timer.measure(TASK_FIND_ITEMS);
 
-            timer.start(TASK_POPULATE_DATA);
             for (CvrBaseRecord record : group) {
+                timer.start(TASK_POPULATE_DATA+" "+record.getClass().getSimpleName());
                 record.populateBaseData(baseData, session, timestamp);
-                RecordData recordData = new RecordData(timestamp);
-                recordData.setSourceData(objectMapper.valueToTree(record).toString());
-                baseData.addRecordData(recordData);
-            }
-            timer.measure(TASK_POPULATE_DATA);
-        }
+                timer.measure(TASK_POPULATE_DATA+" "+record.getClass().getSimpleName());
 
+                //timer.start(ADD_RECORD_DATA);
+                //RecordData recordData = new RecordData(timestamp);
+                ////recordData.setSourceData(objectMapper.valueToTree(record).toString());
+                //baseData.addRecordData(recordData);
+                //timer.measure(ADD_RECORD_DATA);
+            }
+        }
         timer.start(TASK_SAVE);
         ArrayList<R> registrationList = new ArrayList<>(entityRegistrations);
         Collections.sort(registrationList);
         for (R registration : registrationList) {
             registration.setLastImportTime(importMetadata.getImportTime());
             session.saveOrUpdate(registration);
-            /*try {
-                QueryManager.saveRegistration(session, entity, registration, false, false);
-            } catch (DataFordelerException e) {
-                e.printStackTrace();
-                log.error(e);
-            }*/
         }
         session.saveOrUpdate(entity);
         timer.measure(TASK_SAVE);
-        return entityRegistrations;
+        return registrationList;
     }
 
 

@@ -73,6 +73,11 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-csv</artifactId>
+            <version>RELEASE</version>
+        </dependency>
 
         <!-- OpenSAML library -->
         <!-- https://mvnrepository.com/artifact/org.opensaml/opensaml -->

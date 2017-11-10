@@ -2,14 +2,14 @@ package dk.magenta.datafordeler.cvr.data.unversioned;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
+import dk.magenta.datafordeler.cvr.data.shared.IndustryData;
 import org.hibernate.Session;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 import static dk.magenta.datafordeler.cvr.data.unversioned.Industry.DB_FIELD_CODE;
 
@@ -21,6 +21,9 @@ import static dk.magenta.datafordeler.cvr.data.unversioned.Industry.DB_FIELD_COD
         @Index(name = "industryCode", columnList = DB_FIELD_CODE)
 })
 public class Industry extends UnversionedEntity {
+
+    @OneToMany(mappedBy = "industry")
+    private List<IndustryData> industryData;
 
     public static final String DB_FIELD_CODE = "industryCode";
     public static final String IO_FIELD_CODE = "branchekode";
@@ -59,15 +62,25 @@ public class Industry extends UnversionedEntity {
 
     //----------------------------------------------------
 
+    private static HashMap<String, Industry> industryCache = new HashMap<>();
+
+
     public static Industry getIndustry(String branchekode, String branchetekst, Session session) {
-        Industry industry = QueryManager.getItem(session, Industry.class, Collections.singletonMap(DB_FIELD_CODE, branchekode));
-        if (industry == null) {
-            industry = new Industry();
-            industry.setIndustryCode(branchekode);
-            industry.setIndustryText(branchetekst);
-            session.save(industry);
+        if (branchekode != null) {
+            Industry industry = industryCache.get(branchekode);
+            if (industry == null) {
+                industry = QueryManager.getItem(session, Industry.class, Collections.singletonMap(DB_FIELD_CODE, branchekode));
+                if (industry == null) {
+                    industry = new Industry();
+                    industry.setIndustryCode(branchekode);
+                    industry.setIndustryText(branchetekst);
+                }
+                industryCache.put(branchekode, industry);
+            }
+            return industry;
+        } else {
+            return null;
         }
-        return industry;
     }
 
 }

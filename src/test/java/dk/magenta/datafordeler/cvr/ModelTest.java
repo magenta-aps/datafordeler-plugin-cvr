@@ -202,9 +202,9 @@ public class ModelTest {
         Assert.assertEquals(1, QueryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
 
-        transaction = session.beginTransaction();
+        /*transaction = session.beginTransaction();
         session.delete(session.merge(company));
-        transaction.commit();
+        transaction.commit();*/
         session.close();
     }
 
@@ -316,12 +316,14 @@ public class ModelTest {
         Transaction transaction = session.beginTransaction();
 
         session.saveOrUpdate(company);
+        session.saveOrUpdate(unit);
+        session.saveOrUpdate(registrering);
 
         try {
-            QueryManager.saveRegistration(session, unit, registrering);
+            //QueryManager.saveRegistration(session, unit, registrering);
             transaction.commit();
-        } catch (DataFordelerException e) {
-            transaction.rollback();
+        //} catch (DataFordelerException e) {
+        //    transaction.rollback();
         } finally {
             session.close();
         }

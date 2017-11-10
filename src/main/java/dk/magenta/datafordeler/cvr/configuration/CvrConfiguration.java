@@ -75,7 +75,6 @@ public class CvrConfiguration implements Configuration {
             "    }\n" +
             "}\n";
 
-
     public RegisterType getCompanyRegisterType() {
         return this.companyRegisterType;
     }

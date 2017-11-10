@@ -10,6 +10,7 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Collections;
+import java.util.HashMap;
 
 import static dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm.DB_FIELD_CODE;
 
@@ -99,17 +100,27 @@ public class CompanyForm extends UnversionedEntity {
 
     //----------------------------------------------------
 
+    private static HashMap<String, CompanyForm> formCache = new HashMap<>();
+
     public static CompanyForm getForm(String companyFormCode, String shortDescription, String longDescription, String responsibleDataSource, Session session) {
-        CompanyForm form = QueryManager.getItem(session, CompanyForm.class, Collections.singletonMap(DB_FIELD_CODE, companyFormCode));
-        if (form == null) {
-            form = new CompanyForm();
-            form.setCompanyFormCode(companyFormCode);
-            form.setShortDescription(shortDescription);
-            form.setLongDescription(longDescription);
-            form.setResponsibleDataSource(responsibleDataSource);
-            session.save(form);
+        if (companyFormCode != null) {
+            CompanyForm form = formCache.get(companyFormCode);
+            if (form == null) {
+                form = QueryManager.getItem(session, CompanyForm.class, Collections.singletonMap(DB_FIELD_CODE, companyFormCode));
+                if (form == null) {
+                    form = new CompanyForm();
+                    form.setCompanyFormCode(companyFormCode);
+                    form.setShortDescription(shortDescription);
+                    form.setLongDescription(longDescription);
+                    form.setResponsibleDataSource(responsibleDataSource);
+                    session.save(form);
+                }
+                formCache.put(companyFormCode, form);
+            }
+            return form;
+        } else {
+            return null;
         }
-        return form;
     }
 
     public static CompanyForm getForm(CompanyForm oldForm, Session session) {

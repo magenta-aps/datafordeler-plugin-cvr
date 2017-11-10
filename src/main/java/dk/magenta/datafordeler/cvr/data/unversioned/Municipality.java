@@ -11,6 +11,7 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Collections;
+import java.util.HashMap;
 
 import static dk.magenta.datafordeler.cvr.data.unversioned.Municipality.DB_FIELD_CODE;
 
@@ -60,15 +61,19 @@ public class Municipality extends UnversionedEntity {
 
     //----------------------------------------------------
 
+    private static HashMap<Integer, Municipality> municipalityCache = new HashMap<>();
+
     public static Municipality getMunicipality(int code, String name, Session session) {
         if (code > 0) {
-            long start = System.nanoTime();
-            Municipality municipality = QueryManager.getItem(session, Municipality.class, Collections.singletonMap(DB_FIELD_CODE, code));
+            Municipality municipality = municipalityCache.get(code);
             if (municipality == null) {
-                municipality = new Municipality();
-                municipality.setCode(code);
-                municipality.setName(name);
-                session.save(municipality);
+                municipality = QueryManager.getItem(session, Municipality.class, Collections.singletonMap(DB_FIELD_CODE, code));
+                if (municipality == null) {
+                    municipality = new Municipality();
+                    municipality.setCode(code);
+                    municipality.setName(name);
+                }
+                municipalityCache.put(code, municipality);
             }
             return municipality;
         } else {

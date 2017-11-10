@@ -3,6 +3,8 @@ package dk.magenta.datafordeler.cvr.data.shared;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dk.magenta.datafordeler.cvr.data.DetailData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,6 +32,7 @@ public class IndustryData extends DetailData {
     public static final String DB_FIELD_INDUSTRY = "industry";
     public static final String IO_FIELD_INDUSTRY = "branche";
     @ManyToOne
+    @Cascade(value = CascadeType.SAVE_UPDATE)
     private Industry industry;
 
     public Industry getIndustry() {
