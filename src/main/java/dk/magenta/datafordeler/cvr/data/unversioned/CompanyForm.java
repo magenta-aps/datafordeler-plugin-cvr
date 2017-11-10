@@ -33,7 +33,7 @@ public class CompanyForm extends UnversionedEntity {
 
     @JsonProperty(value = IO_FIELD_DESC_SHORT)
     @XmlElement(name = IO_FIELD_DESC_SHORT)
-    @Column(nullable = true, unique = true)
+    @Column(nullable = true)
     private String shortDescription;
 
     public String getShortDescription() {
@@ -51,7 +51,7 @@ public class CompanyForm extends UnversionedEntity {
 
     @JsonProperty(value = IO_FIELD_DESC_LONG)
     @XmlElement(name = IO_FIELD_DESC_LONG)
-    @Column(nullable = true, unique = true)
+    @Column(nullable = true)
     private String longDescription;
 
     public String getLongDescription() {

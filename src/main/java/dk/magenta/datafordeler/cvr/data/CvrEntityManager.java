@@ -84,7 +84,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
     }
 
     @Override
-    protected Communicator getRegistrationFetcher() {
+    protected ScanScrollCommunicator getRegistrationFetcher() {
         return this.commonFetcher;
     }
 
@@ -163,12 +163,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
     @Override
     public List<? extends Registration> parseRegistration(InputStream registrationData, ImportMetadata importMetadata) throws DataFordelerException {
-        /*String dataChunk = new Scanner(registrationData, "UTF-8").useDelimiter(new String(this.commonFetcher.getDelimiter())).next();
-        try {
-            return this.parseRegistration(this.getObjectMapper().readTree(dataChunk), importMetadata);
-        } catch (IOException e) {
-            throw new DataStreamException(e);
-        }*/
+/*
         BufferedReader responseReader = null;
         try {
             responseReader = new BufferedReader(new InputStreamReader(registrationData, "UTF-8"));
@@ -181,6 +176,17 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+*/
+        Scanner scanner = new Scanner(registrationData, "UTF-8").useDelimiter(String.valueOf(this.commonFetcher.delimiter));
+        long count = 0;
+        while (scanner.hasNext()) {
+            try {
+                this.parseRegistration(this.getObjectMapper().readTree(scanner.next()), importMetadata);
+                count++;
+                System.out.println("Count: "+count);
+            } catch (IOException e) {
+                throw new DataStreamException(e);
+            }
         }
         return null;
     }
@@ -217,20 +223,14 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         timer.reset(TASK_POPULATE_DATA);
         timer.reset(TASK_SAVE);*/
         ArrayList<Registration> registrations = new ArrayList<>();
-
-        //Transaction transaction = null;
-        /*if (session == null) {
+        Session session = importMetadata.getSession();
+        Transaction transaction = null;
+        if (session == null) {
             System.out.println("starting session");
             session = this.getSessionManager().getSessionFactory().openSession();
             transaction = session.beginTransaction();
         } else {
             //System.out.println("session already exists");
-        }
-*/
-
-        Session session = importMetadata.getSession();
-        if (session == null) {
-            session = this.getSessionManager().getSessionFactory().getCurrentSession();
         }
 
 
@@ -248,19 +248,15 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
                 for (JsonNode item : jsonNode) {
                     registrations.addAll(this.parseRegistration(item, importMetadata));
-                    //registrations.addAll(this.parseRegistration(item, importMetadata, null));
-                }
-                //if (transaction != null) {
-                //    transaction.commit();
-                    session.flush();
                     session.clear();
-                    //session.close();
-                    //transaction = null;
-                    //session = null;
-                    //System.out.println("ending session");
-                    System.out.println(timer.formatAllTotal());
-                //}
-                System.gc();
+                }
+                if (transaction != null) {
+                    transaction.commit();
+                    session.close();
+                    System.out.println("ending session");
+                }
+                log.info(timer.formatAllTotal());
+
                 return registrations;
             }
         }
@@ -268,7 +264,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         /*String type = jsonNode.has("_type") ? jsonNode.get("_type").asText() : null;
         if (type != null && !type.equals(this.getSchema())) {
             // Wrong type. See if we have another EntityManager that can handle it
-            EntityManager otherManager = this.getRegisterManager().getEntityManager(type);
+            CvrEntityManager otherManager = (CvrEntityManager) this.getRegisterManager().getEntityManager(type);
             if (otherManager != null) {
                 return otherManager.parseRegistration(jsonNode, importMetadata);
             }
@@ -330,6 +326,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 //        log.info(timer.formatTotal(TASK_FIND_ITEMS));
 //        log.info(timer.formatTotal(TASK_POPULATE_DATA));
 //        log.info(timer.formatTotal(TASK_SAVE));
+
         return registrations;
     }
 
@@ -383,17 +380,17 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             }
             timer.measure(TASK_FIND_ITEMS);
 
+            //timer.start(TASK_POPULATE_DATA);
             for (CvrBaseRecord record : group) {
                 timer.start(TASK_POPULATE_DATA+" "+record.getClass().getSimpleName());
                 record.populateBaseData(baseData, session, timestamp);
-                timer.measure(TASK_POPULATE_DATA+" "+record.getClass().getSimpleName());
+                RecordData recordData = new RecordData(timestamp);
+                // recordData.setSourceData(objectMapper.valueToTree(record).toString());
+                baseData.addRecordData(recordData);
 
-                //timer.start(ADD_RECORD_DATA);
-                //RecordData recordData = new RecordData(timestamp);
-                ////recordData.setSourceData(objectMapper.valueToTree(record).toString());
-                //baseData.addRecordData(recordData);
-                //timer.measure(ADD_RECORD_DATA);
+                timer.measure(TASK_POPULATE_DATA+" "+record.getClass().getSimpleName());
             }
+            //timer.measure(TASK_POPULATE_DATA);
         }
         timer.start(TASK_SAVE);
         ArrayList<R> registrationList = new ArrayList<>(entityRegistrations);

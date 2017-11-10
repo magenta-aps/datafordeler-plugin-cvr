@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dk.magenta.datafordeler.cvr.data.shared.QuarterlyEmployeeNumbersData;
 
 import javax.persistence.Entity;
@@ -16,6 +17,8 @@ import static dk.magenta.datafordeler.cvr.data.shared.QuarterlyEmployeeNumbersDa
         @Index(name = "companyQuarterlyEmployessQuarter", columnList = DB_FIELD_QUARTER + ", " + DB_FIELD_YEAR)
 })
 public class CompanyQuarterlyEmployeeNumbersData extends QuarterlyEmployeeNumbersData {
+
+    @JsonIgnore
     @ManyToOne(targetEntity = CompanyBaseData.class)
     private CompanyBaseData companyBaseData;
 

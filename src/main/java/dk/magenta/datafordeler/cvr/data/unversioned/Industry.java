@@ -64,7 +64,6 @@ public class Industry extends UnversionedEntity {
 
     private static HashMap<String, Industry> industryCache = new HashMap<>();
 
-
     public static Industry getIndustry(String branchekode, String branchetekst, Session session) {
         if (branchekode != null) {
             Industry industry = industryCache.get(branchekode);

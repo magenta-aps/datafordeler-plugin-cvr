@@ -37,7 +37,7 @@ public class CompanyUnitLink extends DetailData {
     public static final String DB_FIELD_IDENTIFICATION = "identification";
     public static final String IO_FIELD_IDENTIFICATION = "identification";
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JsonProperty(value = IO_FIELD_IDENTIFICATION)
     @XmlElement(name = IO_FIELD_IDENTIFICATION)
     private Identification identification;

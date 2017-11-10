@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.magenta.datafordeler.core.Application;
 import dk.magenta.datafordeler.core.database.Registration;
+import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.io.ImportMetadata;
 import dk.magenta.datafordeler.core.plugin.EntityManager;
@@ -14,6 +15,8 @@ import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntityManager;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntityManager;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +42,9 @@ public class ParseTest {
     private ObjectMapper objectMapper;
 
     @Autowired
+    private SessionManager sessionManager;
+
+    @Autowired
     private CvrPlugin plugin;
 
     private static HashMap<String, String> schemaMap = new HashMap<>();
@@ -51,54 +57,78 @@ public class ParseTest {
     @Test
     public void testParseCompanyFile() throws DataFordelerException, IOException {
         ImportMetadata importMetadata = new ImportMetadata();
-        InputStream input = ParseTest.class.getResourceAsStream("/company_in.json");
-        JsonNode root = objectMapper.readTree(input);
-        JsonNode itemList = root.get("hits").get("hits");
-        Assert.assertTrue(itemList.isArray());
-        for (JsonNode item : itemList) {
-            String type = item.get("_type").asText();
-            CompanyEntityManager entityManager = (CompanyEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-            List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"), importMetadata);
-            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations.get(0).getEntity()));
+        Session session = sessionManager.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            importMetadata.setSession(session);
+            InputStream input = ParseTest.class.getResourceAsStream("/company_in.json");
+            JsonNode root = objectMapper.readTree(input);
+            JsonNode itemList = root.get("hits").get("hits");
+            Assert.assertTrue(itemList.isArray());
+            for (JsonNode item : itemList) {
+                String type = item.get("_type").asText();
+                CompanyEntityManager entityManager = (CompanyEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
+                List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"), importMetadata);
+                System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations.get(0).getEntity()));
 
-            Collections.sort(registrations);
-            Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:47+01:00"), registrations.get(0).getRegistrationFrom());
-            Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:51+01:00"), registrations.get(0).getRegistrationTo());
-            Assert.assertEquals(123, registrations.size());
+                Collections.sort(registrations);
+                Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:47+01:00"), registrations.get(0).getRegistrationFrom());
+                Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:51+01:00"), registrations.get(0).getRegistrationTo());
+                Assert.assertEquals(123, registrations.size());
+            }
+        } finally {
+            transaction.rollback();
+            session.close();
         }
     }
 
     @Test
     public void testParseUnitFile() throws IOException, DataFordelerException {
         ImportMetadata importMetadata = new ImportMetadata();
-        InputStream input = ParseTest.class.getResourceAsStream("/unit.json");
-        JsonNode root = objectMapper.readTree(input);
-        JsonNode itemList = root.get("hits").get("hits");
-        Assert.assertTrue(itemList.isArray());
-        for (JsonNode item : itemList) {
-            String type = item.get("_type").asText();
-            CompanyUnitEntityManager entityManager = (CompanyUnitEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-            List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("VrproduktionsEnhed"), importMetadata);
-            System.out.println("registrations.size: "+registrations.size());
-            System.out.println(objectMapper.writeValueAsString(registrations));
+        Session session = sessionManager.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            importMetadata.setSession(session);
+            InputStream input = ParseTest.class.getResourceAsStream("/unit.json");
+            JsonNode root = objectMapper.readTree(input);
+            JsonNode itemList = root.get("hits").get("hits");
+            Assert.assertTrue(itemList.isArray());
+            for (JsonNode item : itemList) {
+                String type = item.get("_type").asText();
+                CompanyUnitEntityManager entityManager = (CompanyUnitEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
+                List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("VrproduktionsEnhed"), importMetadata);
+                System.out.println("registrations.size: " + registrations.size());
+                System.out.println(objectMapper.writeValueAsString(registrations));
+            }
+        } finally {
+            transaction.rollback();
+            session.close();
         }
     }
 
     @Test
     public void testParseParticipantFile() throws IOException, DataFordelerException {
         ImportMetadata importMetadata = new ImportMetadata();
-        InputStream input = ParseTest.class.getResourceAsStream("/person.json");
-        JsonNode root = objectMapper.readTree(input);
-        JsonNode itemList = root.get("hits").get("hits");
-        Assert.assertTrue(itemList.isArray());
-        Assert.assertEquals(1, itemList.size());
-        for (JsonNode item : itemList) {
-            String type = item.get("_type").asText();
-            ParticipantEntityManager entityManager = (ParticipantEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-            List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson"), importMetadata);
-            System.out.println("registrations.size: "+registrations.size());
-            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations));
-            Assert.assertEquals(4, registrations.size());
+        Session session = sessionManager.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+        importMetadata.setSession(session);
+            InputStream input = ParseTest.class.getResourceAsStream("/person.json");
+            JsonNode root = objectMapper.readTree(input);
+            JsonNode itemList = root.get("hits").get("hits");
+            Assert.assertTrue(itemList.isArray());
+            Assert.assertEquals(1, itemList.size());
+            for (JsonNode item : itemList) {
+                String type = item.get("_type").asText();
+                ParticipantEntityManager entityManager = (ParticipantEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
+                List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson"), importMetadata);
+                System.out.println("registrations.size: " + registrations.size());
+                System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations));
+                Assert.assertEquals(4, registrations.size());
+            }
+        } finally {
+            transaction.rollback();
+            session.close();
         }
     }
 

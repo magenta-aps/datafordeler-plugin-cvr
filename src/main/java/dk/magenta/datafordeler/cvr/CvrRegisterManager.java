@@ -129,6 +129,7 @@ public class CvrRegisterManager extends RegisterManager {
      * We then package each response in an Event, and feed them into a stream for
      * returning.
      */
+    @Override
     public InputStream pullRawData(URI eventInterface, EntityManager entityManager) throws DataFordelerException {
         if (!(entityManager instanceof CvrEntityManager)) {
             throw new WrongSubclassException(CvrEntityManager.class, entityManager);
@@ -186,19 +187,19 @@ public class CvrRegisterManager extends RegisterManager {
                         log.info("Loaded into cache file");
                     }
                 } catch (URISyntaxException e) {
-                    throw new ConfigurationException("Invalid pull URI '" + e.getInput() + "'");
+                    throw new ConfigurationException("Invalid pull URI '"+e.getInput()+"'");
                 } catch (IOException e) {
                     throw new DataStreamException(e);
                 }
 
                 if (!errors.isEmpty()) {
-                    throw new ParseException("Error while loading data for " + entityManager.getSchema(), errors.get(0));
+                    throw new ParseException("Error while loading data for "+entityManager.getSchema(), errors.get(0));
                 }
 
                 try {
                     return new FileInputStream(cacheFile);
-                } catch (FileNotFoundException e1) {
-                    throw new DataStreamException(e1);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
                 }
         }
         return null;

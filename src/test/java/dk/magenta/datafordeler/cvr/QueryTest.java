@@ -24,6 +24,7 @@ import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntityManager;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantOutputWrapper;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantQuery;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,10 +42,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.OffsetDateTime;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.mockito.Mockito.when;
 
@@ -81,8 +79,9 @@ public class QueryTest {
     private CompanyUnitOutputWrapper companyUnitOutputWrapper = new CompanyUnitOutputWrapper();
     private ParticipantOutputWrapper participantOutputWrapper = new ParticipantOutputWrapper();
 
-    private void loadCompany() throws IOException, DataFordelerException {
+    private void loadCompany(Session session) throws IOException, DataFordelerException {
         ImportMetadata importMetadata = new ImportMetadata();
+        importMetadata.setSession(session);
         InputStream testData = QueryTest.class.getResourceAsStream("/company_in.json");
         JsonNode root = objectMapper.readTree(testData);
         JsonNode itemList = root.get("hits").get("hits");
@@ -92,8 +91,9 @@ public class QueryTest {
         }
     }
 
-    private void loadUnit() throws IOException, DataFordelerException {
+    private void loadUnit(Session session) throws IOException, DataFordelerException {
         ImportMetadata importMetadata = new ImportMetadata();
+        importMetadata.setSession(session);
         InputStream testData = QueryTest.class.getResourceAsStream("/unit.json");
         JsonNode root = objectMapper.readTree(testData);
         JsonNode itemList = root.get("hits").get("hits");
@@ -103,8 +103,9 @@ public class QueryTest {
         }
     }
 
-    private void loadParticipant() throws IOException, DataFordelerException {
+    private void loadParticipant(Session session) throws IOException, DataFordelerException {
         ImportMetadata importMetadata = new ImportMetadata();
+        importMetadata.setSession(session);
         InputStream testData = QueryTest.class.getResourceAsStream("/person.json");
         JsonNode root = objectMapper.readTree(testData);
         JsonNode itemList = root.get("hits").get("hits");
@@ -125,6 +126,10 @@ public class QueryTest {
         return this.restTemplate.exchange("/cvr/"+type+"/1/rest/search?" + parameters.asUrlParams(), HttpMethod.GET, httpEntity, String.class);
     }
 
+    private static HashSet<String> ignoreKeys = new HashSet<String>();
+    static {
+        ignoreKeys.add("sidstImporteret");
+    }
     private static void assertJsonEquality(JsonNode node1, JsonNode node2, boolean ignoreArrayOrdering, boolean printDifference) {
         try {
             Assert.assertEquals(node1.isNull(), node2.isNull());
@@ -162,7 +167,9 @@ public class QueryTest {
                 while (keys.hasNext()) {
                     String key = keys.next();
                     Assert.assertNotNull(node2.get(key));
-                    assertJsonEquality(node1.get(key), node2.get(key), ignoreArrayOrdering, printDifference);
+                    if (!ignoreKeys.contains(key)) {
+                        assertJsonEquality(node1.get(key), node2.get(key), ignoreArrayOrdering, printDifference);
+                    }
                 }
             } else {
                 Assert.assertEquals(node1.asText(), node2.asText());
@@ -190,12 +197,27 @@ public class QueryTest {
     public void testCompanyIdempotence() throws IOException, DataFordelerException {
         Session session = sessionManager.getSessionFactory().openSession();
         try {
-            loadCompany();
+            Transaction transaction = session.beginTransaction();
+            try {
+                loadCompany(session);
+                transaction.commit();
+            } catch (Exception e) {
+                transaction.rollback();
+                throw e;
+            }
 
             List<CompanyEntity> entities = QueryManager.getAllEntities(session, CompanyEntity.class);
             JsonNode firstImport = objectMapper.valueToTree(entities);
 
-            loadCompany();
+            transaction = session.beginTransaction();
+            try {
+                loadCompany(session);
+                transaction.commit();
+            } catch (Exception e) {
+                transaction.rollback();
+                throw e;
+            }
+
             entities = QueryManager.getAllEntities(session, CompanyEntity.class);
             JsonNode secondImport = objectMapper.valueToTree(entities);
 
@@ -209,8 +231,9 @@ public class QueryTest {
     @Test
     public void testCompanyQuery() throws IOException, DataFordelerException {
         Session session = sessionManager.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
         try {
-            loadCompany();
+            loadCompany(session);
             UUID expectedUUID = UUID.fromString("2334456b-d2ca-372d-aa60-4a2ba7fed7cd");
 
             CompanyEntity companyEntity = QueryManager.getEntity(session, expectedUUID, CompanyEntity.class);
@@ -261,6 +284,7 @@ public class QueryTest {
             System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(companyOutputWrapper.wrapResult(entities.get(0))));
 
         } finally {
+            transaction.rollback();
             session.close();
         }
     }
@@ -268,153 +292,170 @@ public class QueryTest {
 
     @Test
     public void testCompanyRestQuery() throws IOException, DataFordelerException {
-        loadCompany();
-        TestUserDetails testUserDetails = new TestUserDetails();
-        testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
-        this.applyAccess(testUserDetails);
+        Session session = sessionManager.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            loadCompany(session);
+            TestUserDetails testUserDetails = new TestUserDetails();
+            testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
+            this.applyAccess(testUserDetails);
 
-        ParameterMap searchParameters = new ParameterMap();
-        searchParameters.add("CVRNummer", "25052943");
-        searchParameters.add("registrationFrom", "1999-11-30");
-        searchParameters.add("registrationTo", "1999-12-01");
-
-
-        ResponseEntity<String> response = restSearch(searchParameters, "company");
-        Assert.assertEquals(200, response.getStatusCode().value());
-        JsonNode jsonBody = objectMapper.readTree(response.getBody());
-
-        ObjectNode entity = (ObjectNode) jsonBody.get("results").get(0);
-        Assert.assertEquals(25052943, entity.get("CVRNummer").asInt());
-        Assert.assertEquals(CompanyEntity.generateUUID(25052943).toString(), entity.get("UUID").asText());
-        ArrayNode registrations = (ArrayNode) entity.get("registreringer");
-        Assert.assertEquals(1, registrations.size());
-        ObjectNode registration = (ObjectNode) registrations.get(0);
-        Assert.assertTrue(OffsetDateTime.parse("1999-11-29T16:37:10+01:00").isEqual(OffsetDateTime.parse(registration.get("registreringFra").textValue())));
-        Assert.assertTrue(OffsetDateTime.parse("2000-02-29T11:44:42+01:00").isEqual(OffsetDateTime.parse(registration.get("registreringTil").textValue())));
-
-        JsonNode formNodeList = registration.get("virksomhedsform");
-        Assert.assertEquals(1, formNodeList.size());
-        JsonNode formNode = formNodeList.get(0);
-        Assert.assertTrue(OffsetDateTime.parse("1999-11-15T01:00+01:00").isEqual(OffsetDateTime.parse(formNode.get("virkningFra").asText())));
-        Assert.assertTrue(formNode.get("virkningTil").isNull());
-        Assert.assertEquals("80", formNode.get("formkode").asText());
-        Assert.assertEquals("E&S", formNode.get("dataleverandør").asText());
+            ParameterMap searchParameters = new ParameterMap();
+            searchParameters.add("CVRNummer", "25052943");
+            searchParameters.add("registrationFrom", "1999-11-30");
+            searchParameters.add("registrationTo", "1999-12-01");
 
 
-        JsonNode lifecycleNodeList = registration.get("livscyklus");
-        Assert.assertEquals(1, formNodeList.size());
-        JsonNode lifecycleNode = lifecycleNodeList.get(0);
-        Assert.assertTrue(OffsetDateTime.parse("1999-11-15T01:00+01:00").isEqual(OffsetDateTime.parse(lifecycleNode.get("virkningFra").asText())));
-        Assert.assertTrue(lifecycleNode.get("virkningTil").isNull());
-        Assert.assertEquals("1999-11-15", lifecycleNode.get("virksomhedStartdato").asText());
+            ResponseEntity<String> response = restSearch(searchParameters, "company");
+            Assert.assertEquals(200, response.getStatusCode().value());
+            JsonNode jsonBody = objectMapper.readTree(response.getBody());
+
+            ObjectNode entity = (ObjectNode) jsonBody.get("results").get(0);
+            Assert.assertEquals(25052943, entity.get("CVRNummer").asInt());
+            Assert.assertEquals(CompanyEntity.generateUUID(25052943).toString(), entity.get("UUID").asText());
+            ArrayNode registrations = (ArrayNode) entity.get("registreringer");
+            Assert.assertEquals(1, registrations.size());
+            ObjectNode registration = (ObjectNode) registrations.get(0);
+            Assert.assertTrue(OffsetDateTime.parse("1999-11-29T16:37:10+01:00").isEqual(OffsetDateTime.parse(registration.get("registreringFra").textValue())));
+            Assert.assertTrue(OffsetDateTime.parse("2000-02-29T11:44:42+01:00").isEqual(OffsetDateTime.parse(registration.get("registreringTil").textValue())));
+
+            JsonNode formNodeList = registration.get("virksomhedsform");
+            Assert.assertEquals(1, formNodeList.size());
+            JsonNode formNode = formNodeList.get(0);
+            Assert.assertTrue(OffsetDateTime.parse("1999-11-15T01:00+01:00").isEqual(OffsetDateTime.parse(formNode.get("virkningFra").asText())));
+            Assert.assertTrue(formNode.get("virkningTil").isNull());
+            Assert.assertEquals("80", formNode.get("formkode").asText());
+            Assert.assertEquals("E&S", formNode.get("dataleverandør").asText());
 
 
-        JsonNode unitNodeList = registration.get("produktionsEnheder");
-        Assert.assertEquals(1, unitNodeList.size());
-        JsonNode unitNode = unitNodeList.get(0);
-        Assert.assertTrue(OffsetDateTime.parse("1999-11-15T01:00+01:00").isEqual(OffsetDateTime.parse(unitNode.get("virkningFra").asText())));
-        Assert.assertTrue(unitNode.get("virkningTil").isNull());
-        Assert.assertEquals(1007256945L, unitNode.get("pnummer").asLong());
+            JsonNode lifecycleNodeList = registration.get("livscyklus");
+            Assert.assertEquals(1, formNodeList.size());
+            JsonNode lifecycleNode = lifecycleNodeList.get(0);
+            Assert.assertTrue(OffsetDateTime.parse("1999-11-15T01:00+01:00").isEqual(OffsetDateTime.parse(lifecycleNode.get("virkningFra").asText())));
+            Assert.assertTrue(lifecycleNode.get("virkningTil").isNull());
+            Assert.assertEquals("1999-11-15", lifecycleNode.get("virksomhedStartdato").asText());
 
 
-        // Retrieve what was registered at 2015-01-01, with effect 2015-01-01
-        searchParameters = new ParameterMap();
-        searchParameters.add("CVRNummer", "25052943");
-        searchParameters.add("registrationFrom", "2015-01-01");
-        searchParameters.add("registrationTo", "2015-01-01");
-        searchParameters.add("effectFrom", "2015-01-01");
-        searchParameters.add("effectTo", "2015-01-01");
+            JsonNode unitNodeList = registration.get("produktionsEnheder");
+            Assert.assertEquals(1, unitNodeList.size());
+            JsonNode unitNode = unitNodeList.get(0);
+            Assert.assertTrue(OffsetDateTime.parse("1999-11-15T01:00+01:00").isEqual(OffsetDateTime.parse(unitNode.get("virkningFra").asText())));
+            Assert.assertTrue(unitNode.get("virkningTil").isNull());
+            Assert.assertEquals(1007256945L, unitNode.get("pnummer").asLong());
 
-        response = restSearch(searchParameters, "company");
-        Assert.assertEquals(200, response.getStatusCode().value());
-        jsonBody = objectMapper.readTree(response.getBody());
 
-        entity = (ObjectNode) jsonBody.get("results").get(0);
-        registrations = (ArrayNode) entity.get("registreringer");
-        Assert.assertEquals(1, registrations.size());
-        registration = (ObjectNode) registrations.get(0);
-        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations));
-        Assert.assertNotNull(registration.get("deltagerRelationer"));
-        Assert.assertNotNull(registration.get("livscyklus"));
-        Assert.assertNotNull(registration.get("virksomhedsform"));
-        Assert.assertNotNull(registration.get("produktionsEnheder"));
-        Assert.assertNotNull(registration.get("telefonnummer"));
-        Assert.assertNotNull(registration.get("virksomhedsnavn"));
-        Assert.assertNull(registration.get("emailadresse"));
-        Assert.assertNull(registration.get("hovedbranche"));
-        Assert.assertNull(registration.get("beliggenhedsadresse"));
+            // Retrieve what was registered at 2015-01-01, with effect 2015-01-01
+            searchParameters = new ParameterMap();
+            searchParameters.add("CVRNummer", "25052943");
+            searchParameters.add("registrationFrom", "2015-01-01");
+            searchParameters.add("registrationTo", "2015-01-01");
+            searchParameters.add("effectFrom", "2015-01-01");
+            searchParameters.add("effectTo", "2015-01-01");
+
+            response = restSearch(searchParameters, "company");
+            Assert.assertEquals(200, response.getStatusCode().value());
+            jsonBody = objectMapper.readTree(response.getBody());
+
+            entity = (ObjectNode) jsonBody.get("results").get(0);
+            registrations = (ArrayNode) entity.get("registreringer");
+            Assert.assertEquals(1, registrations.size());
+            registration = (ObjectNode) registrations.get(0);
+            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations));
+            Assert.assertNotNull(registration.get("deltagerRelationer"));
+            Assert.assertNotNull(registration.get("livscyklus"));
+            Assert.assertNotNull(registration.get("virksomhedsform"));
+            Assert.assertNotNull(registration.get("produktionsEnheder"));
+            Assert.assertNotNull(registration.get("telefonnummer"));
+            Assert.assertNotNull(registration.get("virksomhedsnavn"));
+            Assert.assertNull(registration.get("emailadresse"));
+            Assert.assertNull(registration.get("hovedbranche"));
+            Assert.assertNull(registration.get("beliggenhedsadresse"));
+        } finally {
+            transaction.rollback();
+            session.close();
+        }
     }
 
 
     @Test
     public void testCompanyAccess() throws Exception {
-        loadCompany();
-        addTestMunicipalityAreaRestriction();
-        TestUserDetails testUserDetails = new TestUserDetails();
+        Session session = sessionManager.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            loadCompany(session);
+        } finally {
+            transaction.commit();
+            session.close();
+        }
+            addTestMunicipalityAreaRestriction();
+            TestUserDetails testUserDetails = new TestUserDetails();
 
-        ParameterMap searchParameters = new ParameterMap();
-        ResponseEntity<String> response;// = restSearch(searchParameters, "company");
-        //Assert.assertEquals(403, response.getStatusCode().value());
+            ParameterMap searchParameters = new ParameterMap();
+            ResponseEntity<String> response;// = restSearch(searchParameters, "company");
+            //Assert.assertEquals(403, response.getStatusCode().value());
 
-        testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
-        this.applyAccess(testUserDetails);
+            testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
+            this.applyAccess(testUserDetails);
 
-        searchParameters.add("kommunekode", "101");
-        response = restSearch(searchParameters, "company");
-        Assert.assertEquals(200, response.getStatusCode().value());
-        JsonNode jsonBody = objectMapper.readTree(response.getBody());
-        JsonNode results = jsonBody.get("results");
-        Assert.assertTrue(results.isArray());
-        Assert.assertEquals(1, results.size());
-        Assert.assertEquals(CompanyEntity.generateUUID(25052943).toString(), results.get(0).get("UUID").asText());
+            searchParameters.add("kommunekode", "101");
+            response = restSearch(searchParameters, "company");
+            Assert.assertEquals(200, response.getStatusCode().value());
+            JsonNode jsonBody = objectMapper.readTree(response.getBody());
+            JsonNode results = jsonBody.get("results");
+            Assert.assertTrue(results.isArray());
+            Assert.assertEquals(1, results.size());
+            Assert.assertEquals(CompanyEntity.generateUUID(25052943).toString(), results.get(0).get("UUID").asText());
 
-        searchParameters = new ParameterMap();
-        searchParameters.add("virksomhedsnavn", "MAGENTA ApS");
-        response = restSearch(searchParameters, "company");
-        Assert.assertEquals(200, response.getStatusCode().value());
-        jsonBody = objectMapper.readTree(response.getBody());
-        results = jsonBody.get("results");
-        Assert.assertTrue(results.isArray());
-        Assert.assertEquals(1, results.size());
-        Assert.assertEquals(CompanyEntity.generateUUID(25052943).toString(), results.get(0).get("UUID").asText());
+            searchParameters = new ParameterMap();
+            searchParameters.add("virksomhedsnavn", "MAGENTA ApS");
+            response = restSearch(searchParameters, "company");
+            Assert.assertEquals(200, response.getStatusCode().value());
+            jsonBody = objectMapper.readTree(response.getBody());
+            results = jsonBody.get("results");
+            Assert.assertTrue(results.isArray());
+            Assert.assertEquals(1, results.size());
+            Assert.assertEquals(CompanyEntity.generateUUID(25052943).toString(), results.get(0).get("UUID").asText());
 
-        testUserDetails.giveAccess(
-                plugin.getAreaRestrictionDefinition().getAreaRestrictionTypeByName(
-                        CvrAreaRestrictionDefinition.RESTRICTIONTYPE_KOMMUNEKODER
-                ).getRestriction(
-                        CvrAreaRestrictionDefinition.RESTRICTION_KOMMUNE_SERMERSOOQ
-                )
-        );
-        this.applyAccess(testUserDetails);
+            testUserDetails.giveAccess(
+                    plugin.getAreaRestrictionDefinition().getAreaRestrictionTypeByName(
+                            CvrAreaRestrictionDefinition.RESTRICTIONTYPE_KOMMUNEKODER
+                    ).getRestriction(
+                            CvrAreaRestrictionDefinition.RESTRICTION_KOMMUNE_SERMERSOOQ
+                    )
+            );
+            this.applyAccess(testUserDetails);
 
-        searchParameters.add("kommunekode", "10*");
-        response = restSearch(searchParameters, "company");
-        Assert.assertEquals(200, response.getStatusCode().value());
-        jsonBody = objectMapper.readTree(response.getBody());
-        results = jsonBody.get("results");
-        Assert.assertTrue(results.isArray());
-        Assert.assertEquals(0, results.size());
-
-
-        testUserDetails.giveAccess(
-                plugin.getAreaRestrictionDefinition().getAreaRestrictionTypeByName(
-                        CvrAreaRestrictionDefinition.RESTRICTIONTYPE_KOMMUNEKODER
-                ).getRestriction(
-                        RESTRICTION_KOMMUNE_TEST
-                )
-        );
-        this.applyAccess(testUserDetails);
-
-        response = restSearch(searchParameters, "company");
-        Assert.assertEquals(200, response.getStatusCode().value());
-        jsonBody = objectMapper.readTree(response.getBody());
-        results = jsonBody.get("results");
-        Assert.assertTrue(results.isArray());
+            searchParameters.add("kommunekode", "10*");
+            response = restSearch(searchParameters, "company");
+            Assert.assertEquals(200, response.getStatusCode().value());
+            jsonBody = objectMapper.readTree(response.getBody());
+            results = jsonBody.get("results");
+            Assert.assertTrue(results.isArray());
+            Assert.assertEquals(0, results.size());
 
 
-        Assert.assertEquals(1, results.size());
-        Assert.assertEquals(CompanyEntity.generateUUID(25052943).toString(), results.get(0).get("UUID").asText());
+            testUserDetails.giveAccess(
+                    plugin.getAreaRestrictionDefinition().getAreaRestrictionTypeByName(
+                            CvrAreaRestrictionDefinition.RESTRICTIONTYPE_KOMMUNEKODER
+                    ).getRestriction(
+                            RESTRICTION_KOMMUNE_TEST
+                    )
+            );
+            this.applyAccess(testUserDetails);
 
+            response = restSearch(searchParameters, "company");
+            Assert.assertEquals(200, response.getStatusCode().value());
+            jsonBody = objectMapper.readTree(response.getBody());
+            results = jsonBody.get("results");
+            Assert.assertTrue(results.isArray());
+
+
+            Assert.assertEquals(1, results.size());
+            Assert.assertEquals(CompanyEntity.generateUUID(25052943).toString(), results.get(0).get("UUID").asText());
+        //} finally {
+        //    transaction.rollback();
+        //    session.close();
+        //}
     }
 
 
@@ -425,18 +466,20 @@ public class QueryTest {
 
     public void testCompanyUnitIdempotence() throws Exception {
         Session session = sessionManager.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
         try {
-            loadUnit();
+            loadUnit(session);
             List<CompanyUnitEntity> entities = QueryManager.getAllEntities(session, CompanyUnitEntity.class);
             Assert.assertFalse(entities.isEmpty());
             JsonNode firstImport = objectMapper.valueToTree(entities);
 
-            loadUnit();
+            loadUnit(session);
             entities = QueryManager.getAllEntities(session, CompanyUnitEntity.class);
             JsonNode secondImport = objectMapper.valueToTree(entities);
 
             assertJsonEquality(firstImport, secondImport, true, true);
         } finally {
+            transaction.rollback();
             session.close();
         }
     }
@@ -445,8 +488,9 @@ public class QueryTest {
     @Test
     public void testCompanyUnitQuery() throws Exception {
         Session session = sessionManager.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
         try {
-            loadUnit();
+            loadUnit(session);
             UUID expectedUUID = UUID.fromString("92ce7d3e-b261-31d6-a401-df408167dd1b");
 
             CompanyUnitEntity companyUnitEntity = QueryManager.getEntity(session, expectedUUID, CompanyUnitEntity.class);
@@ -480,15 +524,22 @@ public class QueryTest {
             Assert.assertEquals(1, entities.size());
 
         } finally {
-            if (session != null) {
-                session.close();
-            }
+            transaction.rollback();
+            session.close();
         }
     }
 
     @Test
     public void testCompanyUnitAccess() throws Exception {
-        loadUnit();
+        Session session = sessionManager.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            loadUnit(session);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        }
         addTestMunicipalityAreaRestriction();
         TestUserDetails testUserDetails = new TestUserDetails();
 
@@ -565,28 +616,30 @@ public class QueryTest {
 
     public void testParticipantIdempotence() throws IOException, DataFordelerException {
         Session session = sessionManager.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
         try {
-            loadParticipant();
+            loadParticipant(session);
 
             List<ParticipantEntity> entities = QueryManager.getAllEntities(session, ParticipantEntity.class);
             JsonNode firstImport = objectMapper.valueToTree(entities);
 
-            loadParticipant();
+            loadParticipant(session);
             entities = QueryManager.getAllEntities(session, ParticipantEntity.class);
             JsonNode secondImport = objectMapper.valueToTree(entities);
 
             assertJsonEquality(firstImport, secondImport, true, true);
         } finally {
+            transaction.rollback();
             session.close();
         }
     }
 
     @Test
     public void testParticipantQuery() throws IOException, DataFordelerException {
-        Session session = null;
+        Session session = sessionManager.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
         try {
-            loadParticipant();
-            session = sessionManager.getSessionFactory().openSession();
+            loadParticipant(session);
 
             ParticipantQuery query = new ParticipantQuery();
             query.setNavne("Morten Kjærsgaard");
@@ -601,7 +654,7 @@ public class QueryTest {
 
             String firstImport = objectMapper.writeValueAsString(wrapped);
 
-            loadParticipant();
+            loadParticipant(session);
             entities = QueryManager.getAllEntities(session, query, ParticipantEntity.class);
             wrapped = participantOutputWrapper.wrapResults(entities);
             String secondImport = objectMapper.writeValueAsString(wrapped);
@@ -619,72 +672,76 @@ public class QueryTest {
             Assert.assertEquals(1, entities.size());
 
         } finally {
-            if (session != null) {
-                session.close();
-            }
+            transaction.rollback();
+            session.close();
         }
     }
 
 
     @Test
     public void testParticipantAccess() throws Exception {
-        loadParticipant();
-        addTestMunicipalityAreaRestriction();
-        TestUserDetails testUserDetails = new TestUserDetails();
+        Session session = sessionManager.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            loadParticipant(session);
+        } finally {
+            transaction.commit();
+        }
+            addTestMunicipalityAreaRestriction();
+            TestUserDetails testUserDetails = new TestUserDetails();
 
-        ParameterMap searchParameters = new ParameterMap();
-        ResponseEntity<String> response;
+            ParameterMap searchParameters = new ParameterMap();
+            ResponseEntity<String> response;
 
-        testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
-        this.applyAccess(testUserDetails);
+            testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
+            this.applyAccess(testUserDetails);
 
-        searchParameters.add("kommunekode", "101");
-        response = restSearch(searchParameters, "participant");
-        Assert.assertEquals(200, response.getStatusCode().value());
-        JsonNode jsonBody = objectMapper.readTree(response.getBody());
-        JsonNode results = jsonBody.get("results");
-        Assert.assertTrue(results.isArray());
-        Assert.assertEquals(1, results.size());
-        Assert.assertEquals(ParticipantEntity.generateUUID("PERSON",4000004988L).toString(), results.get(0).get("UUID").asText());
+            searchParameters.add("kommunekode", "101");
+            response = restSearch(searchParameters, "participant");
+            Assert.assertEquals(200, response.getStatusCode().value());
+            JsonNode jsonBody = objectMapper.readTree(response.getBody());
+            JsonNode results = jsonBody.get("results");
+            Assert.assertTrue(results.isArray());
+            Assert.assertEquals(1, results.size());
+            Assert.assertEquals(ParticipantEntity.generateUUID("PERSON", 4000004988L).toString(), results.get(0).get("UUID").asText());
 
-        testUserDetails.giveAccess(
-                plugin.getAreaRestrictionDefinition().getAreaRestrictionTypeByName(
-                        CvrAreaRestrictionDefinition.RESTRICTIONTYPE_KOMMUNEKODER
-                ).getRestriction(
-                        CvrAreaRestrictionDefinition.RESTRICTION_KOMMUNE_SERMERSOOQ
-                )
-        );
-        this.applyAccess(testUserDetails);
+            testUserDetails.giveAccess(
+                    plugin.getAreaRestrictionDefinition().getAreaRestrictionTypeByName(
+                            CvrAreaRestrictionDefinition.RESTRICTIONTYPE_KOMMUNEKODER
+                    ).getRestriction(
+                            CvrAreaRestrictionDefinition.RESTRICTION_KOMMUNE_SERMERSOOQ
+                    )
+            );
+            this.applyAccess(testUserDetails);
 
-        searchParameters = new ParameterMap();
-        searchParameters.add("kommunekode", "10*");
-        response = restSearch(searchParameters, "participant");
-        Assert.assertEquals(200, response.getStatusCode().value());
-        jsonBody = objectMapper.readTree(response.getBody());
-        results = jsonBody.get("results");
-        Assert.assertTrue(results.isArray());
-        Assert.assertEquals(0, results.size());
-
-
-        testUserDetails.giveAccess(
-                plugin.getAreaRestrictionDefinition().getAreaRestrictionTypeByName(
-                        CvrAreaRestrictionDefinition.RESTRICTIONTYPE_KOMMUNEKODER
-                ).getRestriction(
-                        RESTRICTION_KOMMUNE_TEST
-                )
-        );
-        this.applyAccess(testUserDetails);
-
-        response = restSearch(searchParameters, "participant");
-        Assert.assertEquals(200, response.getStatusCode().value());
-        jsonBody = objectMapper.readTree(response.getBody());
-        results = jsonBody.get("results");
-        Assert.assertTrue(results.isArray());
+            searchParameters = new ParameterMap();
+            searchParameters.add("kommunekode", "10*");
+            response = restSearch(searchParameters, "participant");
+            Assert.assertEquals(200, response.getStatusCode().value());
+            jsonBody = objectMapper.readTree(response.getBody());
+            results = jsonBody.get("results");
+            Assert.assertTrue(results.isArray());
+            Assert.assertEquals(0, results.size());
 
 
-        Assert.assertEquals(1, results.size());
-        Assert.assertEquals(ParticipantEntity.generateUUID("PERSON",4000004988L).toString(), results.get(0).get("UUID").asText());
+            testUserDetails.giveAccess(
+                    plugin.getAreaRestrictionDefinition().getAreaRestrictionTypeByName(
+                            CvrAreaRestrictionDefinition.RESTRICTIONTYPE_KOMMUNEKODER
+                    ).getRestriction(
+                            RESTRICTION_KOMMUNE_TEST
+                    )
+            );
+            this.applyAccess(testUserDetails);
 
+            response = restSearch(searchParameters, "participant");
+            Assert.assertEquals(200, response.getStatusCode().value());
+            jsonBody = objectMapper.readTree(response.getBody());
+            results = jsonBody.get("results");
+            Assert.assertTrue(results.isArray());
+
+
+            Assert.assertEquals(1, results.size());
+            Assert.assertEquals(ParticipantEntity.generateUUID("PERSON", 4000004988L).toString(), results.get(0).get("UUID").asText());
     }
 
 }
