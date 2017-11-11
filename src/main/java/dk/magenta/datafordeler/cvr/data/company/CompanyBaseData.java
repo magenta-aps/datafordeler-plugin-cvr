@@ -449,23 +449,16 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public static final String DB_FIELD_NAME = "companyName";
     public static final String IO_FIELD_NAME = "virksomhedsnavn";
 
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private TextData companyName;
+    @Column(length = 1024, name = DB_FIELD_NAME)
+    private String companyName;
 
     @JsonProperty(value = IO_FIELD_NAME)
     public String getCompanyName() {
-        if (companyName != null) {
-            return companyName.getValue();
-        } else {
-            return null;
-        }
+        return this.companyName;
     }
 
     public void setCompanyName(String name) {
-        if (this.companyName == null) {
-            this.companyName = new TextData(TextData.Type.NAVN);
-        }
-        this.companyName.setValue(name);
+        this.companyName = name;
     }
 
 
@@ -764,7 +757,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
             map.put("secondaryIndustry3", this.secondaryIndustry3.getIndustry());
         }
         if (this.companyName != null) {
-            map.put("virksomhedsnavn", this.companyName.getValue());
+            map.put("virksomhedsnavn", this.companyName);
         }
         if (this.phoneNumber != null) {
             map.put("phoneNumber", this.phoneNumber);
@@ -845,7 +838,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
             lookupDefinition.putAll(DB_FIELD_SECONDARY_INDUSTRY_3, this.secondaryIndustry3.databaseFields());
         }
         if (this.companyName != null) {
-            lookupDefinition.putAll(DB_FIELD_NAME, this.companyName.databaseFields());
+            lookupDefinition.put(DB_FIELD_NAME, this.companyName);
         }
         if (this.phoneNumber != null) {
             lookupDefinition.putAll(DB_FIELD_PHONENUMBER, this.phoneNumber.databaseFields());

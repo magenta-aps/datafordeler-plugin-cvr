@@ -218,7 +218,7 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
             lookupDefinition.put(CompanyBaseData.DB_FIELD_ADVERTPROTECTION + LookupDefinition.separator + BooleanData.DB_FIELD_VALUE, this.reklamebeskyttelse, Boolean.class);
         }
         if (this.virksomhedsnavn != null) {
-            lookupDefinition.put(CompanyBaseData.DB_FIELD_NAME + LookupDefinition.separator + TextData.DB_FIELD_VALUE, this.virksomhedsnavn, String.class);
+            lookupDefinition.put(CompanyBaseData.DB_FIELD_NAME, this.virksomhedsnavn, String.class);
         }
         if (this.telefonnummer != null) {
             lookupDefinition.put(CompanyBaseData.DB_FIELD_PHONENUMBER + LookupDefinition.separator + ContactData.DB_FIELD_VALUE, this.telefonnummer, String.class);

@@ -181,9 +181,10 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         long count = 0;
         while (scanner.hasNext()) {
             try {
-                this.parseRegistration(this.getObjectMapper().readTree(scanner.next()), importMetadata);
+                String data = scanner.next();
+                this.parseRegistration(this.getObjectMapper().readTree(data), importMetadata);
+                this.log.info("chunk "+count);
                 count++;
-                System.out.println("Count: "+count);
             } catch (IOException e) {
                 throw new DataStreamException(e);
             }
@@ -224,11 +225,9 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         timer.reset(TASK_SAVE);*/
         ArrayList<Registration> registrations = new ArrayList<>();
         Session session = importMetadata.getSession();
-        Transaction transaction = null;
         if (session == null) {
-            System.out.println("starting session");
             session = this.getSessionManager().getSessionFactory().openSession();
-            transaction = session.beginTransaction();
+            session.beginTransaction();
         } else {
             //System.out.println("session already exists");
         }
@@ -248,12 +247,8 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
                 for (JsonNode item : jsonNode) {
                     registrations.addAll(this.parseRegistration(item, importMetadata));
+                    session.flush();
                     session.clear();
-                }
-                if (transaction != null) {
-                    transaction.commit();
-                    session.close();
-                    System.out.println("ending session");
                 }
                 log.info(timer.formatAllTotal());
 
