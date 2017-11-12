@@ -30,7 +30,7 @@ public class Industry extends UnversionedEntity {
 
     @JsonProperty(value = IO_FIELD_CODE)
     @XmlElement(name = IO_FIELD_CODE)
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = false)
     private String industryCode;
 
     public String getIndustryCode() {
@@ -75,6 +75,8 @@ public class Industry extends UnversionedEntity {
                     industry.setIndustryText(branchetekst);
                 }
                 industryCache.put(branchekode, industry);
+            } else {
+                industry = (Industry) session.merge(industry);
             }
             return industry;
         } else {

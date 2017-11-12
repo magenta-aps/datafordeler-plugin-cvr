@@ -28,7 +28,7 @@ public class PostCode extends UnversionedEntity {
 
     @JsonProperty(value = IO_FIELD_CODE)
     @XmlElement(name = IO_FIELD_CODE)
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = false, name = DB_FIELD_CODE)
     private int postCode;
 
     public int getPostCode() {
@@ -70,8 +70,11 @@ public class PostCode extends UnversionedEntity {
                     post = new PostCode();
                     post.setPostCode(postCode);
                     post.setPostDistrict(postDistrict);
+                    session.save(post);
                 }
                 postCodeCache.put(postCode, post);
+            } else {
+                post = (PostCode) session.merge(post);
             }
             return post;
         } else {

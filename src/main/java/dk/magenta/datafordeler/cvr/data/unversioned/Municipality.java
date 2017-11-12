@@ -30,7 +30,7 @@ public class Municipality extends UnversionedEntity {
 
     @JsonProperty(value = IO_FIELD_CODE)
     @XmlElement(name = IO_FIELD_CODE)
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = false)
     private int code;
 
     public int getCode() {
@@ -74,6 +74,8 @@ public class Municipality extends UnversionedEntity {
                     municipality.setName(name);
                 }
                 municipalityCache.put(code, municipality);
+            } else {
+                municipality = (Municipality) session.merge(municipality);
             }
             return municipality;
         } else {
