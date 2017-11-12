@@ -65,7 +65,7 @@ public class PostCode extends UnversionedEntity {
         if (postCode > 0) {
             PostCode post = postCodeCache.get(postCode);
             if (post == null) {
-                QueryManager.getItem(session, PostCode.class, Collections.singletonMap(DB_FIELD_CODE, postCode));
+                post = QueryManager.getItem(session, PostCode.class, Collections.singletonMap(DB_FIELD_CODE, postCode));
                 if (post == null) {
                     post = new PostCode();
                     post.setPostCode(postCode);
