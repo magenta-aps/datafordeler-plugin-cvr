@@ -102,6 +102,10 @@ public class CompanyForm extends UnversionedEntity {
 
     private static HashMap<String, CompanyForm> formCache = new HashMap<>();
 
+    static {
+        QueryManager.addCache(formCache);
+    }
+
     public static CompanyForm getForm(String companyFormCode, String shortDescription, String longDescription, String responsibleDataSource, Session session) {
         if (companyFormCode != null) {
             CompanyForm form = formCache.get(companyFormCode);

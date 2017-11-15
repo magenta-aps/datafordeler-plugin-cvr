@@ -61,6 +61,10 @@ public class PostCode extends UnversionedEntity {
 
     private static HashMap<Integer, PostCode> postCodeCache = new HashMap<>();
 
+    static {
+        QueryManager.addCache(postCodeCache);
+    }
+
     public static PostCode getPostcode(int postCode, String postDistrict, Session session) {
         if (postCode > 0) {
             PostCode post = postCodeCache.get(postCode);

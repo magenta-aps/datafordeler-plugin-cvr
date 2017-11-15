@@ -63,6 +63,10 @@ public class Municipality extends UnversionedEntity {
 
     private static HashMap<Integer, Municipality> municipalityCache = new HashMap<>();
 
+    static {
+        QueryManager.addCache(municipalityCache);
+    }
+
     public static Municipality getMunicipality(int code, String name, Session session) {
         if (code > 0) {
             Municipality municipality = municipalityCache.get(code);
