@@ -18,6 +18,7 @@ import dk.magenta.datafordeler.core.util.ItemInputStream;
 import dk.magenta.datafordeler.core.util.ListHashMap;
 import dk.magenta.datafordeler.core.util.Stopwatch;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
+import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 import dk.magenta.datafordeler.cvr.records.CvrBaseRecord;
 import dk.magenta.datafordeler.cvr.records.CvrEntityRecord;
 import org.apache.logging.log4j.LogManager;
@@ -177,6 +178,10 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         } catch (IOException e) {
             e.printStackTrace();
 */
+        if (importMetadata.getSession() != null) {
+            Industry.prepopulateIndustryCache(importMetadata.getSession());
+        }
+
         Scanner scanner = new Scanner(registrationData, "UTF-8").useDelimiter(String.valueOf(this.commonFetcher.delimiter));
         long count = 0;
         while (scanner.hasNext()) {
@@ -251,10 +256,16 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                 //int i = 0;
                 for (JsonNode item : jsonNode) {
                     //System.out.println("Handling node "+i);
-                    registrations.addAll(this.parseRegistration(item, importMetadata));
+                    //registrations.addAll(
+                            this.parseRegistration(item, importMetadata);
+                    //);
                     //System.out.println("    flushing "+i);
                     //System.out.println("    clearing "+i);
                     //i++;
+
+                    session.flush();
+                    session.clear();
+
                 }
                 session.flush();
                 session.getTransaction().commit();
@@ -302,9 +313,9 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         //E entity = QueryManager.getEntity(session, uuid, this.getEntityClass());
         E entity = null;
         String domain = CvrPlugin.getDomain();
-        if (QueryManager.hasIdentification(uuid, domain)) {
-            entity = QueryManager.getEntity(session, uuid, this.getEntityClass());
-        }
+//        if (QueryManager.hasIdentification(uuid, domain)) {
+//            entity = QueryManager.getEntity(session, uuid, this.getEntityClass());
+//        }
         if (entity == null) {
             log.debug("Creating new Entity");
             entity = this.createBasicEntity(toplevelRecord);
@@ -327,7 +338,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             System.gc();
         }*/
 
-        registrations.addAll(entityRegistrations);
+        //registrations.addAll(entityRegistrations);
 
 
 //        log.info(timer.formatTotal(TASK_PARSE));
@@ -403,15 +414,16 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             //timer.measure(TASK_POPULATE_DATA);
         }
         timer.start(TASK_SAVE);
-        ArrayList<R> registrationList = new ArrayList<>(entityRegistrations);
-        Collections.sort(registrationList);
-        for (R registration : registrationList) {
+        //ArrayList<R> registrationList = new ArrayList<>(entityRegistrations);
+        //Collections.sort(registrationList);
+        for (R registration : entityRegistrations) {
             registration.setLastImportTime(importMetadata.getImportTime());
             session.saveOrUpdate(registration);
         }
         session.saveOrUpdate(entity);
         timer.measure(TASK_SAVE);
-        return registrationList;
+        //return registrationList;
+        return entityRegistrations;
     }
 
 

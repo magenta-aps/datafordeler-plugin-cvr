@@ -6,6 +6,7 @@ import dk.magenta.datafordeler.cvr.data.shared.IndustryData;
 import org.hibernate.Session;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Collections;
 import java.util.HashMap;
@@ -68,11 +69,23 @@ public class Industry extends UnversionedEntity {
         QueryManager.addCache(industryCache);
     }
 
+    private static boolean prepopulated = false;
+
+    public static void prepopulateIndustryCache(Session session) {
+        List<Industry> industries = QueryManager.getAllItems(session, Industry.class);
+        for (Industry industry : industries) {
+            industryCache.put(industry.industryCode, industry);
+        }
+        prepopulated = true;
+    }
+
     public static Industry getIndustry(String branchekode, String branchetekst, Session session) {
         if (branchekode != null) {
             Industry industry = industryCache.get(branchekode);
             if (industry == null) {
-                industry = QueryManager.getItem(session, Industry.class, Collections.singletonMap(DB_FIELD_CODE, branchekode));
+                if (!prepopulated) {
+                    industry = QueryManager.getItem(session, Industry.class, Collections.singletonMap(DB_FIELD_CODE, branchekode));
+                }
                 if (industry == null) {
                     industry = new Industry();
                     industry.setIndustryCode(branchekode);
