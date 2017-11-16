@@ -80,7 +80,7 @@ public class Industry extends UnversionedEntity {
                 }
                 industryCache.put(branchekode, industry);
             } else {
-                industry = (Industry) session.merge(industry);
+                //industry = (Industry) session.merge(industry);
             }
             return industry;
         } else {

@@ -79,13 +79,7 @@ public class CvrRegisterManager extends RegisterManager {
 
     @Override
     public URI getBaseEndpoint() {
-        CvrConfiguration configuration = configurationManager.getConfiguration();
-        try {
-            return new URI(configuration.getRegisterAddress());
-        } catch (URISyntaxException e) {
-            this.log.error(e);
-            return null;
-        }
+        return null;
     }
 
     @Override

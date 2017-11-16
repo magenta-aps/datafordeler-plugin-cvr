@@ -66,8 +66,8 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
     @Override
     public void setRegisterManager(RegisterManager registerManager) {
         super.setRegisterManager(registerManager);
-        this.handledURISubstrings.add(expandBaseURI(this.getBaseEndpoint(), "/" + this.getBaseName(), null, null).toString());
-        this.handledURISubstrings.add(expandBaseURI(this.getBaseEndpoint(), "/get/" + this.getBaseName(), null, null).toString());
+        //this.handledURISubstrings.add(expandBaseURI(this.getBaseEndpoint(), "/" + this.getBaseName(), null, null).toString());
+        //this.handledURISubstrings.add(expandBaseURI(this.getBaseEndpoint(), "/get/" + this.getBaseName(), null, null).toString());
     }
 
     /**
@@ -143,7 +143,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         if (reference.getURI() != null) {
             return reference.getURI();
         }
-        return EntityManager.expandBaseURI(this.getBaseEndpoint(), "/get/"+this.getBaseName()+"/"+reference.getChecksum());
+        return null;
     }
 
     @Override
@@ -180,6 +180,9 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         Scanner scanner = new Scanner(registrationData, "UTF-8").useDelimiter(String.valueOf(this.commonFetcher.delimiter));
         long count = 0;
         while (scanner.hasNext()) {
+            boolean inter = Thread.currentThread().isInterrupted();
+            System.out.println("running thread id: "+Thread.currentThread().getId());
+            if (inter) break;
             try {
                 String data = scanner.next();
                 this.parseRegistration(this.getObjectMapper().readTree(data), importMetadata);
@@ -245,11 +248,18 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                 System.out.println("Node contains "+jsonNode.size()+" subnodes");
                 // We have a list of results
 
+                //int i = 0;
                 for (JsonNode item : jsonNode) {
+                    //System.out.println("Handling node "+i);
                     registrations.addAll(this.parseRegistration(item, importMetadata));
-                    session.flush();
-                    session.clear();
+                    //System.out.println("    flushing "+i);
+                    //System.out.println("    clearing "+i);
+                    //i++;
                 }
+                session.flush();
+                session.getTransaction().commit();
+                session.beginTransaction();
+                session.clear();
                 log.info(timer.formatAllTotal());
 
                 return registrations;
@@ -289,7 +299,12 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
         timer.start(TASK_FIND_ENTITY);
         UUID uuid = this.generateUUID(toplevelRecord);
-        E entity = QueryManager.getEntity(session, uuid, this.getEntityClass());
+        //E entity = QueryManager.getEntity(session, uuid, this.getEntityClass());
+        E entity = null;
+        String domain = CvrPlugin.getDomain();
+        if (QueryManager.hasIdentification(uuid, domain)) {
+            entity = QueryManager.getEntity(session, uuid, this.getEntityClass());
+        }
         if (entity == null) {
             log.debug("Creating new Entity");
             entity = this.createBasicEntity(toplevelRecord);

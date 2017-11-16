@@ -40,11 +40,6 @@ public class CvrConfiguration implements Configuration {
     private String pullCronSchedule = null;//"0 0 0 1 1 ?";
 
     @Column
-    private String registerAddress = "http://distribution.virk.dk";
-
-
-
-    @Column
     @Enumerated(EnumType.ORDINAL)
     private RegisterType companyRegisterType = RegisterType.REMOTE_HTTP;
 
@@ -229,10 +224,6 @@ public class CvrConfiguration implements Configuration {
 
     public String getPullCronSchedule() {
         return this.pullCronSchedule;
-    }
-
-    public String getRegisterAddress() {
-        return this.registerAddress;
     }
 
 
