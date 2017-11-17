@@ -87,7 +87,7 @@ public class QueryTest {
         JsonNode itemList = root.get("hits").get("hits");
         Assert.assertTrue(itemList.isArray());
         for (JsonNode item : itemList) {
-            companyEntityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"), importMetadata);
+            companyEntityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"), importMetadata, session);
         }
     }
 
@@ -99,7 +99,7 @@ public class QueryTest {
         JsonNode itemList = root.get("hits").get("hits");
         Assert.assertTrue(itemList.isArray());
         for (JsonNode item : itemList) {
-            companyUnitEntityManager.parseRegistration(item.get("_source").get("VrproduktionsEnhed"), importMetadata);
+            companyUnitEntityManager.parseRegistration(item.get("_source").get("VrproduktionsEnhed"), importMetadata, session);
         }
     }
 
@@ -111,7 +111,7 @@ public class QueryTest {
         JsonNode itemList = root.get("hits").get("hits");
         Assert.assertTrue(itemList.isArray());
         for (JsonNode item : itemList) {
-            participantEntityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson"), importMetadata);
+            participantEntityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson"), importMetadata, session);
         }
     }
 

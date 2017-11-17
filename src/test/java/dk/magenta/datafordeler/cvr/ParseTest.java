@@ -68,7 +68,7 @@ public class ParseTest {
             for (JsonNode item : itemList) {
                 String type = item.get("_type").asText();
                 CompanyEntityManager entityManager = (CompanyEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-                List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"), importMetadata);
+                List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"), importMetadata, session);
                 System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations.get(0).getEntity()));
 
                 Collections.sort(registrations);
@@ -96,7 +96,7 @@ public class ParseTest {
             for (JsonNode item : itemList) {
                 String type = item.get("_type").asText();
                 CompanyUnitEntityManager entityManager = (CompanyUnitEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-                List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("VrproduktionsEnhed"), importMetadata);
+                List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("VrproduktionsEnhed"), importMetadata, session);
                 System.out.println("registrations.size: " + registrations.size());
                 System.out.println(objectMapper.writeValueAsString(registrations));
             }
@@ -121,7 +121,7 @@ public class ParseTest {
             for (JsonNode item : itemList) {
                 String type = item.get("_type").asText();
                 ParticipantEntityManager entityManager = (ParticipantEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-                List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson"), importMetadata);
+                List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson"), importMetadata, session);
                 System.out.println("registrations.size: " + registrations.size());
                 System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations));
                 Assert.assertEquals(4, registrations.size());

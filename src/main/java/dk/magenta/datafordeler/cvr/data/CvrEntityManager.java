@@ -27,7 +27,8 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.*;
@@ -44,6 +45,14 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
     @Autowired
     private Stopwatch timer;
+
+    private static final String TASK_PARSE = "CvrParse";
+    private static final String TASK_FIND_ENTITY = "CvrFindEntity";
+    private static final String TASK_FIND_REGISTRATIONS = "CvrFindRegistrations";
+    private static final String TASK_FIND_ITEMS = "CvrFindItems";
+    private static final String TASK_POPULATE_DATA = "CvrPopulateData";
+    private static final String TASK_SAVE = "CvrSave";
+    private static final String TASK_COMMIT = "Transaction commit";
 
     private ScanScrollCommunicator commonFetcher;
 
@@ -180,8 +189,21 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             if (inter) break;
             try {
                 String data = scanner.next();
-                this.parseRegistration(this.getObjectMapper().readTree(data), importMetadata);
-                this.log.info("chunk "+count);
+
+                if (session == null) {
+                    session = this.getSessionManager().getSessionFactory().openSession();
+                }
+                session.beginTransaction();
+
+                this.parseRegistration(this.getObjectMapper().readTree(data), importMetadata, session);
+
+                timer.start(TASK_COMMIT);
+                session.flush();
+                session.clear();
+                session.getTransaction().commit();
+                timer.measure(TASK_COMMIT);
+                log.info("Chunk "+count+":\n"+timer.formatAllTotal());
+
                 count++;
             } catch (IOException e) {
                 throw new DataStreamException(e);
@@ -198,14 +220,6 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
     protected abstract E createBasicEntity(T record);
     protected abstract D createDataItem();
 
-
-    private static final String TASK_PARSE = "CvrParse";
-    private static final String TASK_FIND_ENTITY = "CvrFindEntity";
-    private static final String TASK_FIND_REGISTRATIONS = "CvrFindRegistrations";
-    private static final String TASK_FIND_ITEMS = "CvrFindItems";
-    private static final String TASK_POPULATE_DATA = "CvrPopulateData";
-    private static final String ADD_RECORD_DATA = "CvrAddRecordData";
-    private static final String TASK_SAVE = "CvrSave";
     /**
      * Parse an incoming JsonNode into registrations (and save them)
      * Must be idempotent: Running a second time with the same input should not result in new data
@@ -213,17 +227,9 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
      * @return A list of registrations that have been saved to the database
      * @throws ParseException
      */
-    public List<? extends Registration> parseRegistration(JsonNode jsonNode, ImportMetadata importMetadata) throws DataFordelerException {
+    public List<? extends Registration> parseRegistration(JsonNode jsonNode, ImportMetadata importMetadata, Session session) throws DataFordelerException {
 
         ArrayList<Registration> registrations = new ArrayList<>();
-        Session session = importMetadata.getSession();
-        if (session == null) {
-            session = this.getSessionManager().getSessionFactory().openSession();
-            session.beginTransaction();
-        } else {
-            //System.out.println("session already exists");
-        }
-
 
         if (jsonNode.has("hits")) {
             jsonNode = jsonNode.get("hits");
@@ -236,21 +242,18 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                 }
                 log.info("Node contains "+jsonNode.size()+" subnodes");
                 // We have a list of results
-                session.beginTransaction();
 
                 for (JsonNode item : jsonNode) {
                     //registrations.addAll(this.parseRegistration(item, importMetadata));
-                    this.parseRegistration(item, importMetadata);
+                    this.parseRegistration(item, importMetadata, session);
                 }
-                session.flush();
-                session.clear();
-                session.getTransaction().commit();
-                log.info(timer.formatAllTotal());
 
                 return registrations;
             }
         }
 
+
+        timer.start(TASK_PARSE);
         if (jsonNode.has("_source")) {
             jsonNode = jsonNode.get("_source");
         }
@@ -258,10 +261,6 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         if (jsonNode.has(jsonTypeName)) {
             jsonNode = jsonNode.get(jsonTypeName);
         }
-
-
-
-        timer.start(TASK_PARSE);
         T toplevelRecord;
         try {
             toplevelRecord = getObjectMapper().treeToValue(jsonNode, this.getRecordClass());
