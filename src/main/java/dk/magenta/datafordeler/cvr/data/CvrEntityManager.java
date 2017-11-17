@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.magenta.datafordeler.core.database.*;
-import dk.magenta.datafordeler.core.exception.DataFordelerException;
-import dk.magenta.datafordeler.core.exception.DataStreamException;
-import dk.magenta.datafordeler.core.exception.ParseException;
-import dk.magenta.datafordeler.core.exception.WrongSubclassException;
+import dk.magenta.datafordeler.core.exception.*;
 import dk.magenta.datafordeler.core.io.ImportMetadata;
 import dk.magenta.datafordeler.core.io.Receipt;
 import dk.magenta.datafordeler.core.plugin.Communicator;
@@ -194,9 +191,14 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                     session = this.getSessionManager().getSessionFactory().openSession();
                 }
                 session.beginTransaction();
-
-                this.parseRegistration(this.getObjectMapper().readTree(data), importMetadata, session);
-
+                try {
+                    this.parseRegistration(this.getObjectMapper().readTree(data), importMetadata, session);
+                } catch (ImportInterruptedException e) {
+                    session.getTransaction().rollback();
+                    session.flush();
+                    session.clear();
+                    throw e;
+                }
                 timer.start(TASK_COMMIT);
                 session.flush();
                 session.clear();
@@ -252,6 +254,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             }
         }
 
+        this.checkInterrupt();
 
         timer.start(TASK_PARSE);
         if (jsonNode.has("_source")) {
@@ -270,6 +273,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         }
         timer.measure(TASK_PARSE);
 
+        this.checkInterrupt();
 
         timer.start(TASK_FIND_ENTITY);
         UUID uuid = this.generateUUID(toplevelRecord);
@@ -293,9 +297,13 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         timer.measure(TASK_FIND_ENTITY);
 
 
+        this.checkInterrupt();
+
         this.parseRegistration(entity, toplevelRecord.getAll(), session, importMetadata);
         //Collection<R> entityRegistrations = this.parseRegistration(entity, toplevelRecord.getAll(), session, importMetadata);
         //registrations.addAll(entityRegistrations);
+
+        this.checkInterrupt();
 
         return registrations;
     }
@@ -390,5 +398,11 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
     @Override
     public boolean handlesOwnSaves() {
         return true;
+    }
+
+    private void checkInterrupt() throws ImportInterruptedException {
+        if (Thread.interrupted()) {
+            throw new ImportInterruptedException(new InterruptedException());
+        }
     }
 }
