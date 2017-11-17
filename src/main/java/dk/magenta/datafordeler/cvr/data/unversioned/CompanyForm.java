@@ -2,6 +2,8 @@ package dk.magenta.datafordeler.cvr.data.unversioned;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
 import javax.persistence.Column;
@@ -11,6 +13,7 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import static dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm.DB_FIELD_CODE;
 
@@ -23,8 +26,7 @@ import static dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm.DB_FIELD_
 })
 public class CompanyForm extends UnversionedEntity {
 
-    public CompanyForm() {
-    }
+    private static Logger log = LogManager.getLogger(CompanyForm.class.getSimpleName());
 
     //----------------------------------------------------
 
@@ -106,12 +108,29 @@ public class CompanyForm extends UnversionedEntity {
         QueryManager.addCache(formCache);
     }
 
+    private static boolean prepopulated = false;
+
+    public static void prepopulateCache(Session session) {
+        log.debug("Prepopulating form cache");
+        List<CompanyForm> forms = QueryManager.getAllItems(session, CompanyForm.class);
+        for (CompanyForm companyForm : forms) {
+            formCache.put(companyForm.companyFormCode, companyForm);
+        }
+        log.debug("companyFormCache contains "+formCache.size()+" nodes");
+        prepopulated = true;
+    }
+
     public static CompanyForm getForm(String companyFormCode, String shortDescription, String longDescription, String responsibleDataSource, Session session) {
         if (companyFormCode != null) {
             CompanyForm form = formCache.get(companyFormCode);
             if (form == null) {
-                form = QueryManager.getItem(session, CompanyForm.class, Collections.singletonMap(DB_FIELD_CODE, companyFormCode));
+                log.debug("Form code "+companyFormCode+" not found in cache");
+                if (!prepopulated) {
+                    log.debug("Querying database");
+                    form = QueryManager.getItem(session, CompanyForm.class, Collections.singletonMap(DB_FIELD_CODE, companyFormCode));
+                }
                 if (form == null) {
+                    log.debug("Not found; creating new");
                     form = new CompanyForm();
                     form.setCompanyFormCode(companyFormCode);
                     form.setShortDescription(shortDescription);
@@ -120,6 +139,8 @@ public class CompanyForm extends UnversionedEntity {
                     session.save(form);
                 }
                 formCache.put(companyFormCode, form);
+            } else {
+                log.debug("Form "+companyFormCode+" found in cache ("+form.getId()+")");
             }
             return form;
         } else {

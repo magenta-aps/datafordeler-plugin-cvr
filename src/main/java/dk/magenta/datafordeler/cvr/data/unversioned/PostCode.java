@@ -2,6 +2,8 @@ package dk.magenta.datafordeler.cvr.data.unversioned;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
 import javax.persistence.Column;
@@ -11,6 +13,7 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import static dk.magenta.datafordeler.cvr.data.unversioned.PostCode.DB_FIELD_CODE;
 
@@ -22,6 +25,8 @@ import static dk.magenta.datafordeler.cvr.data.unversioned.PostCode.DB_FIELD_COD
         @Index(name = "companyPostalCode", columnList = DB_FIELD_CODE)
 })
 public class PostCode extends UnversionedEntity {
+
+    private static Logger log = LogManager.getLogger(PostCode.class.getSimpleName());
 
     public static final String DB_FIELD_CODE = "postCode";
     public static final String IO_FIELD_CODE = "postnummer";
@@ -65,12 +70,29 @@ public class PostCode extends UnversionedEntity {
         QueryManager.addCache(postCodeCache);
     }
 
+    private static boolean prepopulated = false;
+
+    public static void prepopulateCache(Session session) {
+        log.debug("Prepopulating postcode cache");
+        List<PostCode> postCodes = QueryManager.getAllItems(session, PostCode.class);
+        for (PostCode postCode : postCodes) {
+            postCodeCache.put(postCode.postCode, postCode);
+        }
+        log.debug("postcodeCache contains "+postCodeCache.size()+" nodes");
+        prepopulated = true;
+    }
+
     public static PostCode getPostcode(int postCode, String postDistrict, Session session) {
         if (postCode > 0) {
             PostCode post = postCodeCache.get(postCode);
             if (post == null) {
-                post = QueryManager.getItem(session, PostCode.class, Collections.singletonMap(DB_FIELD_CODE, postCode));
+                log.debug("Postcode "+postCode+" not found in cache");
+                if (!prepopulated) {
+                    log.debug("Querying database");
+                    post = QueryManager.getItem(session, PostCode.class, Collections.singletonMap(DB_FIELD_CODE, postCode));
+                }
                 if (post == null) {
+                    log.debug("Not found; creating new");
                     post = new PostCode();
                     post.setPostCode(postCode);
                     post.setPostDistrict(postDistrict);
@@ -78,7 +100,7 @@ public class PostCode extends UnversionedEntity {
                 }
                 postCodeCache.put(postCode, post);
             } else {
-                post = (PostCode) session.merge(post);
+                log.debug("PostCode "+postCode+" found in cache ("+post.getId()+")");
             }
             return post;
         } else {

@@ -18,14 +18,12 @@ import dk.magenta.datafordeler.core.util.ItemInputStream;
 import dk.magenta.datafordeler.core.util.ListHashMap;
 import dk.magenta.datafordeler.core.util.Stopwatch;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
-import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
+import dk.magenta.datafordeler.cvr.data.unversioned.*;
 import dk.magenta.datafordeler.cvr.records.CvrBaseRecord;
 import dk.magenta.datafordeler.cvr.records.CvrEntityRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.internal.SessionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -164,22 +162,14 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
     @Override
     public List<? extends Registration> parseRegistration(InputStream registrationData, ImportMetadata importMetadata) throws DataFordelerException {
-/*
-        BufferedReader responseReader = null;
-        try {
-            responseReader = new BufferedReader(new InputStreamReader(registrationData, "UTF-8"));
-            String line;
-            while ((line = responseReader.readLine()) != null) {
-                log.info("reading line");
-                this.parseRegistration(this.objectMapper.readTree(line), importMetadata);
-            }
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-*/
-        if (importMetadata.getSession() != null) {
-            Industry.prepopulateIndustryCache(importMetadata.getSession());
+
+        Session session = importMetadata.getSession();
+        if (session != null) {
+            Industry.prepopulateCache(session);
+            CompanyForm.prepopulateCache(session);
+            CompanyStatus.prepopulateCache(session);
+            Municipality.prepopulateCache(session);
+            PostCode.prepopulateCache(session);
         }
 
         Scanner scanner = new Scanner(registrationData, "UTF-8").useDelimiter(String.valueOf(this.commonFetcher.delimiter));
@@ -225,12 +215,6 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
      */
     public List<? extends Registration> parseRegistration(JsonNode jsonNode, ImportMetadata importMetadata) throws DataFordelerException {
 
-        /*timer.reset(TASK_PARSE);
-        timer.reset(TASK_FIND_ENTITY);
-        timer.reset(TASK_FIND_REGISTRATIONS);
-        timer.reset(TASK_FIND_ITEMS);
-        timer.reset(TASK_POPULATE_DATA);
-        timer.reset(TASK_SAVE);*/
         ArrayList<Registration> registrations = new ArrayList<>();
         Session session = importMetadata.getSession();
         if (session == null) {
@@ -250,42 +234,22 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                 if (jsonNode.size() == 0) {
                     throw new DataStreamException("No input data");
                 }
-                System.out.println("Node contains "+jsonNode.size()+" subnodes");
+                log.info("Node contains "+jsonNode.size()+" subnodes");
                 // We have a list of results
+                session.beginTransaction();
 
-                //int i = 0;
                 for (JsonNode item : jsonNode) {
-                    //System.out.println("Handling node "+i);
-                    //registrations.addAll(
-                            this.parseRegistration(item, importMetadata);
-                    //);
-                    //System.out.println("    flushing "+i);
-                    //System.out.println("    clearing "+i);
-                    //i++;
-
-                    session.flush();
-                    session.clear();
-
+                    //registrations.addAll(this.parseRegistration(item, importMetadata));
+                    this.parseRegistration(item, importMetadata);
                 }
                 session.flush();
-                session.getTransaction().commit();
-                session.beginTransaction();
                 session.clear();
+                session.getTransaction().commit();
                 log.info(timer.formatAllTotal());
 
                 return registrations;
             }
         }
-
-        /*String type = jsonNode.has("_type") ? jsonNode.get("_type").asText() : null;
-        if (type != null && !type.equals(this.getSchema())) {
-            // Wrong type. See if we have another EntityManager that can handle it
-            CvrEntityManager otherManager = (CvrEntityManager) this.getRegisterManager().getEntityManager(type);
-            if (otherManager != null) {
-                return otherManager.parseRegistration(jsonNode, importMetadata);
-            }
-            return null;
-        }*/
 
         if (jsonNode.has("_source")) {
             jsonNode = jsonNode.get("_source");
@@ -310,43 +274,29 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
         timer.start(TASK_FIND_ENTITY);
         UUID uuid = this.generateUUID(toplevelRecord);
-        //E entity = QueryManager.getEntity(session, uuid, this.getEntityClass());
         E entity = null;
         String domain = CvrPlugin.getDomain();
-//        if (QueryManager.hasIdentification(uuid, domain)) {
-//            entity = QueryManager.getEntity(session, uuid, this.getEntityClass());
-//        }
+        if (QueryManager.hasIdentification(uuid, domain)) {
+            entity = QueryManager.getEntity(session, uuid, this.getEntityClass());
+        }
+        //if (entity == null) {
+        //    entity = QueryManager.getEntity(session, uuid, this.getEntityClass());
+        //}
         if (entity == null) {
             log.debug("Creating new Entity");
             entity = this.createBasicEntity(toplevelRecord);
             entity.setIdentifikation(
-                    QueryManager.getOrCreateIdentification(session, uuid, CvrPlugin.getDomain())
+                    QueryManager.getOrCreateIdentification(session, uuid, domain)
             );
         } else {
             log.debug("Using existing entity");
         }
         timer.measure(TASK_FIND_ENTITY);
 
-        Collection<R> entityRegistrations = this.parseRegistration(entity, toplevelRecord.getAll(), session, importMetadata);
 
-        // log.info("Entity " + entity.getUUID() + " now has " + entity.getRegistrations().size() + " registrations");
-        /*if (transaction != null) {
-            transaction.commit();
-            session.close();
-            System.out.println("ending session");
-            System.out.println(timer.formatAllTotal());
-            System.gc();
-        }*/
-
+        this.parseRegistration(entity, toplevelRecord.getAll(), session, importMetadata);
+        //Collection<R> entityRegistrations = this.parseRegistration(entity, toplevelRecord.getAll(), session, importMetadata);
         //registrations.addAll(entityRegistrations);
-
-
-//        log.info(timer.formatTotal(TASK_PARSE));
-//        log.info(timer.formatTotal(TASK_FIND_ENTITY));
-//        log.info(timer.formatTotal(TASK_FIND_REGISTRATIONS));
-//        log.info(timer.formatTotal(TASK_FIND_ITEMS));
-//        log.info(timer.formatTotal(TASK_POPULATE_DATA));
-//        log.info(timer.formatTotal(TASK_SAVE));
 
         return registrations;
     }
