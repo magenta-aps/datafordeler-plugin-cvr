@@ -13,6 +13,10 @@ public class CompanyStatusRecord extends CvrBaseRecord {
     @JsonProperty(value = "status")
     private String status;
 
+    public String getStatus() {
+        return this.status;
+    }
+
     @Override
     public void populateBaseData(CompanyBaseData baseData, Session session) {
         baseData.setStatus(CompanyStatus.getStatus(this.status, session));

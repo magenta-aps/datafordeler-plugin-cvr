@@ -24,8 +24,16 @@ public class AddressRecord extends CvrBaseRecord {
     @JsonUnwrapped
     private Address address;
 
+    public Address getAddress() {
+        return this.address;
+    }
+
     @JsonIgnore
     private Type type;
+
+    public Type getType() {
+        return this.type;
+    }
 
     public void setType(Type type) {
         this.type = type;

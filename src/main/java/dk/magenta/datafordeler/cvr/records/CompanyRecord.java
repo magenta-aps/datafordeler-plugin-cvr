@@ -36,6 +36,10 @@ public class CompanyRecord extends CvrEntityRecord {
     @JsonProperty(value = "navne")
     private List<NameRecord> names;
 
+    public List<NameRecord> getNames() {
+        return this.names;
+    }
+
     @JsonProperty(value = "beliggenhedsadresse")
     private List<AddressRecord> locationAddress;
 
@@ -46,6 +50,10 @@ public class CompanyRecord extends CvrEntityRecord {
         this.locationAddress = locationAddress;
     }
 
+    public List<AddressRecord> getLocationAddress() {
+        return this.locationAddress;
+    }
+
     @JsonProperty(value = "postadresse")
     private List<AddressRecord> postalAddress;
 
@@ -54,6 +62,10 @@ public class CompanyRecord extends CvrEntityRecord {
             record.setType(AddressRecord.Type.POSTAL);
         }
         this.postalAddress = postalAddress;
+    }
+
+    public List<AddressRecord> getPostalAddress() {
+        return this.postalAddress;
     }
 
     @JsonProperty(value = "telefonNummer")
@@ -120,6 +132,10 @@ public class CompanyRecord extends CvrEntityRecord {
         this.primaryIndustry = primaryIndustry;
     }
 
+    public List<CompanyIndustryRecord> getPrimaryIndustry() {
+        return this.primaryIndustry;
+    }
+
     @JsonProperty(value = "bibranche1")
     private List<CompanyIndustryRecord> secondaryIndustry1;
 
@@ -153,6 +169,9 @@ public class CompanyRecord extends CvrEntityRecord {
     @JsonProperty(value = "virksomhedsstatus")
     private List<CompanyStatusRecord> companyStatus;
 
+    public List<CompanyStatusRecord> getCompanyStatus() {
+        return this.companyStatus;
+    }
 
     @JsonProperty(value = "virksomhedsform")
     private List<CompanyFormRecord> companyForm;

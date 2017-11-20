@@ -21,6 +21,10 @@ public class CompanyIndustryRecord extends CvrBaseRecord {
     @JsonProperty(value = "branchetekst")
     private String industryText;
 
+    public String getIndustryText() {
+        return this.industryText;
+    }
+
     public void setIndex(int index) {
         this.index = index;
     }

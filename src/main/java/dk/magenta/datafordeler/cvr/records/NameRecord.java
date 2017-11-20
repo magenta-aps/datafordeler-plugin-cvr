@@ -14,6 +14,10 @@ public class NameRecord extends CvrBaseRecord {
     @JsonProperty(value = "navn")
     private String name;
 
+    public String getName() {
+        return this.name;
+    }
+
     @Override
     public void populateBaseData(CompanyBaseData baseData, Session session) {
         baseData.setCompanyName(this.name);
