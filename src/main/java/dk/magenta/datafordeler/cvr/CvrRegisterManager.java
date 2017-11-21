@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.*;
+import dk.magenta.datafordeler.core.io.ImportMetadata;
 import dk.magenta.datafordeler.core.io.PluginSourceData;
 import dk.magenta.datafordeler.core.plugin.*;
 import dk.magenta.datafordeler.core.util.ItemInputStream;
@@ -83,7 +84,7 @@ public class CvrRegisterManager extends RegisterManager {
     }
 
     @Override
-    protected Communicator getEventFetcher() {
+    public Communicator getEventFetcher() {
         return this.commonFetcher;
     }
 
@@ -124,7 +125,7 @@ public class CvrRegisterManager extends RegisterManager {
      * returning.
      */
     @Override
-    public InputStream pullRawData(URI eventInterface, EntityManager entityManager) throws DataFordelerException {
+    public InputStream pullRawData(URI eventInterface, EntityManager entityManager, ImportMetadata importMetadata) throws DataFordelerException {
         if (!(entityManager instanceof CvrEntityManager)) {
             throw new WrongSubclassException(CvrEntityManager.class, entityManager);
         }
