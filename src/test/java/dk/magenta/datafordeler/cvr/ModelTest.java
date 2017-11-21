@@ -196,6 +196,7 @@ public class ModelTest {
         } finally {
             transaction.rollback();
             session.close();
+            QueryManager.clearCaches();
         }
     }
 
@@ -325,6 +326,7 @@ public class ModelTest {
         } finally {
             transaction.rollback();
             session.close();
+            QueryManager.clearCaches();
         }
     }
 
@@ -386,6 +388,7 @@ public class ModelTest {
         } finally {
             transaction.rollback();
             session.close();
+            QueryManager.clearCaches();
         }
 
     }

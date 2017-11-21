@@ -48,6 +48,10 @@ public class CompanyStatus extends UnversionedEntity {
 
     private static boolean prepopulated = false;
 
+    static {
+        QueryManager.addCache(statusCache);
+    }
+
     public static void prepopulateCache(Session session) {
         log.debug("Prepopulating status cache");
         List<CompanyStatus> statuses = QueryManager.getAllItems(session, CompanyStatus.class);

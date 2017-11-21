@@ -56,4 +56,8 @@ public class Bitemporality {
     public boolean matches(OffsetDateTime registrationTime, CvrEffect effect) {
         return Equality.equal(this.registrationFrom, registrationTime) && effect.compareRange(this);
     }
+
+    public String toString() {
+        return "Bitemporality " + this.registrationFrom + "|" + this.registrationTo + "|" + this.effectFrom + "|" + this.effectTo;
+    }
 }

@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.magenta.datafordeler.core.Application;
+import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.core.database.Registration;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
@@ -79,6 +80,7 @@ public class ParseTest {
         } finally {
             transaction.rollback();
             session.close();
+            QueryManager.clearCaches();
         }
     }
 
@@ -103,6 +105,7 @@ public class ParseTest {
         } finally {
             transaction.rollback();
             session.close();
+            QueryManager.clearCaches();
         }
     }
 
@@ -129,6 +132,7 @@ public class ParseTest {
         } finally {
             transaction.rollback();
             session.close();
+            QueryManager.clearCaches();
         }
     }
 

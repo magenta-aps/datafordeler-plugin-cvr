@@ -1,8 +1,17 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectReader;
 import dk.magenta.datafordeler.core.database.RegistrationReference;
 import dk.magenta.datafordeler.core.database.SessionManager;
+import dk.magenta.datafordeler.core.exception.DataStreamException;
+import dk.magenta.datafordeler.core.exception.HttpStatusException;
 import dk.magenta.datafordeler.core.fapi.FapiService;
+import dk.magenta.datafordeler.core.plugin.ScanScrollCommunicator;
+import dk.magenta.datafordeler.core.util.InputStreamReader;
+import dk.magenta.datafordeler.cvr.CvrRegisterManager;
+import dk.magenta.datafordeler.cvr.configuration.CvrConfiguration;
+import dk.magenta.datafordeler.cvr.configuration.CvrConfigurationManager;
 import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.records.CompanyRecord;
 import org.apache.logging.log4j.LogManager;
@@ -10,10 +19,13 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by lars on 16-05-17.
@@ -22,8 +34,8 @@ import java.util.UUID;
 public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, CompanyRegistration, CompanyEffect, CompanyBaseData, CompanyRecord> {
 
     public static final OffsetDateTime MIN_SQL_SERVER_DATETIME = OffsetDateTime.of(
-        1, 1, 1, 0, 0, 0, 0,
-        ZoneOffset.UTC
+            1, 1, 1, 0, 0, 0, 0,
+            ZoneOffset.UTC
     );
 
     @Autowired
@@ -98,4 +110,82 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
         return new CompanyBaseData();
     }
 
+
+    @Autowired
+    private CvrConfigurationManager configurationManager;
+
+    public HashSet<CompanyRecord> directLookup(HashSet<String> cvrNumbers, OffsetDateTime since) {
+        HashSet<CompanyRecord> records = new HashSet<>();
+        CvrRegisterManager registerManager = (CvrRegisterManager) this.getRegisterManager();
+        ScanScrollCommunicator eventCommunicator = (ScanScrollCommunicator) registerManager.getEventFetcher();
+        CvrConfiguration configuration = this.configurationManager.getConfiguration();
+
+        String schema = CompanyEntity.schema;
+        eventCommunicator.setUsername(configuration.getUsername(schema));
+        eventCommunicator.setPassword(configuration.getPassword(schema));
+        eventCommunicator.setThrottle(0);
+
+        StringJoiner csep = new StringJoiner(",");
+        for (String cvrNumber : cvrNumbers) {
+            csep.add("\"" + cvrNumber + "\"");
+        }
+
+        String requestBody = "{" +
+                "\"query\": {" +
+                "\"filtered\": {" +
+                "\"query\": {" +
+                "\"terms\": {" +
+                "\"cvrNummer\": [" + csep.toString() + "]" +
+                "}";
+        if (since != null) {
+            requestBody += "}," +
+                    "\"filter\": {" +
+                    "\"range\": {" +
+                    "\"Vrvirksomhed.sidstIndlaest\": {" +
+                    "\"gte\": \"2015-05-01\"" +
+                    "}" +
+                    "}" +
+                    "}";
+        } else {
+            requestBody += "}";
+        }
+         requestBody +=
+                "}"+
+                "}"+
+                "}";
+
+        InputStream rawData;
+        try {
+            rawData = eventCommunicator.fetch(
+                    new URI(configuration.getStartAddress(schema)),
+                    new URI(configuration.getScrollAddress(schema)),
+                    requestBody
+            );
+            JsonNode topNode = this.getObjectMapper().readTree(rawData);
+            ObjectReader reader = this.getObjectMapper().readerFor(CompanyRecord.class);
+            if (topNode.has("hits")) {
+                topNode = topNode.get("hits");
+                if (topNode.has("hits")) {
+                    topNode = topNode.get("hits");
+                }
+                if (topNode.isArray()) {
+                    for (JsonNode item : topNode) {
+
+                        if (item.has("_source")) {
+                            item = item.get("_source");
+                        }
+                        String jsonTypeName = this.getJsonTypeName();
+                        if (item.has(jsonTypeName)) {
+                            item = item.get(jsonTypeName);
+                        }
+                        CompanyRecord record = reader.readValue(item);
+                        records.add(record);
+                    }
+                }
+            }
+        } catch (HttpStatusException | DataStreamException | URISyntaxException | IOException e) {
+            e.printStackTrace();
+        }
+        return records;
+    }
 }
