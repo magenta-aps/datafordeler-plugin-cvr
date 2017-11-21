@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.magenta.datafordeler.core.database.*;
 import dk.magenta.datafordeler.core.exception.*;
+import dk.magenta.datafordeler.core.io.ImportInputStream;
 import dk.magenta.datafordeler.core.io.ImportMetadata;
 import dk.magenta.datafordeler.core.io.Receipt;
 import dk.magenta.datafordeler.core.plugin.Communicator;
@@ -24,6 +25,7 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -180,39 +182,55 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             Municipality.prepopulateCache(session);
             PostCode.prepopulateCache(session);
         }
+        List<File> cacheFiles = null;
+        if (registrationData instanceof ImportInputStream) {
+            cacheFiles = ((ImportInputStream) registrationData).getCacheFiles();
+        }
 
         Scanner scanner = new Scanner(registrationData, "UTF-8").useDelimiter(String.valueOf(this.commonFetcher.delimiter));
-        long count = 0;
-        while (scanner.hasNext()) {
-            boolean inter = Thread.currentThread().isInterrupted();
-            System.out.println("running thread id: "+Thread.currentThread().getId());
-            if (inter) break;
-            try {
-                String data = scanner.next();
-
-                if (session == null) {
-                    session = this.getSessionManager().getSessionFactory().openSession();
-                }
-                session.beginTransaction();
+        long chunkCount = 0;
+        try {
+            while (scanner.hasNext()) {
+                System.out.println("running thread id: " + Thread.currentThread().getId());
                 try {
-                    this.parseRegistration(this.getObjectMapper().readTree(data), importMetadata, session);
-                } catch (ImportInterruptedException e) {
-                    session.getTransaction().rollback();
+                    String data = scanner.next();
+
+                    if (session == null) {
+                        session = this.getSessionManager().getSessionFactory().openSession();
+                    }
+                    session.beginTransaction();
+                    try {
+                        this.parseRegistration(this.getObjectMapper().readTree(data), importMetadata, session);
+                    } catch (ImportInterruptedException e) {
+                        session.getTransaction().rollback();
+                        session.clear();
+
+                        throw e;
+                    }
+                    timer.start(TASK_COMMIT);
                     session.flush();
                     session.clear();
-                    throw e;
-                }
-                timer.start(TASK_COMMIT);
-                session.flush();
-                session.clear();
-                session.getTransaction().commit();
-                timer.measure(TASK_COMMIT);
-                log.info("Chunk "+count+":\n"+timer.formatAllTotal());
+                    session.getTransaction().commit();
+                    timer.measure(TASK_COMMIT);
+                    log.info("Chunk " + chunkCount + ":\n" + timer.formatAllTotal());
 
-                count++;
-            } catch (IOException e) {
-                throw new DataStreamException(e);
+                    chunkCount++;
+                } catch (IOException e) {
+                    throw new DataStreamException(e);
+                }
             }
+        } catch (ImportInterruptedException e) {
+            log.info("Import aborted in chunk " + chunkCount);
+            e.setChunk(chunkCount);
+            if (cacheFiles != null) {
+                log.info("Files are:");
+                for (File file : cacheFiles) {
+                    log.info(file.getAbsolutePath());
+                }
+            }
+            e.setFiles(cacheFiles);
+            // Write importMetadata.getCurrentURI and chunkCount to the database somehow
+            throw e;
         }
         return null;
     }
@@ -257,7 +275,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             }
         }
 
-        this.checkInterrupt();
+        this.checkInterrupt(importMetadata);
 
         timer.start(TASK_PARSE);
         if (jsonNode.has("_source")) {
@@ -276,7 +294,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         }
         timer.measure(TASK_PARSE);
 
-        this.checkInterrupt();
+        this.checkInterrupt(importMetadata);
 
         timer.start(TASK_FIND_ENTITY);
         UUID uuid = this.generateUUID(toplevelRecord);
@@ -300,13 +318,13 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         timer.measure(TASK_FIND_ENTITY);
 
 
-        this.checkInterrupt();
+        this.checkInterrupt(importMetadata);
 
         //this.parseRegistration(entity, toplevelRecord.getAll(), session, importMetadata);
         Collection<R> entityRegistrations = this.parseRegistration(entity, toplevelRecord.getAll(), session, importMetadata);
         registrations.addAll(entityRegistrations);
 
-        this.checkInterrupt();
+        this.checkInterrupt(importMetadata);
 
         return registrations;
     }
@@ -406,8 +424,8 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         return true;
     }
 
-    private void checkInterrupt() throws ImportInterruptedException {
-        if (Thread.interrupted()) {
+    private void checkInterrupt(ImportMetadata importMetadata) throws ImportInterruptedException {
+        if (importMetadata.getStop()) {
             throw new ImportInterruptedException(new InterruptedException());
         }
     }
