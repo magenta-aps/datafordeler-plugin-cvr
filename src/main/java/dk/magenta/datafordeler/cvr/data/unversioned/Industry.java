@@ -76,12 +76,12 @@ public class Industry extends UnversionedEntity {
     private static boolean prepopulated = false;
 
     public static void prepopulateCache(Session session) {
-        System.out.println("Prepopulating industry cache");
+        log.debug("Prepopulating industry cache");
         List<Industry> industries = QueryManager.getAllItems(session, Industry.class);
         for (Industry industry : industries) {
             industryCache.put(industry.industryCode, industry);
         }
-        System.out.println("industryCache contains "+industryCache.size()+" nodes");
+        log.debug("industryCache contains "+industryCache.size()+" nodes");
         prepopulated = true;
     }
 
