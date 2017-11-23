@@ -188,6 +188,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         }
 
         Scanner scanner = new Scanner(registrationData, "UTF-8").useDelimiter(String.valueOf(this.commonFetcher.delimiter));
+        boolean wrappedInTransaction = importMetadata.isTransactionInProgress();
         long chunkCount = 0;
         try {
             while (scanner.hasNext()) {
@@ -198,20 +199,30 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                     if (session == null) {
                         session = this.getSessionManager().getSessionFactory().openSession();
                     }
-                    session.beginTransaction();
+
+                    if (!wrappedInTransaction) {
+                        session.beginTransaction();
+                        importMetadata.setTransactionInProgress(true);
+                    }
                     try {
                         this.parseRegistration(this.getObjectMapper().readTree(data), importMetadata, session);
+
+                        timer.start(TASK_COMMIT);
+                        session.flush();
+                        if (!wrappedInTransaction) {
+                            session.getTransaction().commit();
+                            importMetadata.setTransactionInProgress(false);
+                        }
+                        session.clear();
+                        timer.measure(TASK_COMMIT);
+
                     } catch (ImportInterruptedException e) {
                         session.getTransaction().rollback();
+                        importMetadata.setTransactionInProgress(false);
                         session.clear();
-
                         throw e;
                     }
-                    timer.start(TASK_COMMIT);
-                    session.flush();
-                    session.clear();
-                    session.getTransaction().commit();
-                    timer.measure(TASK_COMMIT);
+
                     log.info("Chunk " + chunkCount + ":\n" + timer.formatAllTotal());
 
                     chunkCount++;
@@ -275,9 +286,9 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             }
         }
 
-        this.checkInterrupt(importMetadata);
 
         timer.start(TASK_PARSE);
+        this.checkInterrupt(importMetadata);
         if (jsonNode.has("_source")) {
             jsonNode = jsonNode.get("_source");
         }
@@ -294,9 +305,9 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         }
         timer.measure(TASK_PARSE);
 
-        this.checkInterrupt(importMetadata);
 
         timer.start(TASK_FIND_ENTITY);
+        this.checkInterrupt(importMetadata);
         UUID uuid = this.generateUUID(toplevelRecord);
         E entity = null;
         String domain = CvrPlugin.getDomain();
@@ -318,39 +329,26 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         timer.measure(TASK_FIND_ENTITY);
 
 
-        this.checkInterrupt(importMetadata);
-
-        //this.parseRegistration(entity, toplevelRecord.getAll(), session, importMetadata);
-        Collection<R> entityRegistrations = this.parseRegistration(entity, toplevelRecord.getAll(), session, importMetadata);
-        registrations.addAll(entityRegistrations);
 
         this.checkInterrupt(importMetadata);
-
-        return registrations;
-    }
-
-
-
-    private Collection<R> parseRegistration(E entity, List<CvrBaseRecord> records, Session session, ImportMetadata importMetadata) throws ParseException {
-
         HashSet<R> entityRegistrations = new HashSet<>();
-        ListHashMap<Bitemporality, CvrBaseRecord> groups = this.sortIntoGroups(records);
+        ListHashMap<Bitemporality, CvrBaseRecord> groups = this.sortIntoGroups(toplevelRecord.getAll());
         OffsetDateTime timestamp = OffsetDateTime.now();
 
         for (Bitemporality bitemporality : groups.keySet()) {
 
             timer.start(TASK_FIND_REGISTRATIONS);
             List<CvrBaseRecord> group = groups.get(bitemporality);
-            List<R> registrations = entity.findRegistrations(bitemporality.registrationFrom, bitemporality.registrationTo);
+            List<R> entityRegistrationList = entity.findRegistrations(bitemporality.registrationFrom, bitemporality.registrationTo);
             ArrayList<V> effects = new ArrayList<>();
-            for (R registration : registrations) {
+            for (R registration : entityRegistrationList) {
                 V effect = registration.getEffect(bitemporality);
                 if (effect == null) {
                     effect = registration.createEffect(bitemporality);
                 }
                 effects.add(effect);
             }
-            entityRegistrations.addAll(registrations);
+            entityRegistrations.addAll(entityRegistrationList);
             timer.measure(TASK_FIND_REGISTRATIONS);
 
 
@@ -388,6 +386,8 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                 timer.measure(TASK_POPULATE_DATA+" "+record.getClass().getSimpleName());
             }
         }
+
+
         timer.start(TASK_SAVE);
         for (R registration : entityRegistrations) {
             registration.setLastImportTime(importMetadata.getImportTime());
@@ -395,7 +395,13 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         }
         session.saveOrUpdate(entity);
         timer.measure(TASK_SAVE);
-        return entityRegistrations;
+
+
+        registrations.addAll(entityRegistrations);
+
+        this.checkInterrupt(importMetadata);
+
+        return registrations;
     }
 
 
