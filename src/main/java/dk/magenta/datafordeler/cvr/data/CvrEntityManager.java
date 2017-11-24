@@ -55,6 +55,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
     private static boolean IMPORT_ONLY_CURRENT = false;
     private static boolean DONT_IMPORT_CURRENT = false;
+    private static boolean SAVE_RECORD_DATA = false;
 
     private ScanScrollCommunicator commonFetcher;
 
@@ -372,13 +373,16 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             }
             timer.measure(TASK_FIND_ITEMS);
 
+            OffsetDateTime timestamp = importMetadata.getImportTime();
             for (CvrBaseRecord record : group) {
                 timer.start(TASK_POPULATE_DATA+" "+record.getClass().getSimpleName());
-                record.populateBaseData(baseData, session, importMetadata.getImportTime());
-                //RecordData recordData = new RecordData(timestamp);
-                //recordData.setSourceData(objectMapper.valueToTree(record).toString());
-                //baseData.addRecordData(recordData);
-                baseData.setUpdated(importMetadata.getImportTime());
+                record.populateBaseData(baseData, session, timestamp);
+                baseData.setUpdated(timestamp);
+                if (SAVE_RECORD_DATA) {
+                    RecordData recordData = new RecordData(timestamp);
+                    recordData.setSourceData(objectMapper.valueToTree(record).toString());
+                    baseData.addRecordData(recordData);
+                }
                 timer.measure(TASK_POPULATE_DATA+" "+record.getClass().getSimpleName());
             }
         }
