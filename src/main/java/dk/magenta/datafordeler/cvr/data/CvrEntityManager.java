@@ -329,7 +329,6 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         this.checkInterrupt(importMetadata);
         HashSet<R> entityRegistrations = new HashSet<>();
         ListHashMap<Bitemporality, CvrBaseRecord> groups = this.sortIntoGroups(toplevelRecord.getAll());
-        OffsetDateTime timestamp = OffsetDateTime.now();
 
         for (Bitemporality bitemporality : groups.keySet()) {
 
@@ -375,10 +374,11 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
             for (CvrBaseRecord record : group) {
                 timer.start(TASK_POPULATE_DATA+" "+record.getClass().getSimpleName());
-                record.populateBaseData(baseData, session, timestamp);
+                record.populateBaseData(baseData, session, importMetadata.getImportTime());
                 //RecordData recordData = new RecordData(timestamp);
                 //recordData.setSourceData(objectMapper.valueToTree(record).toString());
                 //baseData.addRecordData(recordData);
+                baseData.setUpdated(importMetadata.getImportTime());
                 timer.measure(TASK_POPULATE_DATA+" "+record.getClass().getSimpleName());
             }
         }
