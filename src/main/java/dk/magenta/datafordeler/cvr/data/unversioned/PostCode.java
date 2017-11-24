@@ -64,44 +64,45 @@ public class PostCode extends UnversionedEntity {
 
     //----------------------------------------------------
 
-    private static HashMap<Integer, PostCode> postCodeCache = new HashMap<>();
+    private static HashMap<Integer, Long> postCodeCache = new HashMap<>();
 
     static {
         QueryManager.addCache(postCodeCache);
     }
 
-    private static boolean prepopulated = false;
-
-    public static void prepopulateCache(Session session) {
-        log.debug("Prepopulating postcode cache");
-        List<PostCode> postCodes = QueryManager.getAllItems(session, PostCode.class);
-        for (PostCode postCode : postCodes) {
-            postCodeCache.put(postCode.postCode, postCode);
+    public static void initializeCache(Session session) {
+        if (postCodeCache.isEmpty()) {
+            log.debug("Prepopulating postCode cache");
+            List<PostCode> municipalities = QueryManager.getAllItems(session, PostCode.class);
+            for (PostCode postCode : municipalities) {
+                postCodeCache.put(postCode.postCode, postCode.getId());
+            }
+            log.debug("postCode cache contains " + postCodeCache.size() + " nodes");
         }
-        log.debug("postcodeCache contains "+postCodeCache.size()+" nodes");
-        prepopulated = true;
     }
 
-    public static PostCode getPostcode(int postCode, String postDistrict, Session session) {
-        if (postCode > 0) {
-            PostCode post = postCodeCache.get(postCode);
-            if (post == null) {
-                log.debug("Postcode "+postCode+" not found in cache");
-                if (!prepopulated) {
-                    log.debug("Querying database");
-                    post = QueryManager.getItem(session, PostCode.class, Collections.singletonMap(DB_FIELD_CODE, postCode));
-                }
+    public static PostCode getPostcode(int code, String postDistrict, Session session) {
+        if (code > 0) {
+            initializeCache(session);
+            PostCode post = null;
+            Long id = postCodeCache.get(code);
+            if (id != null) {
+                post = session.get(PostCode.class, id);
                 if (post == null) {
-                    log.debug("Not found; creating new");
-                    post = new PostCode();
-                    post.setPostCode(postCode);
-                    post.setPostDistrict(postDistrict);
-                    session.save(post);
+                    log.debug("PostCode code "+code+" not found in cache, querying database");
+                    post = QueryManager.getItem(session, PostCode.class, Collections.singletonMap(DB_FIELD_CODE, code));
                 }
-                postCodeCache.put(postCode, post);
-            } else {
-                log.debug("PostCode "+postCode+" found in cache ("+post.getId()+")");
             }
+            if (post == null) {
+                log.debug("PostCode " + code + " not found; creating new");
+                post = new PostCode();
+                post.setPostCode(code);
+                post.setPostDistrict(postDistrict);
+                session.save(post);
+            } else {
+                log.debug("PostCode " + code + " found (" + post.getId() + ")");
+            }
+            postCodeCache.put(code, post.getId());
             return post;
         } else {
             return null;

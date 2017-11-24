@@ -176,11 +176,11 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
         Session session = importMetadata.getSession();
         if (session != null) {
-            Industry.prepopulateCache(session);
-            CompanyForm.prepopulateCache(session);
-            CompanyStatus.prepopulateCache(session);
-            Municipality.prepopulateCache(session);
-            PostCode.prepopulateCache(session);
+            Industry.initializeCache(session);
+            CompanyForm.initializeCache(session);
+            CompanyStatus.initializeCache(session);
+            Municipality.initializeCache(session);
+            PostCode.initializeCache(session);
         }
         List<File> cacheFiles = null;
         if (registrationData instanceof ImportInputStream) {
@@ -212,8 +212,8 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                         if (!wrappedInTransaction) {
                             session.getTransaction().commit();
                             importMetadata.setTransactionInProgress(false);
+                            session.clear();
                         }
-                        session.clear();
                         timer.measure(TASK_COMMIT);
 
                     } catch (ImportInterruptedException e) {
@@ -262,7 +262,6 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
      * @throws ParseException
      */
     public List<? extends Registration> parseRegistration(JsonNode jsonNode, ImportMetadata importMetadata, Session session) throws DataFordelerException {
-
         ArrayList<Registration> registrations = new ArrayList<>();
 
         if (jsonNode.has("hits")) {
@@ -311,20 +310,17 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         UUID uuid = this.generateUUID(toplevelRecord);
         E entity = null;
         String domain = CvrPlugin.getDomain();
-        if (QueryManager.hasIdentification(uuid, domain)) {
+        if (QueryManager.hasIdentification(session, uuid, domain)) {
             entity = QueryManager.getEntity(session, uuid, this.getEntityClass());
         }
-        //if (entity == null) {
-        //    entity = QueryManager.getEntity(session, uuid, this.getEntityClass());
-        //}
         if (entity == null) {
-            log.debug("Creating new Entity");
+            log.info("Creating new Entity");
             entity = this.createBasicEntity(toplevelRecord);
             entity.setIdentifikation(
                     QueryManager.getOrCreateIdentification(session, uuid, domain)
             );
         } else {
-            log.debug("Using existing entity");
+            log.info("Using existing entity");
         }
         timer.measure(TASK_FIND_ENTITY);
 
@@ -412,17 +408,30 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             // Find the appropriate registration object
             if (IMPORT_ONLY_CURRENT) {
                 if (record.getRegistrationTo() == null && record.getValidTo() == null) {
-                    recordGroups.add(new Bitemporality(record.getRegistrationFrom(), record.getRegistrationTo(), record.getValidFrom(), record.getValidTo()), record);
+                    recordGroups.add(new Bitemporality(roundTime(record.getRegistrationFrom()), roundTime(record.getRegistrationTo()), record.getValidFrom(), record.getValidTo()), record);
                 }
             } else if (DONT_IMPORT_CURRENT) {
                 if (record.getRegistrationTo() != null || record.getValidTo() != null) {
-                    recordGroups.add(new Bitemporality(record.getRegistrationFrom(), record.getRegistrationTo(), record.getValidFrom(), record.getValidTo()), record);
+                    recordGroups.add(new Bitemporality(roundTime(record.getRegistrationFrom()), roundTime(record.getRegistrationTo()), record.getValidFrom(), record.getValidTo()), record);
                 }
             } else {
-                recordGroups.add(new Bitemporality(record.getRegistrationFrom(), record.getRegistrationTo(), record.getValidFrom(), record.getValidTo()), record);
+                recordGroups.add(new Bitemporality(roundTime(record.getRegistrationFrom()), roundTime(record.getRegistrationTo()), record.getValidFrom(), record.getValidTo()), record);
             }
         }
         return recordGroups;
+    }
+
+    /*
+    How far apart must two data points be for us to consider them separate registrations?
+    For now, we say that if they are in the same minute, they're the same registration
+     */
+    private static OffsetDateTime roundTime(OffsetDateTime in) {
+        if (in != null) {
+            //return in.withHour(0).withMinute(0).withSecond(0).withNano(0);
+            //return in.withMinute(0).withSecond(0).withNano(0);
+            return in.withSecond(0).withNano(0);
+        }
+        return null;
     }
 
     @Override

@@ -66,44 +66,47 @@ public class Municipality extends UnversionedEntity {
 
     //----------------------------------------------------
 
-    private static HashMap<Integer, Municipality> municipalityCache = new HashMap<>();
-
-    private static boolean prepopulated = false;
+    private static HashMap<Integer, Long> municipalityCache = new HashMap<>();
 
     static {
         QueryManager.addCache(municipalityCache);
     }
 
-    public static void prepopulateCache(Session session) {
-        log.debug("Prepopulating municipality cache");
-        List<Municipality> municipalities = QueryManager.getAllItems(session, Municipality.class);
-        for (Municipality municipality : municipalities) {
-            municipalityCache.put(municipality.code, municipality);
+    public static void initializeCache(Session session) {
+        if (municipalityCache.isEmpty()) {
+            log.debug("Prepopulating municipality cache");
+            List<Municipality> municipalities = QueryManager.getAllItems(session, Municipality.class);
+            for (Municipality municipality : municipalities) {
+                municipalityCache.put(municipality.code, municipality.getId());
+            }
+            log.debug("municipality cache contains " + municipalityCache.size() + " nodes");
         }
-        log.debug("municipalityCache contains "+municipalityCache.size()+" nodes");
-        prepopulated = true;
     }
 
     public static Municipality getMunicipality(int code, String name, Session session) {
         if (code > 0) {
-            Municipality municipality = municipalityCache.get(code);
-            if (municipality == null) {
-                log.debug("Municipality code "+code+" not found in cache");
-                if (!prepopulated) {
-                    log.debug("Querying database");
+            initializeCache(session);
+            Municipality municipality = null;
+            Long id = municipalityCache.get(code);
+            if (id != null) {
+                municipality = session.get(Municipality.class, id);
+                if (municipality == null) {
+                    log.debug("Municipality code "+code+" not found in cache, querying database");
                     municipality = QueryManager.getItem(session, Municipality.class, Collections.singletonMap(DB_FIELD_CODE, code));
                 }
-                if (municipality == null) {
-                    municipality = new Municipality();
-                    municipality.setCode(code);
-                    municipality.setName(name);
-                    session.save(municipality);
-                }
-                municipalityCache.put(code, municipality);
-            } else {
-                log.debug("Municipality "+code+" found in cache ("+municipality.getId()+")");
             }
+            if (municipality == null) {
+                log.debug("Municipality "+code+" not found; creating new");
+                municipality = new Municipality();
+                municipality.setCode(code);
+                municipality.setName(name);
+                session.save(municipality);
+            } else {
+                log.debug("Municipality "+code+" found ("+municipality.getId()+")");
+            }
+            municipalityCache.put(code, municipality.getId());
             return municipality;
+
         } else {
             return null;
         }

@@ -44,7 +44,9 @@ public class CompanyStatus extends UnversionedEntity {
         this.status = status;
     }
 
-    private static HashMap<String, CompanyStatus> statusCache = new HashMap<>();
+    //--------------------------------------------------------------------------
+
+    private static HashMap<String, Long> statusCache = new HashMap<>();
 
     private static boolean prepopulated = false;
 
@@ -52,34 +54,40 @@ public class CompanyStatus extends UnversionedEntity {
         QueryManager.addCache(statusCache);
     }
 
-    public static void prepopulateCache(Session session) {
-        log.debug("Prepopulating status cache");
-        List<CompanyStatus> statuses = QueryManager.getAllItems(session, CompanyStatus.class);
-        for (CompanyStatus status : statuses) {
-            statusCache.put(status.status, status);
+    public static void initializeCache(Session session) {
+        if (statusCache.isEmpty()) {
+            log.debug("Prepopulating status cache");
+            List<CompanyStatus> municipalities = QueryManager.getAllItems(session, CompanyStatus.class);
+            for (CompanyStatus status : municipalities) {
+                statusCache.put(status.status, status.getId());
+            }
+            log.debug("status cache contains " + statusCache.size() + " nodes");
         }
-        log.debug("companyStatusCache contains "+statusCache.size()+" nodes");
-        prepopulated = true;
     }
+
 
     public static CompanyStatus getStatus(String statusText, Session session) {
         if (statusText != null) {
-            CompanyStatus status = statusCache.get(statusText);
-            if (status == null) {
-                log.debug("Status "+statusText+" not found in cache");
-                if (!prepopulated) {
+            initializeCache(session);
+            CompanyStatus status = null;
+            Long id = statusCache.get(statusText);
+            if (id != null) {
+                status = session.get(CompanyStatus.class, id);
+                if (status == null) {
+                    log.debug("CompanyStatus code "+statusText+" not found in cache");
                     log.debug("Querying database");
                     status = QueryManager.getItem(session, CompanyStatus.class, Collections.singletonMap(DB_FIELD_NAME, statusText));
                 }
-                if (status == null) {
-                    status = new CompanyStatus();
-                    status.setStatus(statusText);
-                    session.save(status);
-                }
-                statusCache.put(statusText, status);
-            } else {
-                log.debug("Status "+statusText+" found in cache ("+status.getId()+")");
             }
+            if (status == null) {
+                log.debug("CompanyStatus "+statusText+" not found; creating new");
+                status = new CompanyStatus();
+                status.setStatus(statusText);
+                session.save(status);
+            } else {
+                log.debug("CompanyStatus "+statusText+" found in cache ("+status.getId()+")");
+            }
+            statusCache.put(statusText, status.getId());
             return status;
         } else {
             return null;
