@@ -73,11 +73,10 @@ public class CompanyStatus extends UnversionedEntity {
             Long id = statusCache.get(statusText);
             if (id != null) {
                 status = session.get(CompanyStatus.class, id);
-                if (status == null) {
-                    log.debug("CompanyStatus code "+statusText+" not found in cache");
-                    log.debug("Querying database");
-                    status = QueryManager.getItem(session, CompanyStatus.class, Collections.singletonMap(DB_FIELD_NAME, statusText));
-                }
+            }
+            if (status == null) {
+                log.debug("CompanyStatus code "+statusText+" not found in cache, querying database");
+                status = QueryManager.getItem(session, CompanyStatus.class, Collections.singletonMap(DB_FIELD_NAME, statusText));
             }
             if (status == null) {
                 log.debug("CompanyStatus "+statusText+" not found; creating new");

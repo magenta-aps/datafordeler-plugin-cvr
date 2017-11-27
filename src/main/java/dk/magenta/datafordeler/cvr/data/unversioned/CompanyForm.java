@@ -126,10 +126,10 @@ public class CompanyForm extends UnversionedEntity {
             Long id = formCache.get(code);
             if (id != null) {
                 form = session.get(CompanyForm.class, id);
-                if (form == null) {
-                    log.debug("CompanyForm code "+code+" not found in cache, querying database");
-                    form = QueryManager.getItem(session, CompanyForm.class, Collections.singletonMap(DB_FIELD_CODE, code));
-                }
+            }
+            if (form == null) {
+                log.debug("CompanyForm code "+code+" not found in cache, querying database");
+                form = QueryManager.getItem(session, CompanyForm.class, Collections.singletonMap(DB_FIELD_CODE, code));
             }
             if (form == null) {
                 log.debug("CompanyForm "+code+" not found; creating new");

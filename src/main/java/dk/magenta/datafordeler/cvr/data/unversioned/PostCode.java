@@ -88,10 +88,10 @@ public class PostCode extends UnversionedEntity {
             Long id = postCodeCache.get(code);
             if (id != null) {
                 post = session.get(PostCode.class, id);
-                if (post == null) {
-                    log.debug("PostCode code "+code+" not found in cache, querying database");
-                    post = QueryManager.getItem(session, PostCode.class, Collections.singletonMap(DB_FIELD_CODE, code));
-                }
+            }
+            if (post == null) {
+                log.debug("PostCode code "+code+" not found in cache, querying database");
+                post = QueryManager.getItem(session, PostCode.class, Collections.singletonMap(DB_FIELD_CODE, code));
             }
             if (post == null) {
                 log.debug("PostCode " + code + " not found; creating new");

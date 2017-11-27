@@ -91,10 +91,10 @@ public class Industry extends UnversionedEntity {
             Long id = industryCache.get(branchekode);
             if (id != null) {
                 industry = session.get(Industry.class, id);
-                if (industry == null) {
-                    log.debug("Industry code "+branchekode+" not found in cache, querying database");
-                    industry = QueryManager.getItem(session, Industry.class, Collections.singletonMap(DB_FIELD_CODE, branchekode));
-                }
+            }
+            if (industry == null) {
+                log.debug("Industry code "+branchekode+" not found in cache, querying database");
+                industry = QueryManager.getItem(session, Industry.class, Collections.singletonMap(DB_FIELD_CODE, branchekode));
             }
             if (industry == null) {
                 log.debug("Industry "+branchekode+" not found; creating new");

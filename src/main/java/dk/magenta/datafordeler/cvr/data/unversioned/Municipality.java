@@ -90,10 +90,10 @@ public class Municipality extends UnversionedEntity {
             Long id = municipalityCache.get(code);
             if (id != null) {
                 municipality = session.get(Municipality.class, id);
-                if (municipality == null) {
-                    log.debug("Municipality code "+code+" not found in cache, querying database");
-                    municipality = QueryManager.getItem(session, Municipality.class, Collections.singletonMap(DB_FIELD_CODE, code));
-                }
+            }
+            if (municipality == null) {
+                log.debug("Municipality code "+code+" not found in cache, querying database");
+                municipality = QueryManager.getItem(session, Municipality.class, Collections.singletonMap(DB_FIELD_CODE, code));
             }
             if (municipality == null) {
                 log.debug("Municipality "+code+" not found; creating new");
