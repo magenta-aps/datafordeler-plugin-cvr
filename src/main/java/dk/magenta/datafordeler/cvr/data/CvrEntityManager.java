@@ -212,6 +212,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                             session.getTransaction().rollback();
                             importMetadata.setTransactionInProgress(false);
                             session.clear();
+                            e.setChunk(chunkCount);
                             throw e;
                         }
 
@@ -233,10 +234,11 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             }
         } catch (ImportInterruptedException e) {
             log.info("Import aborted in chunk " + chunkCount);
-            e.setChunk(chunkCount);
             e.setFiles(cacheFiles);
             e.setEntityManager(this);
-            // Write importMetadata.getCurrentURI and chunkCount to the database somehow
+            if (e.getChunk() == null) {
+                e.setChunk(startChunk);
+            }
             throw e;
         }
         return null;
