@@ -234,11 +234,12 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             }
         } catch (ImportInterruptedException e) {
             log.info("Import aborted in chunk " + chunkCount);
-            e.setFiles(cacheFiles);
-            e.setEntityManager(this);
             if (e.getChunk() == null) {
+                log.info("That's before our startPoint, propagate startPoint " + startChunk);
                 e.setChunk(startChunk);
             }
+            e.setFiles(cacheFiles);
+            e.setEntityManager(this);
             throw e;
         }
         return null;
