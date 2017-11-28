@@ -313,13 +313,13 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             entity = QueryManager.getEntity(session, uuid, this.getEntityClass());
         }
         if (entity == null) {
-            log.info("Creating new Entity");
+            log.debug("Creating new Entity");
             entity = this.createBasicEntity(toplevelRecord);
             entity.setIdentifikation(
                     QueryManager.getOrCreateIdentification(session, uuid, domain)
             );
         } else {
-            log.info("Using existing entity");
+            log.debug("Using existing entity");
         }
         timer.measure(TASK_FIND_ENTITY);
 
