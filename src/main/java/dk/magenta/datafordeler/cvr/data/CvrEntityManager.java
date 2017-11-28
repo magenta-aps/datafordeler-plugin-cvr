@@ -191,22 +191,29 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         Scanner scanner = new Scanner(registrationData, "UTF-8").useDelimiter(String.valueOf(this.commonFetcher.delimiter));
         boolean wrappedInTransaction = importMetadata.isTransactionInProgress();
         long chunkCount = 0;
+        long startChunk = importMetadata.getStartChunk();
         try {
             while (scanner.hasNext()) {
-                System.out.println("running thread id: " + Thread.currentThread().getId());
                 try {
                     String data = scanner.next();
+                    if (chunkCount >= startChunk) {
 
-                    if (session == null) {
-                        session = this.getSessionManager().getSessionFactory().openSession();
-                    }
+                        if (session == null) {
+                            session = this.getSessionManager().getSessionFactory().openSession();
+                        }
 
-                    if (!wrappedInTransaction) {
-                        session.beginTransaction();
-                        importMetadata.setTransactionInProgress(true);
-                    }
-                    try {
-                        this.parseRegistration(this.getObjectMapper().readTree(data), importMetadata, session);
+                        if (!wrappedInTransaction) {
+                            session.beginTransaction();
+                            importMetadata.setTransactionInProgress(true);
+                        }
+                        try {
+                            this.parseRegistration(this.getObjectMapper().readTree(data), importMetadata, session);
+                        } catch (ImportInterruptedException e) {
+                            session.getTransaction().rollback();
+                            importMetadata.setTransactionInProgress(false);
+                            session.clear();
+                            throw e;
+                        }
 
                         timer.start(TASK_COMMIT);
                         session.flush();
@@ -217,15 +224,8 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                         }
                         timer.measure(TASK_COMMIT);
 
-                    } catch (ImportInterruptedException e) {
-                        session.getTransaction().rollback();
-                        importMetadata.setTransactionInProgress(false);
-                        session.clear();
-                        throw e;
+                        log.info("Chunk " + chunkCount + ":\n" + timer.formatAllTotal());
                     }
-
-                    log.info("Chunk " + chunkCount + ":\n" + timer.formatAllTotal());
-
                     chunkCount++;
                 } catch (IOException e) {
                     throw new DataStreamException(e);
@@ -234,13 +234,8 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         } catch (ImportInterruptedException e) {
             log.info("Import aborted in chunk " + chunkCount);
             e.setChunk(chunkCount);
-            if (cacheFiles != null) {
-                log.info("Files are:");
-                for (File file : cacheFiles) {
-                    log.info(file.getAbsolutePath());
-                }
-            }
             e.setFiles(cacheFiles);
+            e.setEntityManager(this);
             // Write importMetadata.getCurrentURI and chunkCount to the database somehow
             throw e;
         }
