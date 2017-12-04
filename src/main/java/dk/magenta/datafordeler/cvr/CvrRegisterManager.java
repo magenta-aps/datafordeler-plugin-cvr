@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.*;
+import dk.magenta.datafordeler.core.io.ImportInputStream;
 import dk.magenta.datafordeler.core.io.ImportMetadata;
 import dk.magenta.datafordeler.core.io.PluginSourceData;
 import dk.magenta.datafordeler.core.plugin.*;
@@ -108,6 +109,11 @@ public class CvrRegisterManager extends RegisterManager {
         return this.configurationManager.getConfiguration().getPullCronSchedule();
     }
 
+    @Override
+    public boolean pullsEventsCommonly() {
+        return false;
+    }
+
 
     @Override
     public URI getEventInterface(EntityManager entityManager) {
@@ -192,7 +198,7 @@ public class CvrRegisterManager extends RegisterManager {
                 }
 
                 try {
-                    return new FileInputStream(cacheFile);
+                    return new ImportInputStream(new FileInputStream(cacheFile), cacheFile);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }

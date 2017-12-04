@@ -73,9 +73,12 @@ public class ParseTest {
                 System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations.get(0).getEntity()));
 
                 Collections.sort(registrations);
-                Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:47+01:00"), registrations.get(0).getRegistrationFrom());
-                Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:51+01:00"), registrations.get(0).getRegistrationTo());
-                Assert.assertEquals(123, registrations.size());
+                Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:00+01:00"), registrations.get(0).getRegistrationFrom());
+                Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:37:00+01:00"), registrations.get(0).getRegistrationTo());
+                Assert.assertEquals(91, registrations.size());
+                //Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:47+01:00"), registrations.get(0).getRegistrationFrom());
+                //Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:51+01:00"), registrations.get(0).getRegistrationTo());
+                //Assert.assertEquals(123, registrations.size());
             }
         } finally {
             transaction.rollback();

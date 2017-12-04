@@ -67,44 +67,45 @@ public class Industry extends UnversionedEntity {
 
     //----------------------------------------------------
 
-    private static HashMap<String, Industry> industryCache = new HashMap<>();
+    private static HashMap<String, Long> industryCache = new HashMap<>();
 
     static {
         QueryManager.addCache(industryCache);
     }
 
-    private static boolean prepopulated = false;
-
-    public static void prepopulateCache(Session session) {
-        log.debug("Prepopulating industry cache");
-        List<Industry> industries = QueryManager.getAllItems(session, Industry.class);
-        for (Industry industry : industries) {
-            industryCache.put(industry.industryCode, industry);
+    public static void initializeCache(Session session) {
+        if (industryCache.isEmpty()) {
+            log.debug("Prepopulating industry cache");
+            List<Industry> industries = QueryManager.getAllItems(session, Industry.class);
+            for (Industry industry : industries) {
+                industryCache.put(industry.industryCode, industry.getId());
+            }
+            log.debug("industry cache contains " + industryCache.size() + " nodes");
         }
-        log.debug("industryCache contains "+industryCache.size()+" nodes");
-        prepopulated = true;
     }
 
     public static Industry getIndustry(String branchekode, String branchetekst, Session session) {
         if (branchekode != null) {
-            Industry industry = industryCache.get(branchekode);
+            initializeCache(session);
+            Industry industry = null;
+            Long id = industryCache.get(branchekode);
+            if (id != null) {
+                industry = session.get(Industry.class, id);
+            }
             if (industry == null) {
-                log.debug("Industry code "+branchekode+" not found in cache");
-                if (!prepopulated) {
-                    log.debug("Querying database");
-                    industry = QueryManager.getItem(session, Industry.class, Collections.singletonMap(DB_FIELD_CODE, branchekode));
-                }
-                if (industry == null) {
-                    log.debug("Not found; creating new");
-                    industry = new Industry();
-                    industry.setIndustryCode(branchekode);
-                    industry.setIndustryText(branchetekst);
-                    session.save(industry);
-                }
-                industryCache.put(branchekode, industry);
+                log.debug("Industry code "+branchekode+" not found in cache, querying database");
+                industry = QueryManager.getItem(session, Industry.class, Collections.singletonMap(DB_FIELD_CODE, branchekode));
+            }
+            if (industry == null) {
+                log.debug("Industry "+branchekode+" not found; creating new");
+                industry = new Industry();
+                industry.setIndustryCode(branchekode);
+                industry.setIndustryText(branchetekst);
+                session.save(industry);
             } else {
                 log.debug("Industry "+branchekode+" found in cache ("+industry.getId()+")");
             }
+            industryCache.put(branchekode, industry.getId());
             return industry;
         } else {
             return null;

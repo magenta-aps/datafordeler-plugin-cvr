@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.magenta.datafordeler.core.database.*;
 import dk.magenta.datafordeler.core.exception.*;
+import dk.magenta.datafordeler.core.io.ImportInputStream;
 import dk.magenta.datafordeler.core.io.ImportMetadata;
 import dk.magenta.datafordeler.core.io.Receipt;
 import dk.magenta.datafordeler.core.plugin.Communicator;
@@ -24,6 +25,7 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -53,6 +55,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
     private static boolean IMPORT_ONLY_CURRENT = false;
     private static boolean DONT_IMPORT_CURRENT = false;
+    private static boolean SAVE_RECORD_DATA = false;
 
     private ScanScrollCommunicator commonFetcher;
 
@@ -174,45 +177,70 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
         Session session = importMetadata.getSession();
         if (session != null) {
-            Industry.prepopulateCache(session);
-            CompanyForm.prepopulateCache(session);
-            CompanyStatus.prepopulateCache(session);
-            Municipality.prepopulateCache(session);
-            PostCode.prepopulateCache(session);
+            Industry.initializeCache(session);
+            CompanyForm.initializeCache(session);
+            CompanyStatus.initializeCache(session);
+            Municipality.initializeCache(session);
+            PostCode.initializeCache(session);
+        }
+        List<File> cacheFiles = null;
+        if (registrationData instanceof ImportInputStream) {
+            cacheFiles = ((ImportInputStream) registrationData).getCacheFiles();
         }
 
         Scanner scanner = new Scanner(registrationData, "UTF-8").useDelimiter(String.valueOf(this.commonFetcher.delimiter));
-        long count = 0;
-        while (scanner.hasNext()) {
-            boolean inter = Thread.currentThread().isInterrupted();
-            System.out.println("running thread id: "+Thread.currentThread().getId());
-            if (inter) break;
-            try {
-                String data = scanner.next();
-
-                if (session == null) {
-                    session = this.getSessionManager().getSessionFactory().openSession();
-                }
-                session.beginTransaction();
+        boolean wrappedInTransaction = importMetadata.isTransactionInProgress();
+        long chunkCount = 0;
+        long startChunk = importMetadata.getStartChunk();
+        try {
+            while (scanner.hasNext()) {
                 try {
-                    this.parseRegistration(this.getObjectMapper().readTree(data), importMetadata, session);
-                } catch (ImportInterruptedException e) {
-                    session.getTransaction().rollback();
-                    session.flush();
-                    session.clear();
-                    throw e;
-                }
-                timer.start(TASK_COMMIT);
-                session.flush();
-                session.clear();
-                session.getTransaction().commit();
-                timer.measure(TASK_COMMIT);
-                log.info("Chunk "+count+":\n"+timer.formatAllTotal());
+                    String data = scanner.next();
+                    if (chunkCount >= startChunk) {
 
-                count++;
-            } catch (IOException e) {
-                throw new DataStreamException(e);
+                        if (session == null) {
+                            session = this.getSessionManager().getSessionFactory().openSession();
+                        }
+
+                        if (!wrappedInTransaction) {
+                            session.beginTransaction();
+                            importMetadata.setTransactionInProgress(true);
+                        }
+                        try {
+                            this.parseRegistration(this.getObjectMapper().readTree(data), importMetadata, session);
+                        } catch (ImportInterruptedException e) {
+                            session.getTransaction().rollback();
+                            importMetadata.setTransactionInProgress(false);
+                            session.clear();
+                            e.setChunk(chunkCount);
+                            throw e;
+                        }
+
+                        timer.start(TASK_COMMIT);
+                        session.flush();
+                        if (!wrappedInTransaction) {
+                            session.getTransaction().commit();
+                            importMetadata.setTransactionInProgress(false);
+                            session.clear();
+                        }
+                        timer.measure(TASK_COMMIT);
+
+                        log.info("Chunk " + chunkCount + ":\n" + timer.formatAllTotal());
+                    }
+                    chunkCount++;
+                } catch (IOException e) {
+                    throw new DataStreamException(e);
+                }
             }
+        } catch (ImportInterruptedException e) {
+            log.info("Import aborted in chunk " + chunkCount);
+            if (e.getChunk() == null) {
+                log.info("That's before our startPoint, propagate startPoint " + startChunk);
+                e.setChunk(startChunk);
+            }
+            e.setFiles(cacheFiles);
+            e.setEntityManager(this);
+            throw e;
         }
         return null;
     }
@@ -233,7 +261,6 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
      * @throws ParseException
      */
     public List<? extends Registration> parseRegistration(JsonNode jsonNode, ImportMetadata importMetadata, Session session) throws DataFordelerException {
-
         ArrayList<Registration> registrations = new ArrayList<>();
 
         if (jsonNode.has("hits")) {
@@ -257,9 +284,9 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             }
         }
 
-        this.checkInterrupt();
 
         timer.start(TASK_PARSE);
+        this.checkInterrupt(importMetadata);
         if (jsonNode.has("_source")) {
             jsonNode = jsonNode.get("_source");
         }
@@ -276,18 +303,15 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         }
         timer.measure(TASK_PARSE);
 
-        this.checkInterrupt();
 
         timer.start(TASK_FIND_ENTITY);
+        this.checkInterrupt(importMetadata);
         UUID uuid = this.generateUUID(toplevelRecord);
         E entity = null;
         String domain = CvrPlugin.getDomain();
-        if (QueryManager.hasIdentification(uuid, domain)) {
+        if (QueryManager.hasIdentification(session, uuid, domain)) {
             entity = QueryManager.getEntity(session, uuid, this.getEntityClass());
         }
-        //if (entity == null) {
-        //    entity = QueryManager.getEntity(session, uuid, this.getEntityClass());
-        //}
         if (entity == null) {
             log.debug("Creating new Entity");
             entity = this.createBasicEntity(toplevelRecord);
@@ -300,39 +324,25 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         timer.measure(TASK_FIND_ENTITY);
 
 
-        this.checkInterrupt();
 
-        //this.parseRegistration(entity, toplevelRecord.getAll(), session, importMetadata);
-        Collection<R> entityRegistrations = this.parseRegistration(entity, toplevelRecord.getAll(), session, importMetadata);
-        registrations.addAll(entityRegistrations);
-
-        this.checkInterrupt();
-
-        return registrations;
-    }
-
-
-
-    private Collection<R> parseRegistration(E entity, List<CvrBaseRecord> records, Session session, ImportMetadata importMetadata) throws ParseException {
-
+        this.checkInterrupt(importMetadata);
         HashSet<R> entityRegistrations = new HashSet<>();
-        ListHashMap<Bitemporality, CvrBaseRecord> groups = this.sortIntoGroups(records);
-        OffsetDateTime timestamp = OffsetDateTime.now();
+        ListHashMap<Bitemporality, CvrBaseRecord> groups = this.sortIntoGroups(toplevelRecord.getAll());
 
         for (Bitemporality bitemporality : groups.keySet()) {
 
             timer.start(TASK_FIND_REGISTRATIONS);
             List<CvrBaseRecord> group = groups.get(bitemporality);
-            List<R> registrations = entity.findRegistrations(bitemporality.registrationFrom, bitemporality.registrationTo);
+            List<R> entityRegistrationList = entity.findRegistrations(bitemporality.registrationFrom, bitemporality.registrationTo);
             ArrayList<V> effects = new ArrayList<>();
-            for (R registration : registrations) {
+            for (R registration : entityRegistrationList) {
                 V effect = registration.getEffect(bitemporality);
                 if (effect == null) {
                     effect = registration.createEffect(bitemporality);
                 }
                 effects.add(effect);
             }
-            entityRegistrations.addAll(registrations);
+            entityRegistrations.addAll(entityRegistrationList);
             timer.measure(TASK_FIND_REGISTRATIONS);
 
 
@@ -361,15 +371,21 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             }
             timer.measure(TASK_FIND_ITEMS);
 
+            OffsetDateTime timestamp = importMetadata.getImportTime();
             for (CvrBaseRecord record : group) {
                 timer.start(TASK_POPULATE_DATA+" "+record.getClass().getSimpleName());
                 record.populateBaseData(baseData, session, timestamp);
-                //RecordData recordData = new RecordData(timestamp);
-                //recordData.setSourceData(objectMapper.valueToTree(record).toString());
-                //baseData.addRecordData(recordData);
+                baseData.setUpdated(timestamp);
+                if (SAVE_RECORD_DATA) {
+                    RecordData recordData = new RecordData(timestamp);
+                    recordData.setSourceData(objectMapper.valueToTree(record).toString());
+                    baseData.addRecordData(recordData);
+                }
                 timer.measure(TASK_POPULATE_DATA+" "+record.getClass().getSimpleName());
             }
         }
+
+
         timer.start(TASK_SAVE);
         for (R registration : entityRegistrations) {
             registration.setLastImportTime(importMetadata.getImportTime());
@@ -377,7 +393,13 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         }
         session.saveOrUpdate(entity);
         timer.measure(TASK_SAVE);
-        return entityRegistrations;
+
+
+        registrations.addAll(entityRegistrations);
+
+        this.checkInterrupt(importMetadata);
+
+        return registrations;
     }
 
 
@@ -388,17 +410,30 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             // Find the appropriate registration object
             if (IMPORT_ONLY_CURRENT) {
                 if (record.getRegistrationTo() == null && record.getValidTo() == null) {
-                    recordGroups.add(new Bitemporality(record.getRegistrationFrom(), record.getRegistrationTo(), record.getValidFrom(), record.getValidTo()), record);
+                    recordGroups.add(new Bitemporality(roundTime(record.getRegistrationFrom()), roundTime(record.getRegistrationTo()), record.getValidFrom(), record.getValidTo()), record);
                 }
             } else if (DONT_IMPORT_CURRENT) {
                 if (record.getRegistrationTo() != null || record.getValidTo() != null) {
-                    recordGroups.add(new Bitemporality(record.getRegistrationFrom(), record.getRegistrationTo(), record.getValidFrom(), record.getValidTo()), record);
+                    recordGroups.add(new Bitemporality(roundTime(record.getRegistrationFrom()), roundTime(record.getRegistrationTo()), record.getValidFrom(), record.getValidTo()), record);
                 }
             } else {
-                recordGroups.add(new Bitemporality(record.getRegistrationFrom(), record.getRegistrationTo(), record.getValidFrom(), record.getValidTo()), record);
+                recordGroups.add(new Bitemporality(roundTime(record.getRegistrationFrom()), roundTime(record.getRegistrationTo()), record.getValidFrom(), record.getValidTo()), record);
             }
         }
         return recordGroups;
+    }
+
+    /*
+    How far apart must two data points be for us to consider them separate registrations?
+    For now, we say that if they are in the same minute, they're the same registration
+     */
+    private static OffsetDateTime roundTime(OffsetDateTime in) {
+        if (in != null) {
+            //return in.withHour(0).withMinute(0).withSecond(0).withNano(0);
+            //return in.withMinute(0).withSecond(0).withNano(0);
+            return in.withSecond(0).withNano(0);
+        }
+        return null;
     }
 
     @Override
@@ -406,8 +441,8 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         return true;
     }
 
-    private void checkInterrupt() throws ImportInterruptedException {
-        if (Thread.interrupted()) {
+    private void checkInterrupt(ImportMetadata importMetadata) throws ImportInterruptedException {
+        if (importMetadata.getStop()) {
             throw new ImportInterruptedException(new InterruptedException());
         }
     }

@@ -102,46 +102,47 @@ public class CompanyForm extends UnversionedEntity {
 
     //----------------------------------------------------
 
-    private static HashMap<String, CompanyForm> formCache = new HashMap<>();
+    private static HashMap<String, Long> formCache = new HashMap<>();
 
     static {
         QueryManager.addCache(formCache);
     }
 
-    private static boolean prepopulated = false;
-
-    public static void prepopulateCache(Session session) {
-        log.debug("Prepopulating form cache");
-        List<CompanyForm> forms = QueryManager.getAllItems(session, CompanyForm.class);
-        for (CompanyForm companyForm : forms) {
-            formCache.put(companyForm.companyFormCode, companyForm);
+    public static void initializeCache(Session session) {
+        if (formCache.isEmpty()) {
+            log.debug("Prepopulating form cache");
+            List<CompanyForm> municipalities = QueryManager.getAllItems(session, CompanyForm.class);
+            for (CompanyForm form : municipalities) {
+                formCache.put(form.companyFormCode, form.getId());
+            }
+            log.debug("form cache contains " + formCache.size() + " nodes");
         }
-        log.debug("companyFormCache contains "+formCache.size()+" nodes");
-        prepopulated = true;
     }
 
-    public static CompanyForm getForm(String companyFormCode, String shortDescription, String longDescription, String responsibleDataSource, Session session) {
-        if (companyFormCode != null) {
-            CompanyForm form = formCache.get(companyFormCode);
-            if (form == null) {
-                log.debug("Form code "+companyFormCode+" not found in cache");
-                if (!prepopulated) {
-                    log.debug("Querying database");
-                    form = QueryManager.getItem(session, CompanyForm.class, Collections.singletonMap(DB_FIELD_CODE, companyFormCode));
-                }
-                if (form == null) {
-                    log.debug("Not found; creating new");
-                    form = new CompanyForm();
-                    form.setCompanyFormCode(companyFormCode);
-                    form.setShortDescription(shortDescription);
-                    form.setLongDescription(longDescription);
-                    form.setResponsibleDataSource(responsibleDataSource);
-                    session.save(form);
-                }
-                formCache.put(companyFormCode, form);
-            } else {
-                log.debug("Form "+companyFormCode+" found in cache ("+form.getId()+")");
+    public static CompanyForm getForm(String code, String shortDescription, String longDescription, String responsibleDataSource, Session session) {
+        if (code != null) {
+            initializeCache(session);
+            CompanyForm form = null;
+            Long id = formCache.get(code);
+            if (id != null) {
+                form = session.get(CompanyForm.class, id);
             }
+            if (form == null) {
+                log.debug("CompanyForm code "+code+" not found in cache, querying database");
+                form = QueryManager.getItem(session, CompanyForm.class, Collections.singletonMap(DB_FIELD_CODE, code));
+            }
+            if (form == null) {
+                log.debug("CompanyForm "+code+" not found; creating new");
+                form = new CompanyForm();
+                form.setCompanyFormCode(code);
+                form.setShortDescription(shortDescription);
+                form.setLongDescription(longDescription);
+                form.setResponsibleDataSource(responsibleDataSource);
+                session.save(form);
+            } else {
+                log.debug("CompanyForm "+code+" found in cache ("+form.getId()+")");
+            }
+            formCache.put(code, form.getId());
             return form;
         } else {
             return null;
