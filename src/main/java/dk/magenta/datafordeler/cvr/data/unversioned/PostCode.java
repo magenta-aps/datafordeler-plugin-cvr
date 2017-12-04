@@ -64,6 +64,13 @@ public class PostCode extends UnversionedEntity {
 
     //----------------------------------------------------
 
+    /**
+     * To avoid hitting the database every time we need a reference to a PostCode, we keep
+     * a cache of references. This cache is used to get a pointer to the L1 cache, for quick
+     * lookup, and avoids the dreaded "duplicate object" issue in Hibernate (where two queries
+     * return to equal objects, and saving one makes Hibernate complain that there's another
+     * object with this id.
+     */
     private static HashMap<Integer, Long> postCodeCache = new HashMap<>();
 
     static {
@@ -81,6 +88,13 @@ public class PostCode extends UnversionedEntity {
         }
     }
 
+    /**
+     * Obtain a PostCode object, either from cache or from database, if it exists, or creates one if it doesn't.
+     * @param code
+     * @param postDistrict
+     * @param session
+     * @return
+     */
     public static PostCode getPostcode(int code, String postDistrict, Session session) {
         if (code > 0) {
             initializeCache(session);

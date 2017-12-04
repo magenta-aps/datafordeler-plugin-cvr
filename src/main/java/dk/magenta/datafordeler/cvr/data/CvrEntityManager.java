@@ -172,6 +172,13 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         return this.log;
     }
 
+    /**
+     * Takes a stream of data and parses it into
+     * @param registrationData
+     * @param importMetadata
+     * @return
+     * @throws DataFordelerException
+     */
     @Override
     public List<? extends Registration> parseRegistration(InputStream registrationData, ImportMetadata importMetadata) throws DataFordelerException {
 

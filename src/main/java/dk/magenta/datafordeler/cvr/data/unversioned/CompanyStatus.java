@@ -46,6 +46,13 @@ public class CompanyStatus extends UnversionedEntity {
 
     //--------------------------------------------------------------------------
 
+    /**
+     * To avoid hitting the database every time we need a reference to a CompanyStatus, we keep
+     * a cache of references. This cache is used to get a pointer to the L1 cache, for quick
+     * lookup, and avoids the dreaded "duplicate object" issue in Hibernate (where two queries
+     * return to equal objects, and saving one makes Hibernate complain that there's another
+     * object with this id.
+     */
     private static HashMap<String, Long> statusCache = new HashMap<>();
 
     private static boolean prepopulated = false;
@@ -65,7 +72,12 @@ public class CompanyStatus extends UnversionedEntity {
         }
     }
 
-
+    /**
+     * Obtain a CompanyStatus object, either from cache or from database, if it exists, or creates one if it doesn't.
+     * @param statusText
+     * @param session
+     * @return
+     */
     public static CompanyStatus getStatus(String statusText, Session session) {
         if (statusText != null) {
             initializeCache(session);

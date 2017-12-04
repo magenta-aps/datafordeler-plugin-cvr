@@ -102,6 +102,13 @@ public class CompanyForm extends UnversionedEntity {
 
     //----------------------------------------------------
 
+    /**
+     * To avoid hitting the database every time we need a reference to a CompanyForm, we keep
+     * a cache of references. This cache is used to get a pointer to the L1 cache, for quick
+     * lookup, and avoids the dreaded "duplicate object" issue in Hibernate (where two queries
+     * return to equal objects, and saving one makes Hibernate complain that there's another
+     * object with this id.
+     */
     private static HashMap<String, Long> formCache = new HashMap<>();
 
     static {
@@ -119,6 +126,15 @@ public class CompanyForm extends UnversionedEntity {
         }
     }
 
+    /**
+     * Obtain a CompanyForm object, either from cache or from database, if it exists, or creates one if it doesn't.
+     * @param code
+     * @param shortDescription
+     * @param longDescription
+     * @param responsibleDataSource
+     * @param session
+     * @return
+     */
     public static CompanyForm getForm(String code, String shortDescription, String longDescription, String responsibleDataSource, Session session) {
         if (code != null) {
             initializeCache(session);
