@@ -8,8 +8,6 @@ import dk.magenta.datafordeler.core.database.Registration;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.io.ImportMetadata;
-import dk.magenta.datafordeler.core.plugin.EntityManager;
-import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntityManager;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
@@ -69,7 +67,7 @@ public class ParseTest {
             for (JsonNode item : itemList) {
                 String type = item.get("_type").asText();
                 CompanyEntityManager entityManager = (CompanyEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-                List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"), importMetadata, session);
+                List<? extends Registration> registrations = entityManager.parseData(item.get("_source").get("Vrvirksomhed"), importMetadata, session);
                 System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations.get(0).getEntity()));
 
                 Collections.sort(registrations);
@@ -101,7 +99,7 @@ public class ParseTest {
             for (JsonNode item : itemList) {
                 String type = item.get("_type").asText();
                 CompanyUnitEntityManager entityManager = (CompanyUnitEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-                List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("VrproduktionsEnhed"), importMetadata, session);
+                List<? extends Registration> registrations = entityManager.parseData(item.get("_source").get("VrproduktionsEnhed"), importMetadata, session);
                 System.out.println("registrations.size: " + registrations.size());
                 System.out.println(objectMapper.writeValueAsString(registrations));
             }
@@ -127,7 +125,7 @@ public class ParseTest {
             for (JsonNode item : itemList) {
                 String type = item.get("_type").asText();
                 ParticipantEntityManager entityManager = (ParticipantEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-                List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson"), importMetadata, session);
+                List<? extends Registration> registrations = entityManager.parseData(item.get("_source").get("Vrdeltagerperson"), importMetadata, session);
                 System.out.println("registrations.size: " + registrations.size());
                 System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations));
                 Assert.assertEquals(4, registrations.size());

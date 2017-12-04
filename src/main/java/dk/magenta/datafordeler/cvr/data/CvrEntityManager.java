@@ -34,6 +34,8 @@ import java.util.*;
 
 /**
  * Created by lars on 29-05-17.
+ * Base EntityManager for CVR, implementing shared methods for the Company, CompanyUnit and Participant EntityManagers.
+ * In particular, defines the flow of how data is imported.
  */
 @Component
 public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrRegistration<E, R, V>, V extends CvrEffect, D extends CvrData<V, D>, T extends CvrEntityRecord>
@@ -173,14 +175,16 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
     }
 
     /**
-     * Takes a stream of data and parses it into
+     * Takes a stream of data, parses it in chunks, and saves it to the database.
+     * The Stream is read in chunks (separated by newline), each chunk expected to be a properly formatted JSON object.
+     * In accordance with the flow laid out in Pull, an ImportInterruptedException will be thrown if the importMetadata signals an orderly halt
      * @param registrationData
      * @param importMetadata
      * @return
      * @throws DataFordelerException
      */
     @Override
-    public List<? extends Registration> parseRegistration(InputStream registrationData, ImportMetadata importMetadata) throws DataFordelerException {
+    public List<? extends Registration> parseData(InputStream registrationData, ImportMetadata importMetadata) throws DataFordelerException {
 
         Session session = importMetadata.getSession();
         if (session != null) {
@@ -214,7 +218,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                             importMetadata.setTransactionInProgress(true);
                         }
                         try {
-                            this.parseRegistration(this.getObjectMapper().readTree(data), importMetadata, session);
+                            this.parseData(this.getObjectMapper().readTree(data), importMetadata, session);
                         } catch (ImportInterruptedException e) {
                             session.getTransaction().rollback();
                             importMetadata.setTransactionInProgress(false);
@@ -261,13 +265,20 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
     protected abstract D createDataItem();
 
     /**
-     * Parse an incoming JsonNode into registrations (and save them)
-     * Must be idempotent: Running a second time with the same input should not result in new data
+     * Parse an incoming JsonNode containing CVR data. A node may be a collection of nodes, in which case
+     * this method recurses to handle each node separately.
+     * Must be idempotent: Running a second time with the same input should not result in new data added to the database
+     *
+     * The input data for a given entity (e.g. a company) is parsed into a collection of records (instances of subclasses of CvrRecord),
+     * then sorted into buckets sharing bitemporality. For each unique bitemporality (representing one or more records),
+     * a list of registrations and effects are found and/or created, and one basedata item (instance of subclass of CvrData)
+     * is found or created, wired to the registrations and effects, and populated with all records in the bucket.
+     *
      * @param jsonNode JSON object containing one or more parseable entities from the CVR data source
      * @return A list of registrations that have been saved to the database
      * @throws ParseException
      */
-    public List<? extends Registration> parseRegistration(JsonNode jsonNode, ImportMetadata importMetadata, Session session) throws DataFordelerException {
+    public List<? extends Registration> parseData(JsonNode jsonNode, ImportMetadata importMetadata, Session session) throws DataFordelerException {
         ArrayList<Registration> registrations = new ArrayList<>();
 
         if (jsonNode.has("hits")) {
@@ -283,8 +294,8 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                 // We have a list of results
 
                 for (JsonNode item : jsonNode) {
-                    registrations.addAll(this.parseRegistration(item, importMetadata, session));
-                    //this.parseRegistration(item, importMetadata, session);
+                    registrations.addAll(this.parseData(item, importMetadata, session));
+                    //this.parseData(item, importMetadata, session);
                 }
 
                 return registrations;
@@ -409,7 +420,11 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         return registrations;
     }
 
-
+    /**
+     * Sorts a collection of records into buckets sharing bitemporality
+     * @param records
+     * @return
+     */
     public ListHashMap<Bitemporality, CvrBaseRecord> sortIntoGroups(Collection<CvrBaseRecord> records) {
         // Sort the records into groups that share bitemporality
         ListHashMap<Bitemporality, CvrBaseRecord> recordGroups = new ListHashMap<>();
@@ -430,9 +445,14 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         return recordGroups;
     }
 
-    /*
-    How far apart must two data points be for us to consider them separate registrations?
-    For now, we say that if they are in the same minute, they're the same registration
+    /**
+     * Internal rounding of timestamps, for determining how far apart two data points
+     * must be for us to consider them separate registrations and effects.
+     * Often, data points may be separated by less than one second, but it would be ineffective
+     * to store this as two separate registrations, leading to an explosion in data.
+     * It is better to cut off some unnecessary precision to get better performance
+     * As it stands now, if two data points are timestamped in the same minute, we consider
+     * them in the same registration
      */
     private static OffsetDateTime roundTime(OffsetDateTime in) {
         if (in != null) {
@@ -443,6 +463,12 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         return null;
     }
 
+    /**
+     * This class saves to the database during import, again to achieve better performance,
+     * instead of returning potentially millions of unsaved objects for others to save.
+     * (Which quickly fills up the heap, leading to OutOfMemory errors)
+     * @return true
+     */
     @Override
     public boolean handlesOwnSaves() {
         return true;

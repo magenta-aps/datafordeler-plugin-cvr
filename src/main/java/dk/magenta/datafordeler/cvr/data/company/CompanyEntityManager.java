@@ -8,7 +8,6 @@ import dk.magenta.datafordeler.core.exception.DataStreamException;
 import dk.magenta.datafordeler.core.exception.HttpStatusException;
 import dk.magenta.datafordeler.core.fapi.FapiService;
 import dk.magenta.datafordeler.core.plugin.ScanScrollCommunicator;
-import dk.magenta.datafordeler.core.util.InputStreamReader;
 import dk.magenta.datafordeler.cvr.CvrRegisterManager;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfiguration;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfigurationManager;
@@ -29,6 +28,8 @@ import java.util.*;
 
 /**
  * Created by lars on 16-05-17.
+ * Company-specific EntityManager, specifying various settings that methods in the superclass
+ * will use to import data.
  */
 @Component
 public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, CompanyRegistration, CompanyEffect, CompanyBaseData, CompanyRecord> {

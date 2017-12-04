@@ -44,7 +44,6 @@ import java.io.InputStream;
 import java.time.OffsetDateTime;
 import java.util.*;
 
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -86,7 +85,7 @@ public class QueryTest {
         JsonNode itemList = root.get("hits").get("hits");
         Assert.assertTrue(itemList.isArray());
         for (JsonNode item : itemList) {
-            companyEntityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"), importMetadata, importMetadata.getSession());
+            companyEntityManager.parseData(item.get("_source").get("Vrvirksomhed"), importMetadata, importMetadata.getSession());
         }
     }
 
@@ -96,7 +95,7 @@ public class QueryTest {
         JsonNode itemList = root.get("hits").get("hits");
         Assert.assertTrue(itemList.isArray());
         for (JsonNode item : itemList) {
-            companyUnitEntityManager.parseRegistration(item.get("_source").get("VrproduktionsEnhed"), importMetadata, importMetadata.getSession());
+            companyUnitEntityManager.parseData(item.get("_source").get("VrproduktionsEnhed"), importMetadata, importMetadata.getSession());
         }
     }
 
@@ -106,7 +105,7 @@ public class QueryTest {
         JsonNode itemList = root.get("hits").get("hits");
         Assert.assertTrue(itemList.isArray());
         for (JsonNode item : itemList) {
-            participantEntityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson"), importMetadata, importMetadata.getSession());
+            participantEntityManager.parseData(item.get("_source").get("Vrdeltagerperson"), importMetadata, importMetadata.getSession());
         }
     }
 
