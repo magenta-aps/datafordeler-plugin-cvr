@@ -95,7 +95,7 @@ public class AttributeData extends DetailData implements Comparable<AttributeDat
 
     @JsonProperty(value = IO_FIELD_VALUE)
     @XmlElement(name = IO_FIELD_VALUE)
-    @Column(name = DB_FIELD_VALUE, length = 8192)
+    @Column(name = DB_FIELD_VALUE, length = 8000)
     private String value;
 
     public String getValue() {

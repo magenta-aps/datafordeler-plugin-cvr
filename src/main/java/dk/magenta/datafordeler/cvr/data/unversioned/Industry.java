@@ -67,6 +67,13 @@ public class Industry extends UnversionedEntity {
 
     //----------------------------------------------------
 
+    /**
+     * To avoid hitting the database every time we need a reference to an Industry, we keep
+     * a cache of references. This cache is used to get a pointer to the L1 cache, for quick
+     * lookup, and avoids the dreaded "duplicate object" issue in Hibernate (where two queries
+     * return to equal objects, and saving one makes Hibernate complain that there's another
+     * object with this id.
+     */
     private static HashMap<String, Long> industryCache = new HashMap<>();
 
     static {
@@ -84,28 +91,35 @@ public class Industry extends UnversionedEntity {
         }
     }
 
-    public static Industry getIndustry(String branchekode, String branchetekst, Session session) {
-        if (branchekode != null) {
+    /**
+     * Obtain an Industry object, either from cache or from database, if it exists, or creates one if it doesn't.
+     * @param industryCode
+     * @param industryText
+     * @param session
+     * @return
+     */
+    public static Industry getIndustry(String industryCode, String industryText, Session session) {
+        if (industryCode != null) {
             initializeCache(session);
             Industry industry = null;
-            Long id = industryCache.get(branchekode);
+            Long id = industryCache.get(industryCode);
             if (id != null) {
                 industry = session.get(Industry.class, id);
             }
             if (industry == null) {
-                log.debug("Industry code "+branchekode+" not found in cache, querying database");
-                industry = QueryManager.getItem(session, Industry.class, Collections.singletonMap(DB_FIELD_CODE, branchekode));
+                log.debug("Industry code "+industryCode+" not found in cache, querying database");
+                industry = QueryManager.getItem(session, Industry.class, Collections.singletonMap(DB_FIELD_CODE, industryCode));
             }
             if (industry == null) {
-                log.debug("Industry "+branchekode+" not found; creating new");
+                log.debug("Industry "+industryCode+" not found; creating new");
                 industry = new Industry();
-                industry.setIndustryCode(branchekode);
-                industry.setIndustryText(branchetekst);
+                industry.setIndustryCode(industryCode);
+                industry.setIndustryText(industryText);
                 session.save(industry);
             } else {
-                log.debug("Industry "+branchekode+" found in cache ("+industry.getId()+")");
+                log.debug("Industry "+industryCode+" found in cache ("+industry.getId()+")");
             }
-            industryCache.put(branchekode, industry.getId());
+            industryCache.put(industryCode, industry.getId());
             return industry;
         } else {
             return null;

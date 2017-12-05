@@ -21,11 +21,38 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Set;
 
+/**
+ * A class for formatting a CompanyEntity to JSON, for FAPI output. The data hierarchy
+ * under a Company is sorted into this format:
+ * {
+ *     "UUID": <company uuid>
+ *     "CVRNummer": <company cvr number>
+ *     "id": {
+ *         "domaene": <company domain>
+ *     },
+ *     registreringer: [
+ *          {
+ *              "registreringFra": <registrationFrom>,
+ *              "registreringTil": <registrationTo>,
+ *              "virksomhedsnavn": [
+ *              {
+ *                  "navn": <companyName1>
+ *                  "virkningFra": <effectFrom1>
+ *                  "virkningTil": <effectTo1>
+ *              },
+ *              {
+ *                  "navn": <companyName2>
+ *                  "virkningFra": <effectFrom2>
+ *                  "virkningTil": <effectTo2>
+ *              }
+ *              ]
+ *          }
+ *     ]
+ * }
+ */
 public class CompanyOutputWrapper extends OutputWrapper<CompanyEntity> {
 
     private ObjectMapper objectMapper;
-
-    HashMap<Long, ObjectNode> dataObjectCache = new HashMap<>();
 
     @Override
     public Object wrapResult(CompanyEntity input) {
@@ -59,8 +86,6 @@ public class CompanyOutputWrapper extends OutputWrapper<CompanyEntity> {
                 "registreringTil",
                 input.getRegistrationTo() != null ? input.getRegistrationTo().toString() : null
         );
-
-        ArrayNode effectArray = objectMapper.createArrayNode();
 
         for (CompanyEffect virkning : input.getEffects()) {
 
@@ -275,54 +300,4 @@ public class CompanyOutputWrapper extends OutputWrapper<CompanyEntity> {
         return unitLinkNode;
     }
 
-
-
-
-    public class NodeWrapper {
-        private ObjectNode node;
-
-        public NodeWrapper(ObjectNode node) {
-            this.node = node;
-        }
-
-        public ObjectNode getNode() {
-            return this.node;
-        }
-
-        public void put(String key, Boolean value) {
-            if (value != null) {
-                this.node.put(key, value);
-            }
-        }
-        public void put(String key, Short value) {
-            if (value != null) {
-                this.node.put(key, value);
-            }
-        }
-        public void put(String key, Integer value) {
-            if (value != null) {
-                this.node.put(key, value);
-            }
-        }
-        public void put(String key, Long value) {
-            if (value != null) {
-                this.node.put(key, value);
-            }
-        }
-        public void put(String key, String value) {
-            if (value != null) {
-                this.node.put(key, value);
-            }
-        }
-        public void set(String key, JsonNode value) {
-            if (value != null) {
-                this.node.set(key, value);
-            }
-        }
-        public void putPOJO(String key, Object value) {
-            if (value != null) {
-                this.node.putPOJO(key, value);
-            }
-        }
-    }
 }
