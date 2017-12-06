@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -122,6 +123,7 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
         CvrConfiguration configuration = this.configurationManager.getConfiguration();
 
         String schema = CompanyEntity.schema;
+
         eventCommunicator.setUsername(configuration.getUsername(schema));
         eventCommunicator.setPassword(configuration.getPassword(schema));
         eventCommunicator.setThrottle(0);
@@ -142,8 +144,8 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
             requestBody += "}," +
                     "\"filter\": {" +
                     "\"range\": {" +
-                    "\"Vrvirksomhed.sidstIndlaest\": {" +
-                    "\"gte\": \"2015-05-01\"" +
+                    "\"Vrvirksomhed.sidstOpdateret\": {" +
+                    "\"gte\": \""+since.format(DateTimeFormatter.ISO_LOCAL_DATE)+"\"" +
                     "}" +
                     "}" +
                     "}";
