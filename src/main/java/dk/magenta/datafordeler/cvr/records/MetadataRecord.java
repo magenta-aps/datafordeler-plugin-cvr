@@ -20,11 +20,11 @@ public class MetadataRecord {
         return this.aggregateStatus;
     }
 
-    public List<CvrBaseRecord> extractRecords(CompanyRecord companyRecord) {
+    public List<CvrBaseRecord> extractRecords(CompanyRecord companyRecord, boolean noDuplicates) {
         /* A subset of data from CVR will store items like 'status' in the metadata object, so we need to retrieve it and reconstruct its assumed bitemporality */
         List<CvrBaseRecord> records = new ArrayList<>();
         CompanyStatusRecord statusRecord = this.getCompanyStatusRecord(companyRecord);
-        if (statusRecord != null) {
+        if (statusRecord != null && (!noDuplicates || companyRecord.getCompanyStatus().isEmpty())) {
             records.add(statusRecord);
         }
         return records;
