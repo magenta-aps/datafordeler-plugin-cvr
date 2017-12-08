@@ -7,6 +7,10 @@ import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
 import org.hibernate.Session;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -121,6 +125,9 @@ public class CompanyRecord extends CvrEntityRecord {
     @JsonProperty(value = "livsforloeb")
     private List<LifecycleRecord> lifecycle;
 
+    public List<LifecycleRecord> getLifecycle() {
+        return this.lifecycle;
+    }
 
     @JsonProperty(value = "hovedbranche")
     private List<CompanyIndustryRecord> primaryIndustry;
@@ -194,6 +201,9 @@ public class CompanyRecord extends CvrEntityRecord {
     @JsonProperty(value = "deltagerRelation")
     private List<CompanyParticipantRelationRecord> participants;
 
+    @JsonProperty(value = "virksomhedMetadata")
+    private MetadataRecord metadata;
+
     @JsonIgnore
     @Override
     public List<CvrBaseRecord> getAll() {
@@ -264,6 +274,11 @@ public class CompanyRecord extends CvrEntityRecord {
         if (this.participants != null) {
             list.addAll(this.participants);
         }
+
+        if (this.metadata != null) {
+            list.addAll(this.metadata.extractRecords(this));
+        }
+
         return list;
     }
 
