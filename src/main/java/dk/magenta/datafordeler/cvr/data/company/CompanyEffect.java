@@ -13,6 +13,7 @@ import java.time.OffsetDateTime;
  */
 @Entity
 @Table(name="cvr_company_effect", indexes = {
+        @Index(name = "cvr_company_effect_registration", columnList = "registration_id"),
         @Index(name = "cvr_company_effect_from", columnList = "effectFrom"),
         @Index(name = "cvr_company_effect_to", columnList = "effectTo")
 })

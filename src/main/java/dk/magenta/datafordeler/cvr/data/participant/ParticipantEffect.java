@@ -12,6 +12,7 @@ import java.time.OffsetDateTime;
  */
 @javax.persistence.Entity
 @Table(name="cvr_participant_effect", indexes = {
+        @Index(name = "cvr_participant_effect_registration", columnList = "registration_id"),
         @Index(name = "cvr_participant_effect_from", columnList = "effectFrom"),
         @Index(name = "cvr_participant_effect_to", columnList = "effectTo")
 })
