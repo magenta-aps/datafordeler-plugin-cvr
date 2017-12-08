@@ -146,7 +146,11 @@ public class CvrRegisterManager extends RegisterManager {
         session.close();
 
         CvrConfiguration configuration = this.configurationManager.getConfiguration();
-        switch (configuration.getRegisterType(schema)) {
+        CvrConfiguration.RegisterType registerType = configuration.getRegisterType(schema);
+        if (registerType == null) {
+            registerType = CvrConfiguration.RegisterType.DISABLED;
+        }
+        switch (registerType) {
             case DISABLED:
                 break;
             case REMOTE_HTTP:
