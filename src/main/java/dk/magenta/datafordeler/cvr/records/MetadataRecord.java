@@ -23,25 +23,37 @@ public class MetadataRecord {
     public List<CvrBaseRecord> extractRecords(CompanyRecord companyRecord, boolean noDuplicates) {
         /* A subset of data from CVR will store items like 'status' in the metadata object, so we need to retrieve it and reconstruct its assumed bitemporality */
         List<CvrBaseRecord> records = new ArrayList<>();
+        if (!noDuplicates || companyRecord.getCompanyStatus().isEmpty()) {
         CompanyStatusRecord statusRecord = this.getCompanyStatusRecord(companyRecord);
-        if (statusRecord != null && (!noDuplicates || companyRecord.getCompanyStatus().isEmpty())) {
+            if (statusRecord != null) {
             records.add(statusRecord);
+            }
         }
         return records;
     }
 
     private CompanyStatusRecord getCompanyStatusRecord(CompanyRecord companyRecord) {
         String status = this.getAggregateStatus();
-        LocalDate latestLifecycleStart = LocalDate.MIN;
-        LocalDate latestLifecycleEnd = LocalDate.MIN;
-        List<LifecycleRecord> lifecycleRecords = companyRecord.getLifecycle();
-        if (lifecycleRecords != null && !lifecycleRecords.isEmpty()) {
-            for (LifecycleRecord lifecycleRecord : lifecycleRecords) {
-                if (lifecycleRecord.getValidFrom() != null && lifecycleRecord.getValidFrom().isAfter(latestLifecycleStart)) {
-                    latestLifecycleStart = lifecycleRecord.getValidFrom();
+        LocalDate latestStart = LocalDate.MIN;
+        LocalDate latestEnd = LocalDate.MIN;
+        ArrayList<CvrBaseRecord> timeRecords = new ArrayList<>();
+        if (companyRecord.getLifecycle() != null) {
+            timeRecords.addAll(companyRecord.getLifecycle());
                 }
-                if (latestLifecycleEnd != null && (lifecycleRecord.getValidTo() == null || lifecycleRecord.getValidTo().isAfter(latestLifecycleEnd))) {
-                    latestLifecycleEnd = lifecycleRecord.getValidTo();
+        if (timeRecords.isEmpty()) {
+            if (companyRecord.getNames() != null) {
+                timeRecords.addAll(companyRecord.getNames());
+            }
+        }
+
+
+        if (!timeRecords.isEmpty()) {
+            for (CvrBaseRecord timeRecord : timeRecords) {
+                if (timeRecord.getValidFrom() != null && timeRecord.getValidFrom().isAfter(latestStart)) {
+                    latestStart = timeRecord.getValidFrom();
+                }
+                if (latestEnd != null && (timeRecord.getValidTo() == null || timeRecord.getValidTo().isAfter(latestEnd))) {
+                    latestEnd = timeRecord.getValidTo();
                 }
             }
         }
@@ -51,14 +63,17 @@ public class MetadataRecord {
             CvrRecordPeriod recordPeriod = new CvrRecordPeriod();
             LocalDate statusUpdatedTime;
             if (status.equalsIgnoreCase("ophørt")) {
-                statusUpdatedTime = latestLifecycleEnd;
+                statusUpdatedTime = latestEnd;
             } else {
-                statusUpdatedTime = latestLifecycleStart;
+                statusUpdatedTime = latestStart;
+            }
+            if (statusUpdatedTime == LocalDate.MIN) {
+                statusUpdatedTime = null;
             }
             recordPeriod.setValidFrom(statusUpdatedTime);
             recordPeriod.setValidTo(null);
             statusRecord.setValidity(recordPeriod);
-            statusRecord.setLastUpdated(OffsetDateTime.of(statusUpdatedTime, LocalTime.MIDNIGHT, ZoneOffset.UTC));
+            statusRecord.setLastUpdated(statusUpdatedTime != null ? OffsetDateTime.of(statusUpdatedTime, LocalTime.MIDNIGHT, ZoneOffset.UTC) : null);
             return statusRecord;
         }
         return null;
