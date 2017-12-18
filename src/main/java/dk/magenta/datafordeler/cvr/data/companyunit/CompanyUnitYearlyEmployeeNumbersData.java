@@ -1,7 +1,6 @@
 package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.shared.YearlyEmployeeNumbersData;
 
 import javax.persistence.Entity;

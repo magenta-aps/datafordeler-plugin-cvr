@@ -10,7 +10,6 @@ import org.hibernate.annotations.CascadeType;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
-
 import java.util.Set;
 
 import static dk.magenta.datafordeler.cvr.data.unversioned.Address.DB_FIELD_ROADCODE;
