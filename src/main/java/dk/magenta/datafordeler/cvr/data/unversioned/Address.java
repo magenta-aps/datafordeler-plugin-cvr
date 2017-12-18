@@ -17,7 +17,7 @@ import static dk.magenta.datafordeler.cvr.data.unversioned.Address.DB_FIELD_ROAD
 import static dk.magenta.datafordeler.cvr.data.unversioned.Address.DB_FIELD_ROADNAME;
 
 /**
- * Created by lars on 14-06-17.
+ * Storage of a company's address
  */
 @Entity
 @Table(name = "cvr_address", indexes = {

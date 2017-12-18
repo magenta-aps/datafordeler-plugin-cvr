@@ -8,7 +8,8 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 /**
- * Created by lars on 16-05-17.
+ * Representation of effects in the bitemporal model for participants.
+ * @see dk.magenta.datafordeler.core.database.Entity
  */
 @javax.persistence.Entity
 @Table(name="cvr_participant_effect", indexes = {

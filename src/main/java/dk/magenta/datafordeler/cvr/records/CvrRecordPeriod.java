@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
 
 /**
- * Created by lars on 26-06-17.
  * The object representation of a “periode” JSON object from the source
  */
 public class CvrRecordPeriod {

@@ -16,7 +16,8 @@ import static dk.magenta.datafordeler.cvr.data.company.CompanyEntity.DB_FIELD_CV
 import static dk.magenta.datafordeler.cvr.data.company.CompanyEntity.IO_FIELD_CVR;
 
 /**
- * Created by lars on 16-05-17.
+ * An Entity representing a company. Bitemporal data is structured as described
+ * in {@link dk.magenta.datafordeler.core.database.Entity}
  */
 @javax.persistence.Entity
 @Table(name="cvr_company_entity", indexes = {

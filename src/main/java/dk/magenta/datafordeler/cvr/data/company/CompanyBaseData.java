@@ -20,9 +20,8 @@ import java.lang.reflect.Field;
 import java.time.OffsetDateTime;
 import java.util.*;
 
-
 /**
- * Created by lars on 12-06-17.
+ * Base class for Company data, linking to Effects and delegating storage to referred classes
  */
 @Entity
 @Table(name="cvr_company_basedata", indexes = {

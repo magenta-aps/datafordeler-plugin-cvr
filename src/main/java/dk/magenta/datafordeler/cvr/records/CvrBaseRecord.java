@@ -10,7 +10,6 @@ import org.hibernate.Session;
 import java.time.OffsetDateTime;
 
 /**
- * Created by lars on 26-06-17.
  * A superclass for data-holding records, able to populate Cvr DataItems (thus updating the DB)
  */
 public abstract class CvrBaseRecord extends CvrRecord {

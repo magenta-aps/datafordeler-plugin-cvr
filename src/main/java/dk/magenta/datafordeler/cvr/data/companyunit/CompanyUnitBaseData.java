@@ -17,7 +17,7 @@ import java.time.OffsetDateTime;
 import java.util.*;
 
 /**
- * Created by lars on 12-06-17.
+ * Base class for Company Unit data, linking to Effects and delegating storage to referred classes
  */
 @Entity
 @Table(name="cvr_companyunit_basedata", indexes = {

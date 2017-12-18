@@ -8,7 +8,7 @@ import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import org.hibernate.Session;
 
 /**
- * Created by lars on 26-06-17.
+ * Record for Company, CompanyUnit or Participant attribute values.
  */
 public class AttributeValueRecord extends CvrBaseRecord {
 

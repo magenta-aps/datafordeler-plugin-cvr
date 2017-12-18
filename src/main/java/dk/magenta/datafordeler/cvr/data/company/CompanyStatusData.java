@@ -12,7 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by lars on 16-05-17.
+ * Storage for data on a Company's status
+ * referenced by {@link dk.magenta.datafordeler.cvr.data.company.CompanyBaseData}
  */
 @Entity
 @Table(name="cvr_company_status")

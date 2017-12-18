@@ -10,7 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by lars on 16-05-17.
+ * Storage for data on a Company's credit text,
+ * referenced by {@link dk.magenta.datafordeler.cvr.data.company.CompanyBaseData}
  */
 @Entity
 @Table(name = "cvr_company_credit", indexes = {

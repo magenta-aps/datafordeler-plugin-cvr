@@ -11,7 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by lars on 09-06-17.
+ * Storage for data on a Participant's classification
+ * referenced by {@link dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData}
  */
 @MappedSuperclass
 public abstract class ParticipantClassification extends UnversionedEntity {

@@ -29,9 +29,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.UUID;
 
-/**
- * Created by lars on 10-06-17.
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = Application.class)
 public class ModelTest {

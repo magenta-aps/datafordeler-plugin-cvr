@@ -28,7 +28,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
- * Created by lars on 16-05-17.
  * Company-specific EntityManager, specifying various settings that methods in the superclass
  * will use to import data.
  */

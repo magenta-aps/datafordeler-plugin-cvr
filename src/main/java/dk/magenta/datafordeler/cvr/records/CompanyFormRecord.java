@@ -6,7 +6,7 @@ import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import org.hibernate.Session;
 
 /**
- * Created by lars on 26-06-17.
+ * Record for Company form.
  */
 public class CompanyFormRecord extends CvrBaseRecord {
 

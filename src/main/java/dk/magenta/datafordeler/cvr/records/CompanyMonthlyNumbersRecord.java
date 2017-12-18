@@ -7,7 +7,7 @@ import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import org.hibernate.Session;
 
 /**
- * Created by lars on 26-06-17.
+ * Record for Company and CompanyUnit monthly employee numbers.
  */
 public class CompanyMonthlyNumbersRecord extends CompanyNumbersRecord {
 

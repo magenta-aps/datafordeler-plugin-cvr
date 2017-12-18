@@ -18,7 +18,7 @@ import java.util.List;
 import static dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm.DB_FIELD_CODE;
 
 /**
- * Created by lars on 26-01-15.
+ * Nontemporal storage of a company form.
  */
 @Entity
 @Table(name = "cvr_form", indexes = {

@@ -6,7 +6,7 @@ import dk.magenta.datafordeler.cvr.data.unversioned.CompanyStatus;
 import org.hibernate.Session;
 
 /**
- * Created by lars on 26-06-17.
+ * Record for Company status data.
  */
 public class CompanyStatusRecord extends CvrBaseRecord {
 

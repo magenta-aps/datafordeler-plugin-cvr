@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Created by lars on 30-06-17.
+ * Record for Company and CompanyUnit participant relations.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyParticipantRelationRecord extends CvrBaseRecord {

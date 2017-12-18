@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by lars on 26-06-17.
+ * Class holding attributes for companies and company units.
  */
 @Entity
 @Table(name = "cvr_company_attributes")

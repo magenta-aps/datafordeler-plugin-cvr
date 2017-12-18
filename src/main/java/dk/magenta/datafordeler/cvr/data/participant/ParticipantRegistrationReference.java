@@ -5,9 +5,6 @@ import dk.magenta.datafordeler.core.database.RegistrationReference;
 
 import java.net.URI;
 
-/**
- * Created by lars on 16-05-17.
- */
 public class ParticipantRegistrationReference implements RegistrationReference {
 
     @JsonProperty("checksum")

@@ -12,7 +12,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by lars on 15-06-17.
+ * Storage for data on a Company's or CompanyUnit's participants
+ * referenced by {@link dk.magenta.datafordeler.cvr.data.company.CompanyBaseData}
+ * and {@link dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData}
  */
 @Entity
 @Table(name = "cvr_company_participantlink")
@@ -32,6 +34,5 @@ public class ParticipantLink extends SingleData<Integer> {
 
     @ManyToMany
     private Set<CompanyUnitBaseData> companyUnitBases = new HashSet<>();
-
 
 }

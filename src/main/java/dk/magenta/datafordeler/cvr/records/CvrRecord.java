@@ -9,7 +9,6 @@ import java.time.OffsetDateTime;
 import java.util.Collection;
 
 /**
- * Created by lars on 26-06-17.
  * A CVR record is the object representation of a node in our input data,
  * holding at least some bitemporality, and (in subclasses) some data that take effect within this bitemporality
  */

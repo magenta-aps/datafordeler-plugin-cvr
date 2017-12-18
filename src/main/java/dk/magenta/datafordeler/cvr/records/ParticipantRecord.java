@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Created by lars on 26-06-17.
+ * Base record for Participant data, parsed from JSON into a tree of objects
+ * with this class at the base.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ParticipantRecord extends CvrEntityRecord {

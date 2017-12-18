@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by lars on 15-06-17.
+ * Abstract class for yearly employees.
  */
 @MappedSuperclass
 public abstract class YearlyEmployeeNumbersData extends EmployeeNumbersData implements Comparable<YearlyEmployeeNumbersData> {

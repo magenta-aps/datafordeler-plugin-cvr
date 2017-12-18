@@ -5,7 +5,8 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 
 /**
- * Created by lars on 09-06-17.
+ * Storage for data on a Participant's role
+ * referenced by {@link dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData}
  */
 @Entity
 @Table(

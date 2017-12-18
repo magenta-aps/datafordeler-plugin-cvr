@@ -5,7 +5,7 @@ import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import org.hibernate.Session;
 
 /**
- * Created by lars on 26-06-17.
+ * Record for CompanyUnit associated CVR number.
  */
 public class CompanyLinkRecord extends CvrBaseRecord {
 
