@@ -7,7 +7,6 @@ import dk.magenta.datafordeler.cvr.data.CvrQuery;
 import dk.magenta.datafordeler.cvr.data.shared.AddressData;
 import dk.magenta.datafordeler.cvr.data.shared.BooleanData;
 import dk.magenta.datafordeler.cvr.data.shared.ContactData;
-import dk.magenta.datafordeler.cvr.data.shared.TextData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
