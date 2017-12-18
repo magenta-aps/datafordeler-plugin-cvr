@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.UUID;
 
 /**
- * Record for Participany organization in a relation with a company
+ * Record for one participating organization on a Company or CompanyUnit
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrganizationRecord {

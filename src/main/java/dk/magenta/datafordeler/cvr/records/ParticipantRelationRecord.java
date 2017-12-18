@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.UUID;
 
 /**
- * Created by lars on 26-06-17.
+ * Record for one participant on a Company or CompanyUnit
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ParticipantRelationRecord extends CvrRecord {
