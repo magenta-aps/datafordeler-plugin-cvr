@@ -9,7 +9,8 @@ import javax.persistence.Table;
 import java.util.Collections;
 
 /**
- * Created by lars on 09-06-17.
+ * Storage for data on a Participant's type
+ * referenced by {@link dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData}
  */
 @Entity
 @Table(name = "cvr_participant_type", indexes = {@Index(name = "participantName", columnList = "name")})

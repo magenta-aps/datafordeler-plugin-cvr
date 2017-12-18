@@ -13,7 +13,7 @@ import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 import java.util.*;
 
 /**
- * Created by lars on 19-05-17.
+ * Container for a query for Participants, defining fields and database lookup
  */
 public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
 

@@ -9,7 +9,7 @@ import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 import javax.persistence.*;
 
 /**
- * Created by lars on 16-05-17.
+ * Configuration instance class, holding configuration values in fields
  */
 @javax.persistence.Entity
 @Table(name="cvr_config")

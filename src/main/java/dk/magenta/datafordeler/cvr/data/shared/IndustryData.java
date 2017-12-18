@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by lars on 09-06-17.
+ * Class linking companies & units to industries
  */
 @Entity
 @Table(name="cvr_industrylink")

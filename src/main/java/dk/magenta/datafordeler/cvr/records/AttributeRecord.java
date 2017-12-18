@@ -9,7 +9,9 @@ import org.hibernate.Session;
 import java.util.List;
 
 /**
- * Created by lars on 26-06-17.
+ * Record for Company, CompanyUnit or Participant attributes.
+ * Attributes with a given name may have more than one value, so values are
+ * kept in {@link dk.magenta.datafordeler.cvr.records.AttributeValueRecord}
  */
 public class AttributeRecord extends CvrBaseRecord {
 

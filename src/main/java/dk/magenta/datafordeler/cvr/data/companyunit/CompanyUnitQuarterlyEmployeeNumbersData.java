@@ -12,6 +12,10 @@ import javax.persistence.Table;
 import static dk.magenta.datafordeler.cvr.data.shared.QuarterlyEmployeeNumbersData.DB_FIELD_QUARTER;
 import static dk.magenta.datafordeler.cvr.data.shared.QuarterlyEmployeeNumbersData.DB_FIELD_YEAR;
 
+/**
+ * Storage for data on a Company Unit's quarterly employees
+ * referenced by {@link dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData}
+ */
 @Entity
 @Table(name = "cvr_companyunit_quarterly_employees", indexes = {
         @Index(name = "companyUnitQuarterlyEmployessYear", columnList = DB_FIELD_YEAR),

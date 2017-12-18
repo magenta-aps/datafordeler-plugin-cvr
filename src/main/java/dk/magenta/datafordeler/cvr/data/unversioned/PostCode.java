@@ -18,7 +18,7 @@ import java.util.List;
 import static dk.magenta.datafordeler.cvr.data.unversioned.PostCode.DB_FIELD_CODE;
 
 /**
- * Created by lars on 26-01-15.
+ * Nontemporal storage of a postcode (code + name)
  */
 @Entity
 @Table(name = "cvr_postcode", indexes = {

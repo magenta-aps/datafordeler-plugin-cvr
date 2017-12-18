@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 /**
- * Created by lars on 16-05-17.
  * Datafordeler Plugin to fetch, parse and serve CVR data (data on companies).
  * As with all plugins, it follows the model laid out in the Datafordeler Core
  * project, so it takes care of where to fetch data, how to parse it, how to 

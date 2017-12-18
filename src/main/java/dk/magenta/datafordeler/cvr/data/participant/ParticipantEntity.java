@@ -12,7 +12,8 @@ import javax.xml.bind.annotation.XmlElement;
 import java.util.UUID;
 
 /**
- * Created by lars on 16-05-17.
+ * An Entity representing a participant. Bitemporal data is structured as described
+ * in {@link dk.magenta.datafordeler.core.database.Entity}
  */
 @javax.persistence.Entity
 @Table(name="cvr_participant_entity", indexes = {

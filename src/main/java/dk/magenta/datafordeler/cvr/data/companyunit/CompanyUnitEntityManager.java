@@ -15,9 +15,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.UUID;
 
-/**
- * Created by lars on 16-05-17.
- */
 @Component
 public class CompanyUnitEntityManager extends CvrEntityManager<CompanyUnitEntity, CompanyUnitRegistration, CompanyUnitEffect, CompanyUnitBaseData, CompanyUnitRecord> {
 

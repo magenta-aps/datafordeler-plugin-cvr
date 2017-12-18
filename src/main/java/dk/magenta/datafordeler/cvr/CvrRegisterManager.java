@@ -28,9 +28,6 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-/**
- * Created by lars on 16-05-17.
- */
 @Component
 public class CvrRegisterManager extends RegisterManager {
 

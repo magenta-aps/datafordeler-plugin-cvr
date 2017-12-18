@@ -8,7 +8,7 @@ import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import org.hibernate.Session;
 
 /**
- * Created by lars on 26-06-17.
+ * Record for Company, CompanyUnit and Participant contact information.
  */
 public class ContactRecord extends CvrBaseRecord {
 

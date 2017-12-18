@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by lars on 09-06-17.
+ * Class for Address data
  */
 @Entity
 @Table(name="cvr_company_address")

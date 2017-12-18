@@ -19,7 +19,7 @@ import java.util.List;
 import static dk.magenta.datafordeler.cvr.data.unversioned.Municipality.DB_FIELD_CODE;
 
 /**
- * Created by lars on 26-01-15.
+ * Nontemporal storage of a municipality (code + name).
  */
 @Entity
 @Table(name = "cvr_municipality", indexes = {

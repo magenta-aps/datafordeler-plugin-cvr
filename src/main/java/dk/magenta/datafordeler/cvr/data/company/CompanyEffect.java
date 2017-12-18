@@ -9,7 +9,8 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 /**
- * Created by lars on 16-05-17.
+ * Representation of effects in the bitemporal model for companies.
+ * @see dk.magenta.datafordeler.core.database.Entity
  */
 @Entity
 @Table(name="cvr_company_effect", indexes = {

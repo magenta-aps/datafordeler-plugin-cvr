@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by lars on 16-05-17.
+ * Base class for Participant data, linking to Effects and delegating storage to referred classes
  */
 @javax.persistence.Entity
 @Table(name="cvr_participant_data", indexes = {

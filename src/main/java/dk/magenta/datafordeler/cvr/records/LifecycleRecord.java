@@ -9,7 +9,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 /**
- * Created by lars on 26-06-17.
+ * Record for Company and CompanyUnit lifecycle data.
  */
 public class LifecycleRecord extends CvrBaseRecord {
 

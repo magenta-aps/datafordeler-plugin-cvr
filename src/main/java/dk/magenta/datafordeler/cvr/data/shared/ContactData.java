@@ -16,7 +16,8 @@ import static dk.magenta.datafordeler.cvr.data.shared.ContactData.DB_FIELD_TYPE;
 import static dk.magenta.datafordeler.cvr.data.shared.SingleData.DB_FIELD_VALUE;
 
 /**
- * Created by lars on 16-05-17.
+ * Storage for data on a Company's contact data,
+ * referenced by {@link dk.magenta.datafordeler.cvr.data.company.CompanyBaseData}
  */
 @Entity
 @Table(name = "cvr_company_contact", indexes = {

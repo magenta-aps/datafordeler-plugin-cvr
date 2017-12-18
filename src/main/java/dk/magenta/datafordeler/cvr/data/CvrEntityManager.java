@@ -33,7 +33,6 @@ import java.time.OffsetDateTime;
 import java.util.*;
 
 /**
- * Created by lars on 29-05-17.
  * Base EntityManager for CVR, implementing shared methods for the Company, CompanyUnit and Participant EntityManagers.
  * In particular, defines the flow of how data is imported.
  */

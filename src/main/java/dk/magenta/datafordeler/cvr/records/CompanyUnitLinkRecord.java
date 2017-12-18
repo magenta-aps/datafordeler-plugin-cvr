@@ -11,7 +11,7 @@ import org.hibernate.Session;
 import java.util.UUID;
 
 /**
- * Created by lars on 26-06-17.
+ * Record for Company Unit references.
  */
 public class CompanyUnitLinkRecord extends CvrBaseRecord {
 

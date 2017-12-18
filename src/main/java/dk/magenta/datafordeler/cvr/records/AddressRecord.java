@@ -11,7 +11,7 @@ import dk.magenta.datafordeler.cvr.data.unversioned.PostCode;
 import org.hibernate.Session;
 
 /**
- * Created by lars on 26-06-17.
+ * Record for Company, CompanyUnit and Participant address data.
  */
 public class AddressRecord extends CvrBaseRecord {
 

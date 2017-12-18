@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by lars on 26-06-17.
+ * Abstract record for Company and CompanyUnit employee numbers.
  */
 public abstract class CompanyNumbersRecord extends CvrBaseRecord {
 

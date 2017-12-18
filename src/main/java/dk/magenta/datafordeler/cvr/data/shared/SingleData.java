@@ -11,9 +11,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by lars on 16-05-17.
- */
 @MappedSuperclass
 public abstract class SingleData<T> extends DetailData {
 

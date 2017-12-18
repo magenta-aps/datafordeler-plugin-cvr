@@ -7,9 +7,6 @@ import java.util.Map;
 
 import static dk.magenta.datafordeler.cvr.data.shared.SingleData.DB_FIELD_VALUE;
 
-/**
- * Created by lars on 16-05-17.
- */
 @Entity
 @Table(name = "cvr_integer", indexes = {
         @Index(name = "companyIntegerData", columnList = DB_FIELD_VALUE)

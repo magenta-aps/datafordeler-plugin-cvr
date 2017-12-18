@@ -10,7 +10,8 @@ import javax.xml.bind.annotation.XmlElement;
 import java.util.*;
 
 /**
- * Created by lars on 15-06-17.
+ * Storage for data on a Company's units
+ * referenced by {@link dk.magenta.datafordeler.cvr.data.company.CompanyBaseData}
  */
 @Entity
 @Table(name = "cvr_company_unitlink")
