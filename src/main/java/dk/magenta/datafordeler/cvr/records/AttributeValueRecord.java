@@ -44,11 +44,11 @@ public class AttributeValueRecord extends CvrBaseRecord {
 
     @Override
     public void populateBaseData(ParticipantBaseData baseData, Session session) {
-        /*baseData.addAttribute(
+        baseData.addAttribute(
                 this.parent.getType(),
                 this.parent.getValueType(),
                 this.value,
-                this.parent.getSekvensnummer()
-        );*/
+                this.parent.getSequenceNumber()
+        );
     }
 }
