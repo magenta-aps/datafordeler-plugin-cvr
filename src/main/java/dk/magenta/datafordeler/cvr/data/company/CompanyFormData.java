@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.DetailData;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 
@@ -15,7 +16,7 @@ import java.util.Map;
  */
 @Entity
 @Table(name="cvr_company_form", indexes = {
-        @Index(name = "cvr_company_form_form", columnList = CompanyFormData.DB_FIELD_FORM + "_id")
+        @Index(name = "cvr_company_form_form", columnList = CompanyFormData.DB_FIELD_FORM + DatabaseEntry.REF)
 })
 public class CompanyFormData extends DetailData {
 
@@ -36,7 +37,7 @@ public class CompanyFormData extends DetailData {
     @ManyToOne
     @JsonProperty(value = IO_FIELD_FORM)
     @XmlElement(name = IO_FIELD_FORM)
-    @JoinColumn(name = DB_FIELD_FORM + "_id")
+    @JoinColumn(name = DB_FIELD_FORM + DatabaseEntry.REF)
     private CompanyForm companyForm;
 
     public CompanyForm getCompanyForm() {

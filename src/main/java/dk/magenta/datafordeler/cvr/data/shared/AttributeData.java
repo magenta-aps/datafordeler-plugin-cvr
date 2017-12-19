@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.data.shared;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.DetailData;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
@@ -17,16 +18,16 @@ import java.util.Map;
  */
 @Entity
 @Table(name = "cvr_company_attributes", indexes = {
-        @Index(name = "cvr_attribute_company", columnList = AttributeData.DB_FIELD_COMPANYBASE + "_id"),
-        @Index(name = "cvr_attribute_companyunit", columnList = AttributeData.DB_FIELD_COMPANYUNITBASE + "_id"),
-        @Index(name = "cvr_attribute_participant", columnList = AttributeData.DB_FIELD_PARTICIPANTBASE + "_id")
+        @Index(name = "cvr_attribute_company", columnList = AttributeData.DB_FIELD_COMPANYBASE + DatabaseEntry.REF),
+        @Index(name = "cvr_attribute_companyunit", columnList = AttributeData.DB_FIELD_COMPANYUNITBASE + DatabaseEntry.REF),
+        @Index(name = "cvr_attribute_participant", columnList = AttributeData.DB_FIELD_PARTICIPANTBASE + DatabaseEntry.REF)
 })
 public class AttributeData extends DetailData implements Comparable<AttributeData> {
 
     public static final String DB_FIELD_COMPANYBASE = "companyBaseData";
 
     @ManyToOne(targetEntity = CompanyBaseData.class, optional = true)
-    @JoinColumn(name = DB_FIELD_COMPANYBASE + "_id")
+    @JoinColumn(name = DB_FIELD_COMPANYBASE + DatabaseEntry.REF)
     private CompanyBaseData companyBaseData;
 
     public void setCompanyBaseData(CompanyBaseData companyBaseData) {
@@ -38,7 +39,7 @@ public class AttributeData extends DetailData implements Comparable<AttributeDat
     public static final String DB_FIELD_COMPANYUNITBASE = "companyUnitBaseData";
 
     @ManyToOne(targetEntity = CompanyUnitBaseData.class, optional = true)
-    @JoinColumn(name = DB_FIELD_COMPANYUNITBASE + "_id")
+    @JoinColumn(name = DB_FIELD_COMPANYUNITBASE + DatabaseEntry.REF)
     private CompanyUnitBaseData companyUnitBaseData;
 
     public void setCompanyUnitBaseData(CompanyUnitBaseData companyUnitBaseData) {
@@ -50,7 +51,7 @@ public class AttributeData extends DetailData implements Comparable<AttributeDat
     public static final String DB_FIELD_PARTICIPANTBASE = "participantBaseData";
 
     @ManyToOne(targetEntity = ParticipantBaseData.class, optional = true)
-    @JoinColumn(name = DB_FIELD_PARTICIPANTBASE + "_id")
+    @JoinColumn(name = DB_FIELD_PARTICIPANTBASE + DatabaseEntry.REF)
     private ParticipantBaseData participantBaseData;
 
     public void setParticipantBaseData(ParticipantBaseData participantBaseData) {
