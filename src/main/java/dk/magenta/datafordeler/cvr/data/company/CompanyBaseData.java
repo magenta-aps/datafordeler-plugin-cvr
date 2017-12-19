@@ -662,7 +662,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public static final String DB_FIELD_ATTRIBUTES = "attributeData";
     public static final String IO_FIELD_ATTRIBUTES = "attributter";
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "companyBaseData")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = AttributeData.DB_FIELD_COMPANYBASE)
     @OrderBy(value = AttributeData.DB_FIELD_TYPE)
     private SortedSet<AttributeData> attributeData = new TreeSet<>();
 
