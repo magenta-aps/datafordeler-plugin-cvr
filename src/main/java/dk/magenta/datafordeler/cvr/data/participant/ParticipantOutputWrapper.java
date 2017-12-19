@@ -9,6 +9,8 @@ import dk.magenta.datafordeler.core.fapi.OutputWrapper;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 
+import java.util.ArrayList;
+
 public class ParticipantOutputWrapper extends OutputWrapper<ParticipantEntity> {
 
     private ObjectMapper objectMapper;
@@ -89,8 +91,11 @@ public class ParticipantOutputWrapper extends OutputWrapper<ParticipantEntity> {
     }
 
     protected ObjectNode createDeltagerObject(ObjectNode node, ParticipantBaseData deltager) {
-        node.put("navne", deltager.getNames());
-
+        ArrayNode nameNode = objectMapper.createArrayNode();
+        for (String name : deltager.getNames()) {
+            nameNode.add(name);
+        }
+        node.set("navne", nameNode);
         ObjectNode beliggenhedsadresseObject = addAdresseObject(deltager.getLocationAddress());
         node.set("beliggenhedsadresse", beliggenhedsadresseObject);
         ObjectNode postadresseObject = addAdresseObject(deltager.getPostalAddress());

@@ -113,7 +113,7 @@ public class ParseTest {
         Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         try {
-        importMetadata.setSession(session);
+            importMetadata.setSession(session);
             InputStream input = ParseTest.class.getResourceAsStream("/person.json");
             JsonNode root = objectMapper.readTree(input);
             JsonNode itemList = root.get("hits").get("hits");

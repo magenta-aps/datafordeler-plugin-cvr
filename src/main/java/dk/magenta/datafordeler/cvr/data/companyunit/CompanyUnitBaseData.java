@@ -16,12 +16,17 @@ import javax.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.*;
 
+import static dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData.DB_FIELD_LOCATION_ADDRESS;
+import static dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData.DB_FIELD_PRIMARY_INDUSTRY;
+
 /**
  * Base class for Company Unit data, linking to Effects and delegating storage to referred classes
  */
 @Entity
 @Table(name="cvr_companyunit_basedata", indexes = {
-        @Index(name = "cvr_companyunit_lastUpdated", columnList = "lastUpdated")
+        @Index(name = "cvr_companyunit_lastUpdated", columnList = "lastUpdated"),
+        @Index(name = "cvr_companyunit_industry", columnList = DB_FIELD_PRIMARY_INDUSTRY + "_id"),
+        @Index(name = "cvr_company_location", columnList = DB_FIELD_LOCATION_ADDRESS + "_id")
 })
 public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitBaseData> {
 
@@ -43,6 +48,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_ADVERTPROTECTION = "advertProtection";
     public static final String IO_FIELD_ADVERTPROTECTION = "reklamebeskyttelse";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_ADVERTPROTECTION + "_id")
     private BooleanData advertProtection;
 
     @JsonProperty(value = IO_FIELD_ADVERTPROTECTION)
@@ -60,6 +66,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_PNUMBER = "pNumber";
     public static final String IO_FIELD_PNUMBER = "pNummer";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_PNUMBER + "_id")
     private IntegerData pNumber;
 
     @JsonProperty(value = IO_FIELD_PNUMBER)
@@ -77,6 +84,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_LOCATION_ADDRESS = "locationAddress";
     public static final String IO_FIELD_LOCATION_ADDRESS = "beliggenhedsadresse";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_LOCATION_ADDRESS + "_id")
     private AddressData locationAddress;
 
     @JsonProperty(value = IO_FIELD_LOCATION_ADDRESS)
@@ -94,6 +102,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_POSTAL_ADDRESS = "postalAddress";
     public static final String IO_FIELD_POSTAL_ADDRESS = "postadresse";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_POSTAL_ADDRESS + "_id")
     private AddressData postalAddress;
 
     @JsonProperty(value = IO_FIELD_POSTAL_ADDRESS)
@@ -153,6 +162,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_PRIMARY_INDUSTRY = "primaryIndustry";
     public static final String IO_FIELD_PRIMARY_INDUSTRY = "hovedbranche";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_PRIMARY_INDUSTRY + "_id")
     private IndustryData primaryIndustry;
 
     @JsonProperty(value = IO_FIELD_PRIMARY_INDUSTRY)
@@ -170,6 +180,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_SECONDARY_INDUSTRY_1 = "secondaryIndustry1";
     public static final String IO_FIELD_SECONDARY_INDUSTRY_1 = "bibranche1";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_SECONDARY_INDUSTRY_1 + "_id")
     private IndustryData secondaryIndustry1;
 
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_1)
@@ -186,6 +197,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_SECONDARY_INDUSTRY_2 = "secondaryIndustry2";
     public static final String IO_FIELD_SECONDARY_INDUSTRY_2 = "bibranche2";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_SECONDARY_INDUSTRY_2 + "_id")
     private IndustryData secondaryIndustry2;
 
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_2)
@@ -203,6 +215,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_SECONDARY_INDUSTRY_3 = "secondaryIndustry3";
     public static final String IO_FIELD_SECONDARY_INDUSTRY_3 = "bibranche3";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_SECONDARY_INDUSTRY_3 + "_id")
     private IndustryData secondaryIndustry3;
 
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_3)
@@ -220,6 +233,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_NAME = "name";
     public static final String IO_FIELD_NAME = "navn";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_NAME + "_id")
     private TextData name;
 
     @JsonProperty(value = IO_FIELD_NAME)
@@ -237,6 +251,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_PHONENUMBER = "phoneNumber";
     public static final String IO_FIELD_PHONENUMBER = "telefonnummer";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_PHONENUMBER + "_id")
     private ContactData phoneNumber;
 
     @JsonProperty(value = IO_FIELD_PHONENUMBER)
@@ -254,6 +269,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_EMAIL = "emailAddress";
     public static final String IO_FIELD_EMAIL = "emailadresse";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_EMAIL + "_id")
     private ContactData emailAddress;
 
     @JsonProperty(value = IO_FIELD_EMAIL)
@@ -271,6 +287,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_FAXNUMBER = "faxNumber";
     public static final String IO_FIELD_FAXNUMBER = "telefaxnummer";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_FAXNUMBER + "_id")
     private ContactData faxNumber;
 
     @JsonProperty(IO_FIELD_FAXNUMBER)
@@ -288,6 +305,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_IS_PRIMARY = "isPrimary";
     public static final String IO_FIELD_IS_PRIMARY = "primaer";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_IS_PRIMARY + "_id")
     private BooleanData isPrimary;
 
     @JsonProperty(value = IO_FIELD_IS_PRIMARY)
@@ -302,13 +320,13 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_CVR_NUMBER = "associatedCvrNumber";
     public static final String IO_FIELD_CVR_NUMBER = "tilknyttetVirksomhedsCVRNummer";
     @OneToMany(cascade = CascadeType.ALL)
-    private List<IntegerData> associatedCvrNumber;
+    private Set<CompanyUnitCvrNumber> associatedCvrNumber;
 
     @JsonProperty(value = IO_FIELD_CVR_NUMBER)
     public List<Long> getAssociatedCvrNumber() {
         if (associatedCvrNumber != null) {
             ArrayList<Long> list = new ArrayList<>();
-            for (IntegerData i : this.associatedCvrNumber) {
+            for (CompanyUnitCvrNumber i : this.associatedCvrNumber) {
                 Long cvr = i.getValue();
                 if (cvr != null) {
                     list.add(cvr);
@@ -610,14 +628,15 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
 
     public void addAssociatedCvrNumber(long cvrNumber) {
         if (this.associatedCvrNumber == null) {
-            this.associatedCvrNumber = new ArrayList<>();
+            this.associatedCvrNumber = new HashSet<>();
         }
-        for (IntegerData i : this.associatedCvrNumber) {
+        for (CompanyUnitCvrNumber i : this.associatedCvrNumber) {
             if (i.getValue() == cvrNumber) {
                 return;
             }
         }
-        IntegerData i = new IntegerData();
+        CompanyUnitCvrNumber i = new CompanyUnitCvrNumber();
+        i.setCompanyUnitBaseData(this);
         i.setValue(cvrNumber);
         this.associatedCvrNumber.add(i);
     }

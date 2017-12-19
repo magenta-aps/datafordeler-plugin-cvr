@@ -17,21 +17,21 @@ import java.util.*;
  */
 public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
 
-    public static final String CVRNUMMER = "CVRNummer";
+    public static final String UNITNUMBER = "enhedsNummer";
     public static final String NAVN = "names";
     public static final String KOMMUNEKODE = "kommunekode";
 
 
 
-    @QueryField(type = QueryField.FieldType.INT, queryName = CVRNUMMER)
-    private String CVRNummer;
+    @QueryField(type = QueryField.FieldType.INT, queryName = UNITNUMBER)
+    private String enhedsNummer;
 
-    public String getCVRNummer() {
-        return CVRNummer;
+    public String getEnhedsNummer() {
+        return enhedsNummer;
     }
 
-    public void setCVRNummer(String CVRNummer) {
-        this.CVRNummer = CVRNummer;
+    public void setEnhedsNummer(String enhedsNummer) {
+        this.enhedsNummer = enhedsNummer;
     }
 
 
@@ -68,7 +68,7 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
     @Override
     public Map<String, Object> getSearchParameters() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put(CVRNUMMER, this.CVRNummer);
+        map.put(UNITNUMBER, this.enhedsNummer);
         map.put(NAVN, this.navne);
         map.put(KOMMUNEKODE, this.kommunekoder);
         return map;
@@ -76,7 +76,7 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
 
     @Override
     public void setFromParameters(ParameterMap parameters) {
-        this.setCVRNummer(parameters.getFirst(CVRNUMMER));
+        this.setEnhedsNummer(parameters.getFirst(UNITNUMBER));
         this.setNavne(parameters.getFirst(NAVN));
         if (parameters.containsKey(KOMMUNEKODE)) {
             for (String kommunekode : parameters.get(KOMMUNEKODE)) {
@@ -101,8 +101,8 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
     public LookupDefinition getLookupDefinition() {
         LookupDefinition lookupDefinition = new LookupDefinition(this, ParticipantBaseData.class);
 
-        if (this.CVRNummer != null) {
-            lookupDefinition.put(ParticipantBaseData.DB_FIELD_UNIT_NUMBER + LookupDefinition.separator + IntegerData.DB_FIELD_VALUE, this.CVRNummer, Integer.class);
+        if (this.enhedsNummer != null) {
+            lookupDefinition.put(ParticipantBaseData.DB_FIELD_UNIT_NUMBER + LookupDefinition.separator + IntegerData.DB_FIELD_VALUE, this.enhedsNummer, Integer.class);
         }
 
         if (this.navne != null) {

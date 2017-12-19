@@ -93,6 +93,10 @@ public class ParticipantRecord extends CvrEntityRecord {
     public List<AttributeRecord> attributes;
 
 
+    @JsonProperty(value = "stilling")
+    public String position;
+
+
     @JsonIgnore
     public List<CvrBaseRecord> getAll() {
         ArrayList<CvrBaseRecord> list = new ArrayList<>();
@@ -133,6 +137,11 @@ public class ParticipantRecord extends CvrEntityRecord {
     @Override
     public void populateBaseData(ParticipantBaseData baseData, Session session) {
         baseData.setUnitNumber(this.unitNumber);
-        baseData.setUnitType(ParticipantType.getType(this.unitType, session));
+        if (this.unitType != null) {
+            baseData.setUnitType(ParticipantType.getType(this.unitType, session));
+        }
+        if (this.position != null) {
+            baseData.setPosition(this.position);
+        }
     }
 }

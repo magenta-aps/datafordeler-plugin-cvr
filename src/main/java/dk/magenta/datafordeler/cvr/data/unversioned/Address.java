@@ -12,16 +12,17 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.Set;
 
-import static dk.magenta.datafordeler.cvr.data.unversioned.Address.DB_FIELD_ROADCODE;
-import static dk.magenta.datafordeler.cvr.data.unversioned.Address.DB_FIELD_ROADNAME;
+import static dk.magenta.datafordeler.cvr.data.unversioned.Address.*;
 
 /**
  * Storage of a company's address
  */
 @Entity
 @Table(name = "cvr_address", indexes = {
-        @Index(name = "companyRoadCode", columnList = DB_FIELD_ROADCODE),
-        @Index(name = "companyRoadName", columnList = DB_FIELD_ROADNAME)
+        @Index(name = "cvr_address_roadCode", columnList = DB_FIELD_ROADCODE),
+        @Index(name = "cvr_address_roadName", columnList = DB_FIELD_ROADNAME),
+        @Index(name = "cvr_address_municipality", columnList = DB_FIELD_MUNICIPALITY + "_id"),
+        @Index(name = "cvr_address_postcode", columnList = DB_FIELD_POSTCODE_REF + "_id")
 })
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Address extends UnversionedEntity {
@@ -222,6 +223,7 @@ public class Address extends UnversionedEntity {
     @XmlElement(name = IO_FIELD_MUNICIPALITY)
     @ManyToOne
     @Cascade(value = CascadeType.SAVE_UPDATE)
+    @JoinColumn(name = DB_FIELD_MUNICIPALITY + "_id")
     private Municipality municipality;
 
     public Municipality getMunicipality() {
@@ -241,6 +243,7 @@ public class Address extends UnversionedEntity {
     @XmlElement(name = IO_FIELD_POSTCODE_REF)
     @ManyToOne
     @Cascade(value = CascadeType.SAVE_UPDATE)
+    @JoinColumn(name = DB_FIELD_POSTCODE_REF + "_id")
     private PostCode post;
 
     public PostCode getPost() {

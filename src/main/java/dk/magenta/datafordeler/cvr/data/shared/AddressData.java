@@ -8,17 +8,22 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.HashMap;
 import java.util.Map;
 
+import static dk.magenta.datafordeler.cvr.data.shared.AddressData.DB_FIELD_ADDRESS;
+
 /**
  * Class for Address data
  */
 @Entity
-@Table(name="cvr_company_address")
+@Table(name="cvr_company_address", indexes = {
+        @Index(name = "cvr_company_address_address", columnList = DB_FIELD_ADDRESS + "_id")
+})
 public class AddressData extends DetailData {
 
     public static final String DB_FIELD_ADDRESS = "address";
