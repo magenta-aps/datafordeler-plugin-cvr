@@ -9,15 +9,13 @@ import javax.xml.bind.annotation.XmlElement;
 import java.util.HashMap;
 import java.util.Map;
 
-import static dk.magenta.datafordeler.cvr.data.company.CompanyFormData.DB_FIELD_FORM;
-
 /**
  * Storage for data on a Company's form
  * referenced by {@link dk.magenta.datafordeler.cvr.data.company.CompanyBaseData}
  */
 @Entity
 @Table(name="cvr_company_form", indexes = {
-        @Index(name = "cvr_company_form_form", columnList = DB_FIELD_FORM + "_id")
+        @Index(name = "cvr_company_form_form", columnList = CompanyFormData.DB_FIELD_FORM + "_id")
 })
 public class CompanyFormData extends DetailData {
 

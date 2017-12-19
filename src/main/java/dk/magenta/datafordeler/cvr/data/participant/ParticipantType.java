@@ -13,7 +13,9 @@ import java.util.Collections;
  * referenced by {@link dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData}
  */
 @Entity
-@Table(name = "cvr_participant_type", indexes = {@Index(name = "participantName", columnList = "name")})
+@Table(name = "cvr_participant_type", indexes = {
+        @Index(name = "participantName", columnList = ParticipantType.DB_FIELD_NAME)
+})
 public class ParticipantType extends ParticipantClassification {
 
     public static ParticipantType getType(String navn, Session session) {

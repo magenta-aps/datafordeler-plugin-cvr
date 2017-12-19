@@ -9,9 +9,8 @@ import javax.persistence.Table;
  * referenced by {@link dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData}
  */
 @Entity
-@Table(
-    name = "cvr_participant_role",
-    indexes = {@Index(name = "participantRoleName", columnList = "name")}
-)
+@Table(name = "cvr_participant_role", indexes = {
+        @Index(name = "cvr_participant_role_name", columnList = ParticipantRole.DB_FIELD_NAME)
+})
 public class ParticipantRole extends ParticipantClassification {
 }

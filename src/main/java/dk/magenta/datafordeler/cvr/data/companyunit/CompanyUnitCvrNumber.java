@@ -9,8 +9,8 @@ import static dk.magenta.datafordeler.cvr.data.shared.SingleData.DB_FIELD_VALUE;
 
 @Entity
 @Table(name = "cvr_companyunit_cvr", indexes = {
-        @Index(name = "cvr_companyunit_cvr_data", columnList = DB_FIELD_VALUE),
-        @Index(name = "cvr_companyunit_cvr_base", columnList = DB_FIELD_BASEDATA + "_id")
+        @Index(name = "cvr_companyunit_cvr_data", columnList = CompanyUnitCvrNumber.DB_FIELD_VALUE),
+        @Index(name = "cvr_companyunit_cvr_base", columnList = CompanyUnitCvrNumber.DB_FIELD_BASEDATA + "_id")
 })
 public class CompanyUnitCvrNumber extends SingleData<Long> {
 

@@ -16,17 +16,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData.DB_FIELD_LOCATION_ADDRESS;
-import static dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData.DB_FIELD_UNIT_NUMBER;
-
 /**
  * Base class for Participant data, linking to Effects and delegating storage to referred classes
  */
 @javax.persistence.Entity
 @Table(name="cvr_participant_data", indexes = {
         @Index(name = "cvr_participant_lastUpdated", columnList = DataItem.DB_FIELD_LAST_UPDATED),
-        @Index(name = "cvr_participant_unitnumber", columnList = DB_FIELD_UNIT_NUMBER),
-        @Index(name = "cvr_participant_location", columnList = DB_FIELD_LOCATION_ADDRESS + "_id")
+        @Index(name = "cvr_participant_unitnumber", columnList = ParticipantBaseData.DB_FIELD_UNIT_NUMBER),
+        @Index(name = "cvr_participant_location", columnList = ParticipantBaseData.DB_FIELD_LOCATION_ADDRESS + "_id")
 })
 public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantBaseData> {
 
