@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.data.company;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DataItem;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.core.exception.ParseException;
@@ -27,13 +28,13 @@ import java.util.*;
 @Entity
 @Table(name="cvr_company_basedata", indexes = {
         @Index(name = "cvr_company_lastUpdated", columnList = DataItem.DB_FIELD_LAST_UPDATED),
-        @Index(name = "cvr_company_form", columnList = CompanyBaseData.DB_FIELD_FORM + "_id"),
-        @Index(name = "cvr_company_advertprotection", columnList = CompanyBaseData.DB_FIELD_ADVERTPROTECTION + "_id"),
+        @Index(name = "cvr_company_form", columnList = CompanyBaseData.DB_FIELD_FORM + DatabaseEntry.REF),
+        @Index(name = "cvr_company_advertprotection", columnList = CompanyBaseData.DB_FIELD_ADVERTPROTECTION + DatabaseEntry.REF),
         @Index(name = "cvr_company_name", columnList = CompanyBaseData.DB_FIELD_NAME),
-        @Index(name = "cvr_company_phone", columnList = CompanyBaseData.DB_FIELD_PHONENUMBER + "_id"),
-        @Index(name = "cvr_company_fax", columnList = CompanyBaseData.DB_FIELD_FAXNUMBER + "_id"),
-        @Index(name = "cvr_company_email", columnList = CompanyBaseData.DB_FIELD_EMAIL + "_id"),
-        @Index(name = "cvr_company_location", columnList = CompanyBaseData.DB_FIELD_LOCATION_ADDRESS + "_id")
+        @Index(name = "cvr_company_phone", columnList = CompanyBaseData.DB_FIELD_PHONENUMBER + DatabaseEntry.REF),
+        @Index(name = "cvr_company_fax", columnList = CompanyBaseData.DB_FIELD_FAXNUMBER + DatabaseEntry.REF),
+        @Index(name = "cvr_company_email", columnList = CompanyBaseData.DB_FIELD_EMAIL + DatabaseEntry.REF),
+        @Index(name = "cvr_company_location", columnList = CompanyBaseData.DB_FIELD_LOCATION_ADDRESS + DatabaseEntry.REF)
 })
 public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
 
@@ -41,7 +42,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public static final String IO_FIELD_FORM = "virksomhedsform";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = DB_FIELD_FORM + "_id")
+    @JoinColumn(name = DB_FIELD_FORM + DatabaseEntry.REF)
     private CompanyFormData companyForm;
 
     public CompanyForm getCompanyForm() {
@@ -70,7 +71,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public static final String IO_FIELD_STATUS = "status";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = DB_FIELD_STATUS + "_id")
+    @JoinColumn(name = DB_FIELD_STATUS + DatabaseEntry.REF)
     private CompanyStatusData status;
 
     public CompanyStatusData getStatus() {
@@ -102,7 +103,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public static final String IO_FIELD_LIFECYCLE = "livscyklus";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = DB_FIELD_LIFECYCLE + "_id")
+    @JoinColumn(name = DB_FIELD_LIFECYCLE + DatabaseEntry.REF)
     private LifecycleData lifecycleData;
 
     @JsonProperty(value = IO_FIELD_LIFECYCLE)
@@ -132,7 +133,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public static final String IO_FIELD_ADVERTPROTECTION = "reklamebeskyttelse";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = DB_FIELD_ADVERTPROTECTION + "_id")
+    @JoinColumn(name = DB_FIELD_ADVERTPROTECTION + DatabaseEntry.REF)
     private BooleanData advertProtection;
 
     @JsonProperty(value = IO_FIELD_ADVERTPROTECTION)
@@ -185,7 +186,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public static final String IO_FIELD_LOCATION_ADDRESS = "beliggenhedsadresse";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = DB_FIELD_LOCATION_ADDRESS + "_id")
+    @JoinColumn(name = DB_FIELD_LOCATION_ADDRESS + DatabaseEntry.REF)
     private AddressData locationAddress;
 
     @JsonProperty(value = IO_FIELD_LOCATION_ADDRESS)
@@ -212,7 +213,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public static final String IO_FIELD_POSTAL_ADDRESS = "postadresse";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = DB_FIELD_POSTAL_ADDRESS + "_id")
+    @JoinColumn(name = DB_FIELD_POSTAL_ADDRESS + DatabaseEntry.REF)
     private AddressData postalAddress;
 
     @JsonProperty(value = IO_FIELD_POSTAL_ADDRESS)
@@ -361,7 +362,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public static final String IO_FIELD_PRIMARY_INDUSTRY = "hovedbranche";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = DB_FIELD_PRIMARY_INDUSTRY + "_id")
+    @JoinColumn(name = DB_FIELD_PRIMARY_INDUSTRY + DatabaseEntry.REF)
     private IndustryData primaryIndustry;
 
     @JsonProperty(value = IO_FIELD_PRIMARY_INDUSTRY)
@@ -387,7 +388,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public static final String DB_FIELD_SECONDARY_INDUSTRY_1 = "secondaryIndustry1";
     public static final String IO_FIELD_SECONDARY_INDUSTRY_1 = "bibranche1";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = DB_FIELD_SECONDARY_INDUSTRY_1 + "_id")
+    @JoinColumn(name = DB_FIELD_SECONDARY_INDUSTRY_1 + DatabaseEntry.REF)
     private IndustryData secondaryIndustry1;
 
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_1)
@@ -413,7 +414,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public static final String IO_FIELD_SECONDARY_INDUSTRY_2 = "bibranche2";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = DB_FIELD_SECONDARY_INDUSTRY_2 + "_id")
+    @JoinColumn(name = DB_FIELD_SECONDARY_INDUSTRY_2 + DatabaseEntry.REF)
     private IndustryData secondaryIndustry2;
 
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_2)
@@ -440,7 +441,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public static final String IO_FIELD_SECONDARY_INDUSTRY_3 = "bibranche3";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = DB_FIELD_SECONDARY_INDUSTRY_3 + "_id")
+    @JoinColumn(name = DB_FIELD_SECONDARY_INDUSTRY_3 + DatabaseEntry.REF)
     private IndustryData secondaryIndustry3;
 
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_3)
@@ -486,7 +487,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public static final String IO_FIELD_PHONENUMBER = "telefonnummer";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = DB_FIELD_PHONENUMBER + "_id")
+    @JoinColumn(name = DB_FIELD_PHONENUMBER + DatabaseEntry.REF)
     private ContactData phoneNumber;
 
     @JsonProperty(value = IO_FIELD_PHONENUMBER)
@@ -514,7 +515,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public static final String IO_FIELD_EMAIL = "emailadresse";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = DB_FIELD_EMAIL + "_id")
+    @JoinColumn(name = DB_FIELD_EMAIL + DatabaseEntry.REF)
     private ContactData emailAddress;
 
     @JsonProperty(value = IO_FIELD_EMAIL)
@@ -542,7 +543,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public static final String IO_FIELD_FAXNUMBER = "telefaxnummer";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = DB_FIELD_FAXNUMBER + "_id")
+    @JoinColumn(name = DB_FIELD_FAXNUMBER + DatabaseEntry.REF)
     private ContactData faxNumber;
 
     @JsonProperty(IO_FIELD_FAXNUMBER)
