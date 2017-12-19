@@ -356,7 +356,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
 
     public static final String DB_FIELD_ATTRIBUTES = "attributeData";
     public static final String IO_FIELD_ATTRIBUTES = "attributter";
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "companyUnitBaseData")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = AttributeData.DB_FIELD_COMPANYUNITBASE)
     private Set<AttributeData> attributeData = new HashSet<>();
 
     @JsonProperty(value = IO_FIELD_ATTRIBUTES)

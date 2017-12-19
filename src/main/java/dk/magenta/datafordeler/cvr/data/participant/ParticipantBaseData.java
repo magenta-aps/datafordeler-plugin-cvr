@@ -305,7 +305,7 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
     public static final String DB_FIELD_ATTRIBUTES = "attributeData";
     public static final String IO_FIELD_ATTRIBUTES = "attributter";
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = AttributeData.DB_FIELD_PARTICIPANTBASE)
     private Set<AttributeData> attributeData = new HashSet<>();
 
     public Set<AttributeData> getAttributeData() {
