@@ -17,17 +17,14 @@ import javax.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.*;
 
-import static dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData.DB_FIELD_LOCATION_ADDRESS;
-import static dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData.DB_FIELD_PRIMARY_INDUSTRY;
-
 /**
  * Base class for Company Unit data, linking to Effects and delegating storage to referred classes
  */
 @Entity
 @Table(name="cvr_companyunit_basedata", indexes = {
         @Index(name = "cvr_companyunit_lastUpdated", columnList = DataItem.DB_FIELD_LAST_UPDATED),
-        @Index(name = "cvr_companyunit_industry", columnList = DB_FIELD_PRIMARY_INDUSTRY + "_id"),
-        @Index(name = "cvr_company_location", columnList = DB_FIELD_LOCATION_ADDRESS + "_id")
+        @Index(name = "cvr_companyunit_industry", columnList = CompanyUnitBaseData.DB_FIELD_PRIMARY_INDUSTRY + "_id"),
+        @Index(name = "cvr_company_location", columnList = CompanyUnitBaseData.DB_FIELD_LOCATION_ADDRESS + "_id")
 })
 public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitBaseData> {
 

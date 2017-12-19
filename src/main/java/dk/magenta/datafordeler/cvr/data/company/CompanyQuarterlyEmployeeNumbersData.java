@@ -5,19 +5,15 @@ import dk.magenta.datafordeler.cvr.data.shared.QuarterlyEmployeeNumbersData;
 
 import javax.persistence.*;
 
-import static dk.magenta.datafordeler.cvr.data.company.CompanyQuarterlyEmployeeNumbersData.DB_FIELD_BASEDATA;
-import static dk.magenta.datafordeler.cvr.data.shared.QuarterlyEmployeeNumbersData.DB_FIELD_QUARTER;
-import static dk.magenta.datafordeler.cvr.data.shared.QuarterlyEmployeeNumbersData.DB_FIELD_YEAR;
-
 /**
  * Storage for data on a Company's quarterly employees
  * referenced by {@link dk.magenta.datafordeler.cvr.data.company.CompanyBaseData}
  */
 @Entity
 @Table(name = "cvr_company_quarterly_employees", indexes = {
-        @Index(name = "cvr_company_quarterlyEmployees_year", columnList = DB_FIELD_YEAR),
-        @Index(name = "cvr_company_quarterlyEmployees_quarter", columnList = DB_FIELD_QUARTER + ", " + DB_FIELD_YEAR),
-        @Index(name = "cvr_company_quarterlyEmployees_base", columnList = DB_FIELD_BASEDATA + "_id")
+        @Index(name = "cvr_company_quarterlyEmployees_year", columnList = CompanyQuarterlyEmployeeNumbersData.DB_FIELD_YEAR),
+        @Index(name = "cvr_company_quarterlyEmployees_quarter", columnList = CompanyQuarterlyEmployeeNumbersData.DB_FIELD_QUARTER + ", " + CompanyQuarterlyEmployeeNumbersData.DB_FIELD_YEAR),
+        @Index(name = "cvr_company_quarterlyEmployees_base", columnList = CompanyQuarterlyEmployeeNumbersData.DB_FIELD_BASEDATA + "_id")
 })
 public class CompanyQuarterlyEmployeeNumbersData extends QuarterlyEmployeeNumbersData {
 

@@ -15,10 +15,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "cvr_company_credit", indexes = {
-        @Index(name = "companyCreditData", columnList = "value"),
-},
-uniqueConstraints = {
-        @UniqueConstraint(name = "value", columnNames = "value")
+        @Index(name = "companyCreditData", columnList = CompanyCreditData.DB_FIELD_VALUE),
 })
 public class CompanyCreditData extends SingleData<String> {
 

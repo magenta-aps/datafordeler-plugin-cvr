@@ -12,18 +12,14 @@ import javax.xml.bind.annotation.XmlElement;
 import java.util.HashMap;
 import java.util.Map;
 
-import static dk.magenta.datafordeler.cvr.data.shared.AttributeData.DB_FIELD_COMPANYBASE;
-import static dk.magenta.datafordeler.cvr.data.shared.AttributeData.DB_FIELD_COMPANYUNITBASE;
-import static dk.magenta.datafordeler.cvr.data.shared.AttributeData.DB_FIELD_PARTICIPANTBASE;
-
 /**
  * Class holding attributes for companies and company units.
  */
 @Entity
 @Table(name = "cvr_company_attributes", indexes = {
-        @Index(name = "cvr_attribute_company", columnList = DB_FIELD_COMPANYBASE + "_id"),
-        @Index(name = "cvr_attribute_companyunit", columnList = DB_FIELD_COMPANYUNITBASE + "_id"),
-        @Index(name = "cvr_attribute_participant", columnList = DB_FIELD_PARTICIPANTBASE + "_id")
+        @Index(name = "cvr_attribute_company", columnList = AttributeData.DB_FIELD_COMPANYBASE + "_id"),
+        @Index(name = "cvr_attribute_companyunit", columnList = AttributeData.DB_FIELD_COMPANYUNITBASE + "_id"),
+        @Index(name = "cvr_attribute_participant", columnList = AttributeData.DB_FIELD_PARTICIPANTBASE + "_id")
 })
 public class AttributeData extends DetailData implements Comparable<AttributeData> {
 

@@ -21,21 +21,19 @@ import java.lang.reflect.Field;
 import java.time.OffsetDateTime;
 import java.util.*;
 
-import static dk.magenta.datafordeler.cvr.data.company.CompanyBaseData.*;
-
 /**
  * Base class for Company data, linking to Effects and delegating storage to referred classes
  */
 @Entity
 @Table(name="cvr_company_basedata", indexes = {
         @Index(name = "cvr_company_lastUpdated", columnList = DataItem.DB_FIELD_LAST_UPDATED),
-        @Index(name = "cvr_company_form", columnList = DB_FIELD_FORM + "_id"),
-        @Index(name = "cvr_company_advertprotection", columnList = DB_FIELD_ADVERTPROTECTION + "_id"),
-        @Index(name = "cvr_company_name", columnList = DB_FIELD_NAME),
-        @Index(name = "cvr_company_phone", columnList = DB_FIELD_PHONENUMBER + "_id"),
-        @Index(name = "cvr_company_fax", columnList = DB_FIELD_FAXNUMBER + "_id"),
-        @Index(name = "cvr_company_email", columnList = DB_FIELD_EMAIL + "_id"),
-        @Index(name = "cvr_company_location", columnList = DB_FIELD_LOCATION_ADDRESS + "_id")
+        @Index(name = "cvr_company_form", columnList = CompanyBaseData.DB_FIELD_FORM + "_id"),
+        @Index(name = "cvr_company_advertprotection", columnList = CompanyBaseData.DB_FIELD_ADVERTPROTECTION + "_id"),
+        @Index(name = "cvr_company_name", columnList = CompanyBaseData.DB_FIELD_NAME),
+        @Index(name = "cvr_company_phone", columnList = CompanyBaseData.DB_FIELD_PHONENUMBER + "_id"),
+        @Index(name = "cvr_company_fax", columnList = CompanyBaseData.DB_FIELD_FAXNUMBER + "_id"),
+        @Index(name = "cvr_company_email", columnList = CompanyBaseData.DB_FIELD_EMAIL + "_id"),
+        @Index(name = "cvr_company_location", columnList = CompanyBaseData.DB_FIELD_LOCATION_ADDRESS + "_id")
 })
 public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
 
