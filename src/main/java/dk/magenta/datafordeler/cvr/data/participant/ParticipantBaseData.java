@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.data.participant;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DataItem;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.cvr.data.CvrData;
 import dk.magenta.datafordeler.cvr.data.DetailData;
@@ -23,7 +24,7 @@ import static dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData.D
  */
 @javax.persistence.Entity
 @Table(name="cvr_participant_data", indexes = {
-        @Index(name = "cvr_participant_lastUpdated", columnList = "lastUpdated"),
+        @Index(name = "cvr_participant_lastUpdated", columnList = DataItem.DB_FIELD_LAST_UPDATED),
         @Index(name = "cvr_participant_unitnumber", columnList = DB_FIELD_UNIT_NUMBER),
         @Index(name = "cvr_participant_location", columnList = DB_FIELD_LOCATION_ADDRESS + "_id")
 })
