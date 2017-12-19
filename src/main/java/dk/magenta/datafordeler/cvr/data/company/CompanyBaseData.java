@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DataItem;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.core.exception.ParseException;
@@ -27,7 +28,7 @@ import static dk.magenta.datafordeler.cvr.data.company.CompanyBaseData.*;
  */
 @Entity
 @Table(name="cvr_company_basedata", indexes = {
-        @Index(name = "cvr_company_lastUpdated", columnList = "lastUpdated"),
+        @Index(name = "cvr_company_lastUpdated", columnList = DataItem.DB_FIELD_LAST_UPDATED),
         @Index(name = "cvr_company_form", columnList = DB_FIELD_FORM + "_id"),
         @Index(name = "cvr_company_advertprotection", columnList = DB_FIELD_ADVERTPROTECTION + "_id"),
         @Index(name = "cvr_company_name", columnList = DB_FIELD_NAME),
