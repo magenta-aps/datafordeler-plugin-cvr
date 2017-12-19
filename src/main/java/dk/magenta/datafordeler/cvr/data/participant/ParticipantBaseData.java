@@ -320,7 +320,17 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
         return attributeData;
     }
 
+    public void addAttribute(String type, String valueType, String value, int sequenceNumber) {
+        AttributeData attributeData = new AttributeData();
+        attributeData.setType(type);
+        attributeData.setValueType(valueType);
+        attributeData.setValue(value);
+        attributeData.setSequenceNumber(sequenceNumber);
+        this.addAttribute(attributeData);
+    }
+
     public void addAttribute(AttributeData attributeData) {
+        attributeData.setParticipantBaseData(this);
         this.attributeData.add(attributeData);
     }
 
