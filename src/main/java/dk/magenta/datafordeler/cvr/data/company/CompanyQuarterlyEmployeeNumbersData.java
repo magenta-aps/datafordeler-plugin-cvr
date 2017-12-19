@@ -3,11 +3,9 @@ package dk.magenta.datafordeler.cvr.data.company;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dk.magenta.datafordeler.cvr.data.shared.QuarterlyEmployeeNumbersData;
 
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import static dk.magenta.datafordeler.cvr.data.company.CompanyQuarterlyEmployeeNumbersData.DB_FIELD_BASEDATA;
 import static dk.magenta.datafordeler.cvr.data.shared.QuarterlyEmployeeNumbersData.DB_FIELD_QUARTER;
 import static dk.magenta.datafordeler.cvr.data.shared.QuarterlyEmployeeNumbersData.DB_FIELD_YEAR;
 
@@ -17,13 +15,17 @@ import static dk.magenta.datafordeler.cvr.data.shared.QuarterlyEmployeeNumbersDa
  */
 @Entity
 @Table(name = "cvr_company_quarterly_employees", indexes = {
-        @Index(name = "companyQuarterlyEmployessYear", columnList = DB_FIELD_YEAR),
-        @Index(name = "companyQuarterlyEmployessQuarter", columnList = DB_FIELD_QUARTER + ", " + DB_FIELD_YEAR)
+        @Index(name = "cvr_company_quarterlyEmployees_year", columnList = DB_FIELD_YEAR),
+        @Index(name = "cvr_company_quarterlyEmployees_quarter", columnList = DB_FIELD_QUARTER + ", " + DB_FIELD_YEAR),
+        @Index(name = "cvr_company_quarterlyEmployees_base", columnList = DB_FIELD_BASEDATA + "_id")
 })
 public class CompanyQuarterlyEmployeeNumbersData extends QuarterlyEmployeeNumbersData {
 
+    public static final String DB_FIELD_BASEDATA = "companyBaseData";
+
     @JsonIgnore
     @ManyToOne(targetEntity = CompanyBaseData.class)
+    @JoinColumn(name = DB_FIELD_BASEDATA + "_id")
     private CompanyBaseData companyBaseData;
 
     public CompanyBaseData getCompanyBaseData() {
