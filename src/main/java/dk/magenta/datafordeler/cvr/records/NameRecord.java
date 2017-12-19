@@ -30,6 +30,6 @@ public class NameRecord extends CvrBaseRecord {
 
     @Override
     public void populateBaseData(ParticipantBaseData baseData, Session session) {
-        baseData.setNames(this.name);
+        baseData.addName(this.name);
     }
 }

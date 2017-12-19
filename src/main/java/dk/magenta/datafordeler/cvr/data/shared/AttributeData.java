@@ -5,35 +5,62 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.cvr.data.DetailData;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
+import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.HashMap;
 import java.util.Map;
+
+import static dk.magenta.datafordeler.cvr.data.shared.AttributeData.DB_FIELD_COMPANYBASE;
+import static dk.magenta.datafordeler.cvr.data.shared.AttributeData.DB_FIELD_COMPANYUNITBASE;
+import static dk.magenta.datafordeler.cvr.data.shared.AttributeData.DB_FIELD_PARTICIPANTBASE;
 
 /**
  * Class holding attributes for companies and company units.
  */
 @Entity
-@Table(name = "cvr_company_attributes")
+@Table(name = "cvr_company_attributes", indexes = {
+        @Index(name = "cvr_attribute_company", columnList = DB_FIELD_COMPANYBASE + "_id"),
+        @Index(name = "cvr_attribute_companyunit", columnList = DB_FIELD_COMPANYUNITBASE + "_id"),
+        @Index(name = "cvr_attribute_participant", columnList = DB_FIELD_PARTICIPANTBASE + "_id")
+})
 public class AttributeData extends DetailData implements Comparable<AttributeData> {
 
+    public static final String DB_FIELD_COMPANYBASE = "companyBaseData";
+
     @ManyToOne(targetEntity = CompanyBaseData.class, optional = true)
+    @JoinColumn(name = DB_FIELD_COMPANYBASE + "_id")
     private CompanyBaseData companyBaseData;
 
     public void setCompanyBaseData(CompanyBaseData companyBaseData) {
         this.companyBaseData = companyBaseData;
     }
 
+
+
+    public static final String DB_FIELD_COMPANYUNITBASE = "companyUnitBaseData";
+
     @ManyToOne(targetEntity = CompanyUnitBaseData.class, optional = true)
+    @JoinColumn(name = DB_FIELD_COMPANYUNITBASE + "_id")
     private CompanyUnitBaseData companyUnitBaseData;
 
     public void setCompanyUnitBaseData(CompanyUnitBaseData companyUnitBaseData) {
         this.companyUnitBaseData = companyUnitBaseData;
     }
+
+
+
+    public static final String DB_FIELD_PARTICIPANTBASE = "participantBaseData";
+
+    @ManyToOne(targetEntity = ParticipantBaseData.class, optional = true)
+    @JoinColumn(name = DB_FIELD_PARTICIPANTBASE + "_id")
+    private ParticipantBaseData participantBaseData;
+
+    public void setParticipantBaseData(ParticipantBaseData participantBaseData) {
+        this.participantBaseData = participantBaseData;
+    }
+
 
 
     public static final String DB_FIELD_SEQNO = "sequenceNumber";

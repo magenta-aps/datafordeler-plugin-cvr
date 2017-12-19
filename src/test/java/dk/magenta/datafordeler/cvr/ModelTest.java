@@ -344,8 +344,10 @@ public class ModelTest {
             participantBase.addEffect(effect);
 
 
-            participantBase.setNames("Mickey Mouse");
-            Assert.assertEquals("Mickey Mouse", participantBase.getNames());
+            participantBase.addName("Mickey Mouse");
+            participantBase.setUnitNumber(123456);
+            Assert.assertTrue(participantBase.getNames().contains("Mickey Mouse"));
+            Assert.assertEquals(1, participantBase.getNames().size());
 
 
             ParticipantType type = QueryManager.getItem(session, ParticipantType.class, Collections.singletonMap(ParticipantType.DB_FIELD_NAME, "Person"));

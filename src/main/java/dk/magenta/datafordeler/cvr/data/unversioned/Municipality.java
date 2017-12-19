@@ -23,7 +23,7 @@ import static dk.magenta.datafordeler.cvr.data.unversioned.Municipality.DB_FIELD
  */
 @Entity
 @Table(name = "cvr_municipality", indexes = {
-        @Index(name = "companyMunicipalityCode", columnList = DB_FIELD_CODE)
+        @Index(name = "cvr_municipality_code", columnList = DB_FIELD_CODE)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Municipality extends UnversionedEntity {
