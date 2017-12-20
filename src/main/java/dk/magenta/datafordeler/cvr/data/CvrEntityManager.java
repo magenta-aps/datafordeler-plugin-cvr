@@ -22,6 +22,7 @@ import dk.magenta.datafordeler.cvr.records.CvrEntityRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
+import org.opensaml.xml.signature.Q;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -327,7 +328,8 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         E entity = null;
         String domain = CvrPlugin.getDomain();
         if (QueryManager.hasIdentification(session, uuid, domain)) {
-            entity = QueryManager.getEntity(session, uuid, this.getEntityClass());
+            Identification identification = QueryManager.getIdentification(session, uuid, domain);
+            entity = QueryManager.getEntity(session, identification, this.getEntityClass());
         }
         if (entity == null) {
             log.debug("Creating new Entity");
