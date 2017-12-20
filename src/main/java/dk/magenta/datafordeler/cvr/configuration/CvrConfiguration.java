@@ -16,9 +16,9 @@ import javax.persistence.*;
 public class CvrConfiguration implements Configuration {
 
     public enum RegisterType {
-        DISABLED(-1),
+        DISABLED(0),
         //LOCAL_FILE(0),
-        REMOTE_HTTP(1);
+        REMOTE_HTTP(2);
 
         private int value;
         RegisterType(int value) {
