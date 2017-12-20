@@ -127,6 +127,9 @@ public class AttributeData extends DetailData implements Comparable<AttributeDat
     }
 
     public void setValue(String value) {
+        if (value.length() > 8000) {
+            value = value.substring(0, 7999);
+        }
         this.value = value;
     }
 
