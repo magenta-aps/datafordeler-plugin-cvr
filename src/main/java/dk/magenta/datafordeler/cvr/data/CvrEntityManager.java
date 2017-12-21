@@ -327,8 +327,8 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         UUID uuid = this.generateUUID(toplevelRecord);
         E entity = null;
         String domain = CvrPlugin.getDomain();
-        if (QueryManager.hasIdentification(session, uuid, domain)) {
-            Identification identification = QueryManager.getIdentification(session, uuid, domain);
+        Identification identification = QueryManager.getIdentification(session, uuid, domain);
+        if (identification != null) {
             entity = QueryManager.getEntity(session, identification, this.getEntityClass());
         }
         if (entity == null) {
