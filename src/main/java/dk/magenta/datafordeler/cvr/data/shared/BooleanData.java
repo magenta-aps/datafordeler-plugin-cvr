@@ -13,7 +13,9 @@ import java.util.Map;
 @Entity
 @Table(
     name = "cvr_company_boolean",
-    indexes = {@Index(name = "companyTypeBoolean", columnList = "type")}
+    indexes = {
+            @Index(name = "cvr_boolean_type", columnList = "type")
+    }
 )
 public class BooleanData extends SingleData<Boolean> {
 
