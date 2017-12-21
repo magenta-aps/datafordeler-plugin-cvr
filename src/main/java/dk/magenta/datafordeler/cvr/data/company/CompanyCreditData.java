@@ -15,7 +15,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "cvr_company_credit", indexes = {
-        @Index(name = "companyCreditData", columnList = CompanyCreditData.DB_FIELD_VALUE),
+        @Index(name = "cvr_company_creditData", columnList = CompanyCreditData.DB_FIELD_VALUE),
 })
 public class CompanyCreditData extends SingleData<String> {
 

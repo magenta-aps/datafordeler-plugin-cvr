@@ -21,9 +21,9 @@ import static dk.magenta.datafordeler.cvr.data.shared.SingleData.DB_FIELD_VALUE;
  */
 @Entity
 @Table(name = "cvr_company_contact", indexes = {
-        @Index(name = "cvr_company_contact_type", columnList = DB_FIELD_TYPE),
-        @Index(name = "cvr_company_contact_value", columnList = DB_FIELD_VALUE),
-        @Index(name = "cvr_company_contact_data", columnList = DB_FIELD_TYPE + ", " + DB_FIELD_VALUE)
+        @Index(name = "cvr_contact_type", columnList = DB_FIELD_TYPE),
+        @Index(name = "cvr_contact_value", columnList = DB_FIELD_VALUE),
+        @Index(name = "cvr_contact_data", columnList = DB_FIELD_TYPE + ", " + DB_FIELD_VALUE)
 })
 public class ContactData extends SingleData<String> {
 
