@@ -17,7 +17,7 @@ public class CvrConfiguration implements Configuration {
 
     public enum RegisterType {
         DISABLED(0),
-        //LOCAL_FILE(0),
+        LOCAL_FILE(1),
         REMOTE_HTTP(2);
 
         private int value;
