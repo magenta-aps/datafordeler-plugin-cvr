@@ -184,7 +184,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
 
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_1)
     public String getSecondaryIndustry1() {
-        if(secondaryIndustry1 != null)
+        if (secondaryIndustry1 != null)
             return secondaryIndustry1.getIndustry().getIndustryCode();
         else
             return null;
