@@ -314,6 +314,34 @@ public class CvrConfiguration implements Configuration {
         this.companyRegisterQuery = companyRegisterQuery;
     }
 
+    public void setCompanyUnitRegisterUsername(String companyUnitRegisterUsername) {
+        this.companyUnitRegisterUsername = companyUnitRegisterUsername;
+    }
+
+    public void setCompanyUnitRegisterPassword(String companyUnitRegisterPassword) {
+        this.companyUnitRegisterPassword = companyUnitRegisterPassword;
+    }
+
+    public void setCompanyUnitRegisterQuery(String companyUnitRegisterQuery) {
+        this.companyUnitRegisterQuery = companyUnitRegisterQuery;
+    }
+
+    public void setParticipantRegisterUsername(String participantRegisterUsername) {
+        this.participantRegisterUsername = participantRegisterUsername;
+    }
+
+    public void setParticipantRegisterPassword(String participantRegisterPassword) {
+        this.participantRegisterPassword = participantRegisterPassword;
+    }
+
+    public void setParticipantRegisterQuery(String participantRegisterQuery) {
+        this.participantRegisterQuery = participantRegisterQuery;
+    }
+
+    public void setCompanyRegisterType(RegisterType companyRegisterType) {
+        this.companyRegisterType = companyRegisterType;
+    }
+
     public void setCompanyUnitRegisterType(RegisterType companyUnitRegisterType) {
         this.companyUnitRegisterType = companyUnitRegisterType;
     }
