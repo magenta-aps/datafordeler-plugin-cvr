@@ -80,6 +80,11 @@ public class QueryTest {
     private ParticipantOutputWrapper participantOutputWrapper = new ParticipantOutputWrapper();
 
     private void loadCompany(ImportMetadata importMetadata) throws IOException, DataFordelerException {
+        boolean inTransaction = importMetadata.isTransactionInProgress();
+        if (!inTransaction) {
+            importMetadata.getSession().beginTransaction();
+            importMetadata.setTransactionInProgress(true);
+        }
         InputStream testData = QueryTest.class.getResourceAsStream("/company_in.json");
         JsonNode root = objectMapper.readTree(testData);
         JsonNode itemList = root.get("hits").get("hits");
@@ -87,9 +92,34 @@ public class QueryTest {
         for (JsonNode item : itemList) {
             companyEntityManager.parseData(item.get("_source").get("Vrvirksomhed"), importMetadata, importMetadata.getSession());
         }
+        if (!inTransaction) {
+            importMetadata.getSession().getTransaction().commit();
+            importMetadata.setTransactionInProgress(false);
+        }
+    }
+
+    private void unloadCompany(ImportMetadata importMetadata) {
+        boolean inTransaction = importMetadata.isTransactionInProgress();
+        if (!inTransaction) {
+            importMetadata.getSession().beginTransaction();
+            importMetadata.setTransactionInProgress(true);
+        }
+        List<CompanyEntity> units = QueryManager.getAllEntities(importMetadata.getSession(), CompanyEntity.class);
+        for (CompanyEntity unit : units) {
+            importMetadata.getSession().delete(unit);
+        }
+        if (!inTransaction) {
+            importMetadata.getSession().getTransaction().commit();
+            importMetadata.setTransactionInProgress(false);
+        }
     }
 
     private void loadUnit(ImportMetadata importMetadata) throws IOException, DataFordelerException {
+        boolean inTransaction = importMetadata.isTransactionInProgress();
+        if (!inTransaction) {
+            importMetadata.getSession().beginTransaction();
+            importMetadata.setTransactionInProgress(true);
+        }
         InputStream testData = QueryTest.class.getResourceAsStream("/unit.json");
         JsonNode root = objectMapper.readTree(testData);
         JsonNode itemList = root.get("hits").get("hits");
@@ -97,15 +127,60 @@ public class QueryTest {
         for (JsonNode item : itemList) {
             companyUnitEntityManager.parseData(item.get("_source").get("VrproduktionsEnhed"), importMetadata, importMetadata.getSession());
         }
+        if (!inTransaction) {
+            importMetadata.getSession().getTransaction().commit();
+            importMetadata.setTransactionInProgress(false);
+        }
+    }
+
+    private void unloadUnit(ImportMetadata importMetadata) {
+        boolean inTransaction = importMetadata.isTransactionInProgress();
+        if (!inTransaction) {
+            importMetadata.getSession().beginTransaction();
+            importMetadata.setTransactionInProgress(true);
+        }
+        List<CompanyUnitEntity> units = QueryManager.getAllEntities(importMetadata.getSession(), CompanyUnitEntity.class);
+        for (CompanyUnitEntity unit : units) {
+            importMetadata.getSession().delete(unit);
+        }
+        if (!inTransaction) {
+            importMetadata.getSession().getTransaction().commit();
+            importMetadata.setTransactionInProgress(false);
+        }
     }
 
     private void loadParticipant(ImportMetadata importMetadata) throws IOException, DataFordelerException {
+        boolean inTransaction = importMetadata.isTransactionInProgress();
+        if (!inTransaction) {
+            importMetadata.getSession().beginTransaction();
+            importMetadata.setTransactionInProgress(true);
+        }
         InputStream testData = QueryTest.class.getResourceAsStream("/person.json");
         JsonNode root = objectMapper.readTree(testData);
         JsonNode itemList = root.get("hits").get("hits");
         Assert.assertTrue(itemList.isArray());
         for (JsonNode item : itemList) {
             participantEntityManager.parseData(item.get("_source").get("Vrdeltagerperson"), importMetadata, importMetadata.getSession());
+        }
+        if (!inTransaction) {
+            importMetadata.getSession().getTransaction().commit();
+            importMetadata.setTransactionInProgress(false);
+        }
+    }
+
+    private void unloadParticipant(ImportMetadata importMetadata) {
+        boolean inTransaction = importMetadata.isTransactionInProgress();
+        if (!inTransaction) {
+            importMetadata.getSession().beginTransaction();
+            importMetadata.setTransactionInProgress(true);
+        }
+        List<ParticipantEntity> units = QueryManager.getAllEntities(importMetadata.getSession(), ParticipantEntity.class);
+        for (ParticipantEntity unit : units) {
+            importMetadata.getSession().delete(unit);
+        }
+        if (!inTransaction) {
+            importMetadata.getSession().getTransaction().commit();
+            importMetadata.setTransactionInProgress(false);
         }
     }
 
@@ -192,8 +267,6 @@ public class QueryTest {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
         importMetadata.setSession(session);
-        Transaction transaction = session.beginTransaction();
-        importMetadata.setTransactionInProgress(true);
         try {
             loadCompany(importMetadata);
 
@@ -209,7 +282,7 @@ public class QueryTest {
             assertJsonEquality(firstImport, secondImport, true, true);
         } finally {
             QueryManager.clearCaches();
-            transaction.rollback();
+            unloadCompany(importMetadata);
             session.close();
         }
     }
@@ -220,8 +293,6 @@ public class QueryTest {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
         importMetadata.setSession(session);
-        Transaction transaction = session.beginTransaction();
-        importMetadata.setTransactionInProgress(true);
         try {
             loadCompany(importMetadata);
             UUID expectedUUID = UUID.fromString("2334456b-d2ca-372d-aa60-4a2ba7fed7cd");
@@ -275,7 +346,7 @@ public class QueryTest {
 
         } finally {
             QueryManager.clearCaches();
-            transaction.rollback();
+            unloadCompany(importMetadata);
             session.close();
         }
     }
@@ -286,11 +357,9 @@ public class QueryTest {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
         importMetadata.setSession(session);
-        Transaction transaction = session.beginTransaction();
-        importMetadata.setTransactionInProgress(true);
         try {
             loadCompany(importMetadata);
-            transaction.commit();
+
             TestUserDetails testUserDetails = new TestUserDetails();
             testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
             this.applyAccess(testUserDetails);
@@ -366,7 +435,7 @@ public class QueryTest {
             Assert.assertNull(registration.get("beliggenhedsadresse"));
         } finally {
             QueryManager.clearCaches();
-            //transaction.rollback();
+            unloadCompany(importMetadata);
             session.close();
         }
     }
@@ -377,11 +446,8 @@ public class QueryTest {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
         importMetadata.setSession(session);
-        Transaction transaction = session.beginTransaction();
-        importMetadata.setTransactionInProgress(true);
         try {
             loadCompany(importMetadata);
-            transaction.commit();
 
             addTestMunicipalityAreaRestriction();
             TestUserDetails testUserDetails = new TestUserDetails();
@@ -450,6 +516,7 @@ public class QueryTest {
             Assert.assertEquals(CompanyEntity.generateUUID(25052943).toString(), results.get(0).get("UUID").asText());
         } finally {
             QueryManager.clearCaches();
+            unloadCompany(importMetadata);
             session.close();
         }
     }
@@ -464,8 +531,6 @@ public class QueryTest {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
         importMetadata.setSession(session);
-        Transaction transaction = session.beginTransaction();
-        importMetadata.setTransactionInProgress(true);
         try {
             loadUnit(importMetadata);
             List<CompanyUnitEntity> entities = QueryManager.getAllEntities(session, CompanyUnitEntity.class);
@@ -478,7 +543,7 @@ public class QueryTest {
 
             assertJsonEquality(firstImport, secondImport, true, true);
         } finally {
-            transaction.rollback();
+            unloadUnit(importMetadata);
             session.close();
         }
     }
@@ -489,10 +554,10 @@ public class QueryTest {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
         importMetadata.setSession(session);
-        Transaction transaction = session.beginTransaction();
-        importMetadata.setTransactionInProgress(true);
         try {
             loadUnit(importMetadata);
+            importMetadata.setTransactionInProgress(false);
+
             UUID expectedUUID = UUID.fromString("92ce7d3e-b261-31d6-a401-df408167dd1b");
 
             CompanyUnitEntity companyUnitEntity = QueryManager.getEntity(session, expectedUUID, CompanyUnitEntity.class);
@@ -504,6 +569,7 @@ public class QueryTest {
             CompanyUnitQuery query = new CompanyUnitQuery();
             query.setPrimaryIndustry("855900");
             List<CompanyUnitEntity> entities = QueryManager.getAllEntities(session, query, CompanyUnitEntity.class);
+
             Assert.assertEquals(1, entities.size());
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
@@ -526,7 +592,7 @@ public class QueryTest {
             Assert.assertEquals(1, entities.size());
 
         } finally {
-            transaction.rollback();
+            unloadUnit(importMetadata);
             session.close();
         }
     }
@@ -536,11 +602,8 @@ public class QueryTest {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
         importMetadata.setSession(session);
-        Transaction transaction = session.beginTransaction();
-        importMetadata.setTransactionInProgress(true);
         try {
             loadUnit(importMetadata);
-            transaction.commit();
 
             addTestMunicipalityAreaRestriction();
             TestUserDetails testUserDetails = new TestUserDetails();
@@ -615,6 +678,7 @@ public class QueryTest {
             }
             Assert.assertTrue(found);
         } finally {
+            unloadUnit(importMetadata);
             session.close();
         }
     }
@@ -627,8 +691,6 @@ public class QueryTest {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
         importMetadata.setSession(session);
-        Transaction transaction = session.beginTransaction();
-        importMetadata.setTransactionInProgress(true);
         try {
             loadParticipant(importMetadata);
 
@@ -641,7 +703,7 @@ public class QueryTest {
 
             assertJsonEquality(firstImport, secondImport, true, true);
         } finally {
-            transaction.rollback();
+            unloadParticipant(importMetadata);
             session.close();
         }
     }
@@ -651,11 +713,8 @@ public class QueryTest {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
         importMetadata.setSession(session);
-        Transaction transaction = session.beginTransaction();
-        importMetadata.setTransactionInProgress(true);
         try {
             loadParticipant(importMetadata);
-            transaction.commit();
 
             ParticipantQuery query = new ParticipantQuery();
             query.setNavne("Morten Kjærsgaard");
@@ -688,6 +747,7 @@ public class QueryTest {
             Assert.assertEquals(1, entities.size());
 
         } finally {
+            unloadParticipant(importMetadata);
             session.close();
         }
     }
@@ -698,13 +758,9 @@ public class QueryTest {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
         importMetadata.setSession(session);
-        Transaction transaction = session.beginTransaction();
-        importMetadata.setTransactionInProgress(true);
         try {
             loadParticipant(importMetadata);
-        } finally {
-            transaction.commit();
-        }
+
             addTestMunicipalityAreaRestriction();
             TestUserDetails testUserDetails = new TestUserDetails();
 
@@ -760,6 +816,9 @@ public class QueryTest {
 
             Assert.assertEquals(1, results.size());
             Assert.assertEquals(ParticipantEntity.generateUUID("PERSON", 4000004988L).toString(), results.get(0).get("UUID").asText());
+        } finally {
+            unloadParticipant(importMetadata);
+        }
     }
 
 }

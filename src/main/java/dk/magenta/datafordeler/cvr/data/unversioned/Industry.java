@@ -34,7 +34,7 @@ public class Industry extends UnversionedEntity {
 
     @JsonProperty(value = IO_FIELD_CODE)
     @XmlElement(name = IO_FIELD_CODE)
-    @Column(nullable = false, unique = false)
+    @Column(nullable = false, unique = false, name = DB_FIELD_CODE)
     private String industryCode;
 
     public String getIndustryCode() {

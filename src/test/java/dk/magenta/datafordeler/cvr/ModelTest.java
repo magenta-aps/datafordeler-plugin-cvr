@@ -43,9 +43,9 @@ public class ModelTest {
     public void testCompany() throws DataFordelerException, JsonProcessingException {
         Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
+        CompanyEntity company = new CompanyEntity();
         try {
             Identification identification = new Identification(UUID.randomUUID(), "test");
-            CompanyEntity company = new CompanyEntity();
             company.setIdentifikation(identification);
             company.setCvrNumber(78975790);
 
@@ -140,7 +140,6 @@ public class ModelTest {
 
             companyBase1.setQuarterlyEmployeeNumbers(2017, 2, 1, 2, 1, 2, 1, 2);
 
-
             ParticipantLink participantLink = QueryManager.getItem(session, ParticipantLink.class, Collections.singletonMap(ParticipantLink.DB_FIELD_VALUE, 44446666));
             if (participantLink == null) {
                 participantLink = new ParticipantLink();
@@ -164,6 +163,7 @@ public class ModelTest {
 
 
             QueryManager.saveRegistration(session, company, registrering);
+            transaction.commit();
 
 
             CompanyQuery companyQuery = new CompanyQuery();
@@ -191,7 +191,11 @@ public class ModelTest {
             Assert.assertEquals(1, QueryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
         } finally {
-            transaction.rollback();
+            try {
+                transaction = session.beginTransaction();
+                session.delete(company);
+                transaction.commit();
+            } catch (Exception e) {}
             session.close();
             QueryManager.clearCaches();
         }
