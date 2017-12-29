@@ -6,10 +6,14 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dk.magenta.datafordeler.core.database.Effect;
 import dk.magenta.datafordeler.core.fapi.OutputWrapper;
+import dk.magenta.datafordeler.core.util.DoubleHashMap;
+import dk.magenta.datafordeler.cvr.data.shared.AttributeData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 
-import java.util.ArrayList;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class ParticipantOutputWrapper extends OutputWrapper<ParticipantEntity> {
 
@@ -35,13 +39,6 @@ public class ParticipantOutputWrapper extends OutputWrapper<ParticipantEntity> {
             registreringer.add(wrapRegistrering(participantRegistration));
         }
 
-        /*
-        try {
-            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(root));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        */
         return root;
     }
 
@@ -58,11 +55,71 @@ public class ParticipantOutputWrapper extends OutputWrapper<ParticipantEntity> {
         );
 
         for (ParticipantEffect virkning : input.getEffects()) {
-            ObjectNode virkningObject = createVirkning(virkning, true);
+
             for (ParticipantBaseData participantBaseData : virkning.getDataItems()) {
-                addEffectDataToRegistration(
-                        output, "deltager", createDeltagerObject(virkningObject, participantBaseData)
-                );
+
+                OffsetDateTime timestamp = participantBaseData.getLastUpdated();
+
+                Set<String> names = participantBaseData.getNames();
+                if (!names.isEmpty()) {
+                    addEffectDataToRegistration(output, "navne", createNameNode(virkning, timestamp, names));
+                }
+
+                Address locationAddress = participantBaseData.getLocationAddress();
+                if (locationAddress != null) {
+                    this.addEffectDataToRegistration(output, "beliggenhedsadresse", createAdresseNode(virkning, timestamp, locationAddress));
+                }
+
+                Address postalAddress = participantBaseData.getLocationAddress();
+                if (postalAddress != null) {
+                    this.addEffectDataToRegistration(output, "postadresse", createAdresseNode(virkning, timestamp, postalAddress));
+                }
+
+                Address businessAddress = participantBaseData.getBusinessAddress();
+                if (businessAddress != null) {
+                    this.addEffectDataToRegistration(output, "forretningsadresse", createAdresseNode(virkning, timestamp, businessAddress));
+                }
+
+                String phone = participantBaseData.getPhoneNumber();
+                if (phone != null) {
+                    this.addEffectDataToRegistration(output, "telefonnummer", createSimpleNode(virkning, timestamp, "nummer", phone));
+                }
+
+                String fax = participantBaseData.getFaxNumber();
+                if (fax != null) {
+                    this.addEffectDataToRegistration(output, "telefaxnummer", createSimpleNode(virkning, timestamp, "nummer", fax));
+                }
+
+                String email = participantBaseData.getFaxNumber();
+                if (email != null) {
+                    this.addEffectDataToRegistration(output, "emailadresse", createSimpleNode(virkning, timestamp, "adresse", email));
+                }
+
+
+                Long unitNumber = participantBaseData.getUnitNumber();
+                if (unitNumber != null) {
+                    this.addEffectDataToRegistration(output, "enhedsnummer", createSimpleNode(virkning, timestamp, "nummer", unitNumber));
+                }
+
+                String unitType = participantBaseData.getUnitType();
+                if (unitType != null) {
+                    this.addEffectDataToRegistration(output, "enhedstype", createSimpleNode(virkning, timestamp, "type", unitType));
+                }
+
+                String role = participantBaseData.getRole();
+                if (role != null) {
+                    this.addEffectDataToRegistration(output, "rolle", createSimpleNode(virkning, timestamp, "tekst", role));
+                }
+
+                String status = participantBaseData.getStatus();
+                if (status != null) {
+                    this.addEffectDataToRegistration(output, "status", createSimpleNode(virkning, timestamp, "tekst", status));
+                }
+
+                Set<AttributeData> attributes = participantBaseData.getAttributes();
+                if (attributes != null) {
+                    addEffectDataToRegistration(output, "attributter", createAttributeNode(virkning, timestamp, attributes));
+                }
             }
         }
         return output;
@@ -72,82 +129,122 @@ public class ParticipantOutputWrapper extends OutputWrapper<ParticipantEntity> {
         if (!output.has(key)) {
             output.set(key, objectMapper.createArrayNode());
         }
-        ((ArrayNode)output.get(key)).add(value);
+        ArrayNode destination = ((ArrayNode) output.get(key));
+        if (value.isArray()) {
+            destination.addAll((ArrayNode) value);
+        } else {
+            destination.add(value);
+        }
     }
 
-    protected ObjectNode createVirkning(Effect virkning, boolean includeVirkningTil) {
+    protected ObjectNode createVirkning(Effect virkning, OffsetDateTime lastUpdated) {
+        return this.createVirkning(virkning, true, lastUpdated);
+    }
+
+
+    protected ObjectNode createVirkning(Effect virkning, boolean includeVirkningTil, OffsetDateTime lastUpdated) {
         ObjectNode output = objectMapper.createObjectNode();
         output.put(
                 "virkningFra",
                 virkning.getEffectFrom() != null ? virkning.getEffectFrom().toString() : null
         );
-        if(includeVirkningTil) {
+        if (includeVirkningTil) {
             output.put(
                     "virkningTil",
                     virkning.getEffectTo() != null ? virkning.getEffectTo().toString() : null
             );
         }
+        output.put("lastUpdated", lastUpdated != null ? lastUpdated.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null);
         return output;
     }
 
-    protected ObjectNode createDeltagerObject(ObjectNode node, ParticipantBaseData deltager) {
-        ArrayNode nameNode = objectMapper.createArrayNode();
-        for (String name : deltager.getNames()) {
-            nameNode.add(name);
-        }
-        node.set("navne", nameNode);
-        ObjectNode beliggenhedsadresseObject = addAdresseObject(deltager.getLocationAddress());
-        node.set("beliggenhedsadresse", beliggenhedsadresseObject);
-        ObjectNode postadresseObject = addAdresseObject(deltager.getPostalAddress());
-        node.set("postadresse", postadresseObject);
-        ObjectNode forretningsadresseObject = addAdresseObject(deltager.getBusinessAddress());
-        node.set("forretningsadresse", forretningsadresseObject);
-        node.put("telefonnummer", deltager.getPhoneNumber());
-        node.put("emailadresse", deltager.getEmailAddress());
-        node.put("telefaxnummer", deltager.getFaxNumber());
-        node.put("enhedsnummer", deltager.getUnitNumber());
-        node.put("enhedstype", deltager.getUnitType());
-        node.put("rolle", deltager.getRole());
-        node.put("status", deltager.getStatus());
-        node.putPOJO("attributter", deltager.getAttributes());
+    protected ObjectNode createAdresseNode(Effect virkning, OffsetDateTime lastUpdated, Address adresse) {
+        ObjectNode adresseNode = createVirkning(virkning, lastUpdated);
 
+        adresseNode.put("vejkode", adresse.getRoadCode());
+        adresseNode.put("husnummerFra", adresse.getHouseNumberFrom());
+        adresseNode.put("etagebetegnelse", adresse.getFloor());
+        adresseNode.put("dørbetegnelse", adresse.getDoor());
+
+        int kommunekode;
+        String kommunenavn = null;
+        Municipality kommune = adresse.getMunicipality();
+        if (kommune != null) {
+            adresseNode.put("kommunekode", kommune.getCode());
+            adresseNode.put("kommunenavn", kommune.getName());
+        }
+
+        adresseNode.put("postdistrikt", adresse.getPostdistrikt());
+        adresseNode.put("vejnavn", adresse.getRoadName());
+        adresseNode.put("husnummerTil", adresse.getHouseNumberTo());
+        adresseNode.put("postnummer", adresse.getPostnummer());
+        adresseNode.put("supplerendeBynavn", adresse.getSupplementalCityName());
+        adresseNode.put("adresseFritekst", adresse.getAddressText());
+        adresseNode.put("landekode", adresse.getCountryCode());
+
+        return adresseNode;
+    }
+
+    private ObjectNode createNameNode(Effect virkning, OffsetDateTime lastUpdated, Collection<String> names) {
+        ArrayNode listNode = objectMapper.createArrayNode();
+        for (String name : names) {
+            listNode.add(name);
+        }
+        ObjectNode nameNode = createVirkning(virkning, lastUpdated);
+        nameNode.set("navne", listNode);
+        return nameNode;
+    }
+
+    private ObjectNode createSimpleNode(Effect virkning, OffsetDateTime lastUpdated, String key, Boolean value) {
+        ObjectNode node = createVirkning(virkning, lastUpdated);
+        node.put(key, value);
         return node;
     }
 
-    protected ObjectNode addAdresseObject(Address adresse) {
+    private ObjectNode createSimpleNode(Effect virkning, OffsetDateTime lastUpdated, String key, String value) {
+        ObjectNode node = createVirkning(virkning, lastUpdated);
+        node.put(key, value);
+        return node;
+    }
 
-        ObjectNode adresseObject = objectMapper.createObjectNode();
+    private ObjectNode createSimpleNode(Effect virkning, OffsetDateTime lastUpdated, String key, Long value) {
+        ObjectNode node = createVirkning(virkning, lastUpdated);
+        node.put(key, value);
+        return node;
+    }
 
-        if (adresse != null) {
-            ObjectNode json = objectMapper.createObjectNode();
-
-            json.put("vejkode", adresse.getRoadCode());
-            json.put("hunummerFra", adresse.getHouseNumberFrom());
-            json.put("etagebetegnelse", adresse.getFloor());
-            json.put("dørbetegnelse", adresse.getDoor());
-
-            Municipality kommune = adresse.getMunicipality();
-            if (kommune != null) {
-                json.put("kommunekode", kommune.getCode());
-                json.put("kommunenavn", kommune.getName());
+    private ArrayNode createAttributeNode(Effect virkning, OffsetDateTime timestamp, Set<AttributeData> attributes) {
+        ArrayNode listNode = objectMapper.createArrayNode();
+        DoubleHashMap<String, String, ArrayList<AttributeData>> sorted = new DoubleHashMap<>();
+        for (AttributeData attribute : attributes) {
+            ArrayList<AttributeData> list = sorted.get(attribute.getType(), attribute.getValueType());
+            if (list == null) {
+                list = new ArrayList<>();
+                sorted.put(attribute.getType(), attribute.getValueType(), list);
             }
-
-            json.put("postdistrikt", adresse.getPostdistrikt());
-            json.put("vejnavn", adresse.getRoadName());
-            json.put("husnummerTil", adresse.getHouseNumberTo());
-            json.put("postnummer", adresse.getPostnummer());
-            json.put("supplerendeBynavn", adresse.getSupplementalCityName());
-            json.put("adresseFritekst", adresse.getAddressText());
-            json.put("landekode", adresse.getCountryCode());
-
-            adresseObject.set("CVRAdresse", json);
-            adresseObject.set("adresse1", null); // Missing in input
-            adresseObject.set("adresse2", null); // Missing in input
-            adresseObject.set("coNavn", null); // Missing in input
-        } else {
-          return null;
+            int sequenceNumber = attribute.getSequenceNumber();
+            if (sequenceNumber > list.size()) {
+                list.add(attribute);
+            } else if (sequenceNumber >= 0) {
+                list.add(sequenceNumber, attribute);
+            }
         }
 
-        return adresseObject;
+        for (String type : sorted.keySet()) {
+            HashMap<String, ArrayList<AttributeData>> typeMap = sorted.get(type);
+            for (String valuetype : typeMap.keySet()) {
+                List<AttributeData> attributeList = typeMap.get(valuetype);
+                ObjectNode attributeNode = createVirkning(virkning, timestamp);
+                attributeNode.put("type", type);
+                attributeNode.put("vaerditype", valuetype);
+                ArrayNode valueList = objectMapper.createArrayNode();
+                attributeNode.set("vaerdier", valueList);
+                for (AttributeData data : attributeList) {
+                    valueList.add(data.getValue());
+                }
+                listNode.add(attributeNode);
+            }
+        }
+        return listNode;
     }
 }
