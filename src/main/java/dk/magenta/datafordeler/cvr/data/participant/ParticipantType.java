@@ -14,7 +14,7 @@ import java.util.Collections;
  */
 @Entity
 @Table(name = "cvr_participant_type", indexes = {
-        @Index(name = "participantName", columnList = ParticipantType.DB_FIELD_NAME)
+        @Index(name = "cvr_participant_type_name", columnList = ParticipantType.DB_FIELD_NAME)
 })
 public class ParticipantType extends ParticipantClassification {
 
