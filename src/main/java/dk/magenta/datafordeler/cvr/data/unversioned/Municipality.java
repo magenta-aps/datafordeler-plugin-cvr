@@ -108,11 +108,18 @@ public class Municipality extends UnversionedEntity {
             if (municipality == null) {
                 log.debug("Municipality code "+code+" not found in cache, querying database");
                 municipality = QueryManager.getItem(session, Municipality.class, Collections.singletonMap(DB_FIELD_CODE, code));
+                if (municipality != null && municipality.name.equals("") && name != null) {
+                    municipality.setName(name);
+                    session.save(municipality);
+                }
             }
             if (municipality == null) {
-                log.debug("Municipality "+code+" not found; creating new");
+                log.debug("Municipality "+code+" not found; creating new, with name "+name);
                 municipality = new Municipality();
                 municipality.setCode(code);
+                if (name == null) {
+                    name = "";
+                }
                 municipality.setName(name);
                 session.save(municipality);
             } else {
