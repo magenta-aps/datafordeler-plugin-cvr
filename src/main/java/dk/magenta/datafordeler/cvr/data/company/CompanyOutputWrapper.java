@@ -176,13 +176,6 @@ public class CompanyOutputWrapper extends CvrOutputWrapper<CompanyEntity> {
         return formNode;
     }
 
-    private ObjectNode createIndustryNode(Effect virkning, OffsetDateTime lastUpdated, Industry industry) {
-        ObjectNode industryNode = createVirkning(virkning, lastUpdated);
-        industryNode.put("branche", industry.getIndustryText());
-        industryNode.put("branchekode", industry.getIndustryCode());
-        return industryNode;
-    }
-
     private ObjectNode createLifecycleNode(Effect virkning, OffsetDateTime lastUpdated, LifecycleData lifecycle) {
         ObjectNode node = createVirkning(virkning, lastUpdated);
         if (lifecycle.getStartDate() != null) {

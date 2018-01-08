@@ -6,13 +6,18 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dk.magenta.datafordeler.core.database.Effect;
 import dk.magenta.datafordeler.core.fapi.OutputWrapper;
+import dk.magenta.datafordeler.cvr.data.CvrOutputWrapper;
 import dk.magenta.datafordeler.cvr.data.shared.LifecycleData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
+import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Set;
 
-public class CompanyUnitOutputWrapper extends OutputWrapper<CompanyUnitEntity> {
+public class CompanyUnitOutputWrapper extends CvrOutputWrapper<CompanyUnitEntity> {
 
     private ObjectMapper objectMapper;
 
@@ -36,13 +41,6 @@ public class CompanyUnitOutputWrapper extends OutputWrapper<CompanyUnitEntity> {
             registreringer.add(wrapRegistrering(companyUnitRegistration));
         }
 
-        /*
-        try {
-            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(root));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        */
         return root;
     }
 
@@ -59,82 +57,83 @@ public class CompanyUnitOutputWrapper extends OutputWrapper<CompanyUnitEntity> {
         );
 
         for (CompanyUnitEffect virkning : input.getEffects()) {
-            ObjectNode virkningObject = createVirkning(virkning, true);
             for (CompanyUnitBaseData companyUnitBaseData : virkning.getDataItems()) {
-                addEffectDataToRegistration(
-                        output, "produktionsenhed", createVirksomhedObject(virkningObject, companyUnitBaseData)
-                );
+
+                OffsetDateTime timestamp = companyUnitBaseData.getLastUpdated();
+
+                String name = companyUnitBaseData.getName();
+                if (name != null) {
+                    this.addEffectDataToRegistration(output, "produktionsenhedsnavn", createSimpleNode(virkning, timestamp, "navn", name));
+                }
+
+                List<Long> associatedCvrNumbers = companyUnitBaseData.getAssociatedCvrNumber();
+                if (associatedCvrNumbers != null && !associatedCvrNumbers.isEmpty()) {
+                    this.addEffectDataToRegistration(output, "tilknyttetCvrNummer", createListNode(virkning, timestamp, "numre", associatedCvrNumbers));
+                }
+
+                Address locationAddress = companyUnitBaseData.getLocationAddress();
+                if (locationAddress != null) {
+                    this.addEffectDataToRegistration(output, "beliggenhedsadresse", createAddressNode(virkning, timestamp, locationAddress));
+                }
+
+                Address postalAddress = companyUnitBaseData.getLocationAddress();
+                if (postalAddress != null) {
+                    this.addEffectDataToRegistration(output, "postadresse", createAddressNode(virkning, timestamp, postalAddress));
+                }
+
+                Industry primaryIndustry = companyUnitBaseData.getPrimaryIndustry();
+                if (primaryIndustry != null) {
+                    this.addEffectDataToRegistration(output, "hovedbranche", createIndustryNode(virkning, timestamp, primaryIndustry));
+                }
+
+                Industry secondaryIndustry1 = companyUnitBaseData.getSecondaryIndustry1();
+                if (secondaryIndustry1 != null) {
+                    this.addEffectDataToRegistration(output, "bibranche1", createIndustryNode(virkning, timestamp, secondaryIndustry1));
+                }
+
+                Industry secondaryIndustry2 = companyUnitBaseData.getSecondaryIndustry1();
+                if (secondaryIndustry2 != null) {
+                    this.addEffectDataToRegistration(output, "bibranche2", createIndustryNode(virkning, timestamp, secondaryIndustry2));
+                }
+
+                Industry secondaryIndustry3 = companyUnitBaseData.getSecondaryIndustry1();
+                if (secondaryIndustry3 != null) {
+                    this.addEffectDataToRegistration(output, "bibranche3", createIndustryNode(virkning, timestamp, secondaryIndustry3));
+                }
+
+                Boolean advertProtection = companyUnitBaseData.getAdvertProtection();
+                if (advertProtection != null) {
+                    this.addEffectDataToRegistration(output, "reklamebeskyttelse", createSimpleNode(virkning, timestamp, "beskyttelse", advertProtection));
+                }
+
+                String phone = companyUnitBaseData.getPhoneNumber();
+                if (phone != null) {
+                    this.addEffectDataToRegistration(output, "telefonnummer", createSimpleNode(virkning, timestamp, "nummer", phone));
+                }
+
+                String fax = companyUnitBaseData.getFaxNumber();
+                if (fax != null) {
+                    this.addEffectDataToRegistration(output, "telefaxnummer", createSimpleNode(virkning, timestamp, "nummer", fax));
+                }
+
+                String email = companyUnitBaseData.getFaxNumber();
+                if (email != null) {
+                    this.addEffectDataToRegistration(output, "emailadresse", createSimpleNode(virkning, timestamp, "nummer", email));
+                }
+
+                LifecycleData lifecycle = companyUnitBaseData.getLifecycleData();
+                if (lifecycle != null) {
+                    this.addEffectDataToRegistration(output, "livscyklus", createLifecycleNode(virkning, timestamp, lifecycle));
+                }
+
+
             }
         }
 
         return output;
     }
 
-    protected void addEffectDataToRegistration(ObjectNode output, String key, JsonNode value) {
-        if (!output.has(key)) {
-            output.set(key, objectMapper.createArrayNode());
-        }
-        ((ArrayNode)output.get(key)).add(value);
-    }
-
-    protected ObjectNode createVirkning(Effect virkning, boolean includeVirkningTil) {
-        ObjectNode output = objectMapper.createObjectNode();
-        output.put(
-                "virkningFra",
-                virkning.getEffectFrom() != null ? virkning.getEffectFrom().toString() : null
-        );
-        if (includeVirkningTil) {
-            output.put(
-                    "virkningTil",
-                    virkning.getEffectTo() != null ? virkning.getEffectTo().toString() : null
-            );
-        }
-        return output;
-    }
-
     protected ObjectNode createVirksomhedObject (ObjectNode node, CompanyUnitBaseData produktionsenhed) {
-        node.put("pNummer", produktionsenhed.getpNumber());
-
-        node.put("produktionsenhedsnavn", produktionsenhed.getName());
-
-        ObjectNode beliggenhedsadresseObject = addAdresseObject(produktionsenhed.getLocationAddress());
-        node.set("beliggenhedsadresse", beliggenhedsadresseObject);
-
-        ObjectNode postadresseObject = addAdresseObject(produktionsenhed.getPostalAddress());
-        node.set("postadresse", postadresseObject);
-
-        node.put("hovedbranche", produktionsenhed.getPrimaryIndustry());
-
-        node.put("bibbranche1", produktionsenhed.getSecondaryIndustry1());
-
-        node.put("bibbranche2", produktionsenhed.getSecondaryIndustry2());
-
-        node.put("bibbranche3", produktionsenhed.getSecondaryIndustry3());
-
-        node.put("reklamebeskyttelse", produktionsenhed.getAdvertProtection());
-
-        node.put("telefonnummer", produktionsenhed.getPhoneNumber());
-
-        node.put("emailadresse", produktionsenhed.getEmailAddress());
-
-        node.put("telefaxnummer", produktionsenhed.getFaxNumber());
-
-        // TODO Tilføj virksomhedsrelationer til json output og i første omgrang til CompanyUnitRecord
-        node.set("tilknyttetVirksomhedsCVRNummer", null); // Missing in input
-
-        LifecycleData livsforloeb = produktionsenhed.getLifecycleData();
-        OffsetDateTime produktionsenhedStartdato = null;
-        OffsetDateTime produktionsenhedOphørsdato = null;
-        if (livsforloeb != null) {
-            produktionsenhedStartdato = livsforloeb.getStartDate();
-            produktionsenhedOphørsdato = livsforloeb.getEndDate();
-        }
-        node.put("produktionsenhedStartdato", produktionsenhedStartdato != null ? produktionsenhedStartdato.toLocalDate().toString() : null);
-        node.put("produktionsenhedOphørsdato", produktionsenhedOphørsdato != null ? produktionsenhedOphørsdato.toLocalDate().toString() : null);
-
-        // TODO Tilføj virksomhedsrelationer til json output og i første omgrang til CompanyUnitRecord
-        node.set("tilknyttetVirksomhedsStartdato", null); // Missing in input
-        node.set("tilknyttetVirksomhedsOphørsdato", null); // Missing in input
 
         return node;
     }
@@ -174,6 +173,18 @@ public class CompanyUnitOutputWrapper extends OutputWrapper<CompanyUnitEntity> {
         }
 
         return adresseObject;
+    }
+
+
+    private ObjectNode createLifecycleNode(Effect virkning, OffsetDateTime lastUpdated, LifecycleData lifecycle) {
+        ObjectNode node = createVirkning(virkning, lastUpdated);
+        if (lifecycle.getStartDate() != null) {
+            node.put("produktionsenhedStartdato", this.getUTCDate(lifecycle.getStartDate()).format(DateTimeFormatter.ISO_DATE));
+        }
+        if (lifecycle.getEndDate() != null) {
+            node.put("produktionsenhedOphørsdato", this.getUTCDate(lifecycle.getEndDate()).format(DateTimeFormatter.ISO_DATE));
+        }
+        return node;
     }
 
 }

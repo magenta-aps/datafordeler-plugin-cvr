@@ -11,16 +11,14 @@ import dk.magenta.datafordeler.core.fapi.OutputWrapper;
 import dk.magenta.datafordeler.core.util.DoubleHashMap;
 import dk.magenta.datafordeler.cvr.data.shared.AttributeData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
+import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class CvrOutputWrapper<T extends Entity> extends OutputWrapper<T> {
 
@@ -127,6 +125,13 @@ public abstract class CvrOutputWrapper<T extends Entity> extends OutputWrapper<T
         return listNode;
     }
 
+    protected ObjectNode createIndustryNode(Effect virkning, OffsetDateTime lastUpdated, Industry industry) {
+        ObjectNode industryNode = createVirkning(virkning, lastUpdated);
+        industryNode.put("branche", industry.getIndustryText());
+        industryNode.put("branchekode", industry.getIndustryCode());
+        return industryNode;
+    }
+
     protected ObjectNode createSimpleNode(Effect virkning, OffsetDateTime lastUpdated, String key, Boolean value) {
         ObjectNode node = createVirkning(virkning, lastUpdated);
         node.put(key, value);
@@ -142,6 +147,16 @@ public abstract class CvrOutputWrapper<T extends Entity> extends OutputWrapper<T
     protected ObjectNode createSimpleNode(Effect virkning, OffsetDateTime lastUpdated, String key, Long value) {
         ObjectNode node = createVirkning(virkning, lastUpdated);
         node.put(key, value);
+        return node;
+    }
+
+    protected ObjectNode createListNode(Effect virkning, OffsetDateTime lastUpdated, String key, Collection<Long> value) {
+        ObjectNode node = createVirkning(virkning, lastUpdated);
+        ArrayNode listNode = objectMapper.createArrayNode();
+        for (Long v : value) {
+            listNode.add(v);
+        }
+        node.set(key, listNode);
         return node;
     }
 
