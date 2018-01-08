@@ -202,6 +202,9 @@ public class CompanyOutputWrapper extends OutputWrapper<CompanyEntity> {
 
 
     protected ObjectNode addIdentification(Identification identification) {
+        if (identification == null) {
+            return null;
+        }
         ObjectNode identificationObject = objectMapper.createObjectNode();
         identificationObject.put("uuid", identification.getUuid().toString());
         identificationObject.put("domaene", identification.getDomain());
