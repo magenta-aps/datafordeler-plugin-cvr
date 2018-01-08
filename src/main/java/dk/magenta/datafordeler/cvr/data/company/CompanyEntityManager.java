@@ -167,7 +167,7 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
             );
             JsonNode topNode = this.getObjectMapper().readTree(rawData);
             ObjectReader reader = this.getObjectMapper().readerFor(CompanyRecord.class);
-            if (topNode.has("hits")) {
+            if (topNode != null && topNode.has("hits")) {
                 topNode = topNode.get("hits");
                 if (topNode.has("hits")) {
                     topNode = topNode.get("hits");
