@@ -378,6 +378,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                 if (data.getEffects().containsAll(effects) && effects.containsAll(data.getEffects())) {
                     baseData = data;
                     log.debug("Reuse existing basedata");
+                    break;
                 }
             }
             if (baseData == null) {
