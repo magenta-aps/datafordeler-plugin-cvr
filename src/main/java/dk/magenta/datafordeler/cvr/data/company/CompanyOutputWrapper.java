@@ -21,7 +21,7 @@ import java.util.Set;
  * under a Company is sorted into this format:
  * {
  *     "UUID": <company uuid>
- *     "CVRNummer": <company cvr number>
+ *     "cvrnummer": <company cvr number>
  *     "id": {
  *         "domaene": <company domain>
  *     },
@@ -29,7 +29,7 @@ import java.util.Set;
  *          {
  *              "registreringFra": <registrationFrom>,
  *              "registreringTil": <registrationTo>,
- *              "virksomhedsnavn": [
+ *              "navn": [
  *              {
  *                  "navn": <companyName1>
  *                  "virkningFra": <effectFrom1>
