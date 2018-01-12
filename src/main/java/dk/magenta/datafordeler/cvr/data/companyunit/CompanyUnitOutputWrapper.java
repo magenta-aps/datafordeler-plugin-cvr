@@ -125,56 +125,11 @@ public class CompanyUnitOutputWrapper extends CvrOutputWrapper<CompanyUnitEntity
                 if (lifecycle != null) {
                     this.addEffectDataToRegistration(output, CompanyUnitBaseData.IO_FIELD_LIFECYCLE, createLifecycleNode(virkning, timestamp, lifecycle));
                 }
-
-
             }
         }
 
         return output;
     }
-
-    protected ObjectNode createVirksomhedObject (ObjectNode node, CompanyUnitBaseData produktionsenhed) {
-
-        return node;
-    }
-
-    protected ObjectNode addAdresseObject(Address adresse) {
-
-        ObjectNode adresseObject = objectMapper.createObjectNode();
-
-        if (adresse != null) {
-            ObjectNode json = objectMapper.createObjectNode();
-
-            json.put("vejkode", adresse.getRoadCode());
-            json.put("hunummerFra", adresse.getHouseNumberFrom());
-            json.put("etagebetegnelse", adresse.getFloor());
-            json.put("dørbetegnelse", adresse.getDoor());
-
-            Municipality kommune = adresse.getMunicipality();
-            if (kommune != null) {
-                json.put("kommunekode", kommune.getCode());
-                json.put("kommunenavn", kommune.getName());
-            }
-
-            json.put("postdistrikt", adresse.getPostdistrikt());
-            json.put("vejnavn", adresse.getRoadName());
-            json.put("husnummerTil", adresse.getHouseNumberTo());
-            json.put("postnummer", adresse.getPostnummer());
-            json.put("supplerendeBynavn", adresse.getSupplementalCityName());
-            json.put("adresseFritekst", adresse.getAddressText());
-            json.put("landekode", adresse.getCountryCode());
-
-            adresseObject.set("CVRAdresse", json);
-            adresseObject.set("adresse1", null); // Missing in input
-            adresseObject.set("adresse2", null); // Missing in input
-            adresseObject.set("coNavn", null); // Missing in input
-        } else {
-            return null;
-        }
-
-        return adresseObject;
-    }
-
 
     private ObjectNode createLifecycleNode(Effect virkning, OffsetDateTime lastUpdated, LifecycleData lifecycle) {
         ObjectNode node = createVirkning(virkning, lastUpdated);
