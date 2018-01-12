@@ -397,10 +397,10 @@ public class QueryTest {
             JsonNode lifecycleNode = lifecycleNodeList.get(0);
             Assert.assertTrue(OffsetDateTime.parse("1999-11-15T01:00+01:00").isEqual(OffsetDateTime.parse(lifecycleNode.get("virkningFra").asText())));
             Assert.assertTrue(lifecycleNode.get("virkningTil").isNull());
-            Assert.assertEquals("1999-11-15", lifecycleNode.get("virksomhedStartdato").asText());
+            Assert.assertEquals("1999-11-15", lifecycleNode.get("startDato").asText());
 
 
-            JsonNode unitNodeList = registration.get("produktionsEnheder");
+            JsonNode unitNodeList = registration.get("produktionsenheder");
             Assert.assertEquals(1, unitNodeList.size());
             JsonNode unitNode = unitNodeList.get(0);
             Assert.assertTrue(OffsetDateTime.parse("1999-11-15T01:00+01:00").isEqual(OffsetDateTime.parse(unitNode.get("virkningFra").asText())));
@@ -427,7 +427,7 @@ public class QueryTest {
             Assert.assertNotNull(registration.get("deltagerRelationer"));
             Assert.assertNotNull(registration.get("livscyklus"));
             Assert.assertNotNull(registration.get("virksomhedsform"));
-            Assert.assertNotNull(registration.get("produktionsEnheder"));
+            Assert.assertNotNull(registration.get("produktionsenheder"));
             Assert.assertNotNull(registration.get("telefon"));
             Assert.assertNotNull(registration.get("navn"));
             Assert.assertNull(registration.get("email"));

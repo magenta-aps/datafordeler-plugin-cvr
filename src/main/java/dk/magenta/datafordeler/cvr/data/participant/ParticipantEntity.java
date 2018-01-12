@@ -41,11 +41,14 @@ public class ParticipantEntity extends CvrEntity<ParticipantEntity, ParticipantR
         return new ParticipantRegistration();
     }
 
-    @Column(nullable = false, insertable = true, updatable = false)
+    public static final String DB_FIELD_PARTICIPANT_NUMBER = "participantNumber";
+    public static final String IO_FIELD_PARTICIPANT_NUMBER = "deltagernummer";
+
+    @Column(name = DB_FIELD_PARTICIPANT_NUMBER, nullable = false, insertable = true, updatable = false)
     private long participantNumber;
 
-    @JsonProperty
-    @XmlElement
+    @JsonProperty(value = IO_FIELD_PARTICIPANT_NUMBER)
+    @XmlElement(name = IO_FIELD_PARTICIPANT_NUMBER)
     public long getParticipantNumber() {
         return this.participantNumber;
     }

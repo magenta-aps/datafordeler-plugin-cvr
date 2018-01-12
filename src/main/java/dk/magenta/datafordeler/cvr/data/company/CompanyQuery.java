@@ -18,14 +18,14 @@ import java.util.*;
  */
 public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
-    public static final String CVRNUMMER = "cvrnummer";
-    public static final String REKLAMEBESKYTTELSE = "reklamebeskyttelse";
-    public static final String NAVN = "navn";
-    public static final String TELEFONNUMMER = "telefon";
-    public static final String TELEFAXNUMMER = "telefax";
-    public static final String EMAILADRESSE = "email";
-    public static final String VIRKSOMHEDSFORM = "virksomhedsform";
-    public static final String KOMMUNEKODE = "kommunekode";
+    public static final String CVRNUMMER = CompanyEntity.IO_FIELD_CVR;
+    public static final String REKLAMEBESKYTTELSE = CompanyBaseData.IO_FIELD_ADVERTPROTECTION;
+    public static final String NAVN = CompanyBaseData.IO_FIELD_NAME;
+    public static final String TELEFONNUMMER = CompanyBaseData.IO_FIELD_PHONENUMBER;
+    public static final String TELEFAXNUMMER = CompanyBaseData.IO_FIELD_FAXNUMBER;
+    public static final String EMAILADRESSE = CompanyBaseData.IO_FIELD_EMAIL;
+    public static final String VIRKSOMHEDSFORM = CompanyBaseData.IO_FIELD_FORM;
+    public static final String KOMMUNEKODE = Municipality.IO_FIELD_CODE;
 
     @QueryField(type = QueryField.FieldType.STRING, queryName = CVRNUMMER)
     private List<String> cvrNumre = new ArrayList<>();

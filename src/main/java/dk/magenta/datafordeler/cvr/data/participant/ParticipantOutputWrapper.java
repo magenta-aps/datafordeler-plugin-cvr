@@ -7,6 +7,7 @@ import dk.magenta.datafordeler.core.database.Effect;
 import dk.magenta.datafordeler.core.util.DoubleHashMap;
 import dk.magenta.datafordeler.cvr.data.CvrOutputWrapper;
 import dk.magenta.datafordeler.cvr.data.shared.AttributeData;
+import dk.magenta.datafordeler.cvr.data.shared.ParticipantRelationData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 
@@ -26,7 +27,7 @@ public class ParticipantOutputWrapper extends CvrOutputWrapper<ParticipantEntity
         ObjectNode root = objectMapper.createObjectNode();
 
         root.put("UUID", input.getUUID().toString());
-        root.put("deltagernummer", input.getParticipantNumber());
+        root.put(ParticipantEntity.IO_FIELD_PARTICIPANT_NUMBER, input.getParticipantNumber());
         root.putPOJO("id", input.getIdentification());
 
         // Registreringer
@@ -60,63 +61,63 @@ public class ParticipantOutputWrapper extends CvrOutputWrapper<ParticipantEntity
 
                 Set<String> names = participantBaseData.getNames();
                 if (!names.isEmpty()) {
-                    addEffectDataToRegistration(output, "navn", createNameNode(virkning, timestamp, names));
+                    addEffectDataToRegistration(output, ParticipantBaseData.IO_FIELD_NAMES, createNameNode(virkning, timestamp, names));
                 }
 
                 Address locationAddress = participantBaseData.getLocationAddress();
                 if (locationAddress != null) {
-                    this.addEffectDataToRegistration(output, "beliggenhedsadresse", createAddressNode(virkning, timestamp, locationAddress));
+                    this.addEffectDataToRegistration(output, ParticipantBaseData.IO_FIELD_LOCATION_ADDRESS, createAddressNode(virkning, timestamp, locationAddress));
                 }
 
                 Address postalAddress = participantBaseData.getLocationAddress();
                 if (postalAddress != null) {
-                    this.addEffectDataToRegistration(output, "postadresse", createAddressNode(virkning, timestamp, postalAddress));
+                    this.addEffectDataToRegistration(output, ParticipantBaseData.IO_FIELD_POSTAL_ADDRESS, createAddressNode(virkning, timestamp, postalAddress));
                 }
 
                 Address businessAddress = participantBaseData.getBusinessAddress();
                 if (businessAddress != null) {
-                    this.addEffectDataToRegistration(output, "forretningsadresse", createAddressNode(virkning, timestamp, businessAddress));
+                    this.addEffectDataToRegistration(output, ParticipantBaseData.IO_FIELD_BUSINESS_ADDRESS, createAddressNode(virkning, timestamp, businessAddress));
                 }
 
                 String phone = participantBaseData.getPhoneNumber();
                 if (phone != null) {
-                    this.addEffectDataToRegistration(output, "telefon", createSimpleNode(virkning, timestamp, "nummer", phone));
+                    this.addEffectDataToRegistration(output, ParticipantBaseData.IO_FIELD_PHONENUMBER, createSimpleNode(virkning, timestamp, "nummer", phone));
                 }
 
                 String fax = participantBaseData.getFaxNumber();
                 if (fax != null) {
-                    this.addEffectDataToRegistration(output, "telefax", createSimpleNode(virkning, timestamp, "nummer", fax));
+                    this.addEffectDataToRegistration(output, ParticipantBaseData.IO_FIELD_FAXNUMBER, createSimpleNode(virkning, timestamp, "nummer", fax));
                 }
 
                 String email = participantBaseData.getFaxNumber();
                 if (email != null) {
-                    this.addEffectDataToRegistration(output, "email", createSimpleNode(virkning, timestamp, "adresse", email));
+                    this.addEffectDataToRegistration(output, ParticipantBaseData.IO_FIELD_EMAIL, createSimpleNode(virkning, timestamp, "adresse", email));
                 }
 
 
                 Long unitNumber = participantBaseData.getUnitNumber();
                 if (unitNumber != null) {
-                    this.addEffectDataToRegistration(output, "deltagernummer", createSimpleNode(virkning, timestamp, "nummer", unitNumber));
+                    this.addEffectDataToRegistration(output, ParticipantBaseData.IO_FIELD_UNIT_NUMBER, createSimpleNode(virkning, timestamp, "nummer", unitNumber));
                 }
 
                 String unitType = participantBaseData.getUnitType();
                 if (unitType != null) {
-                    this.addEffectDataToRegistration(output, "enhedstype", createSimpleNode(virkning, timestamp, "type", unitType));
+                    this.addEffectDataToRegistration(output, ParticipantBaseData.IO_FIELD_UNIT_TYPE, createSimpleNode(virkning, timestamp, "type", unitType));
                 }
 
                 String role = participantBaseData.getRole();
                 if (role != null) {
-                    this.addEffectDataToRegistration(output, "rolle", createSimpleNode(virkning, timestamp, "tekst", role));
+                    this.addEffectDataToRegistration(output, ParticipantBaseData.IO_FIELD_ROLE, createSimpleNode(virkning, timestamp, "tekst", role));
                 }
 
                 String status = participantBaseData.getStatus();
                 if (status != null) {
-                    this.addEffectDataToRegistration(output, "status", createSimpleNode(virkning, timestamp, "tekst", status));
+                    this.addEffectDataToRegistration(output, ParticipantBaseData.IO_FIELD_STATUS, createSimpleNode(virkning, timestamp, "tekst", status));
                 }
 
                 Set<AttributeData> attributes = participantBaseData.getAttributes();
                 if (attributes != null) {
-                    addEffectDataToRegistration(output, "attributter", createAttributeNode(virkning, timestamp, attributes));
+                    addEffectDataToRegistration(output, ParticipantBaseData.IO_FIELD_ATTRIBUTES, createAttributeNode(virkning, timestamp, attributes));
                 }
             }
         }

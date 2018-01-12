@@ -248,7 +248,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
 
 
     public static final String DB_FIELD_PHONENUMBER = "phoneNumber";
-    public static final String IO_FIELD_PHONENUMBER = "telefonnummer";
+    public static final String IO_FIELD_PHONENUMBER = "telefon";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     @JoinColumn(name = DB_FIELD_PHONENUMBER + DatabaseEntry.REF)
     private ContactData phoneNumber;
@@ -266,7 +266,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
 
 
     public static final String DB_FIELD_EMAIL = "emailAddress";
-    public static final String IO_FIELD_EMAIL = "emailadresse";
+    public static final String IO_FIELD_EMAIL = "email";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     @JoinColumn(name = DB_FIELD_EMAIL + DatabaseEntry.REF)
     private ContactData emailAddress;
@@ -284,7 +284,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
 
 
     public static final String DB_FIELD_FAXNUMBER = "faxNumber";
-    public static final String IO_FIELD_FAXNUMBER = "telefaxnummer";
+    public static final String IO_FIELD_FAXNUMBER = "telefax";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     @JoinColumn(name = DB_FIELD_FAXNUMBER + DatabaseEntry.REF)
     private ContactData faxNumber;
@@ -317,7 +317,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
 
 
     public static final String DB_FIELD_CVR_NUMBER = "associatedCvrNumber";
-    public static final String IO_FIELD_CVR_NUMBER = "tilknyttetVirksomhedsCVRNummer";
+    public static final String IO_FIELD_CVR_NUMBER = "tilknyttetCvrNummer";
     @OneToMany(cascade = CascadeType.ALL)
     private Set<CompanyUnitCvrNumber> associatedCvrNumber;
 

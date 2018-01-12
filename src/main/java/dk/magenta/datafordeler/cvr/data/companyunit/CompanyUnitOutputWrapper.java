@@ -30,7 +30,7 @@ public class CompanyUnitOutputWrapper extends CvrOutputWrapper<CompanyUnitEntity
         ObjectNode root = objectMapper.createObjectNode();
 
         root.put("UUID", input.getUUID().toString());
-        root.put("PNummer", input.getPNumber());
+        root.put(CompanyUnitEntity.IO_FIELD_PNUMBER, input.getPNumber());
         root.putPOJO("id", input.getIdentification());
 
         // Registreringer
@@ -63,67 +63,67 @@ public class CompanyUnitOutputWrapper extends CvrOutputWrapper<CompanyUnitEntity
 
                 String name = companyUnitBaseData.getName();
                 if (name != null) {
-                    this.addEffectDataToRegistration(output, "produktionsenhedsnavn", createSimpleNode(virkning, timestamp, "navn", name));
+                    this.addEffectDataToRegistration(output, CompanyUnitBaseData.IO_FIELD_NAME, createSimpleNode(virkning, timestamp, "navn", name));
                 }
 
                 List<Long> associatedCvrNumbers = companyUnitBaseData.getAssociatedCvrNumber();
                 if (associatedCvrNumbers != null && !associatedCvrNumbers.isEmpty()) {
-                    this.addEffectDataToRegistration(output, "tilknyttetCvrnummer", createListNode(virkning, timestamp, "numre", associatedCvrNumbers));
+                    this.addEffectDataToRegistration(output, CompanyUnitBaseData.IO_FIELD_CVR_NUMBER, createListNode(virkning, timestamp, "numre", associatedCvrNumbers));
                 }
 
                 Address locationAddress = companyUnitBaseData.getLocationAddress();
                 if (locationAddress != null) {
-                    this.addEffectDataToRegistration(output, "beliggenhedsadresse", createAddressNode(virkning, timestamp, locationAddress));
+                    this.addEffectDataToRegistration(output, CompanyUnitBaseData.IO_FIELD_LOCATION_ADDRESS, createAddressNode(virkning, timestamp, locationAddress));
                 }
 
                 Address postalAddress = companyUnitBaseData.getLocationAddress();
                 if (postalAddress != null) {
-                    this.addEffectDataToRegistration(output, "postadresse", createAddressNode(virkning, timestamp, postalAddress));
+                    this.addEffectDataToRegistration(output, CompanyUnitBaseData.IO_FIELD_POSTAL_ADDRESS, createAddressNode(virkning, timestamp, postalAddress));
                 }
 
                 Industry primaryIndustry = companyUnitBaseData.getPrimaryIndustry();
                 if (primaryIndustry != null) {
-                    this.addEffectDataToRegistration(output, "hovedbranche", createIndustryNode(virkning, timestamp, primaryIndustry));
+                    this.addEffectDataToRegistration(output, CompanyUnitBaseData.IO_FIELD_PRIMARY_INDUSTRY, createIndustryNode(virkning, timestamp, primaryIndustry));
                 }
 
                 Industry secondaryIndustry1 = companyUnitBaseData.getSecondaryIndustry1();
                 if (secondaryIndustry1 != null) {
-                    this.addEffectDataToRegistration(output, "bibranche1", createIndustryNode(virkning, timestamp, secondaryIndustry1));
+                    this.addEffectDataToRegistration(output, CompanyUnitBaseData.IO_FIELD_SECONDARY_INDUSTRY_1, createIndustryNode(virkning, timestamp, secondaryIndustry1));
                 }
 
                 Industry secondaryIndustry2 = companyUnitBaseData.getSecondaryIndustry1();
                 if (secondaryIndustry2 != null) {
-                    this.addEffectDataToRegistration(output, "bibranche2", createIndustryNode(virkning, timestamp, secondaryIndustry2));
+                    this.addEffectDataToRegistration(output, CompanyUnitBaseData.IO_FIELD_SECONDARY_INDUSTRY_2, createIndustryNode(virkning, timestamp, secondaryIndustry2));
                 }
 
                 Industry secondaryIndustry3 = companyUnitBaseData.getSecondaryIndustry1();
                 if (secondaryIndustry3 != null) {
-                    this.addEffectDataToRegistration(output, "bibranche3", createIndustryNode(virkning, timestamp, secondaryIndustry3));
+                    this.addEffectDataToRegistration(output, CompanyUnitBaseData.IO_FIELD_SECONDARY_INDUSTRY_3, createIndustryNode(virkning, timestamp, secondaryIndustry3));
                 }
 
                 Boolean advertProtection = companyUnitBaseData.getAdvertProtection();
                 if (advertProtection != null) {
-                    this.addEffectDataToRegistration(output, "reklamebeskyttelse", createSimpleNode(virkning, timestamp, "beskyttelse", advertProtection));
+                    this.addEffectDataToRegistration(output, CompanyUnitBaseData.IO_FIELD_ADVERTPROTECTION, createSimpleNode(virkning, timestamp, "beskyttelse", advertProtection));
                 }
 
                 String phone = companyUnitBaseData.getPhoneNumber();
                 if (phone != null) {
-                    this.addEffectDataToRegistration(output, "telefonnummer", createSimpleNode(virkning, timestamp, "nummer", phone));
+                    this.addEffectDataToRegistration(output, CompanyUnitBaseData.IO_FIELD_PHONENUMBER, createSimpleNode(virkning, timestamp, "nummer", phone));
                 }
 
                 String fax = companyUnitBaseData.getFaxNumber();
                 if (fax != null) {
-                    this.addEffectDataToRegistration(output, "telefaxnummer", createSimpleNode(virkning, timestamp, "nummer", fax));
+                    this.addEffectDataToRegistration(output, CompanyUnitBaseData.IO_FIELD_FAXNUMBER, createSimpleNode(virkning, timestamp, "nummer", fax));
                 }
 
                 String email = companyUnitBaseData.getFaxNumber();
                 if (email != null) {
-                    this.addEffectDataToRegistration(output, "emailadresse", createSimpleNode(virkning, timestamp, "nummer", email));
+                    this.addEffectDataToRegistration(output, CompanyUnitBaseData.IO_FIELD_EMAIL, createSimpleNode(virkning, timestamp, "adresse", email));
                 }
 
                 LifecycleData lifecycle = companyUnitBaseData.getLifecycleData();
                 if (lifecycle != null) {
-                    this.addEffectDataToRegistration(output, "livscyklus", createLifecycleNode(virkning, timestamp, lifecycle));
+                    this.addEffectDataToRegistration(output, CompanyUnitBaseData.IO_FIELD_LIFECYCLE, createLifecycleNode(virkning, timestamp, lifecycle));
                 }
 
 
@@ -179,10 +179,10 @@ public class CompanyUnitOutputWrapper extends CvrOutputWrapper<CompanyUnitEntity
     private ObjectNode createLifecycleNode(Effect virkning, OffsetDateTime lastUpdated, LifecycleData lifecycle) {
         ObjectNode node = createVirkning(virkning, lastUpdated);
         if (lifecycle.getStartDate() != null) {
-            node.put("produktionsenhedStartdato", this.getUTCDate(lifecycle.getStartDate()).format(DateTimeFormatter.ISO_DATE));
+            node.put(LifecycleData.IO_FIELD_START, this.getUTCDate(lifecycle.getStartDate()).format(DateTimeFormatter.ISO_DATE));
         }
         if (lifecycle.getEndDate() != null) {
-            node.put("produktionsenhedOphørsdato", this.getUTCDate(lifecycle.getEndDate()).format(DateTimeFormatter.ISO_DATE));
+            node.put(LifecycleData.IO_FIELD_END, this.getUTCDate(lifecycle.getEndDate()).format(DateTimeFormatter.ISO_DATE));
         }
         return node;
     }
