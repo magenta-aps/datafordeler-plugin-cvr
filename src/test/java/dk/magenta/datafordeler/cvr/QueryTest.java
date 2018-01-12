@@ -365,7 +365,7 @@ public class QueryTest {
             this.applyAccess(testUserDetails);
 
             ParameterMap searchParameters = new ParameterMap();
-            searchParameters.add("CVRNummer", "25052943");
+            searchParameters.add("cvrnummer", "25052943");
             searchParameters.add("registrationFrom", "1999-11-30");
             searchParameters.add("registrationTo", "1999-12-01");
 
@@ -375,7 +375,7 @@ public class QueryTest {
             JsonNode jsonBody = objectMapper.readTree(response.getBody());
 
             ObjectNode entity = (ObjectNode) jsonBody.get("results").get(0);
-            Assert.assertEquals(25052943, entity.get("CVRNummer").asInt());
+            Assert.assertEquals(25052943, entity.get("cvrnummer").asInt());
             Assert.assertEquals(CompanyEntity.generateUUID(25052943).toString(), entity.get("UUID").asText());
             ArrayNode registrations = (ArrayNode) entity.get("registreringer");
             Assert.assertEquals(1, registrations.size());
@@ -428,9 +428,9 @@ public class QueryTest {
             Assert.assertNotNull(registration.get("livscyklus"));
             Assert.assertNotNull(registration.get("virksomhedsform"));
             Assert.assertNotNull(registration.get("produktionsEnheder"));
-            Assert.assertNotNull(registration.get("telefonnummer"));
-            Assert.assertNotNull(registration.get("virksomhedsnavn"));
-            Assert.assertNull(registration.get("emailadresse"));
+            Assert.assertNotNull(registration.get("telefon"));
+            Assert.assertNotNull(registration.get("navn"));
+            Assert.assertNull(registration.get("email"));
             Assert.assertNull(registration.get("hovedbranche"));
             Assert.assertNull(registration.get("beliggenhedsadresse"));
         } finally {

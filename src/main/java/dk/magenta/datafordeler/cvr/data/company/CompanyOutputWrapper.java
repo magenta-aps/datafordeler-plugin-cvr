@@ -47,7 +47,7 @@ import java.util.Set;
  */
 public class CompanyOutputWrapper extends CvrOutputWrapper<CompanyEntity> {
 
-    private ObjectMapper objectMapper;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public Object wrapResult(CompanyEntity input) {
