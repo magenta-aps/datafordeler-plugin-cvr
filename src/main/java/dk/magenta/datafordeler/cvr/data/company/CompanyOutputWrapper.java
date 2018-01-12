@@ -142,7 +142,7 @@ public class CompanyOutputWrapper extends CvrOutputWrapper<CompanyEntity> {
 
                 String email = companyBaseData.getFaxNumber();
                 if (email != null) {
-                    this.addEffectDataToRegistration(output, "email", createSimpleNode(virkning, timestamp, "nummer", email));
+                    this.addEffectDataToRegistration(output, "email", createSimpleNode(virkning, timestamp, "adresse", email));
                 }
 
                 LifecycleData lifecycle = companyBaseData.getLifecycleData();

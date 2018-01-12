@@ -68,7 +68,7 @@ public class CompanyUnitOutputWrapper extends CvrOutputWrapper<CompanyUnitEntity
 
                 List<Long> associatedCvrNumbers = companyUnitBaseData.getAssociatedCvrNumber();
                 if (associatedCvrNumbers != null && !associatedCvrNumbers.isEmpty()) {
-                    this.addEffectDataToRegistration(output, "tilknyttetCvrNummer", createListNode(virkning, timestamp, "numre", associatedCvrNumbers));
+                    this.addEffectDataToRegistration(output, "tilknyttetCvrnummer", createListNode(virkning, timestamp, "numre", associatedCvrNumbers));
                 }
 
                 Address locationAddress = companyUnitBaseData.getLocationAddress();
