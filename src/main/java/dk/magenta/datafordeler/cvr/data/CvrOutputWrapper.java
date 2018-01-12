@@ -60,8 +60,8 @@ public abstract class CvrOutputWrapper<T extends Entity> extends OutputWrapper<T
 
     protected ObjectNode createIdentificationNode(Identification identification) {
         ObjectNode identificationObject = objectMapper.createObjectNode();
-        identificationObject.put("uuid", identification.getUuid().toString());
-        identificationObject.put("domaene", identification.getDomain());
+        identificationObject.put(Identification.IO_FIELD_UUID, identification.getUuid().toString());
+        identificationObject.put(Identification.IO_FIELD_DOMAIN, identification.getDomain());
         return identificationObject;
     }
 
