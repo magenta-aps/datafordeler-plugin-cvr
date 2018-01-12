@@ -282,7 +282,7 @@ public class ModelTest {
                 session.saveOrUpdate(primaryIndustry);
             }
             unitBase.setPrimaryIndustry(primaryIndustry);
-            Assert.assertEquals("123456", unitBase.getPrimaryIndustry());
+            Assert.assertEquals("123456", unitBase.getPrimaryIndustry().getIndustryCode());
 
 
             unitBase.setPhoneNumber("87654321", false);

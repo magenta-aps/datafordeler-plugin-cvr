@@ -67,7 +67,7 @@ public class CompanyForm extends UnversionedEntity {
     //----------------------------------------------------
 
     public static final String DB_FIELD_CODE = "companyFormCode";
-    public static final String IO_FIELD_CODE = "virksomhedsformkode";
+    public static final String IO_FIELD_CODE = "formkode";
 
     @JsonProperty(value = IO_FIELD_CODE)
     @XmlElement(name = IO_FIELD_CODE)
@@ -85,7 +85,7 @@ public class CompanyForm extends UnversionedEntity {
     //----------------------------------------------------
 
     public static final String DB_FIELD_SOURCE = "responsibleDataSource";
-    public static final String IO_FIELD_SOURCE = "ansvarligDataleverandoer";
+    public static final String IO_FIELD_SOURCE = "dataleverandør";
 
     @JsonProperty(value = IO_FIELD_SOURCE)
     @XmlElement(name = IO_FIELD_SOURCE)

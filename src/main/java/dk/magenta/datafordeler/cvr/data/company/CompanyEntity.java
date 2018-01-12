@@ -47,7 +47,7 @@ public class CompanyEntity extends CvrEntity<CompanyEntity, CompanyRegistration>
     }
 
     public static final String DB_FIELD_CVR = "cvrNumber";
-    public static final String IO_FIELD_CVR = "CVRNummer";
+    public static final String IO_FIELD_CVR = "cvrnummer";
     @Column(name = DB_FIELD_CVR)
     private int cvrNumber;
 

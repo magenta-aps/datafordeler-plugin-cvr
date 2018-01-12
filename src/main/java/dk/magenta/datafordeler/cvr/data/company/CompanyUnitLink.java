@@ -18,7 +18,7 @@ import java.util.*;
 public class CompanyUnitLink extends DetailData {
 
     public static final String DB_FIELD_PNUMBER = "pNumber";
-    public static final String IO_FIELD_PNUMBER = "pNummer";
+    public static final String IO_FIELD_PNUMBER = "pnummer";
 
     @JsonProperty(value = IO_FIELD_PNUMBER)
     @XmlElement(name = IO_FIELD_PNUMBER)
@@ -36,7 +36,7 @@ public class CompanyUnitLink extends DetailData {
     //------------------------------------------------------------
 
     public static final String DB_FIELD_IDENTIFICATION = "identification";
-    public static final String IO_FIELD_IDENTIFICATION = "identification";
+    public static final String IO_FIELD_IDENTIFICATION = "identifikation";
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JsonProperty(value = IO_FIELD_IDENTIFICATION)
