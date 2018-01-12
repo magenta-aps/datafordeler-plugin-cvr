@@ -165,9 +165,9 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     private IndustryData primaryIndustry;
 
     @JsonProperty(value = IO_FIELD_PRIMARY_INDUSTRY)
-    public String getPrimaryIndustry() {
+    public Industry getPrimaryIndustry() {
         if (primaryIndustry != null) {
-            return primaryIndustry.getIndustry().getIndustryCode();
+            return primaryIndustry.getIndustry();
         } else {
             return null;
         }
@@ -183,9 +183,9 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     private IndustryData secondaryIndustry1;
 
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_1)
-    public String getSecondaryIndustry1() {
+    public Industry getSecondaryIndustry1() {
         if (secondaryIndustry1 != null)
-            return secondaryIndustry1.getIndustry().getIndustryCode();
+            return secondaryIndustry1.getIndustry();
         else
             return null;
     }
@@ -200,9 +200,9 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     private IndustryData secondaryIndustry2;
 
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_2)
-    public String getSecondaryIndustry2() {
+    public Industry getSecondaryIndustry2() {
         if (secondaryIndustry2 != null) {
-            return secondaryIndustry2.getIndustry().getIndustryCode();
+            return secondaryIndustry2.getIndustry();
         } else {
             return null;
         }
@@ -218,9 +218,9 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     private IndustryData secondaryIndustry3;
 
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_3)
-    public String getSecondaryIndustry3() {
+    public Industry getSecondaryIndustry3() {
         if (secondaryIndustry3 != null) {
-            return secondaryIndustry3.getIndustry().getIndustryCode();
+            return secondaryIndustry3.getIndustry();
         } else {
             return null;
         }
