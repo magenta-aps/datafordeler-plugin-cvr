@@ -29,13 +29,13 @@ public class CompanyUnitOutputWrapper extends CvrOutputWrapper<CompanyUnitEntity
         // Root
         ObjectNode root = objectMapper.createObjectNode();
 
-        root.put("UUID", input.getUUID().toString());
+        root.put(CompanyUnitEntity.IO_FIELD_UUID, input.getUUID().toString());
         root.put(CompanyUnitEntity.IO_FIELD_PNUMBER, input.getPNumber());
         root.putPOJO("id", input.getIdentification());
 
         // Registreringer
         ArrayNode registreringer = objectMapper.createArrayNode();
-        root.set("registreringer", registreringer);
+        root.set(CompanyUnitEntity.IO_FIELD_REGISTRATIONS, registreringer);
 
         for (CompanyUnitRegistration companyUnitRegistration : input.getRegistrations()) {
             registreringer.add(wrapRegistrering(companyUnitRegistration));

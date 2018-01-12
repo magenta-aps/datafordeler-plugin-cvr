@@ -26,13 +26,13 @@ public class ParticipantOutputWrapper extends CvrOutputWrapper<ParticipantEntity
         // Root
         ObjectNode root = objectMapper.createObjectNode();
 
-        root.put("UUID", input.getUUID().toString());
+        root.put(ParticipantEntity.IO_FIELD_UUID, input.getUUID().toString());
         root.put(ParticipantEntity.IO_FIELD_PARTICIPANT_NUMBER, input.getParticipantNumber());
         root.putPOJO("id", input.getIdentification());
 
         // Registreringer
         ArrayNode registreringer = objectMapper.createArrayNode();
-        root.set("registreringer", registreringer);
+        root.set(ParticipantEntity.IO_FIELD_REGISTRATIONS, registreringer);
 
         for (ParticipantRegistration participantRegistration : input.getRegistrations()) {
             registreringer.add(wrapRegistrering(participantRegistration));
@@ -45,11 +45,11 @@ public class ParticipantOutputWrapper extends CvrOutputWrapper<ParticipantEntity
         ObjectNode output = objectMapper.createObjectNode();
 
         output.put(
-                "registreringFra",
+                ParticipantRegistration.IO_FIELD_REGISTRATION_FROM,
                 input.getRegistrationFrom() != null ? input.getRegistrationFrom().toString() : null
         );
         output.put(
-                "registreringTil",
+                ParticipantRegistration.IO_FIELD_REGISTRATION_TO,
                 input.getRegistrationTo() != null ? input.getRegistrationTo().toString() : null
         );
 
@@ -130,7 +130,7 @@ public class ParticipantOutputWrapper extends CvrOutputWrapper<ParticipantEntity
             listNode.add(name);
         }
         ObjectNode nameNode = createVirkning(virkning, lastUpdated);
-        nameNode.set("navne", listNode);
+        nameNode.set(ParticipantBaseData.IO_FIELD_NAMES, listNode);
         return nameNode;
     }
 
