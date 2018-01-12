@@ -48,11 +48,11 @@ public class CompanyUnitOutputWrapper extends CvrOutputWrapper<CompanyUnitEntity
         ObjectNode output = objectMapper.createObjectNode();
 
         output.put(
-                "registreringFra",
+                CompanyUnitRegistration.IO_FIELD_REGISTRATION_FROM,
                 input.getRegistrationFrom() != null ? input.getRegistrationFrom().toString() : null
         );
         output.put(
-                "registreringTil",
+                CompanyUnitRegistration.IO_FIELD_REGISTRATION_TO,
                 input.getRegistrationTo() != null ? input.getRegistrationTo().toString() : null
         );
 
