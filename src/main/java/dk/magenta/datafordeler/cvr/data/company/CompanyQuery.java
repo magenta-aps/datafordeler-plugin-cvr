@@ -18,12 +18,12 @@ import java.util.*;
  */
 public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
-    public static final String CVRNUMMER = "CVRNummer";
+    public static final String CVRNUMMER = "cvrnummer";
     public static final String REKLAMEBESKYTTELSE = "reklamebeskyttelse";
-    public static final String NAVN = "virksomhedsnavn";
+    public static final String NAVN = "navn";
     public static final String TELEFONNUMMER = "telefon";
     public static final String TELEFAXNUMMER = "telefax";
-    public static final String EMAILADRESSE = "emailadresse";
+    public static final String EMAILADRESSE = "email";
     public static final String VIRKSOMHEDSFORM = "virksomhedsform";
     public static final String KOMMUNEKODE = "kommunekode";
 
