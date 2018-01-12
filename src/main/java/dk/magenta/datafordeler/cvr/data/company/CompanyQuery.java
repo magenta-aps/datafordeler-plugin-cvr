@@ -34,8 +34,8 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
         return cvrNumre;
     }
 
-    public void addCvrNummer(String CVRNummer) {
-        this.cvrNumre.add(CVRNummer);
+    public void addCvrNummer(String cvrnummer) {
+        this.cvrNumre.add(cvrnummer);
     }
 
     public void setCvrNumre(String cvrNumre) {
