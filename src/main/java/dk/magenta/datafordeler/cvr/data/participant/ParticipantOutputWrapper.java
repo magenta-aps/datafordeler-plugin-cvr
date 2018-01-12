@@ -28,7 +28,7 @@ public class ParticipantOutputWrapper extends OutputWrapper<ParticipantEntity> {
         ObjectNode root = objectMapper.createObjectNode();
 
         root.put("UUID", input.getUUID().toString());
-        root.put("deltagerNummer", input.getParticipantNumber());
+        root.put("deltagernummer", input.getParticipantNumber());
         root.putPOJO("id", input.getIdentification());
 
         // Registreringer
@@ -62,7 +62,7 @@ public class ParticipantOutputWrapper extends OutputWrapper<ParticipantEntity> {
 
                 Set<String> names = participantBaseData.getNames();
                 if (!names.isEmpty()) {
-                    addEffectDataToRegistration(output, "navne", createNameNode(virkning, timestamp, names));
+                    addEffectDataToRegistration(output, "navn", createNameNode(virkning, timestamp, names));
                 }
 
                 Address locationAddress = participantBaseData.getLocationAddress();
@@ -82,23 +82,23 @@ public class ParticipantOutputWrapper extends OutputWrapper<ParticipantEntity> {
 
                 String phone = participantBaseData.getPhoneNumber();
                 if (phone != null) {
-                    this.addEffectDataToRegistration(output, "telefonnummer", createSimpleNode(virkning, timestamp, "nummer", phone));
+                    this.addEffectDataToRegistration(output, "telefon", createSimpleNode(virkning, timestamp, "nummer", phone));
                 }
 
                 String fax = participantBaseData.getFaxNumber();
                 if (fax != null) {
-                    this.addEffectDataToRegistration(output, "telefaxnummer", createSimpleNode(virkning, timestamp, "nummer", fax));
+                    this.addEffectDataToRegistration(output, "telefax", createSimpleNode(virkning, timestamp, "nummer", fax));
                 }
 
                 String email = participantBaseData.getFaxNumber();
                 if (email != null) {
-                    this.addEffectDataToRegistration(output, "emailadresse", createSimpleNode(virkning, timestamp, "adresse", email));
+                    this.addEffectDataToRegistration(output, "email", createSimpleNode(virkning, timestamp, "adresse", email));
                 }
 
 
                 Long unitNumber = participantBaseData.getUnitNumber();
                 if (unitNumber != null) {
-                    this.addEffectDataToRegistration(output, "enhedsnummer", createSimpleNode(virkning, timestamp, "nummer", unitNumber));
+                    this.addEffectDataToRegistration(output, "deltagernummer", createSimpleNode(virkning, timestamp, "nummer", unitNumber));
                 }
 
                 String unitType = participantBaseData.getUnitType();

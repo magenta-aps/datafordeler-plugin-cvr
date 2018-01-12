@@ -61,7 +61,7 @@ public class CompanyOutputWrapper extends OutputWrapper<CompanyEntity> {
         // Root
         ObjectNode root = objectMapper.createObjectNode();
         root.put("UUID", input.getUUID().toString());
-        root.put("CVRNummer", input.getCvrNumber());
+        root.put("cvrnummer", input.getCvrNumber());
         root.putPOJO("id", input.getIdentification());
 
         // Registrations
@@ -93,7 +93,7 @@ public class CompanyOutputWrapper extends OutputWrapper<CompanyEntity> {
                 OffsetDateTime timestamp = companyBaseData.getLastUpdated();
                 String companyName = companyBaseData.getCompanyName();
                 if (companyName != null) {
-                    this.addEffectDataToRegistration(output, "virksomhedsnavn", createNameNode(virkning, timestamp, companyName));
+                    this.addEffectDataToRegistration(output, "navn", createNameNode(virkning, timestamp, companyName));
                 }
 
                 CompanyForm companyForm = companyBaseData.getCompanyForm();
@@ -138,17 +138,17 @@ public class CompanyOutputWrapper extends OutputWrapper<CompanyEntity> {
 
                 String phone = companyBaseData.getPhoneNumber();
                 if (phone != null) {
-                    this.addEffectDataToRegistration(output, "telefonnummer", createStringNode(virkning, timestamp, "nummer", phone));
+                    this.addEffectDataToRegistration(output, "telefon", createStringNode(virkning, timestamp, "nummer", phone));
                 }
 
                 String fax = companyBaseData.getFaxNumber();
                 if (fax != null) {
-                    this.addEffectDataToRegistration(output, "telefaxnummer", createStringNode(virkning, timestamp, "nummer", fax));
+                    this.addEffectDataToRegistration(output, "telefax", createStringNode(virkning, timestamp, "nummer", fax));
                 }
 
                 String email = companyBaseData.getFaxNumber();
                 if (email != null) {
-                    this.addEffectDataToRegistration(output, "emailadresse", createStringNode(virkning, timestamp, "nummer", email));
+                    this.addEffectDataToRegistration(output, "email", createStringNode(virkning, timestamp, "nummer", email));
                 }
 
                 LifecycleData lifecycle = companyBaseData.getLifecycleData();

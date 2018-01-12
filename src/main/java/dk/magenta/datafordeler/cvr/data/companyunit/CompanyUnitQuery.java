@@ -18,7 +18,7 @@ import java.util.*;
  */
 public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
 
-    public static final String ASSOCIATED_COMPANY_CVR = "tilknyttetcvrnummer";
+    public static final String ASSOCIATED_COMPANY_CVR = "tilknyttetCvrnummer";
     public static final String PRIMARYINDUSTRY = "hovedbranche";
     public static final String KOMMUNEKODE = "kommunekode";
 

@@ -17,7 +17,7 @@ import java.util.*;
  */
 public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
 
-    public static final String UNITNUMBER = "enhedsnummer";
+    public static final String UNITNUMBER = "deltagernummer";
     public static final String NAVN = "navn";
     public static final String KOMMUNEKODE = "kommunekode";
 
