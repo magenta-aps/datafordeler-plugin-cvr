@@ -10,6 +10,7 @@ import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.fapi.OutputWrapper;
 import dk.magenta.datafordeler.core.util.DoubleHashMap;
 import dk.magenta.datafordeler.cvr.data.shared.AttributeData;
+import dk.magenta.datafordeler.cvr.data.shared.LifecycleData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
@@ -130,6 +131,17 @@ public abstract class CvrOutputWrapper<T extends Entity> extends OutputWrapper<T
         industryNode.put("branche", industry.getIndustryText());
         industryNode.put("branchekode", industry.getIndustryCode());
         return industryNode;
+    }
+
+    protected ObjectNode createLifecycleNode(Effect virkning, OffsetDateTime lastUpdated, LifecycleData lifecycle) {
+        ObjectNode node = createVirkning(virkning, lastUpdated);
+        if (lifecycle.getStartDate() != null) {
+            node.put(LifecycleData.IO_FIELD_START, this.getUTCDate(lifecycle.getStartDate()).format(DateTimeFormatter.ISO_DATE));
+        }
+        if (lifecycle.getEndDate() != null) {
+            node.put(LifecycleData.IO_FIELD_END, this.getUTCDate(lifecycle.getEndDate()).format(DateTimeFormatter.ISO_DATE));
+        }
+        return node;
     }
 
     protected ObjectNode createSimpleNode(Effect virkning, OffsetDateTime lastUpdated, String key, Boolean value) {

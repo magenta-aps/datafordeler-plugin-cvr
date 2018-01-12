@@ -176,17 +176,6 @@ public class CompanyOutputWrapper extends CvrOutputWrapper<CompanyEntity> {
         return formNode;
     }
 
-    private ObjectNode createLifecycleNode(Effect virkning, OffsetDateTime lastUpdated, LifecycleData lifecycle) {
-        ObjectNode node = createVirkning(virkning, lastUpdated);
-        if (lifecycle.getStartDate() != null) {
-            node.put(LifecycleData.IO_FIELD_START, this.getUTCDate(lifecycle.getStartDate()).format(DateTimeFormatter.ISO_DATE));
-        }
-        if (lifecycle.getEndDate() != null) {
-            node.put(LifecycleData.IO_FIELD_END, this.getUTCDate(lifecycle.getEndDate()).format(DateTimeFormatter.ISO_DATE));
-        }
-        return node;
-    }
-
     private ObjectNode createCompanyParticipantNode(Effect virkning, OffsetDateTime lastUpdated, ParticipantRelationData participantRelation) {
         ObjectNode participantRelationNode = createVirkning(virkning, lastUpdated);
         participantRelationNode.set(ParticipantRelationData.IO_FIELD_PARTICIPANT, this.createIdentificationNode(participantRelation.getParticipant()));

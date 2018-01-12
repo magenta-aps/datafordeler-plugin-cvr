@@ -134,5 +134,4 @@ public class ParticipantOutputWrapper extends CvrOutputWrapper<ParticipantEntity
         return nameNode;
     }
 
-
 }
