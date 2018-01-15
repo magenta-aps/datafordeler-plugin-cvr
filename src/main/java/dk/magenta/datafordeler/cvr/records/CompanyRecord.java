@@ -205,6 +205,10 @@ public class CompanyRecord extends CvrEntityRecord {
     @JsonProperty(value = "virksomhedMetadata")
     private MetadataRecord metadata;
 
+    public MetadataRecord getMetadata() {
+        return this.metadata;
+    }
+
     @JsonIgnore
     @Override
     public List<CvrBaseRecord> getAll() {
