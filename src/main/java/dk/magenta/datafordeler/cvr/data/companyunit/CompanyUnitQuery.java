@@ -31,6 +31,9 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
 
     public void setAssociatedCompanyCvrNumber(String associatedCompanyCvrNumber) {
         this.associatedCompanyCvrNumber = associatedCompanyCvrNumber;
+        if (associatedCompanyCvrNumber != null) {
+            this.increaseDataParamCount();
+        }
     }
 
     @QueryField(type = QueryField.FieldType.STRING, queryName = PRIMARYINDUSTRY)
@@ -42,6 +45,9 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
 
     public void setPrimaryIndustry(String primaryIndustry) {
         this.primaryIndustry = primaryIndustry;
+        if (primaryIndustry != null) {
+            this.increaseDataParamCount();
+        }
     }
 
 
@@ -54,6 +60,9 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
 
     public void addKommunekode(String kommunekode) {
         this.kommunekoder.add(kommunekode);
+        if (kommunekode != null) {
+            this.increaseDataParamCount();
+        }
     }
 
     public void addKommunekode(int kommunekode) {
