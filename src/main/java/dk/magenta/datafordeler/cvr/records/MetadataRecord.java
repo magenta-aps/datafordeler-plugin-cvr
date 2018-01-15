@@ -32,7 +32,7 @@ public class MetadataRecord {
         return records;
     }
 
-    private CompanyStatusRecord getCompanyStatusRecord(CompanyRecord companyRecord) {
+    public CompanyStatusRecord getCompanyStatusRecord(CompanyRecord companyRecord) {
         String status = this.getAggregateStatus();
         LocalDate latestStart = LocalDate.MIN;
         LocalDate latestEnd = LocalDate.MIN;
