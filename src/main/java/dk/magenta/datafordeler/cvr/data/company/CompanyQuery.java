@@ -36,6 +36,9 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     public void addCvrNummer(String cvrnummer) {
         this.cvrNumre.add(cvrnummer);
+        if (cvrnummer != null) {
+            this.increaseDataParamCount();
+        }
     }
 
     public void setCvrNumre(String cvrNumre) {
@@ -62,6 +65,9 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     public void setReklamebeskyttelse(String reklamebeskyttelse) {
         this.reklamebeskyttelse = reklamebeskyttelse;
+        if (reklamebeskyttelse != null) {
+            this.increaseDataParamCount();
+        }
     }
 
     @QueryField(type = QueryField.FieldType.STRING, queryName = NAVN)
@@ -73,6 +79,9 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     public void setVirksomhedsnavn(String virksomhedsnavn) {
         this.virksomhedsnavn = virksomhedsnavn;
+        if (virksomhedsnavn != null) {
+            this.increaseDataParamCount();
+        }
     }
 
 
@@ -85,6 +94,9 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     public void setTelefonnummer(String telefonnummer) {
         this.telefonnummer = telefonnummer;
+        if (telefonnummer != null) {
+            this.increaseDataParamCount();
+        }
     }
 
 
@@ -98,6 +110,9 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     public void setTelefaxnummer(String telefaxnummer) {
         this.telefaxnummer = telefaxnummer;
+        if (telefaxnummer != null) {
+            this.increaseDataParamCount();
+        }
     }
 
 
@@ -111,6 +126,9 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     public void setEmailadresse(String emailadresse) {
         this.emailadresse = emailadresse;
+        if (emailadresse != null) {
+            this.increaseDataParamCount();
+        }
     }
 
 
@@ -124,6 +142,9 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     public void setVirksomhedsform(String virksomhedsform) {
         this.virksomhedsform = virksomhedsform;
+        if (virksomhedsform != null) {
+            this.increaseDataParamCount();
+        }
     }
 
     public void setVirksomhedsform(int virksomhedsform) {
@@ -141,6 +162,9 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     public void addKommunekode(String kommunekode) {
         this.kommunekoder.add(kommunekode);
+        if (kommunekode != null) {
+            this.increaseDataParamCount();
+        }
     }
 
     public void addKommunekode(int kommunekode) {

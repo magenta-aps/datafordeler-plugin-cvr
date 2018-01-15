@@ -410,7 +410,7 @@ public class QueryTest {
 
             // Retrieve what was registered at 2015-01-01, with effect 2015-01-01
             searchParameters = new ParameterMap();
-            searchParameters.add("CVRNummer", "25052943");
+            searchParameters.add("cvrnummer", "25052943");
             searchParameters.add("registrationFrom", "2015-01-01");
             searchParameters.add("registrationTo", "2015-01-01");
             searchParameters.add("effectFrom", "2015-01-01");
@@ -469,7 +469,7 @@ public class QueryTest {
             Assert.assertEquals(CompanyEntity.generateUUID(25052943).toString(), results.get(0).get("UUID").asText());
 
             searchParameters = new ParameterMap();
-            searchParameters.add("virksomhedsnavn", "MAGENTA ApS");
+            searchParameters.add("navn", "MAGENTA ApS");
             response = restSearch(searchParameters, "company");
             Assert.assertEquals(200, response.getStatusCode().value());
             jsonBody = objectMapper.readTree(response.getBody());
