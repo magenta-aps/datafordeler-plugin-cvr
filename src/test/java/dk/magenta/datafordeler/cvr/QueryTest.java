@@ -365,7 +365,7 @@ public class QueryTest {
             this.applyAccess(testUserDetails);
 
             ParameterMap searchParameters = new ParameterMap();
-            searchParameters.add("CVRNummer", "25052943");
+            searchParameters.add("cvrnummer", "25052943");
             searchParameters.add("registrationFrom", "1999-11-30");
             searchParameters.add("registrationTo", "1999-12-01");
 
@@ -375,7 +375,7 @@ public class QueryTest {
             JsonNode jsonBody = objectMapper.readTree(response.getBody());
 
             ObjectNode entity = (ObjectNode) jsonBody.get("results").get(0);
-            Assert.assertEquals(25052943, entity.get("CVRNummer").asInt());
+            Assert.assertEquals(25052943, entity.get("cvrnummer").asInt());
             Assert.assertEquals(CompanyEntity.generateUUID(25052943).toString(), entity.get("UUID").asText());
             ArrayNode registrations = (ArrayNode) entity.get("registreringer");
             Assert.assertEquals(1, registrations.size());
@@ -397,10 +397,10 @@ public class QueryTest {
             JsonNode lifecycleNode = lifecycleNodeList.get(0);
             Assert.assertTrue(OffsetDateTime.parse("1999-11-15T01:00+01:00").isEqual(OffsetDateTime.parse(lifecycleNode.get("virkningFra").asText())));
             Assert.assertTrue(lifecycleNode.get("virkningTil").isNull());
-            Assert.assertEquals("1999-11-15", lifecycleNode.get("virksomhedStartdato").asText());
+            Assert.assertEquals("1999-11-15", lifecycleNode.get("startDato").asText());
 
 
-            JsonNode unitNodeList = registration.get("produktionsEnheder");
+            JsonNode unitNodeList = registration.get("produktionsenheder");
             Assert.assertEquals(1, unitNodeList.size());
             JsonNode unitNode = unitNodeList.get(0);
             Assert.assertTrue(OffsetDateTime.parse("1999-11-15T01:00+01:00").isEqual(OffsetDateTime.parse(unitNode.get("virkningFra").asText())));
@@ -410,7 +410,7 @@ public class QueryTest {
 
             // Retrieve what was registered at 2015-01-01, with effect 2015-01-01
             searchParameters = new ParameterMap();
-            searchParameters.add("CVRNummer", "25052943");
+            searchParameters.add("cvrnummer", "25052943");
             searchParameters.add("registrationFrom", "2015-01-01");
             searchParameters.add("registrationTo", "2015-01-01");
             searchParameters.add("effectFrom", "2015-01-01");
@@ -427,10 +427,10 @@ public class QueryTest {
             Assert.assertNotNull(registration.get("deltagerRelationer"));
             Assert.assertNotNull(registration.get("livscyklus"));
             Assert.assertNotNull(registration.get("virksomhedsform"));
-            Assert.assertNotNull(registration.get("produktionsEnheder"));
-            Assert.assertNotNull(registration.get("telefonnummer"));
-            Assert.assertNotNull(registration.get("virksomhedsnavn"));
-            Assert.assertNull(registration.get("emailadresse"));
+            Assert.assertNotNull(registration.get("produktionsenheder"));
+            Assert.assertNotNull(registration.get("telefon"));
+            Assert.assertNotNull(registration.get("navn"));
+            Assert.assertNull(registration.get("email"));
             Assert.assertNull(registration.get("hovedbranche"));
             Assert.assertNull(registration.get("beliggenhedsadresse"));
         } finally {
@@ -469,7 +469,7 @@ public class QueryTest {
             Assert.assertEquals(CompanyEntity.generateUUID(25052943).toString(), results.get(0).get("UUID").asText());
 
             searchParameters = new ParameterMap();
-            searchParameters.add("virksomhedsnavn", "MAGENTA ApS");
+            searchParameters.add("navn", "MAGENTA ApS");
             response = restSearch(searchParameters, "company");
             Assert.assertEquals(200, response.getStatusCode().value());
             jsonBody = objectMapper.readTree(response.getBody());

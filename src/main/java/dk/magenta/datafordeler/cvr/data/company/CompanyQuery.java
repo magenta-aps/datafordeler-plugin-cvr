@@ -18,14 +18,14 @@ import java.util.*;
  */
 public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
-    public static final String CVRNUMMER = "CVRNummer";
-    public static final String REKLAMEBESKYTTELSE = "reklamebeskyttelse";
-    public static final String NAVN = "virksomhedsnavn";
-    public static final String TELEFONNUMMER = "telefon";
-    public static final String TELEFAXNUMMER = "telefax";
-    public static final String EMAILADRESSE = "emailadresse";
-    public static final String VIRKSOMHEDSFORM = "virksomhedsform";
-    public static final String KOMMUNEKODE = "kommunekode";
+    public static final String CVRNUMMER = CompanyEntity.IO_FIELD_CVR;
+    public static final String REKLAMEBESKYTTELSE = CompanyBaseData.IO_FIELD_ADVERTPROTECTION;
+    public static final String NAVN = CompanyBaseData.IO_FIELD_NAME;
+    public static final String TELEFONNUMMER = CompanyBaseData.IO_FIELD_PHONENUMBER;
+    public static final String TELEFAXNUMMER = CompanyBaseData.IO_FIELD_FAXNUMBER;
+    public static final String EMAILADRESSE = CompanyBaseData.IO_FIELD_EMAIL;
+    public static final String VIRKSOMHEDSFORM = CompanyBaseData.IO_FIELD_FORM;
+    public static final String KOMMUNEKODE = Municipality.IO_FIELD_CODE;
 
     @QueryField(type = QueryField.FieldType.STRING, queryName = CVRNUMMER)
     private List<String> cvrNumre = new ArrayList<>();
@@ -34,8 +34,11 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
         return cvrNumre;
     }
 
-    public void addCvrNummer(String CVRNummer) {
-        this.cvrNumre.add(CVRNummer);
+    public void addCvrNummer(String cvrnummer) {
+        this.cvrNumre.add(cvrnummer);
+        if (cvrnummer != null) {
+            this.increaseDataParamCount();
+        }
     }
 
     public void setCvrNumre(String cvrNumre) {
@@ -62,6 +65,9 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     public void setReklamebeskyttelse(String reklamebeskyttelse) {
         this.reklamebeskyttelse = reklamebeskyttelse;
+        if (reklamebeskyttelse != null) {
+            this.increaseDataParamCount();
+        }
     }
 
     @QueryField(type = QueryField.FieldType.STRING, queryName = NAVN)
@@ -73,6 +79,9 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     public void setVirksomhedsnavn(String virksomhedsnavn) {
         this.virksomhedsnavn = virksomhedsnavn;
+        if (virksomhedsnavn != null) {
+            this.increaseDataParamCount();
+        }
     }
 
 
@@ -85,6 +94,9 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     public void setTelefonnummer(String telefonnummer) {
         this.telefonnummer = telefonnummer;
+        if (telefonnummer != null) {
+            this.increaseDataParamCount();
+        }
     }
 
 
@@ -98,6 +110,9 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     public void setTelefaxnummer(String telefaxnummer) {
         this.telefaxnummer = telefaxnummer;
+        if (telefaxnummer != null) {
+            this.increaseDataParamCount();
+        }
     }
 
 
@@ -111,6 +126,9 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     public void setEmailadresse(String emailadresse) {
         this.emailadresse = emailadresse;
+        if (emailadresse != null) {
+            this.increaseDataParamCount();
+        }
     }
 
 
@@ -124,6 +142,9 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     public void setVirksomhedsform(String virksomhedsform) {
         this.virksomhedsform = virksomhedsform;
+        if (virksomhedsform != null) {
+            this.increaseDataParamCount();
+        }
     }
 
     public void setVirksomhedsform(int virksomhedsform) {
@@ -141,6 +162,9 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     public void addKommunekode(String kommunekode) {
         this.kommunekoder.add(kommunekode);
+        if (kommunekode != null) {
+            this.increaseDataParamCount();
+        }
     }
 
     public void addKommunekode(int kommunekode) {

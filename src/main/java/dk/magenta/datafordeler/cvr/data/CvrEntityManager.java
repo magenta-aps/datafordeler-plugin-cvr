@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.data;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.magenta.datafordeler.core.database.*;
 import dk.magenta.datafordeler.core.exception.*;
@@ -26,6 +27,7 @@ import org.opensaml.xml.signature.Q;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,6 +72,12 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
     public CvrEntityManager() {
         this.commonFetcher = new ScanScrollCommunicator();
         this.handledURISubstrings = new ArrayList<>();
+    }
+
+    @PostConstruct
+    public void init() {
+        // Ignore case on property names when parsing incoming JSON
+        this.objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
     }
 
     /**

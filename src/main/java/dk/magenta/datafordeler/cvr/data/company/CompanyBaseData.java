@@ -465,7 +465,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
 
 
     public static final String DB_FIELD_NAME = "companyName";
-    public static final String IO_FIELD_NAME = "virksomhedsnavn";
+    public static final String IO_FIELD_NAME = "navn";
 
     @Column(length = 1024, name = DB_FIELD_NAME)
     private String companyName;
@@ -484,7 +484,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
 
 
     public static final String DB_FIELD_PHONENUMBER = "phoneNumber";
-    public static final String IO_FIELD_PHONENUMBER = "telefonnummer";
+    public static final String IO_FIELD_PHONENUMBER = "telefon";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     @JoinColumn(name = DB_FIELD_PHONENUMBER + DatabaseEntry.REF)
@@ -512,7 +512,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
 
 
     public static final String DB_FIELD_EMAIL = "emailAddress";
-    public static final String IO_FIELD_EMAIL = "emailadresse";
+    public static final String IO_FIELD_EMAIL = "email";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     @JoinColumn(name = DB_FIELD_EMAIL + DatabaseEntry.REF)
@@ -540,7 +540,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
 
 
     public static final String DB_FIELD_FAXNUMBER = "faxNumber";
-    public static final String IO_FIELD_FAXNUMBER = "telefaxnummer";
+    public static final String IO_FIELD_FAXNUMBER = "telefax";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     @JoinColumn(name = DB_FIELD_FAXNUMBER + DatabaseEntry.REF)

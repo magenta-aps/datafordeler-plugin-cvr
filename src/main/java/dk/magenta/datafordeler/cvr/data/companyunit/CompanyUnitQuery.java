@@ -18,9 +18,9 @@ import java.util.*;
  */
 public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
 
-    public static final String ASSOCIATED_COMPANY_CVR = "tilknyttetVirksomhedsCVRNummer";
-    public static final String PRIMARYINDUSTRY = "hovedbranche";
-    public static final String KOMMUNEKODE = "kommunekode";
+    public static final String ASSOCIATED_COMPANY_CVR = CompanyUnitBaseData.IO_FIELD_CVR_NUMBER;
+    public static final String PRIMARYINDUSTRY = CompanyUnitBaseData.IO_FIELD_PRIMARY_INDUSTRY;
+    public static final String KOMMUNEKODE = Municipality.IO_FIELD_CODE;
 
     @QueryField(type = QueryField.FieldType.INT, queryName = ASSOCIATED_COMPANY_CVR)
     private String associatedCompanyCvrNumber;
@@ -31,6 +31,9 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
 
     public void setAssociatedCompanyCvrNumber(String associatedCompanyCvrNumber) {
         this.associatedCompanyCvrNumber = associatedCompanyCvrNumber;
+        if (associatedCompanyCvrNumber != null) {
+            this.increaseDataParamCount();
+        }
     }
 
     @QueryField(type = QueryField.FieldType.STRING, queryName = PRIMARYINDUSTRY)
@@ -42,6 +45,9 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
 
     public void setPrimaryIndustry(String primaryIndustry) {
         this.primaryIndustry = primaryIndustry;
+        if (primaryIndustry != null) {
+            this.increaseDataParamCount();
+        }
     }
 
 
@@ -54,6 +60,9 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
 
     public void addKommunekode(String kommunekode) {
         this.kommunekoder.add(kommunekode);
+        if (kommunekode != null) {
+            this.increaseDataParamCount();
+        }
     }
 
     public void addKommunekode(int kommunekode) {

@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import dk.magenta.datafordeler.core.database.DataItem;
 import dk.magenta.datafordeler.core.database.Effect;
 import dk.magenta.datafordeler.core.database.Entity;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.fapi.OutputWrapper;
 import dk.magenta.datafordeler.core.util.DoubleHashMap;
 import dk.magenta.datafordeler.cvr.data.shared.AttributeData;
+import dk.magenta.datafordeler.cvr.data.shared.LifecycleData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
@@ -31,16 +33,16 @@ public abstract class CvrOutputWrapper<T extends Entity> extends OutputWrapper<T
     protected ObjectNode createVirkning(Effect virkning, boolean includeVirkningTil, OffsetDateTime lastUpdated) {
         ObjectNode output = objectMapper.createObjectNode();
         output.put(
-                "virkningFra",
+                Effect.IO_FIELD_EFFECT_FROM,
                 virkning.getEffectFrom() != null ? virkning.getEffectFrom().toString() : null
         );
         if (includeVirkningTil) {
             output.put(
-                    "virkningTil",
+                    Effect.IO_FIELD_EFFECT_TO,
                     virkning.getEffectTo() != null ? virkning.getEffectTo().toString() : null
             );
         }
-        output.put("lastUpdated", lastUpdated != null ? lastUpdated.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null);
+        output.put(DataItem.IO_FIELD_LAST_UPDATED, lastUpdated != null ? lastUpdated.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null);
         return output;
     }
 
@@ -59,8 +61,8 @@ public abstract class CvrOutputWrapper<T extends Entity> extends OutputWrapper<T
     protected ObjectNode createIdentificationNode(Identification identification) {
         if (identification != null) {
             ObjectNode identificationObject = objectMapper.createObjectNode();
-            identificationObject.put("uuid", identification.getUuid().toString());
-            identificationObject.put("domaene", identification.getDomain());
+            identificationObject.put(Identification.IO_FIELD_UUID, identification.getUuid().toString());
+            identificationObject.put(Identification.IO_FIELD_DOMAIN, identification.getDomain());
             return identificationObject;
         }
         return null;
@@ -69,27 +71,23 @@ public abstract class CvrOutputWrapper<T extends Entity> extends OutputWrapper<T
     protected ObjectNode createAddressNode(Effect virkning, OffsetDateTime lastUpdated, Address adresse) {
         ObjectNode adresseNode = createVirkning(virkning, lastUpdated);
 
-        adresseNode.put("vejkode", adresse.getRoadCode());
-        adresseNode.put("husnummerFra", adresse.getHouseNumberFrom());
-        adresseNode.put("etagebetegnelse", adresse.getFloor());
-        adresseNode.put("dørbetegnelse", adresse.getDoor());
+        adresseNode.put(Address.IO_FIELD_ROADCODE, adresse.getRoadCode());
+        adresseNode.put(Address.IO_FIELD_HOUSE_FROM, adresse.getHouseNumberFrom());
+        adresseNode.put(Address.IO_FIELD_FLOOR, adresse.getFloor());
+        adresseNode.put(Address.IO_FIELD_DOOR, adresse.getDoor());
+        adresseNode.put(Address.IO_FIELD_POSTDISTRICT, adresse.getPostdistrikt());
+        adresseNode.put(Address.IO_FIELD_ROADNAME, adresse.getRoadName());
+        adresseNode.put(Address.IO_FIELD_HOUSE_TO, adresse.getHouseNumberTo());
+        adresseNode.put(Address.IO_FIELD_POSTCODE, adresse.getPostnummer());
+        adresseNode.put(Address.IO_FIELD_CITY, adresse.getSupplementalCityName());
+        adresseNode.put(Address.IO_FIELD_TEXT, adresse.getAddressText());
+        adresseNode.put(Address.IO_FIELD_COUNTRYCODE, adresse.getCountryCode());
 
-        int kommunekode;
-        String kommunenavn = null;
         Municipality kommune = adresse.getMunicipality();
         if (kommune != null) {
-            adresseNode.put("kommunekode", kommune.getCode());
-            adresseNode.put("kommunenavn", kommune.getName());
+            adresseNode.put(Municipality.IO_FIELD_CODE, kommune.getCode());
+            adresseNode.put(Municipality.IO_FIELD_NAME, kommune.getName());
         }
-
-        adresseNode.put("postdistrikt", adresse.getPostdistrikt());
-        adresseNode.put("vejnavn", adresse.getRoadName());
-        adresseNode.put("husnummerTil", adresse.getHouseNumberTo());
-        adresseNode.put("postnummer", adresse.getPostnummer());
-        adresseNode.put("supplerendeBynavn", adresse.getSupplementalCityName());
-        adresseNode.put("adresseFritekst", adresse.getAddressText());
-        adresseNode.put("landekode", adresse.getCountryCode());
-
         return adresseNode;
     }
 
@@ -115,10 +113,10 @@ public abstract class CvrOutputWrapper<T extends Entity> extends OutputWrapper<T
             for (String valuetype : typeMap.keySet()) {
                 List<AttributeData> attributeList = typeMap.get(valuetype);
                 ObjectNode attributeNode = createVirkning(virkning, timestamp);
-                attributeNode.put("type", type);
-                attributeNode.put("vaerditype", valuetype);
+                attributeNode.put(AttributeData.IO_FIELD_TYPE, type);
+                attributeNode.put(AttributeData.IO_FIELD_VALUETYPE, valuetype);
                 ArrayNode valueList = objectMapper.createArrayNode();
-                attributeNode.set("vaerdier", valueList);
+                attributeNode.set(AttributeData.IO_FIELD_VALUES, valueList);
                 for (AttributeData data : attributeList) {
                     valueList.add(data.getValue());
                 }
@@ -130,9 +128,20 @@ public abstract class CvrOutputWrapper<T extends Entity> extends OutputWrapper<T
 
     protected ObjectNode createIndustryNode(Effect virkning, OffsetDateTime lastUpdated, Industry industry) {
         ObjectNode industryNode = createVirkning(virkning, lastUpdated);
-        industryNode.put("branche", industry.getIndustryText());
-        industryNode.put("branchekode", industry.getIndustryCode());
+        industryNode.put(Industry.IO_FIELD_NAME, industry.getIndustryText());
+        industryNode.put(Industry.IO_FIELD_CODE, industry.getIndustryCode());
         return industryNode;
+    }
+
+    protected ObjectNode createLifecycleNode(Effect virkning, OffsetDateTime lastUpdated, LifecycleData lifecycle) {
+        ObjectNode node = createVirkning(virkning, lastUpdated);
+        if (lifecycle.getStartDate() != null) {
+            node.put(LifecycleData.IO_FIELD_START, this.getUTCDate(lifecycle.getStartDate()).format(DateTimeFormatter.ISO_DATE));
+        }
+        if (lifecycle.getEndDate() != null) {
+            node.put(LifecycleData.IO_FIELD_END, this.getUTCDate(lifecycle.getEndDate()).format(DateTimeFormatter.ISO_DATE));
+        }
+        return node;
     }
 
     protected ObjectNode createSimpleNode(Effect virkning, OffsetDateTime lastUpdated, String key, Boolean value) {

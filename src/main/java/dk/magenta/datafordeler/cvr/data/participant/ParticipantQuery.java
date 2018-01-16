@@ -17,9 +17,9 @@ import java.util.*;
  */
 public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
 
-    public static final String UNITNUMBER = "enhedsNummer";
-    public static final String NAVN = "names";
-    public static final String KOMMUNEKODE = "kommunekode";
+    public static final String UNITNUMBER = ParticipantEntity.IO_FIELD_PARTICIPANT_NUMBER;
+    public static final String NAVN = ParticipantBaseData.IO_FIELD_NAMES;
+    public static final String KOMMUNEKODE = Municipality.IO_FIELD_CODE;
 
 
 
@@ -32,6 +32,9 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
 
     public void setEnhedsNummer(String enhedsNummer) {
         this.enhedsNummer = enhedsNummer;
+        if (enhedsNummer != null) {
+            this.increaseDataParamCount();
+        }
     }
 
 
@@ -45,6 +48,9 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
 
     public void setNavne(String navne) {
         this.navne = navne;
+        if (navne != null) {
+            this.increaseDataParamCount();
+        }
     }
 
 
@@ -58,6 +64,9 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
 
     public void addKommunekode(String kommunekode) {
         this.kommunekoder.add(kommunekode);
+        if (kommunekode != null) {
+            this.increaseDataParamCount();
+        }
     }
 
     public void addKommunekode(int kommunekode) {

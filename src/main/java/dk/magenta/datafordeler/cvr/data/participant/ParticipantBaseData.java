@@ -29,7 +29,7 @@ import java.util.Set;
 public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantBaseData> {
 
     public static final String DB_FIELD_NAMES = "names";
-    public static final String IO_FIELD_NAMES = "navne";
+    public static final String IO_FIELD_NAMES = "navn";
 
     @OneToMany(cascade = CascadeType.ALL, targetEntity = ParticipantName.class, mappedBy = ParticipantName.DB_FIELD_BASEDATA)
     private Set<ParticipantName> names;
@@ -63,7 +63,7 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
 
 
     public static final String DB_FIELD_PHONENUMBER = "phoneNumber";
-    public static final String IO_FIELD_PHONENUMBER = "telefonnummer";
+    public static final String IO_FIELD_PHONENUMBER = "telefon";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private ContactData phoneNumber;
@@ -90,7 +90,7 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
 
 
     public static final String DB_FIELD_EMAIL = "emailAddress";
-    public static final String IO_FIELD_EMAIL = "emailadresse";
+    public static final String IO_FIELD_EMAIL = "email";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private ContactData emailAddress;
@@ -117,7 +117,7 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
 
 
     public static final String DB_FIELD_FAXNUMBER = "faxNumber";
-    public static final String IO_FIELD_FAXNUMBER = "telefaxnummer";
+    public static final String IO_FIELD_FAXNUMBER = "telefax";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private ContactData faxNumber;
@@ -219,7 +219,7 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
     //--------------------------------------------------------------------------
 
     public static final String DB_FIELD_UNIT_NUMBER = "unitNumber";
-    public static final String IO_FIELD_UNIT_NUMBER = "enhedsnummer";
+    public static final String IO_FIELD_UNIT_NUMBER = "deltagernummer";
 
     @Column(nullable = true, name = DB_FIELD_UNIT_NUMBER)
     private Long unitNumber;
