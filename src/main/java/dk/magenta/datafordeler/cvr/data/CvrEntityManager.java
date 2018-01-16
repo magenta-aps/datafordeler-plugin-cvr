@@ -49,6 +49,9 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
     @Autowired
     private Stopwatch timer;
 
+    @Autowired
+    private ConfigurationSessionManager configurationSessionManager;
+
     private static final String TASK_PARSE = "CvrParse";
     private static final String TASK_FIND_ENTITY = "CvrFindEntity";
     private static final String TASK_FIND_REGISTRATIONS = "CvrFindRegistrations";
@@ -211,6 +214,9 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         boolean wrappedInTransaction = importMetadata.isTransactionInProgress();
         long chunkCount = 0;
         long startChunk = importMetadata.getStartChunk();
+
+        InterruptedPull progress = new InterruptedPull();
+
         try {
             while (scanner.hasNext()) {
                 try {
@@ -245,12 +251,32 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                         timer.measure(TASK_COMMIT);
 
                         log.info("Chunk " + chunkCount + ":\n" + timer.formatAllTotal());
+
+                        // Save progress
+                        progress.setChunk(chunkCount);
+                        progress.setFiles(cacheFiles);
+                        progress.setStartTime(importMetadata.getImportTime());
+                        progress.setInterruptTime(OffsetDateTime.now());
+                        progress.setSchemaName(this.getSchema());
+                        progress.setPlugin(this.getRegisterManager().getPlugin());
+
+                        Session progressSession = this.configurationSessionManager.getSessionFactory().openSession();
+                        progressSession.beginTransaction();
+                        progressSession.saveOrUpdate(progress);
+                        progressSession.getTransaction().commit();
+                        progressSession.close();
+
                     }
                     chunkCount++;
                 } catch (IOException e) {
                     throw new DataStreamException(e);
                 }
             }
+            Session progressSession = this.configurationSessionManager.getSessionFactory().openSession();
+            progressSession.beginTransaction();
+            progressSession.delete(progress);
+            progressSession.getTransaction().commit();
+            progressSession.close();
         } catch (ImportInterruptedException e) {
             log.info("Import aborted in chunk " + chunkCount);
             if (e.getChunk() == null) {

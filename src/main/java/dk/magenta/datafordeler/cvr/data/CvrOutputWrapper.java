@@ -59,10 +59,13 @@ public abstract class CvrOutputWrapper<T extends Entity> extends OutputWrapper<T
     }
 
     protected ObjectNode createIdentificationNode(Identification identification) {
-        ObjectNode identificationObject = objectMapper.createObjectNode();
-        identificationObject.put(Identification.IO_FIELD_UUID, identification.getUuid().toString());
-        identificationObject.put(Identification.IO_FIELD_DOMAIN, identification.getDomain());
-        return identificationObject;
+        if (identification != null) {
+            ObjectNode identificationObject = objectMapper.createObjectNode();
+            identificationObject.put(Identification.IO_FIELD_UUID, identification.getUuid().toString());
+            identificationObject.put(Identification.IO_FIELD_DOMAIN, identification.getDomain());
+            return identificationObject;
+        }
+        return null;
     }
 
     protected ObjectNode createAddressNode(Effect virkning, OffsetDateTime lastUpdated, Address adresse) {

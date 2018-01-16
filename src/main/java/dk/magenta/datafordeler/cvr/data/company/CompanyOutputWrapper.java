@@ -10,7 +10,6 @@ import dk.magenta.datafordeler.cvr.data.shared.ParticipantRelationData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
-import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
