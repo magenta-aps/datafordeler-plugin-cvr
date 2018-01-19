@@ -22,7 +22,6 @@ import dk.magenta.datafordeler.cvr.records.CvrEntityRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
-import org.opensaml.xml.signature.Q;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -215,6 +214,20 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                     String data = scanner.next();
                     if (chunkCount >= startChunk) {
 
+                        // Save progress
+                        progress.setChunk(chunkCount);
+                        progress.setFiles(cacheFiles);
+                        progress.setStartTime(importMetadata.getImportTime());
+                        progress.setInterruptTime(OffsetDateTime.now());
+                        progress.setSchemaName(this.getSchema());
+                        progress.setPlugin(this.getRegisterManager().getPlugin());
+
+                        Session progressSession = this.configurationSessionManager.getSessionFactory().openSession();
+                        progressSession.beginTransaction();
+                        progressSession.saveOrUpdate(progress);
+                        progressSession.getTransaction().commit();
+                        progressSession.close();
+
                         if (session == null) {
                             session = this.getSessionManager().getSessionFactory().openSession();
                         }
@@ -243,21 +256,6 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                         timer.measure(TASK_COMMIT);
 
                         log.info("Chunk " + chunkCount + ":\n" + timer.formatAllTotal());
-
-                        // Save progress
-                        progress.setChunk(chunkCount);
-                        progress.setFiles(cacheFiles);
-                        progress.setStartTime(importMetadata.getImportTime());
-                        progress.setInterruptTime(OffsetDateTime.now());
-                        progress.setSchemaName(this.getSchema());
-                        progress.setPlugin(this.getRegisterManager().getPlugin());
-
-                        Session progressSession = this.configurationSessionManager.getSessionFactory().openSession();
-                        progressSession.beginTransaction();
-                        progressSession.saveOrUpdate(progress);
-                        progressSession.getTransaction().commit();
-                        progressSession.close();
-
                     }
                     chunkCount++;
                 } catch (IOException e) {
