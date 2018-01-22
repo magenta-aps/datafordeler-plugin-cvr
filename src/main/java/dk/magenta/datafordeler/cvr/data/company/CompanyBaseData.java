@@ -712,7 +712,7 @@ public class CompanyBaseData extends CvrData<CompanyEffect, CompanyBaseData> {
     public void addParticipantRelation(Identification participant, Set<Identification> organizations) {
         ParticipantRelationData participantRelationData = null;
         for (ParticipantRelationData data : this.participantRelationData) {
-            if (participant != null && data.getParticipant().equals(participant)) {
+            if (participant != null && data.getParticipant() != null && data.getParticipant().equals(participant)) {
                 participantRelationData = data;
             }
         }
