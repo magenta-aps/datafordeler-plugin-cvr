@@ -33,6 +33,11 @@ public abstract class CvrRecord implements Comparable<CvrRecord> {
     }
 
     @JsonIgnore
+    public OffsetDateTime getLastLoaded() {
+        return this.lastLoaded;
+    }
+
+    @JsonIgnore
     public OffsetDateTime getRegistrationFrom() {
         return (this.lastUpdated != null) ? this.lastUpdated : this.lastLoaded;
     }
