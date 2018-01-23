@@ -28,7 +28,7 @@ public class CompanyParticipantRelationRecord extends CvrBaseRecord {
     private List<OrganizationRecord> organizations;
 
     public OffsetDateTime getRegistrationFrom() {
-        return this.participant != null ? this.participant.getRegistrationFrom() : null;
+        return (super.getRegistrationFrom() == null && this.participant != null) ? this.participant.getRegistrationFrom() : super.getRegistrationFrom();
     }
 
     private Identification getParticipantIdentification(Session session) {

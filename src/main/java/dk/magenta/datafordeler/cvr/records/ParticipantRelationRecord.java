@@ -27,7 +27,7 @@ public class ParticipantRelationRecord extends CvrRecord {
     public OffsetDateTime getRegistrationFrom() {
         OffsetDateTime registrationFrom = super.getRegistrationFrom();
         if (registrationFrom == null) {
-            registrationFrom = this.getLastLoaded();
+            registrationFrom = this.getLastUpdated();
         }
         return registrationFrom;
     }
