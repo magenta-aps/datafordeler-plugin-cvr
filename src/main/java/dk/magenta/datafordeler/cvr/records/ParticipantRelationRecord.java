@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 /**
@@ -22,4 +23,12 @@ public class ParticipantRelationRecord extends CvrRecord {
         return UUID.nameUUIDFromBytes(uuidInput.getBytes());
     }
 
+    @Override
+    public OffsetDateTime getRegistrationFrom() {
+        OffsetDateTime registrationFrom = super.getRegistrationFrom();
+        if (registrationFrom == null) {
+            registrationFrom = this.getLastLoaded();
+        }
+        return registrationFrom;
+    }
 }
