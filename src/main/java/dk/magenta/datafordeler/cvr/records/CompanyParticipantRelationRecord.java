@@ -30,11 +30,11 @@ public class CompanyParticipantRelationRecord extends CvrBaseRecord {
     // Our source omits temporality on this object, so we must gather it elsewhere
     public OffsetDateTime getRegistrationFrom() {
         OffsetDateTime registrationFrom = super.getRegistrationFrom();
-        if (registrationFrom == null) {
-            registrationFrom = this.getLastUpdated();
-        }
         if (registrationFrom == null && this.participant != null) {
             registrationFrom = this.participant.getRegistrationFrom();
+        }
+        if (registrationFrom == null) {
+            registrationFrom = this.getLastUpdated();
         }
         return registrationFrom;
     }

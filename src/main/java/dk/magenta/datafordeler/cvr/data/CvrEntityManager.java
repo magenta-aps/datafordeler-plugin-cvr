@@ -351,11 +351,17 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         timer.measure(TASK_FIND_ENTITY);
 
 
-
         this.checkInterrupt(importMetadata);
         HashSet<R> entityRegistrations = new HashSet<>();
         OffsetDateTime lastUpdate = this.getLastUpdated(session);
         List<CvrBaseRecord> recentlyUpdated = toplevelRecord.getSince(lastUpdate);
+
+        /*for (CvrBaseRecord rec : recentlyUpdated) {
+            if (rec.getLastUpdated() == null) {
+                rec.setLastUpdated(lastUpdate);
+            }
+        }*/
+
         ListHashMap<Bitemporality, CvrBaseRecord> groups = this.sortIntoGroups(recentlyUpdated);
 
         for (Bitemporality bitemporality : groups.keySet()) {
