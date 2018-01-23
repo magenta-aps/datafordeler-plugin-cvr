@@ -27,6 +27,7 @@ public class CompanyParticipantRelationRecord extends CvrBaseRecord {
     @JsonProperty(value = "organisationer")
     private List<OrganizationRecord> organizations;
 
+    // Our source omits temporality on this object, so we must gather it elsewhere
     public OffsetDateTime getRegistrationFrom() {
         OffsetDateTime registrationFrom = super.getRegistrationFrom();
         if (registrationFrom == null) {
