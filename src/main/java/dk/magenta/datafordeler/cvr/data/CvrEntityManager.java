@@ -354,10 +354,9 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
         this.checkInterrupt(importMetadata);
         HashSet<R> entityRegistrations = new HashSet<>();
+        OffsetDateTime lastUpdate = this.getLastUpdated(session);
         ListHashMap<Bitemporality, CvrBaseRecord> groups = this.sortIntoGroups(
-                toplevelRecord.getSince(
-                        this.getLastUpdated(session)
-                )
+            toplevelRecord.getSince(lastUpdate)
         );
 
         for (Bitemporality bitemporality : groups.keySet()) {
