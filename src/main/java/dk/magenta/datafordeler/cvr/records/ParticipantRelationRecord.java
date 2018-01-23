@@ -23,12 +23,4 @@ public class ParticipantRelationRecord extends CvrRecord {
         return UUID.nameUUIDFromBytes(uuidInput.getBytes());
     }
 
-    @Override
-    public OffsetDateTime getRegistrationFrom() {
-        OffsetDateTime registrationFrom = super.getRegistrationFrom();
-        if (registrationFrom == null) {
-            registrationFrom = this.getLastUpdated();
-        }
-        return registrationFrom;
-    }
 }
