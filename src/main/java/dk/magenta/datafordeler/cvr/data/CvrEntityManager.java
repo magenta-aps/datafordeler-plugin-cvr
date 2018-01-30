@@ -17,6 +17,8 @@ import dk.magenta.datafordeler.core.util.ItemInputStream;
 import dk.magenta.datafordeler.core.util.ListHashMap;
 import dk.magenta.datafordeler.core.util.Stopwatch;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
+import dk.magenta.datafordeler.cvr.CvrRegisterManager;
+import dk.magenta.datafordeler.cvr.configuration.CvrConfiguration;
 import dk.magenta.datafordeler.cvr.data.unversioned.*;
 import dk.magenta.datafordeler.cvr.records.CvrBaseRecord;
 import dk.magenta.datafordeler.cvr.records.CvrEntityRecord;
@@ -91,6 +93,11 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         super.setRegisterManager(registerManager);
         //this.handledURISubstrings.add(expandBaseURI(this.getBaseEndpoint(), "/" + this.getBaseName(), null, null).toString());
         //this.handledURISubstrings.add(expandBaseURI(this.getBaseEndpoint(), "/get/" + this.getBaseName(), null, null).toString());
+    }
+
+    @Override
+    public CvrRegisterManager getRegisterManager() {
+        return (CvrRegisterManager) super.getRegisterManager();
     }
 
     /**
@@ -520,5 +527,12 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         if (importMetadata.getStop()) {
             throw new ImportInterruptedException(new InterruptedException());
         }
+    }
+
+    @Override
+    public boolean pullEnabled() {
+        CvrConfiguration configuration = this.getRegisterManager().getConfigurationManager().getConfiguration();
+        CvrConfiguration.RegisterType registerType = configuration.getRegisterType(this.getSchema());
+        return (registerType != null && registerType != CvrConfiguration.RegisterType.DISABLED);
     }
 }
