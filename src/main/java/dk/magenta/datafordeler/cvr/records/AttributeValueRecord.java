@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.cvr.data.Bitemporality;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
@@ -23,7 +24,7 @@ public class AttributeValueRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) {
+    public void populateBaseData(CompanyBaseData baseData, Session session, Bitemporality bitemporality) {
         baseData.addAttribute(
                 this.parent.getType(),
                 this.parent.getValueType(),
@@ -33,7 +34,7 @@ public class AttributeValueRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
+    public void populateBaseData(CompanyUnitBaseData baseData, Session session, Bitemporality bitemporality) {
         baseData.addAttribute(
                 this.parent.getType(),
                 this.parent.getValueType(),
@@ -43,7 +44,7 @@ public class AttributeValueRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(ParticipantBaseData baseData, Session session) {
+    public void populateBaseData(ParticipantBaseData baseData, Session session, Bitemporality bitemporality) {
         baseData.addAttribute(
                 this.parent.getType(),
                 this.parent.getValueType(),

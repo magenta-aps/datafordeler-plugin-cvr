@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import dk.magenta.datafordeler.cvr.data.Bitemporality;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import org.hibernate.Session;
@@ -19,7 +20,7 @@ public class LifecycleRecord extends CvrBaseRecord {
     }*/
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) {
+    public void populateBaseData(CompanyBaseData baseData, Session session, Bitemporality bitemporality) {
         if (this.getValidFrom() != null) {
             baseData.setLivsforloebStart(OffsetDateTime.of(this.getValidFrom(), LocalTime.MIDNIGHT, ZoneOffset.UTC));
         }
@@ -29,7 +30,7 @@ public class LifecycleRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
+    public void populateBaseData(CompanyUnitBaseData baseData, Session session, Bitemporality bitemporality) {
         if (this.getValidFrom() != null) {
             baseData.setLifecycleStart(OffsetDateTime.of(this.getValidFrom(), LocalTime.MIDNIGHT, ZoneOffset.UTC));
         }

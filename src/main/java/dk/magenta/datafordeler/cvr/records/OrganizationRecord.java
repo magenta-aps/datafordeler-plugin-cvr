@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -16,6 +17,15 @@ public class OrganizationRecord {
 
     @JsonProperty(value = "hovedtype")
     public String mainType;
+
+    @JsonProperty(value = "organisationsNavn")
+    public List<NameRecord> name;
+
+    @JsonProperty(value = "attributter")
+    public List<AttributeRecord> attributes;
+
+    @JsonProperty(value = "medlemsData")
+    public List<OrganizationMemberdataRecord> memberData;
 
     public UUID generateUUID() {
         String uuidInput = "participant:"+this.mainType+"/"+this.unitNumber;

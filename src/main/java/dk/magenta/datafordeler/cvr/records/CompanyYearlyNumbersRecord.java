@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.exception.ParseException;
+import dk.magenta.datafordeler.cvr.data.Bitemporality;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import org.hibernate.Session;
@@ -15,7 +16,7 @@ public class CompanyYearlyNumbersRecord extends CompanyNumbersRecord {
     private int year;
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) throws ParseException {
+    public void populateBaseData(CompanyBaseData baseData, Session session, Bitemporality bitemporality) throws ParseException {
         baseData.setYearlyEmployeeNumbers(
                 this.year,
                 this.getEmployeeLow(),
@@ -28,7 +29,7 @@ public class CompanyYearlyNumbersRecord extends CompanyNumbersRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, Session session) throws ParseException {
+    public void populateBaseData(CompanyUnitBaseData baseData, Session session, Bitemporality bitemporality) throws ParseException {
         baseData.setYearlyEmployeeNumbers(
                 this.year,
                 this.getEmployeeLow(),

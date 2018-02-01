@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.cvr.data.Bitemporality;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantType;
@@ -135,7 +136,7 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
     @Override
-    public void populateBaseData(ParticipantBaseData baseData, Session session) {
+    public void populateBaseData(ParticipantBaseData baseData, Session session, Bitemporality bitemporality) {
         baseData.setUnitNumber(this.unitNumber);
         if (this.unitType != null) {
             baseData.setUnitType(ParticipantType.getType(this.unitType, session));
