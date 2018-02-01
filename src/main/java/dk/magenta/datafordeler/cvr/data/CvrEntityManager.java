@@ -18,6 +18,7 @@ import dk.magenta.datafordeler.core.util.ListHashMap;
 import dk.magenta.datafordeler.core.util.Stopwatch;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
 import dk.magenta.datafordeler.cvr.data.unversioned.*;
+import dk.magenta.datafordeler.cvr.records.CompanyParticipantRelationRecord;
 import dk.magenta.datafordeler.cvr.records.CvrBaseRecord;
 import dk.magenta.datafordeler.cvr.records.CvrEntityRecord;
 import org.apache.logging.log4j.LogManager;
@@ -354,13 +355,15 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         this.checkInterrupt(importMetadata);
         HashSet<R> entityRegistrations = new HashSet<>();
         OffsetDateTime lastUpdate = this.getLastUpdated(session);
-        List<CvrBaseRecord> recentlyUpdated = toplevelRecord.getSince(lastUpdate);
+        //List<CvrBaseRecord> recentlyUpdated = toplevelRecord.getSince(lastUpdate);
+        List<CvrBaseRecord> recentlyUpdated = toplevelRecord.getAll();
 
-        /*for (CvrBaseRecord rec : recentlyUpdated) {
-            if (rec.getLastUpdated() == null) {
+
+        for (CvrBaseRecord rec : recentlyUpdated) {
+            /*if (rec.getLastUpdated() == null) {
                 rec.setLastUpdated(lastUpdate);
-            }
-        }*/
+            }*/
+        }
 
         ListHashMap<Bitemporality, CvrBaseRecord> groups = this.sortIntoGroups(recentlyUpdated);
 
@@ -410,7 +413,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             OffsetDateTime timestamp = importMetadata.getImportTime();
             for (CvrBaseRecord record : group) {
                 timer.start(TASK_POPULATE_DATA+" "+record.getClass().getSimpleName());
-                record.populateBaseData(baseData, session, timestamp);
+                record.populateBaseData(baseData, session, timestamp, bitemporality);
                 baseData.setUpdated(timestamp);
                 if (SAVE_RECORD_DATA) {
                     RecordData recordData = new RecordData(timestamp);

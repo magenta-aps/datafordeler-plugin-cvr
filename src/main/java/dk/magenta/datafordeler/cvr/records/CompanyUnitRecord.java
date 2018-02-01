@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.exception.ParseException;
+import dk.magenta.datafordeler.cvr.data.Bitemporality;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
 import org.hibernate.Session;
@@ -219,7 +220,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, Session session) throws ParseException {
+    public void populateBaseData(CompanyUnitBaseData baseData, Session session, Bitemporality bitemporality) throws ParseException {
         baseData.setAdvertProtection(this.advertProtection);
         baseData.setPNumber(this.unitNumber);
     }

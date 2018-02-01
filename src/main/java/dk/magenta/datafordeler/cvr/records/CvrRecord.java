@@ -116,4 +116,13 @@ public abstract class CvrRecord implements Comparable<CvrRecord> {
         }
         return recordGroups;
     }
+
+    protected static OffsetDateTime roundTime(OffsetDateTime in) {
+        if (in != null) {
+            //return in.withHour(0).withMinute(0).withSecond(0).withNano(0);
+            //return in.withMinute(0).withSecond(0).withNano(0);
+            return in.withSecond(0).withNano(0);
+        }
+        return null;
+    }
 }

@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.cvr.data.Bitemporality;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
@@ -30,7 +31,7 @@ public class CompanyIndustryRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) {
+    public void populateBaseData(CompanyBaseData baseData, Session session, Bitemporality bitemporality) {
         Industry industry = Industry.getIndustry(this.industryCode, this.industryText, session);
         switch (this.index) {
             case 0:
@@ -49,7 +50,7 @@ public class CompanyIndustryRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
+    public void populateBaseData(CompanyUnitBaseData baseData, Session session, Bitemporality bitemporality) {
         Industry industry = Industry.getIndustry(this.industryCode, this.industryText, session);
         switch (this.index) {
             case 0:

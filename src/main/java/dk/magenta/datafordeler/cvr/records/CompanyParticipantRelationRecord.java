@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
+import dk.magenta.datafordeler.cvr.data.Bitemporality;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import org.hibernate.Session;
@@ -60,7 +61,7 @@ public class CompanyParticipantRelationRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) {
+    public void populateBaseData(CompanyBaseData baseData, Session session, Bitemporality bitemporality) {
         baseData.addParticipantRelation(
                 this.getParticipantIdentification(session),
                 this.getOrganizationIdentifications(session)
@@ -68,7 +69,7 @@ public class CompanyParticipantRelationRecord extends CvrBaseRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
+    public void populateBaseData(CompanyUnitBaseData baseData, Session session, Bitemporality bitemporality) {
         baseData.addParticipantRelation(
                 this.getParticipantIdentification(session),
                 this.getOrganizationIdentifications(session)
