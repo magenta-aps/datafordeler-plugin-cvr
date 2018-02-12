@@ -63,7 +63,7 @@ public class ParticipantRecord extends CvrEntityRecord {
 
     public void setPhoneNumber(List<ContactRecord> phoneNumber) {
         for (ContactRecord record : phoneNumber) {
-            record.setType(ContactRecord.Type.TELEFONNUMMER);
+            record.setType(ContactRecord.TYPE_TELEFONNUMMER);
         }
         this.phoneNumber = phoneNumber;
     }
@@ -73,7 +73,7 @@ public class ParticipantRecord extends CvrEntityRecord {
 
     public void setFaxNumber(List<ContactRecord> faxNumber) {
         for (ContactRecord record : faxNumber) {
-            record.setType(ContactRecord.Type.TELEFAXNUMMER);
+            record.setType(ContactRecord.TYPE_TELEFAXNUMMER);
         }
         this.faxNumber = faxNumber;
     }
@@ -83,7 +83,7 @@ public class ParticipantRecord extends CvrEntityRecord {
 
     public void setEmailAddress(List<ContactRecord> emailAddress) {
         for (ContactRecord record : emailAddress) {
-            record.setType(ContactRecord.Type.EMAILADRESSE);
+            record.setType(ContactRecord.TYPE_EMAILADRESSE);
         }
         this.emailAddress = emailAddress;
     }

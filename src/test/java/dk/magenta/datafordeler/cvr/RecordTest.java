@@ -68,19 +68,25 @@ public class RecordTest {
                 entityManager.parseData(item.get("_source").get("Vrvirksomhed"), importMetadata, session);
             }
             transaction.commit();
-
-
-            HashMap<String, Object> filter = new HashMap<>();
-            filter.put("cvrNumber", 25052943);
-            CompanyRecord companyRecord = QueryManager.getItem(session, CompanyRecord.class, filter);
-            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(companyRecord));
-
-
-
         } finally {
             session.close();
             QueryManager.clearCaches();
         }
+
+
+
+        session = sessionManager.getSessionFactory().openSession();
+        try {
+            HashMap<String, Object> filter = new HashMap<>();
+            filter.put("cvrNumber", 25052943);
+            CompanyRecord companyRecord = QueryManager.getItem(session, CompanyRecord.class, filter);
+            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(companyRecord));
+        } finally {
+            session.close();
+        }
+
+
+
     }
 
     /*private void compareJson(JsonNode n1, JsonNode n2, JsonNode parent) throws JsonProcessingException {

@@ -8,6 +8,8 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public class CvrNontemporalDataRecord extends CvrRecord {
 
+    public static final String DB_FIELD_COMPANY = "companyRecord";
+
     @JsonIgnore
     @ManyToOne(targetEntity = CompanyRecord.class)
     private CompanyRecord companyRecord;
@@ -20,7 +22,10 @@ public class CvrNontemporalDataRecord extends CvrRecord {
         return this.companyRecord;
     }
 
-    /*
+
+
+    public static final String DB_FIELD_COMPANYUNIT = "companyUnitRecord";
+
     @ManyToOne(targetEntity = CompanyUnitRecord.class)
     private CompanyUnitRecord companyUnitRecord;
 
@@ -28,7 +33,7 @@ public class CvrNontemporalDataRecord extends CvrRecord {
         this.companyUnitRecord = companyUnitRecord;
     }
 
-
+/*
 
     @ManyToOne(targetEntity = ParticipantRecord.class)
     private ParticipantRecord participantRecordRecord;
