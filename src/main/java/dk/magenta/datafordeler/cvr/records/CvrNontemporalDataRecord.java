@@ -33,13 +33,14 @@ public class CvrNontemporalDataRecord extends CvrRecord {
         this.companyUnitRecord = companyUnitRecord;
     }
 
-/*
+
+    public static final String DB_FIELD_PARTICIPANT = "participantRecord";
 
     @ManyToOne(targetEntity = ParticipantRecord.class)
-    private ParticipantRecord participantRecordRecord;
+    private ParticipantRecord participantRecord;
 
-    public void setParticipantRecordRecord(ParticipantRecord participantRecordRecord) {
-        this.participantRecordRecord = participantRecordRecord;
-    }*/
+    public void setParticipantRecord(ParticipantRecord participantRecordRecord) {
+        this.participantRecord = participantRecordRecord;
+    }
 
 }

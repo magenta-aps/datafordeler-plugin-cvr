@@ -7,90 +7,181 @@ import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantType;
 import org.hibernate.Session;
+import org.hibernate.annotations.Where;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
  * Base record for Participant data, parsed from JSON into a tree of objects
  * with this class at the base.
  */
+@Entity
+@Table(name="cvr_record_participantrecord")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ParticipantRecord extends CvrEntityRecord {
 
-    @JsonProperty(value = "enhedsNummer")
-    public long unitNumber;
+    public static final String DB_FIELD_UNIT_NUMBER = "unitNumber";
+    public static final String IO_FIELD_UNIT_NUMBER = "enhedsNummer";
 
-    @JsonProperty(value = "enhedstype")
-    public String unitType;
+    @Column(name = DB_FIELD_UNIT_NUMBER)
+    @JsonProperty(value = IO_FIELD_UNIT_NUMBER)
+    private long unitNumber;
 
-    @JsonProperty(value = "navne")
-    public List<NameRecord> names;
+    public long getUnitNumber() {
+        return this.unitNumber;
+    }
 
-    @JsonProperty(value = "beliggenhedsadresse")
-    public List<AddressRecord> locationAddress;
 
-    public void setLocationAddress(List<AddressRecord> locationAddress) {
+
+    public static final String DB_FIELD_UNIT_TYPE = "unitType";
+    public static final String IO_FIELD_UNIT_TYPE = "enhedstype";
+
+    @Column(name = DB_FIELD_UNIT_TYPE)
+    @JsonProperty(value = IO_FIELD_UNIT_TYPE)
+    private String unitType;
+
+    public String getUnitType() {
+        return this.unitType;
+    }
+
+
+
+    public static final String DB_FIELD_NAMES = "names";
+    public static final String IO_FIELD_NAMES = "navne";
+
+    @OneToMany(mappedBy = NameRecord.DB_FIELD_PARTICIPANT, targetEntity = NameRecord.class, cascade = CascadeType.ALL)
+    @JsonProperty(value = IO_FIELD_NAMES)
+    public Set<NameRecord> names;
+
+    public void setNames(Set<NameRecord> names) {
+        this.names = names;
+        for (NameRecord record : names) {
+            record.setParticipantRecord(this);
+        }
+    }
+
+
+
+    public static final String DB_FIELD_LOCATION_ADDRESS = "locationAddress";
+    public static final String IO_FIELD_LOCATION_ADDRESS = "beliggenhedsadresse";
+
+    @OneToMany(mappedBy = AddressRecord.DB_FIELD_PARTICIPANT, targetEntity = AddressRecord.class, cascade = CascadeType.ALL)
+    @JsonProperty(value = IO_FIELD_LOCATION_ADDRESS)
+    public Set<AddressRecord> locationAddress;
+
+    public void setLocationAddress(Set<AddressRecord> locationAddress) {
         for (AddressRecord record : locationAddress) {
             record.setType(AddressRecord.Type.LOCATION);
         }
         this.locationAddress = locationAddress;
     }
 
-    @JsonProperty(value = "postadresse")
-    public List<AddressRecord> postalAddress;
 
-    public void setPostalAddress(List<AddressRecord> postalAddress) {
+
+    public static final String DB_FIELD_POSTAL_ADDRESS = "postalAddress";
+    public static final String IO_FIELD_POSTAL_ADDRESS = "postadresse";
+
+    @OneToMany(mappedBy = AddressRecord.DB_FIELD_PARTICIPANT, targetEntity = AddressRecord.class, cascade = CascadeType.ALL)
+    @JsonProperty(value = IO_FIELD_POSTAL_ADDRESS)
+    public Set<AddressRecord> postalAddress;
+
+    public void setPostalAddress(Set<AddressRecord> postalAddress) {
         for (AddressRecord record : postalAddress) {
             record.setType(AddressRecord.Type.POSTAL);
         }
         this.postalAddress = postalAddress;
     }
 
-    @JsonProperty(value = "forretningsadresse")
-    public List<AddressRecord> businessAddress;
 
-    public void setBusinessAddress(List<AddressRecord> businessAddress) {
+
+    public static final String DB_FIELD_BUSINESS_ADDRESS = "businessAddress";
+    public static final String IO_FIELD_BUSINESS_ADDRESS = "forretningsadresse";
+
+    @OneToMany(mappedBy = AddressRecord.DB_FIELD_PARTICIPANT, targetEntity = AddressRecord.class, cascade = CascadeType.ALL)
+    @JsonProperty(value = IO_FIELD_BUSINESS_ADDRESS)
+    public Set<AddressRecord> businessAddress;
+
+    public void setBusinessAddress(Set<AddressRecord> businessAddress) {
         for (AddressRecord record : businessAddress) {
             record.setType(AddressRecord.Type.BUSINESS);
+            record.setParticipantRecord(this);
         }
         this.businessAddress = businessAddress;
     }
 
-    @JsonProperty(value = "telefonNummer")
-    public List<ContactRecord> phoneNumber;
 
-    public void setPhoneNumber(List<ContactRecord> phoneNumber) {
+
+    public static final String DB_FIELD_PHONE = "phoneNumber";
+    public static final String IO_FIELD_PHONE = "telefonNummer";
+
+    @OneToMany(mappedBy = ContactRecord.DB_FIELD_PARTICIPANT, targetEntity = ContactRecord.class, cascade = CascadeType.ALL)
+    @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_TELEFONNUMMER)
+    @JsonProperty(value = IO_FIELD_PHONE)
+    public Set<ContactRecord> phoneNumber;
+
+    public void setPhoneNumber(Set<ContactRecord> phoneNumber) {
         for (ContactRecord record : phoneNumber) {
             record.setType(ContactRecord.TYPE_TELEFONNUMMER);
+            record.setParticipantRecord(this);
         }
         this.phoneNumber = phoneNumber;
     }
 
-    @JsonProperty(value = "telefaxNummer")
-    public List<ContactRecord> faxNumber;
 
-    public void setFaxNumber(List<ContactRecord> faxNumber) {
+
+    public static final String DB_FIELD_FAX = "faxNumber";
+    public static final String IO_FIELD_FAX = "telefaxNummer";
+
+    @OneToMany(mappedBy = ContactRecord.DB_FIELD_PARTICIPANT, targetEntity = ContactRecord.class, cascade = CascadeType.ALL)
+    @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_TELEFAXNUMMER)
+    @JsonProperty(value = IO_FIELD_FAX)
+    public Set<ContactRecord> faxNumber;
+
+    public void setFaxNumber(Set<ContactRecord> faxNumber) {
         for (ContactRecord record : faxNumber) {
             record.setType(ContactRecord.TYPE_TELEFAXNUMMER);
+            record.setParticipantRecord(this);
         }
         this.faxNumber = faxNumber;
     }
 
-    @JsonProperty(value = "elektroniskPost")
-    public List<ContactRecord> emailAddress;
 
-    public void setEmailAddress(List<ContactRecord> emailAddress) {
+
+    public static final String DB_FIELD_EMAIL = "emailAddress";
+    public static final String IO_FIELD_EMAIL = "elektroniskPost";
+
+    @OneToMany(mappedBy = ContactRecord.DB_FIELD_PARTICIPANT, targetEntity = ContactRecord.class, cascade = CascadeType.ALL)
+    @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_EMAILADRESSE)
+    @JsonProperty(value = IO_FIELD_EMAIL)
+    public Set<ContactRecord> emailAddress;
+
+    public void setEmailAddress(Set<ContactRecord> emailAddress) {
         for (ContactRecord record : emailAddress) {
             record.setType(ContactRecord.TYPE_EMAILADRESSE);
+            record.setParticipantRecord(this);
         }
         this.emailAddress = emailAddress;
     }
 
 
-    @JsonProperty(value = "attributter")
-    public List<AttributeRecord> attributes;
+
+    public static final String DB_FIELD_ATTRIBUTES = "attributes";
+    public static final String IO_FIELD_ATTRIBUTES = "attributter";
+
+    @OneToMany(mappedBy = AttributeRecord.DB_FIELD_PARTICIPANT, targetEntity = AttributeRecord.class, cascade = CascadeType.ALL)
+    @JsonProperty(value = IO_FIELD_ATTRIBUTES)
+    public Set<AttributeRecord> attributes;
+
+    public void setAttributes(Set<AttributeRecord> attributes) {
+        this.attributes = attributes;
+        for (AttributeRecord attributeRecord : attributes) {
+            attributeRecord.setParticipantRecord(this);
+        }
+    }
 
 
     @JsonProperty(value = "stilling")

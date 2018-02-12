@@ -21,7 +21,7 @@ public class CvrNontemporalRecord extends CvrRecord {
     @ManyToOne(targetEntity = ParticipantRecord.class)
     private ParticipantRecord participantRecordRecord;
 
-    public void setParticipantRecordRecord(ParticipantRecord participantRecordRecord) {
+    public void setParticipantRecord(ParticipantRecord participantRecordRecord) {
         this.participantRecordRecord = participantRecordRecord;
     }*/
 

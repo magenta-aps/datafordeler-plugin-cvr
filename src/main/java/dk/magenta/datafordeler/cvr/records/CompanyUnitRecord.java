@@ -105,6 +105,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public void setPostalAddress(Set<AddressRecord> postalAddress) {
         for (AddressRecord record : postalAddress) {
             record.setType(AddressRecord.Type.POSTAL);
+            record.setCompanyUnitRecord(this);
         }
         this.postalAddress = postalAddress;
     }
@@ -125,6 +126,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public void setPhoneNumber(Set<ContactRecord> phoneNumber) {
         for (ContactRecord record : phoneNumber) {
             record.setType(ContactRecord.TYPE_TELEFONNUMMER);
+            record.setCompanyUnitRecord(this);
         }
         this.phoneNumber = phoneNumber;
     }
@@ -142,6 +144,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public void setFaxNumber(Set<ContactRecord> faxNumber) {
         for (ContactRecord record : faxNumber) {
             record.setType(ContactRecord.TYPE_TELEFAXNUMMER);
+            record.setCompanyUnitRecord(this);
         }
         this.faxNumber = faxNumber;
     }
@@ -159,6 +162,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public void setEmailAddress(Set<ContactRecord> emailAddress) {
         for (ContactRecord record : emailAddress) {
             record.setType(ContactRecord.TYPE_EMAILADRESSE);
+            record.setCompanyUnitRecord(this);
         }
         this.emailAddress = emailAddress;
     }
@@ -175,6 +179,15 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public Set<LifecycleRecord> getLifecycle() {
         return this.lifecycle;
     }
+
+    public void setLifecycle(Set<LifecycleRecord> lifecycle) {
+        this.lifecycle = lifecycle;
+        for (LifecycleRecord lifecycleRecord : lifecycle) {
+            lifecycleRecord.setCompanyUnitRecord(this);
+        }
+    }
+
+
 
     public static final String DB_FIELD_PRIMARY_INDUSTRY = "primaryIndustry";
     public static final String IO_FIELD_PRIMARY_INDUSTRY = "hovedbranche";
@@ -282,6 +295,15 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     @OneToMany(mappedBy = AttributeRecord.DB_FIELD_COMPANYUNIT, targetEntity = AttributeRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_ATTRIBUTES)
     private Set<AttributeRecord> attributes;
+
+    public void setAttributes(Set<AttributeRecord> attributes) {
+        this.attributes = attributes;
+        for (AttributeRecord attributeRecord : attributes) {
+            attributeRecord.setCompanyUnitRecord(this);
+        }
+    }
+
+
 
     @OneToMany(mappedBy = CompanyParticipantRelationRecord.DB_FIELD_COMPANYUNIT, targetEntity = CompanyParticipantRelationRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = "deltagerRelation")

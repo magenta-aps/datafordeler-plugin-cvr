@@ -24,8 +24,10 @@ public class CvrBitemporalDataRecord extends CvrBitemporalRecord {
     }
 
 
+
     public static final String DB_FIELD_COMPANYUNIT = "companyUnitRecord";
 
+    @JsonIgnore
     @ManyToOne(targetEntity = CompanyUnitRecord.class)
     private CompanyUnitRecord companyUnitRecord;
 
@@ -33,13 +35,16 @@ public class CvrBitemporalDataRecord extends CvrBitemporalRecord {
         this.companyUnitRecord = companyUnitRecord;
     }
 
-/*
 
+
+    public static final String DB_FIELD_PARTICIPANT = "participantRecord";
+
+    @JsonIgnore
     @ManyToOne(targetEntity = ParticipantRecord.class)
-    private ParticipantRecord participantRecordRecord;
+    private ParticipantRecord participantRecord;
 
-    public void setParticipantRecordRecord(ParticipantRecord participantRecordRecord) {
-        this.participantRecordRecord = participantRecordRecord;
-    }*/
+    public void setParticipantRecord(ParticipantRecord participantRecord) {
+        this.participantRecord = participantRecord;
+    }
 
 }
