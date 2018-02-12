@@ -17,7 +17,6 @@ import java.util.UUID;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ParticipantRelationRecord extends CvrBitemporalRecord {
 
-
     @JsonProperty(value = "enhedsNummer")
     public long unitNumber;
 

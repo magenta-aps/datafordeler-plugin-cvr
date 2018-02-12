@@ -25,9 +25,24 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
     @JsonProperty(value = "deltager")
     private ParticipantRelationRecord participant;
 
+    public void setParticipant(ParticipantRelationRecord participant) {
+        this.participant = participant;
+    }
+
+
+
     @OneToMany(mappedBy = OrganizationRecord.DB_FIELD_PARTICIPANT_RELATATION, targetEntity = OrganizationRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = "organisationer")
     private Set<OrganizationRecord> organizations;
+
+    public void setOrganizations(Set<OrganizationRecord> organizations) {
+        this.organizations = organizations;
+        for (OrganizationRecord organizationRecord : organizations) {
+            organizationRecord.setCompanyParticipantRelationRecord(this);
+        }
+    }
+
+
 
     // Our source omits temporality on this object, so we must gather it elsewhere
     public OffsetDateTime getRegistrationFrom() {

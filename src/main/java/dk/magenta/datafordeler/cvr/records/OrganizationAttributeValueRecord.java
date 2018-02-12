@@ -16,7 +16,7 @@ import javax.persistence.Table;
  * Record for Company, CompanyUnit or Participant attribute values.
  */
 @Entity
-@Table(name = "cvr_record_attribute_value")
+@Table(name = "cvr_record_organization_attribute_value")
 public class OrganizationAttributeValueRecord extends CvrBitemporalRecord {
 
     @Column
@@ -27,7 +27,7 @@ public class OrganizationAttributeValueRecord extends CvrBitemporalRecord {
     public static final String DB_FIELD_ATTRIBUTE = "attribute";
     public static final String IO_FIELD_ATTRIBUTE = "attribut";
 
-    @ManyToOne(targetEntity = AttributeRecord.class)
+    @ManyToOne(targetEntity = OrganizationAttributeRecord.class)
     @JsonIgnore
     private OrganizationAttributeRecord attribute;
 

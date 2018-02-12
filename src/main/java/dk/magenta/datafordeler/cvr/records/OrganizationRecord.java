@@ -67,6 +67,14 @@ public class OrganizationRecord extends DatabaseEntry {
     @JsonProperty(value = "attributter")
     public Set<OrganizationAttributeRecord> attributes;
 
+    public void setAttributes(Set<OrganizationAttributeRecord> attributes) {
+        this.attributes = attributes;
+        for (OrganizationAttributeRecord attributeRecord : attributes) {
+            attributeRecord.setOrganizationRecord(this);
+        }
+    }
+
+
 
 
     @OneToMany(mappedBy = OrganizationMemberdataRecord.DB_FIELD_ORGANIZATION, targetEntity = OrganizationMemberdataRecord.class, cascade = CascadeType.ALL)

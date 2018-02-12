@@ -53,7 +53,7 @@ public class OrganizationAttributeRecord extends CvrNontemporalRecord {
     private Set<OrganizationAttributeValueRecord> values;
 
     @JsonProperty(value = "vaerdier")
-    public void setValues(Collection<OrganizationAttributeValueRecord> values) {
+    public void setValues(Set<OrganizationAttributeValueRecord> values) {
         for (OrganizationAttributeValueRecord record : values) {
             record.setAttribute(this);
         }

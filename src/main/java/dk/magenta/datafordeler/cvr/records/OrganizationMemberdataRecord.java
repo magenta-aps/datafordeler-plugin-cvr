@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "cvr_record_participant_relation_organization_memberdata")
@@ -23,6 +24,12 @@ public class OrganizationMemberdataRecord extends CvrRecord {
 
     @OneToMany(mappedBy = OrganizationAttributeRecord.DB_FIELD_ORGANIZATION_MEMBERDATA, targetEntity = OrganizationAttributeRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = "attributter")
-    public List<OrganizationAttributeRecord> attributes;
+    public Set<OrganizationAttributeRecord> attributes;
 
+    public void setAttributes(Set<OrganizationAttributeRecord> attributes) {
+        this.attributes = attributes;
+        for (OrganizationAttributeRecord attributeRecord : attributes) {
+            attributeRecord.setOrganizationMemberdataRecord(this);
+        }
+    }
 }

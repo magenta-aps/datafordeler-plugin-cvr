@@ -403,6 +403,14 @@ public class CompanyRecord extends CvrEntityRecord {
     @JsonProperty(value = "attributter")
     private Set<AttributeRecord> attributes;
 
+    public void setAttributes(Set<AttributeRecord> attributes) {
+        this.attributes = attributes;
+        for (AttributeRecord attributeRecord : attributes) {
+            attributeRecord.setCompanyRecord(this);
+        }
+    }
+
+
 
     public static final String DB_FIELD_P_UNITS = "productionUnits";
     public static final String IO_FIELD_P_UNITS = "penheder";
@@ -410,6 +418,14 @@ public class CompanyRecord extends CvrEntityRecord {
     @OneToMany(mappedBy = CompanyUnitLinkRecord.DB_FIELD_COMPANY, targetEntity = CompanyUnitLinkRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = "penheder")
     private Set<CompanyUnitLinkRecord> productionUnits;
+
+    public void setProductionUnits(Set<CompanyUnitLinkRecord> productionUnits) {
+        this.productionUnits = productionUnits;
+        for (CompanyUnitLinkRecord unitLinkRecord : productionUnits) {
+            unitLinkRecord.setCompanyRecord(this);
+        }
+    }
+
 
 
     public static final String DB_FIELD_PARTICIPANTS = "participants";
@@ -419,6 +435,14 @@ public class CompanyRecord extends CvrEntityRecord {
     @JsonProperty(value = "deltagerRelation")
     private Set<CompanyParticipantRelationRecord> participants;
 
+    public void setParticipants(Set<CompanyParticipantRelationRecord> participants) {
+        this.participants = participants;
+        for (CompanyParticipantRelationRecord participantRelationRecord : participants) {
+            participantRelationRecord.setCompanyRecord(this);
+        }
+    }
+
+
 
     public static final String DB_FIELD_META = "metadata";
     public static final String IO_FIELD_META = "virksomhedMetadata";
@@ -426,6 +450,11 @@ public class CompanyRecord extends CvrEntityRecord {
     @OneToOne(mappedBy = MetadataRecord.DB_FIELD_COMPANY, targetEntity = MetadataRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = "virksomhedMetadata")
     private MetadataRecord metadata;
+
+    public void setMetadata(MetadataRecord metadata) {
+        this.metadata = metadata;
+        this.metadata.setCompanyRecord(this);
+    }
 
     public MetadataRecord getMetadata() {
         return this.metadata;
