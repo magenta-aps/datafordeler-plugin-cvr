@@ -8,12 +8,16 @@ import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
 import org.hibernate.Session;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.UUID;
 
 /**
  * Record for Company Unit references.
  */
-public class CompanyUnitLinkRecord extends CvrBaseRecord {
+@Entity
+@Table(name = "cvr_record_productionunit_link")
+public class CompanyUnitLinkRecord extends CvrBitemporalDataRecord {
 
     @JsonProperty(value = "pNummer")
     private int pNumber;

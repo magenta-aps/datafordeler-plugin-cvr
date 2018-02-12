@@ -7,201 +7,354 @@ import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
 import org.hibernate.Session;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
  * Base record for Company data, parsed from JSON into a tree of objects
  * with this class at the base.
  */
+@Entity
+@Table(name="cvr_record_companyrecord")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyRecord extends CvrEntityRecord {
 
+    public static final String DB_FIELD_CVR_NUMBER = "cvrNumber";
+    public static final String CVR_NUMBER = "cvrNummer";
+
+    @Column(name = DB_FIELD_CVR_NUMBER)
     @JsonProperty(value = "cvrNummer")
     private int cvrNumber;
 
+    @JsonProperty(value = CVR_NUMBER)
     public int getCvrNumber() {
         return this.cvrNumber;
     }
 
+
+
+
+    public static final String DB_FIELD_ADVERTPROTECTION = "advertProtection";
+    public static final String IO_FIELD_ADVERTPROTECTION = "reklamebeskyttet";
+
+
+    @Column(name = DB_FIELD_ADVERTPROTECTION)
     @JsonProperty(value = "reklamebeskyttet")
     private boolean advertProtection;
 
+
+
+    public static final String DB_FIELD_UNITNUMBER = "unitNumber";
+    public static final String IO_FIELD_UNITNUMBER = "enhedsNummer";
+
+    @Column(name = DB_FIELD_UNITNUMBER)
     @JsonProperty(value = "enhedsNummer")
     private int unitNumber;
 
+
+
+    public static final String DB_FIELD_UNITTYPE = "unitType";
+    public static final String IO_FIELD_UNITTYPE = "enhedstype";
+
+    @Column(name = DB_FIELD_UNITTYPE)
     @JsonProperty(value = "enhedstype")
     private String unitType;
 
-    @JsonProperty(value = "navne")
-    private List<NameRecord> names;
 
-    public List<NameRecord> getNames() {
+
+    public static final String DB_FIELD_NAMES = "names";
+    public static final String IO_FIELD_NAMES = "navne";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
+    @JsonProperty(value = "navne")
+    private Set<NameRecord> names;
+
+    public Set<NameRecord> getNames() {
         return this.names;
     }
 
-    @JsonProperty(value = "beliggenhedsadresse")
-    private List<AddressRecord> locationAddress;
+    public void setNames(Set<NameRecord> names) {
+        this.names = names;
+        for (NameRecord record : names) {
+            record.setCompanyRecord(this);
+        }
+    }
 
-    public void setLocationAddress(List<AddressRecord> locationAddress) {
+
+
+    public static final String DB_FIELD_LOCATION_ADDRESS = "locationAddress";
+    public static final String IO_FIELD_LOCATION_ADDRESS = "beliggenhedsadresse";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
+    @JsonProperty(value = "beliggenhedsadresse")
+    private Set<AddressRecord> locationAddress;
+
+    public void setLocationAddress(Set<AddressRecord> locationAddress) {
         for (AddressRecord record : locationAddress) {
             record.setType(AddressRecord.Type.LOCATION);
         }
         this.locationAddress = locationAddress;
     }
 
-    public List<AddressRecord> getLocationAddress() {
+    public Set<AddressRecord> getLocationAddress() {
         return this.locationAddress;
     }
 
-    @JsonProperty(value = "postadresse")
-    private List<AddressRecord> postalAddress;
 
-    public void setPostalAddress(List<AddressRecord> postalAddress) {
+
+
+    public static final String DB_FIELD_POSTAL_ADDRESS = "postalAddress";
+    public static final String IO_FIELD_POSTAL_ADDRESS = "postadresse";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
+    @JsonProperty(value = "postadresse")
+    private Set<AddressRecord> postalAddress;
+
+    public void setPostalAddress(Set<AddressRecord> postalAddress) {
         for (AddressRecord record : postalAddress) {
             record.setType(AddressRecord.Type.POSTAL);
         }
         this.postalAddress = postalAddress;
     }
 
-    public List<AddressRecord> getPostalAddress() {
+    public Set<AddressRecord> getPostalAddress() {
         return this.postalAddress;
     }
 
-    @JsonProperty(value = "telefonNummer")
-    private List<ContactRecord> phoneNumber;
 
-    public void setPhoneNumber(List<ContactRecord> phoneNumber) {
+
+    public static final String DB_FIELD_PHONE = "phoneNumber";
+    public static final String IO_FIELD_PHONE = "telefonNummer";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
+    @JsonProperty(value = "telefonNummer")
+    private Set<ContactRecord> phoneNumber;
+
+    public void setPhoneNumber(Set<ContactRecord> phoneNumber) {
         for (ContactRecord record : phoneNumber) {
             record.setType(ContactRecord.Type.TELEFONNUMMER);
         }
         this.phoneNumber = phoneNumber;
     }
 
-    @JsonProperty(value = "telefaxNummer")
-    private List<ContactRecord> faxNumber;
 
-    public void setFaxNumber(List<ContactRecord> faxNumber) {
+
+    public static final String DB_FIELD_FAX = "faxNumber";
+    public static final String IO_FIELD_FAX = "telefaxNummer";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
+    @JsonProperty(value = "telefaxNummer")
+    private Set<ContactRecord> faxNumber;
+
+    public void setFaxNumber(Set<ContactRecord> faxNumber) {
         for (ContactRecord record : faxNumber) {
             record.setType(ContactRecord.Type.TELEFAXNUMMER);
         }
         this.faxNumber = faxNumber;
     }
 
-    @JsonProperty(value = "elektroniskPost")
-    private List<ContactRecord> emailAddress;
 
-    public void setEmailAddress(List<ContactRecord> emailAddress) {
+
+    public static final String DB_FIELD_EMAIL = "emailAddress";
+    public static final String IO_FIELD_EMAIL = "elektroniskPost";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
+    @JsonProperty(value = "elektroniskPost")
+    private Set<ContactRecord> emailAddress;
+
+    public void setEmailAddress(Set<ContactRecord> emailAddress) {
         for (ContactRecord record : emailAddress) {
             record.setType(ContactRecord.Type.EMAILADRESSE);
         }
         this.emailAddress = emailAddress;
     }
 
-    @JsonProperty(value = "hjemmeside")
-    private List<ContactRecord> homepage;
 
-    public void setHomepage(List<ContactRecord> homepage) {
+
+    public static final String DB_FIELD_HOMEPAGE = "homepage";
+    public static final String IO_FIELD_HOMEPAGE = "hjemmeside";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
+    @JsonProperty(value = "hjemmeside")
+    private Set<ContactRecord> homepage;
+
+    public void setHomepage(Set<ContactRecord> homepage) {
         for (ContactRecord record : homepage) {
             record.setType(ContactRecord.Type.HJEMMESIDE);
         }
         this.homepage = homepage;
     }
 
-    @JsonProperty(value = "obligatoriskEmail")
-    private List<ContactRecord> mandatoryEmailAddress;
 
-    public void setMandatoryEmailAddress(List<ContactRecord> mandatoryEmailAddress) {
+
+    public static final String DB_FIELD_MANDATORY_EMAIL = "mandatoryEmailAddress";
+    public static final String IO_FIELD_MANDATORY_EMAIL = "obligatoriskEmail";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
+    @JsonProperty(value = "obligatoriskEmail")
+    private Set<ContactRecord> mandatoryEmailAddress;
+
+    public void setMandatoryEmailAddress(Set<ContactRecord> mandatoryEmailAddress) {
         for (ContactRecord record : mandatoryEmailAddress) {
             record.setType(ContactRecord.Type.OBLIGATORISK_EMAILADRESSE);
         }
         this.mandatoryEmailAddress = mandatoryEmailAddress;
     }
 
-    @JsonProperty(value = "livsforloeb")
-    private List<LifecycleRecord> lifecycle;
 
-    public List<LifecycleRecord> getLifecycle() {
+
+    public static final String DB_FIELD_LIFECYCLE = "lifecycle";
+    public static final String IO_FIELD_LIFECYCLE = "livsforloeb";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
+    @JsonProperty(value = "livsforloeb")
+    private Set<LifecycleRecord> lifecycle;
+
+    public Set<LifecycleRecord> getLifecycle() {
         return this.lifecycle;
     }
 
-    @JsonProperty(value = "hovedbranche")
-    private List<CompanyIndustryRecord> primaryIndustry;
 
-    public void setPrimaryIndustry(List<CompanyIndustryRecord> primaryIndustry) {
+
+    public static final String DB_FIELD_PRIMARY_INDUSTRY = "primaryIndustry";
+    public static final String IO_FIELD_PRIMARY_INDUSTRY = "hovedbranche";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
+    @JsonProperty(value = "hovedbranche")
+    private Set<CompanyIndustryRecord> primaryIndustry;
+
+    public void setPrimaryIndustry(Set<CompanyIndustryRecord> primaryIndustry) {
         for (CompanyIndustryRecord record : primaryIndustry) {
             record.setIndex(0);
         }
         this.primaryIndustry = primaryIndustry;
     }
 
-    public List<CompanyIndustryRecord> getPrimaryIndustry() {
+    public Set<CompanyIndustryRecord> getPrimaryIndustry() {
         return this.primaryIndustry;
     }
 
-    @JsonProperty(value = "bibranche1")
-    private List<CompanyIndustryRecord> secondaryIndustry1;
 
-    public void setSecondaryIndustry1(List<CompanyIndustryRecord> secondaryIndustryRecords) {
+    public static final String DB_FIELD_SECONDARY_INDUSTRY1 = "secondaryIndustry1";
+    public static final String IO_FIELD_SECONDARY_INDUSTRY1 = "bibranche1";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
+    @JsonProperty(value = "bibranche1")
+    private Set<CompanyIndustryRecord> secondaryIndustry1;
+
+    public void setSecondaryIndustry1(Set<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
             record.setIndex(1);
         }
         this.secondaryIndustry1 = secondaryIndustryRecords;
     }
 
-    @JsonProperty(value = "bibranche2")
-    private List<CompanyIndustryRecord> secondaryIndustry2;
 
-    public void setSecondaryIndustry2(List<CompanyIndustryRecord> secondaryIndustryRecords) {
+    public static final String DB_FIELD_SECONDARY_INDUSTRY2 = "secondaryIndustry2";
+    public static final String IO_FIELD_SECONDARY_INDUSTRY2 = "bibranche2";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
+    @JsonProperty(value = "bibranche2")
+    private Set<CompanyIndustryRecord> secondaryIndustry2;
+
+    public void setSecondaryIndustry2(Set<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
             record.setIndex(2);
         }
         this.secondaryIndustry2 = secondaryIndustryRecords;
     }
 
-    @JsonProperty(value = "bibranche3")
-    private List<CompanyIndustryRecord> secondaryIndustry3;
 
-    public void setSecondaryIndustry3(List<CompanyIndustryRecord> secondaryIndustryRecords) {
+    public static final String DB_FIELD_SECONDARY_INDUSTRY3 = "secondaryIndustry3";
+    public static final String IO_FIELD_SECONDARY_INDUSTRY3 = "bibranche3";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
+    @JsonProperty(value = "bibranche3")
+    private Set<CompanyIndustryRecord> secondaryIndustry3;
+
+    public void setSecondaryIndustry3(Set<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
             record.setIndex(3);
         }
         this.secondaryIndustry3 = secondaryIndustryRecords;
     }
 
-    @JsonProperty(value = "virksomhedsstatus")
-    private List<CompanyStatusRecord> companyStatus;
 
-    public List<CompanyStatusRecord> getCompanyStatus() {
+    public static final String DB_FIELD_STATUS = "companyStatus";
+    public static final String IO_FIELD_STATUS = "virksomhedsstatus";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
+    @JsonProperty(value = "virksomhedsstatus")
+    private Set<CompanyStatusRecord> companyStatus;
+
+    public Set<CompanyStatusRecord> getCompanyStatus() {
         return this.companyStatus;
     }
 
+
+    public static final String DB_FIELD_FORM = "companyForm";
+    public static final String IO_FIELD_FORM = "virksomhedsform";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
     @JsonProperty(value = "virksomhedsform")
-    private List<CompanyFormRecord> companyForm;
+    private Set<CompanyFormRecord> companyForm;
 
+
+    public static final String DB_FIELD_YEARLY_NUMBERS = "yearlyNumbers";
+    public static final String IO_FIELD_YEARLY_NUMBERS = "aarsbeskaeftigelse";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
     @JsonProperty(value = "aarsbeskaeftigelse")
-    private List<CompanyYearlyNumbersRecord> yearlyNumbers;
+    private Set<CompanyYearlyNumbersRecord> yearlyNumbers;
 
+
+    public static final String DB_FIELD_QUARTERLY_NUMBERS = "quarterlyNumbers";
+    public static final String IO_FIELD_QUARTERLY_NUMBERS = "kvartalsbeskaeftigelse";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
     @JsonProperty(value = "kvartalsbeskaeftigelse")
-    private List<CompanyQuarterlyNumbersRecord> quarterlyNumbers;
+    private Set<CompanyQuarterlyNumbersRecord> quarterlyNumbers;
 
+
+    public static final String DB_FIELD_MONTHLY_NUMBERS = "monthlyNumbers";
+    public static final String IO_FIELD_MONTHLY_NUMBERS = "maanedsbeskaeftigelse";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
     @JsonProperty(value = "maanedsbeskaeftigelse")
-    private List<CompanyMonthlyNumbersRecord> monthlyNumbers;
+    private Set<CompanyMonthlyNumbersRecord> monthlyNumbers;
 
+
+    public static final String DB_FIELD_ATTRIBUTES = "attributes";
+    public static final String IO_FIELD_ATTRIBUTES = "attributter";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
     @JsonProperty(value = "attributter")
-    private List<AttributeRecord> attributes;
+    private Set<AttributeRecord> attributes;
 
+
+    public static final String DB_FIELD_P_UNITS = "productionUnits";
+    public static final String IO_FIELD_P_UNITS = "penheder";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
     @JsonProperty(value = "penheder")
-    private List<CompanyUnitLinkRecord> productionUnits;
+    private Set<CompanyUnitLinkRecord> productionUnits;
 
+
+    public static final String DB_FIELD_PARTICIPANTS = "participants";
+    public static final String IO_FIELD_PARTICIPANTS = "deltagerRelation";
+
+    @OneToMany(mappedBy = "companyRecord", cascade = CascadeType.ALL)
     @JsonProperty(value = "deltagerRelation")
-    private List<CompanyParticipantRelationRecord> participants;
+    private Set<CompanyParticipantRelationRecord> participants;
 
+
+    public static final String DB_FIELD_META = "metadata";
+    public static final String IO_FIELD_META = "virksomhedMetadata";
+
+    @OneToOne(mappedBy = "companyRecord", cascade = CascadeType.ALL)
     @JsonProperty(value = "virksomhedMetadata")
     private MetadataRecord metadata;
 
@@ -209,10 +362,41 @@ public class CompanyRecord extends CvrEntityRecord {
         return this.metadata;
     }
 
+
+    @Column
+    @JsonProperty(value = "samtId")
+    private long samtId;
+
+    @Column
+    @JsonProperty(value = "fejlRegistreret")
+    private boolean registerError;
+
+    @Column
+    @JsonProperty(value = "dataAdgang")
+    private long dataAccess;
+
+
+    @Column
+    @JsonProperty(value = "fejlVedIndlaesning")
+    private boolean loadingError;
+
+
+                        //"naermesteFremtidigeDato": null,
+                        //"fejlBeskrivelse": null,
+
+
+    @Column
+    @JsonProperty(value = "virkningsAktoer")
+    private String effectAgent;
+
+
+
+
+
     @JsonIgnore
     @Override
-    public List<CvrBaseRecord> getAll() {
-        ArrayList<CvrBaseRecord> list = new ArrayList<>();
+    public List<CvrRecord> getAll() {
+        ArrayList<CvrRecord> list = new ArrayList<>();
         list.add(this);
         if (this.names != null) {
             list.addAll(this.names);

@@ -5,10 +5,15 @@ import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyStatus;
 import org.hibernate.Session;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * Record for Company status data.
  */
-public class CompanyStatusRecord extends CvrBaseRecord {
+@Entity
+@Table(name = "cvr_record_company_status")
+public class CompanyStatusRecord extends CvrBitemporalDataRecord {
 
     @JsonProperty(value = "status")
     private String status;

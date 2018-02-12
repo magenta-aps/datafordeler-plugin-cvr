@@ -3,6 +3,8 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
@@ -10,8 +12,10 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "cvr_record_metadata")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MetadataRecord {
+public class MetadataRecord extends CvrBitemporalDataRecord {
 
     @JsonProperty(value = "sammensatStatus")
     private String aggregateStatus;
@@ -20,9 +24,9 @@ public class MetadataRecord {
         return this.aggregateStatus;
     }
 
-    public List<CvrBaseRecord> extractRecords(CompanyRecord companyRecord, boolean noDuplicates) {
+    public List<CvrRecord> extractRecords(CompanyRecord companyRecord, boolean noDuplicates) {
         /* A subset of data from CVR will store items like 'status' in the metadata object, so we need to retrieve it and reconstruct its assumed bitemporality */
-        List<CvrBaseRecord> records = new ArrayList<>();
+        List<CvrRecord> records = new ArrayList<>();
         if (!noDuplicates || companyRecord.getCompanyStatus().isEmpty()) {
         CompanyStatusRecord statusRecord = this.getCompanyStatusRecord(companyRecord);
             if (statusRecord != null) {
@@ -36,7 +40,7 @@ public class MetadataRecord {
         String status = this.getAggregateStatus();
         LocalDate latestStart = LocalDate.MIN;
         LocalDate latestEnd = LocalDate.MIN;
-        ArrayList<CvrBaseRecord> timeRecords = new ArrayList<>();
+        ArrayList<CvrBitemporalRecord> timeRecords = new ArrayList<>();
         if (companyRecord.getLifecycle() != null) {
             timeRecords.addAll(companyRecord.getLifecycle());
                 }
@@ -48,7 +52,7 @@ public class MetadataRecord {
 
 
         if (!timeRecords.isEmpty()) {
-            for (CvrBaseRecord timeRecord : timeRecords) {
+            for (CvrBitemporalRecord timeRecord : timeRecords) {
                 if (timeRecord.getValidFrom() != null && timeRecord.getValidFrom().isAfter(latestStart)) {
                     latestStart = timeRecord.getValidFrom();
                 }

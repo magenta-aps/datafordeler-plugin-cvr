@@ -17,9 +17,12 @@ import dk.magenta.datafordeler.core.util.ItemInputStream;
 import dk.magenta.datafordeler.core.util.ListHashMap;
 import dk.magenta.datafordeler.core.util.Stopwatch;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
+import dk.magenta.datafordeler.cvr.CvrRegisterManager;
 import dk.magenta.datafordeler.cvr.data.unversioned.*;
 import dk.magenta.datafordeler.cvr.records.CvrBaseRecord;
+import dk.magenta.datafordeler.cvr.records.CvrBitemporalRecord;
 import dk.magenta.datafordeler.cvr.records.CvrEntityRecord;
+import dk.magenta.datafordeler.cvr.records.CvrRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
@@ -351,10 +354,22 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         timer.measure(TASK_FIND_ENTITY);
 
 
+
+
+        toplevelRecord.save(session);
+        for (CvrRecord record : toplevelRecord.getAll()) {
+            record.save(session);
+        }
+
+
+
+
+
+
         this.checkInterrupt(importMetadata);
         HashSet<R> entityRegistrations = new HashSet<>();
         OffsetDateTime lastUpdate = this.getLastUpdated(session);
-        List<CvrBaseRecord> recentlyUpdated = toplevelRecord.getSince(lastUpdate);
+        List<CvrRecord> recentlyUpdated = toplevelRecord.getSince(lastUpdate);
 
         /*for (CvrBaseRecord rec : recentlyUpdated) {
             if (rec.getLastUpdated() == null) {
@@ -362,12 +377,12 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             }
         }*/
 
-        ListHashMap<Bitemporality, CvrBaseRecord> groups = this.sortIntoGroups(recentlyUpdated);
+        ListHashMap<Bitemporality, CvrRecord> groups = this.sortIntoGroups(recentlyUpdated);
 
         for (Bitemporality bitemporality : groups.keySet()) {
 
             timer.start(TASK_FIND_REGISTRATIONS);
-            List<CvrBaseRecord> group = groups.get(bitemporality);
+            List<CvrRecord> group = groups.get(bitemporality);
             List<R> entityRegistrationList = entity.findRegistrations(bitemporality.registrationFrom, bitemporality.registrationTo);
             ArrayList<V> effects = new ArrayList<>();
             for (R registration : entityRegistrationList) {
@@ -408,7 +423,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             timer.measure(TASK_FIND_ITEMS);
 
             OffsetDateTime timestamp = importMetadata.getImportTime();
-            for (CvrBaseRecord record : group) {
+            for (CvrRecord record : group) {
                 timer.start(TASK_POPULATE_DATA+" "+record.getClass().getSimpleName());
                 record.populateBaseData(baseData, session, timestamp);
                 baseData.setUpdated(timestamp);
@@ -443,21 +458,24 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
      * @param records
      * @return
      */
-    public ListHashMap<Bitemporality, CvrBaseRecord> sortIntoGroups(Collection<CvrBaseRecord> records) {
+    public ListHashMap<Bitemporality, CvrRecord> sortIntoGroups(Collection<CvrRecord> records) {
         // Sort the records into groups that share bitemporality
-        ListHashMap<Bitemporality, CvrBaseRecord> recordGroups = new ListHashMap<>();
-        for (CvrBaseRecord record : records) {
-            // Find the appropriate registration object
-            if (IMPORT_ONLY_CURRENT) {
-                if (record.getRegistrationTo() == null && record.getValidTo() == null) {
-                    recordGroups.add(new Bitemporality(roundTime(record.getRegistrationFrom()), roundTime(record.getRegistrationTo()), record.getValidFrom(), record.getValidTo()), record);
+        ListHashMap<Bitemporality, CvrRecord> recordGroups = new ListHashMap<>();
+        for (CvrRecord record : records) {
+            if (record instanceof CvrBitemporalRecord) {
+                CvrBitemporalRecord bitemporalRecord = (CvrBitemporalRecord) record;
+                // Find the appropriate registration object
+                if (IMPORT_ONLY_CURRENT) {
+                    if (bitemporalRecord.getRegistrationTo() == null && bitemporalRecord.getValidTo() == null) {
+                        recordGroups.add(new Bitemporality(roundTime(bitemporalRecord.getRegistrationFrom()), roundTime(bitemporalRecord.getRegistrationTo()), bitemporalRecord.getValidFrom(), bitemporalRecord.getValidTo()), bitemporalRecord);
+                    }
+                } else if (DONT_IMPORT_CURRENT) {
+                    if (bitemporalRecord.getRegistrationTo() != null || bitemporalRecord.getValidTo() != null) {
+                        recordGroups.add(new Bitemporality(roundTime(bitemporalRecord.getRegistrationFrom()), roundTime(bitemporalRecord.getRegistrationTo()), bitemporalRecord.getValidFrom(), bitemporalRecord.getValidTo()), bitemporalRecord);
+                    }
+                } else {
+                    recordGroups.add(new Bitemporality(roundTime(bitemporalRecord.getRegistrationFrom()), roundTime(bitemporalRecord.getRegistrationTo()), bitemporalRecord.getValidFrom(), bitemporalRecord.getValidTo()), bitemporalRecord);
                 }
-            } else if (DONT_IMPORT_CURRENT) {
-                if (record.getRegistrationTo() != null || record.getValidTo() != null) {
-                    recordGroups.add(new Bitemporality(roundTime(record.getRegistrationFrom()), roundTime(record.getRegistrationTo()), record.getValidFrom(), record.getValidTo()), record);
-                }
-            } else {
-                recordGroups.add(new Bitemporality(roundTime(record.getRegistrationFrom()), roundTime(record.getRegistrationTo()), record.getValidFrom(), record.getValidTo()), record);
             }
         }
         return recordGroups;

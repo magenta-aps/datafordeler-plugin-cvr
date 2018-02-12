@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.MappedSuperclass;
 import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,7 +11,8 @@ import java.util.regex.Pattern;
 /**
  * Abstract record for Company and CompanyUnit employee numbers.
  */
-public abstract class CompanyNumbersRecord extends CvrBaseRecord {
+@MappedSuperclass
+public abstract class CompanyNumbersRecord extends CvrBitemporalDataRecord {
 
     private static class Range {
         public int low;
@@ -25,10 +27,10 @@ public abstract class CompanyNumbersRecord extends CvrBaseRecord {
     @JsonProperty(value = "antalAnsatte")
     private int employees;
 
-    @JsonIgnore
+    @JsonProperty(value = "antalAnsatteMin")
     private int employeeLow;
 
-    @JsonIgnore
+    @JsonProperty(value = "antalAnsatteMax")
     private int employeeHigh;
 
     @JsonProperty(value = "intervalKodeAntalAnsatte")
@@ -38,6 +40,14 @@ public abstract class CompanyNumbersRecord extends CvrBaseRecord {
             this.employeeLow = parsed.low;
             this.employeeHigh = parsed.high;
         }
+    }
+
+    @JsonProperty(value = "intervalKodeAntalAnsatte")
+    public String getEmployeeRange() {
+        if (this.employeeLow != 0 && this.employeeHigh != 0) {
+            return "ANTAL_" + this.employeeLow + "_" + this.employeeHigh;
+        }
+        return null;
     }
 
     public int getEmployeeLow() {
@@ -53,10 +63,10 @@ public abstract class CompanyNumbersRecord extends CvrBaseRecord {
     @JsonProperty(value = "antalAarsvaerk")
     private int fulltimeEquivalent;
 
-    @JsonIgnore
+    @JsonProperty(value = "antalAarsvaerkMin")
     private int fulltimeEquivalentLow;
 
-    @JsonIgnore
+    @JsonProperty(value = "antalAarsvaerkMax")
     private int fulltimeEquivalentHigh;
 
     @JsonProperty(value = "intervalKodeAntalAarsvaerk")
@@ -66,6 +76,14 @@ public abstract class CompanyNumbersRecord extends CvrBaseRecord {
             this.fulltimeEquivalentLow = parsed.low;
             this.fulltimeEquivalentHigh = parsed.high;
         }
+    }
+
+    @JsonProperty(value = "intervalKodeAntalAarsvaerk")
+    public String getFulltimeEquivalentRange() {
+        if (this.fulltimeEquivalentLow != 0 && this.fulltimeEquivalentHigh != 0) {
+            return "ANTAL_" + this.fulltimeEquivalentLow + "_" + this.fulltimeEquivalentHigh;
+        }
+        return null;
     }
 
     public int getFulltimeEquivalentLow() {
@@ -81,10 +99,10 @@ public abstract class CompanyNumbersRecord extends CvrBaseRecord {
     @JsonProperty(value = "antalInklusivEjere")
     private int includingOwners;
 
-    @JsonIgnore
+    @JsonProperty(value = "antalInklusivEjereMin")
     private int includingOwnersLow;
 
-    @JsonIgnore
+    @JsonProperty(value = "antalInklusivEjereMax")
     private int includingOwnersHigh;
 
     @JsonProperty(value = "intervalKodeAntalInklusivEjere")
@@ -94,6 +112,14 @@ public abstract class CompanyNumbersRecord extends CvrBaseRecord {
             this.includingOwnersLow = parsed.low;
             this.includingOwnersHigh = parsed.high;
         }
+    }
+
+    @JsonProperty(value = "intervalKodeAntalInklusivEjere")
+    public String getIncludingOwnersRange() {
+        if (this.includingOwnersLow != 0 && this.includingOwnersHigh != 0) {
+            return "ANTAL_" + this.includingOwnersLow + "_" + this.includingOwnersHigh;
+        }
+        return null;
     }
 
     public int getIncludingOwnersLow() {

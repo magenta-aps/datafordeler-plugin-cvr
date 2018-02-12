@@ -5,27 +5,29 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import org.hibernate.Session;
 
+import javax.persistence.*;
 import java.time.OffsetDateTime;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 /**
  * Record for Company and CompanyUnit participant relations.
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class CompanyParticipantRelationRecord extends CvrBaseRecord {
 
+@Entity
+@Table(name = "cvr_record_participant_relation")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
+
+    @OneToOne
     @JsonProperty(value = "deltager")
     private ParticipantRelationRecord participant;
 
+    @OneToMany(mappedBy = OrganizationRecord.DB_FIELD_PARTICIPANT_RELATATION, targetEntity = OrganizationRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = "organisationer")
-    private List<OrganizationRecord> organizations;
+    private Set<OrganizationRecord> organizations;
 
     // Our source omits temporality on this object, so we must gather it elsewhere
     public OffsetDateTime getRegistrationFrom() {
@@ -49,7 +51,15 @@ public class CompanyParticipantRelationRecord extends CvrBaseRecord {
         }
     }
 
-    private Set<Identification> getOrganizationIdentifications(Session session) {
+    public void save(Session session) {
+        super.save(session);
+        this.participant.save(session);
+        /*for (OrganizationRecord organizationRecord : this.organizations) {
+            organizationRecord.save(session);
+        }*/
+    }
+
+    /*private Set<Identification> getOrganizationIdentifications(Session session) {
         HashSet<Identification> organizationIdentifications = new HashSet<>();
         for (OrganizationRecord organizationRecord : this.organizations) {
             UUID organizationUUID = organizationRecord.generateUUID();
@@ -57,8 +67,8 @@ public class CompanyParticipantRelationRecord extends CvrBaseRecord {
             organizationIdentifications.add(organizationIdentification);
         }
         return organizationIdentifications;
-    }
-
+    }*/
+/*
     @Override
     public void populateBaseData(CompanyBaseData baseData, Session session) {
         baseData.addParticipantRelation(
@@ -73,5 +83,5 @@ public class CompanyParticipantRelationRecord extends CvrBaseRecord {
                 this.getParticipantIdentification(session),
                 this.getOrganizationIdentifications(session)
         );
-    }
+    }*/
 }

@@ -5,10 +5,15 @@ import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import org.hibernate.Session;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * Record for Company form.
  */
-public class CompanyFormRecord extends CvrBaseRecord {
+@Entity
+@Table(name = "cvr_record_company_form")
+public class CompanyFormRecord extends CvrBitemporalDataRecord {
 
     @JsonProperty(value = "virksomhedsformkode")
     private String companyFormCode;

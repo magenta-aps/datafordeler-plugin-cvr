@@ -3,17 +3,23 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
 /**
  * Record for one participant on a Company or CompanyUnit
  */
+@Entity
+@Table(name = "cvr_record_participant_relation_participant")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ParticipantRelationRecord extends CvrRecord {
+public class ParticipantRelationRecord extends CvrBitemporalRecord {
+
 
     @JsonProperty(value = "enhedsNummer")
-    public int unitNumber;
+    public long unitNumber;
 
     @JsonProperty(value = "enhedstype")
     public String unitType;

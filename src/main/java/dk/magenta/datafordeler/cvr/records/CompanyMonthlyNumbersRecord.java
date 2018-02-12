@@ -6,9 +6,14 @@ import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import org.hibernate.Session;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * Record for Company and CompanyUnit monthly employee numbers.
  */
+@Entity
+@Table(name = "cvr_record_monthly_numbers")
 public class CompanyMonthlyNumbersRecord extends CompanyNumbersRecord {
 
     @JsonProperty(value = "aar")

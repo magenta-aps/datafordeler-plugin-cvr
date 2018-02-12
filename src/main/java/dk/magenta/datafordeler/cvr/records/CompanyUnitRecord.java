@@ -158,8 +158,8 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     // naermesteFremtidigeDato
     // samtId
     @JsonIgnore
-    public List<CvrBaseRecord> getAll() {
-        ArrayList<CvrBaseRecord> list = new ArrayList<>();
+    public List<CvrRecord> getAll() {
+        ArrayList<CvrRecord> list = new ArrayList<>();
         if (this.names != null) {
             list.addAll(this.names);
         }

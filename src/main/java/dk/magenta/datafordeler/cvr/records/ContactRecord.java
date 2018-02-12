@@ -7,10 +7,15 @@ import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import org.hibernate.Session;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * Record for Company, CompanyUnit and Participant contact information.
  */
-public class ContactRecord extends CvrBaseRecord {
+@Entity
+@Table(name = "cvr_record_contact")
+public class ContactRecord extends CvrBitemporalDataRecord {
 
     public enum Type {
         TELEFONNUMMER,

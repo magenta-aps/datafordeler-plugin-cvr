@@ -7,10 +7,15 @@ import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 import org.hibernate.Session;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * Record for Company and CompanyUnit industry.
  */
-public class CompanyIndustryRecord extends CvrBaseRecord {
+@Entity
+@Table(name = "cvr_record_industry")
+public class CompanyIndustryRecord extends CvrBitemporalDataRecord {
 
     @JsonIgnore
     private int index;

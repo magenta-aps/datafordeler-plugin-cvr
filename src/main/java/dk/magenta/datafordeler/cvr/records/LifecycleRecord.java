@@ -4,6 +4,8 @@ import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import org.hibernate.Session;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -11,7 +13,9 @@ import java.time.ZoneOffset;
 /**
  * Record for Company and CompanyUnit lifecycle data.
  */
-public class LifecycleRecord extends CvrBaseRecord {
+@Entity
+@Table(name = "cvr_record_lifecycle")
+public class LifecycleRecord extends CvrBitemporalDataRecord {
 
     /*@Override
     public String getContainerName() {

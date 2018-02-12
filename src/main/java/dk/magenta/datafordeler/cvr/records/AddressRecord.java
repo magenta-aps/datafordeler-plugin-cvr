@@ -10,10 +10,14 @@ import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 import dk.magenta.datafordeler.cvr.data.unversioned.PostCode;
 import org.hibernate.Session;
 
+import javax.persistence.*;
+
 /**
  * Record for Company, CompanyUnit and Participant address data.
  */
-public class AddressRecord extends CvrBaseRecord {
+@Entity
+@Table(name = "cvr_record_address")
+public class AddressRecord extends CvrBitemporalDataRecord {
 
     public enum Type {
         LOCATION,
@@ -21,6 +25,7 @@ public class AddressRecord extends CvrBaseRecord {
         BUSINESS
     }
 
+    @Transient
     @JsonUnwrapped
     private Address address;
 
@@ -38,6 +43,32 @@ public class AddressRecord extends CvrBaseRecord {
     public void setType(Type type) {
         this.type = type;
     }
+
+
+/*
+    public static final String DB_FIELD_ROADCODE = "roadCode";
+    public static final String IO_FIELD_ROADCODE = "vejkode";
+
+    @JsonProperty(value = IO_FIELD_ROADCODE)
+    @XmlElement(name = IO_FIELD_ROADCODE)
+    @Column(name = DB_FIELD_ROADCODE)
+    private int roadCode;
+
+    public int getRoadCode() {
+        return this.roadCode;
+    }
+
+    public void setRoadCode(int roadCode) {
+        this.roadCode = roadCode;
+    }
+
+    public void setRoadCode(String roadCode) {
+        this.setRoadCode(Integer.parseInt(roadCode));
+    }
+
+*/
+
+
 
     @Override
     public void populateBaseData(CompanyBaseData baseData, Session session) {
