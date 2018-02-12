@@ -576,4 +576,14 @@ public class CompanyRecord extends CvrEntityRecord {
         baseData.setCvrNumber(this.cvrNumber);
     }
 
+    @Override
+    public void save(Session session) {
+        for (AddressRecord address : this.locationAddress) {
+            address.normalizeMunicipality(session);
+        }
+        for (AddressRecord address : this.postalAddress) {
+            address.normalizeMunicipality(session);
+        }
+        super.save(session);
+    }
 }

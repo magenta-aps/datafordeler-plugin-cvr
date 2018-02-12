@@ -392,4 +392,15 @@ public class CompanyUnitRecord extends CvrEntityRecord {
         baseData.setPNumber(this.unitNumber);
     }
 
+    @Override
+    public void save(Session session) {
+        for (AddressRecord address : this.locationAddress) {
+            address.normalizeMunicipality(session);
+        }
+        for (AddressRecord address : this.postalAddress) {
+            address.normalizeMunicipality(session);
+        }
+        super.save(session);
+    }
+
 }

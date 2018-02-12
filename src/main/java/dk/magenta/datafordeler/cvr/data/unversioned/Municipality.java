@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.data.unversioned;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,6 +64,12 @@ public class Municipality extends UnversionedEntity {
     public void setName(String name) {
         this.name = name;
     }
+
+    @JsonProperty
+    public Long getId() {
+        return super.getId();
+    }
+
 
     //----------------------------------------------------
 
