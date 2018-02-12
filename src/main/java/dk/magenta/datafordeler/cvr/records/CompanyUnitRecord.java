@@ -24,11 +24,11 @@ import java.util.UUID;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyUnitRecord extends CvrEntityRecord {
 
-    public static final String DB_FIELD_P_NUMBER = "cvrNumber";
-    public static final String P_NUMBER = "cvrNummer";
+    public static final String DB_FIELD_P_NUMBER = "pNumber";
+    public static final String IO_FIELD_P_NUMBER = "pNummer";
 
     @Column(name = DB_FIELD_P_NUMBER)
-    @JsonProperty(value = "pNummer")
+    @JsonProperty(value = IO_FIELD_P_NUMBER)
     private int pNumber;
 
     public int getpNumber() {
@@ -42,7 +42,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
 
 
     @Column(name = DB_FIELD_ADVERTPROTECTION)
-    @JsonProperty(value = "reklamebeskyttet")
+    @JsonProperty(value = IO_FIELD_ADVERTPROTECTION)
     private boolean advertProtection;
 
 
@@ -51,7 +51,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public static final String IO_FIELD_UNITNUMBER = "enhedsNummer";
 
     @Column(name = DB_FIELD_UNITNUMBER)
-    @JsonProperty(value = "enhedsNummer")
+    @JsonProperty(value = IO_FIELD_UNITNUMBER)
     private int unitNumber;
 
 
@@ -60,7 +60,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public static final String IO_FIELD_NAMES = "navne";
 
     @OneToMany(mappedBy = NameRecord.DB_FIELD_COMPANYUNIT, targetEntity = NameRecord.class, cascade = CascadeType.ALL)
-    @JsonProperty(value = "navne")
+    @JsonProperty(value = IO_FIELD_NAMES)
     private Set<NameRecord> names;
 
     public Set<NameRecord> getNames() {
@@ -80,7 +80,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public static final String IO_FIELD_LOCATION_ADDRESS = "beliggenhedsadresse";
 
     @OneToMany(mappedBy = AddressRecord.DB_FIELD_COMPANYUNIT, targetEntity = AddressRecord.class, cascade = CascadeType.ALL)
-    @JsonProperty(value = "beliggenhedsadresse")
+    @JsonProperty(value = IO_FIELD_LOCATION_ADDRESS)
     private Set<AddressRecord> locationAddress;
 
     public void setLocationAddress(Set<AddressRecord> locationAddress) {
@@ -99,7 +99,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public static final String IO_FIELD_POSTAL_ADDRESS = "postadresse";
 
     @OneToMany(mappedBy = AddressRecord.DB_FIELD_COMPANYUNIT, targetEntity = AddressRecord.class, cascade = CascadeType.ALL)
-    @JsonProperty(value = "postadresse")
+    @JsonProperty(value = IO_FIELD_POSTAL_ADDRESS)
     private Set<AddressRecord> postalAddress;
 
     public void setPostalAddress(Set<AddressRecord> postalAddress) {
@@ -119,7 +119,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
 
     @OneToMany(mappedBy = ContactRecord.DB_FIELD_COMPANYUNIT, targetEntity = ContactRecord.class, cascade = CascadeType.ALL)
     @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_TELEFONNUMMER)
-    @JsonProperty(value = "telefonNummer")
+    @JsonProperty(value = IO_FIELD_PHONE)
     private Set<ContactRecord> phoneNumber;
 
     public void setPhoneNumber(Set<ContactRecord> phoneNumber) {
@@ -136,7 +136,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
 
     @OneToMany(mappedBy = ContactRecord.DB_FIELD_COMPANYUNIT, targetEntity = ContactRecord.class, cascade = CascadeType.ALL)
     @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_TELEFAXNUMMER)
-    @JsonProperty(value = "telefaxNummer")
+    @JsonProperty(value = IO_FIELD_FAX)
     private Set<ContactRecord> faxNumber;
 
     public void setFaxNumber(Set<ContactRecord> faxNumber) {
@@ -153,7 +153,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
 
     @OneToMany(mappedBy = ContactRecord.DB_FIELD_COMPANYUNIT, targetEntity = ContactRecord.class, cascade = CascadeType.ALL)
     @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_EMAILADRESSE)
-    @JsonProperty(value = "elektroniskPost")
+    @JsonProperty(value = IO_FIELD_EMAIL)
     private Set<ContactRecord> emailAddress;
 
     public void setEmailAddress(Set<ContactRecord> emailAddress) {
@@ -163,8 +163,13 @@ public class CompanyUnitRecord extends CvrEntityRecord {
         this.emailAddress = emailAddress;
     }
 
+
+
+    public static final String DB_FIELD_LIFECYCLE = "lifecycle";
+    public static final String IO_FIELD_LIFECYCLE = "livsforloeb";
+
     @OneToMany(mappedBy = LifecycleRecord.DB_FIELD_COMPANYUNIT, targetEntity = LifecycleRecord.class, cascade = CascadeType.ALL)
-    @JsonProperty(value = "livsforloeb")
+    @JsonProperty(value = IO_FIELD_LIFECYCLE)
     private Set<LifecycleRecord> lifecycle;
 
     public Set<LifecycleRecord> getLifecycle() {
@@ -175,7 +180,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public static final String IO_FIELD_PRIMARY_INDUSTRY = "hovedbranche";
 
     @OneToMany(mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, targetEntity = CompanyIndustryRecord.class, cascade = CascadeType.ALL)
-    @JsonProperty(value = "hovedbranche")
+    @JsonProperty(value = IO_FIELD_PRIMARY_INDUSTRY)
     private Set<CompanyIndustryRecord> primaryIndustry;
 
     public void setPrimaryIndustry(Set<CompanyIndustryRecord> primaryIndustry) {
@@ -195,7 +200,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public static final String IO_FIELD_SECONDARY_INDUSTRY1 = "bibranche1";
 
     @OneToMany(mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, targetEntity = CompanyIndustryRecord.class, cascade = CascadeType.ALL)
-    @JsonProperty(value = "bibranche1")
+    @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY1)
     private Set<CompanyIndustryRecord> secondaryIndustry1;
 
     public void setSecondaryIndustry1(Set<CompanyIndustryRecord> secondaryIndustryRecords) {
@@ -210,7 +215,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public static final String IO_FIELD_SECONDARY_INDUSTRY2 = "bibranche2";
 
     @OneToMany(mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, targetEntity = CompanyIndustryRecord.class, cascade = CascadeType.ALL)
-    @JsonProperty(value = "bibranche2")
+    @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY2)
     private Set<CompanyIndustryRecord> secondaryIndustry2;
 
     public void setSecondaryIndustry2(Set<CompanyIndustryRecord> secondaryIndustryRecords) {
@@ -225,7 +230,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public static final String IO_FIELD_SECONDARY_INDUSTRY3 = "bibranche3";
 
     @OneToMany(mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, targetEntity = CompanyIndustryRecord.class, cascade = CascadeType.ALL)
-    @JsonProperty(value = "bibranche3")
+    @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY3)
     private Set<CompanyIndustryRecord> secondaryIndustry3;
 
     public void setSecondaryIndustry3(Set<CompanyIndustryRecord> secondaryIndustryRecords) {
@@ -240,7 +245,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public static final String IO_FIELD_YEARLY_NUMBERS = "aarsbeskaeftigelse";
 
     @OneToMany(mappedBy = CompanyYearlyNumbersRecord.DB_FIELD_COMPANY, targetEntity = CompanyYearlyNumbersRecord.class, cascade = CascadeType.ALL)
-    @JsonProperty(value = "aarsbeskaeftigelse")
+    @JsonProperty(value = IO_FIELD_YEARLY_NUMBERS)
     private Set<CompanyYearlyNumbersRecord> yearlyNumbers;
 
     public void setYearlyNumbers(Set<CompanyYearlyNumbersRecord> yearlyNumbers) {
@@ -253,7 +258,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public static final String IO_FIELD_QUARTERLY_NUMBERS = "kvartalsbeskaeftigelse";
 
     @OneToMany(mappedBy = CompanyQuarterlyNumbersRecord.DB_FIELD_COMPANY, targetEntity = CompanyQuarterlyNumbersRecord.class, cascade = CascadeType.ALL)
-    @JsonProperty(value = "kvartalsbeskaeftigelse")
+    @JsonProperty(value = IO_FIELD_QUARTERLY_NUMBERS)
     private Set<CompanyQuarterlyNumbersRecord> quarterlyNumbers;
 
     public void setQuarterlyNumbers(Set<CompanyQuarterlyNumbersRecord> quarterlyNumbers) {
@@ -275,7 +280,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public static final String IO_FIELD_ATTRIBUTES = "attributter";
 
     @OneToMany(mappedBy = AttributeRecord.DB_FIELD_COMPANYUNIT, targetEntity = AttributeRecord.class, cascade = CascadeType.ALL)
-    @JsonProperty(value = "attributter")
+    @JsonProperty(value = IO_FIELD_ATTRIBUTES)
     private Set<AttributeRecord> attributes;
 
     @OneToMany(mappedBy = CompanyParticipantRelationRecord.DB_FIELD_COMPANYUNIT, targetEntity = CompanyParticipantRelationRecord.class, cascade = CascadeType.ALL)

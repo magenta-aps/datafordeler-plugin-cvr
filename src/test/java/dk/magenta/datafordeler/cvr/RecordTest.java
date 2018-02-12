@@ -56,6 +56,7 @@ public class RecordTest {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
+        JsonNode companyInputNode = null;
         try {
             importMetadata.setSession(session);
             InputStream input = ParseTest.class.getResourceAsStream("/company_in.json");
@@ -65,7 +66,8 @@ public class RecordTest {
             for (JsonNode item : itemList) {
                 String type = item.get("_type").asText();
                 CompanyEntityManager entityManager = (CompanyEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-                entityManager.parseData(item.get("_source").get("Vrvirksomhed"), importMetadata, session);
+                companyInputNode = item.get("_source").get("Vrvirksomhed");
+                entityManager.parseData(companyInputNode, importMetadata, session);
             }
             transaction.commit();
         } finally {
@@ -74,23 +76,27 @@ public class RecordTest {
         }
 
 
-
         session = sessionManager.getSessionFactory().openSession();
         try {
             HashMap<String, Object> filter = new HashMap<>();
             filter.put("cvrNumber", 25052943);
             CompanyRecord companyRecord = QueryManager.getItem(session, CompanyRecord.class, filter);
             System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(companyRecord));
+
+            //compareJson(companyInputNode, objectMapper.valueToTree(companyRecord), companyInputNode);
         } finally {
             session.close();
         }
-
-
-
     }
 
-    /*private void compareJson(JsonNode n1, JsonNode n2, JsonNode parent) throws JsonProcessingException {
-        if (n1.isObject() && n2.isObject()) {
+    private void compareJson(JsonNode n1, JsonNode n2, JsonNode parent) throws JsonProcessingException {
+        if (n1 == null && n2 != null) {
+            System.out.println("Mismatch: "+n1+" != "+n2);
+            //System.out.println("Parent: "+objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(parent));
+        } else if (n1 != null && n2 == null) {
+            System.out.println("Mismatch: "+n1+" != "+n2);
+            //System.out.println("Parent: "+objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(parent));
+        } else if (n1.isObject() && n2.isObject()) {
             ObjectNode o1 = (ObjectNode) n1;
             ObjectNode o2 = (ObjectNode) n2;
             Set<String> f2 = new HashSet<>();
@@ -103,15 +109,17 @@ public class RecordTest {
             while (o1Fields.hasNext()) {
                 String field = o1Fields.next();
                 if (!f2.contains(field)) {
-                    System.out.println("Mismatch: missing field "+field+" in "+);
+                    //System.out.println("Mismatch: missing field "+field+" in "+objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(o2));
+                    System.out.println("Mismatch: missing field "+field);
                 }
+                compareJson(o1.get(field), o2.get(field), o1);
             }
 
         } else if (n1.isArray() && n2.isArray()) {
 
-        } else {
+        } else if (!n1.asText().equals(n2.asText())){
             System.out.println("Mismatch: "+n1.asText()+" != "+n2.asText());
-            System.out.println("Parent: "+objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(parent));
+            //System.out.println("Parent: "+objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(parent));
         }
-    }*/
+    }
 }
