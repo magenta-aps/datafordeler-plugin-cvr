@@ -70,12 +70,13 @@ public class ParticipantRecord extends CvrEntityRecord {
     public static final String IO_FIELD_LOCATION_ADDRESS = "beliggenhedsadresse";
 
     @OneToMany(mappedBy = AddressRecord.DB_FIELD_PARTICIPANT, targetEntity = AddressRecord.class, cascade = CascadeType.ALL)
+    @Where(clause = AddressRecord.DB_FIELD_TYPE+"="+AddressRecord.TYPE_LOCATION)
     @JsonProperty(value = IO_FIELD_LOCATION_ADDRESS)
     public Set<AddressRecord> locationAddress;
 
     public void setLocationAddress(Set<AddressRecord> locationAddress) {
         for (AddressRecord record : locationAddress) {
-            record.setType(AddressRecord.Type.LOCATION);
+            record.setType(AddressRecord.TYPE_LOCATION);
         }
         this.locationAddress = locationAddress;
     }
@@ -86,12 +87,13 @@ public class ParticipantRecord extends CvrEntityRecord {
     public static final String IO_FIELD_POSTAL_ADDRESS = "postadresse";
 
     @OneToMany(mappedBy = AddressRecord.DB_FIELD_PARTICIPANT, targetEntity = AddressRecord.class, cascade = CascadeType.ALL)
+    @Where(clause = AddressRecord.DB_FIELD_TYPE+"="+AddressRecord.TYPE_POSTAL)
     @JsonProperty(value = IO_FIELD_POSTAL_ADDRESS)
     public Set<AddressRecord> postalAddress;
 
     public void setPostalAddress(Set<AddressRecord> postalAddress) {
         for (AddressRecord record : postalAddress) {
-            record.setType(AddressRecord.Type.POSTAL);
+            record.setType(AddressRecord.TYPE_POSTAL);
         }
         this.postalAddress = postalAddress;
     }
@@ -102,12 +104,13 @@ public class ParticipantRecord extends CvrEntityRecord {
     public static final String IO_FIELD_BUSINESS_ADDRESS = "forretningsadresse";
 
     @OneToMany(mappedBy = AddressRecord.DB_FIELD_PARTICIPANT, targetEntity = AddressRecord.class, cascade = CascadeType.ALL)
+    @Where(clause = AddressRecord.DB_FIELD_TYPE+"="+AddressRecord.TYPE_BUSINESS)
     @JsonProperty(value = IO_FIELD_BUSINESS_ADDRESS)
     public Set<AddressRecord> businessAddress;
 
     public void setBusinessAddress(Set<AddressRecord> businessAddress) {
         for (AddressRecord record : businessAddress) {
-            record.setType(AddressRecord.Type.BUSINESS);
+            record.setType(AddressRecord.TYPE_BUSINESS);
             record.setParticipantRecord(this);
         }
         this.businessAddress = businessAddress;

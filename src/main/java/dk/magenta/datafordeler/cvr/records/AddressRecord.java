@@ -19,11 +19,9 @@ import javax.persistence.*;
 @Table(name = "cvr_record_address")
 public class AddressRecord extends CvrBitemporalDataRecord {
 
-    public enum Type {
-        LOCATION,
-        POSTAL,
-        BUSINESS
-    }
+    public static final int TYPE_LOCATION = 0;
+    public static final int TYPE_POSTAL = 1;
+    public static final int TYPE_BUSINESS = 2;
 
     @Transient
     @JsonUnwrapped
@@ -33,14 +31,19 @@ public class AddressRecord extends CvrBitemporalDataRecord {
         return this.address;
     }
 
-    @JsonIgnore
-    private Type type;
 
-    public Type getType() {
+
+    public static final String DB_FIELD_TYPE = "type";
+
+    @Column(name = DB_FIELD_TYPE)
+    @JsonIgnore
+    private int type;
+
+    public int getType() {
         return this.type;
     }
 
-    public void setType(Type type) {
+    public void setType(int type) {
         this.type = type;
     }
 
@@ -75,10 +78,10 @@ public class AddressRecord extends CvrBitemporalDataRecord {
         this.normalizeAddress(session);
         //session.saveOrUpdate(this.address);
         switch (this.type) {
-            case LOCATION:
+            case TYPE_LOCATION:
                 baseData.setLocationAddress(this.address);
                 break;
-            case POSTAL:
+            case TYPE_POSTAL:
                 baseData.setPostalAddress(this.address);
                 break;
         }
@@ -89,10 +92,10 @@ public class AddressRecord extends CvrBitemporalDataRecord {
         this.normalizeAddress(session);
         //session.saveOrUpdate(this.address);
         switch (this.type) {
-            case LOCATION:
+            case TYPE_LOCATION:
                 baseData.setLocationAddress(this.address);
                 break;
-            case POSTAL:
+            case TYPE_POSTAL:
                 baseData.setPostalAddress(this.address);
                 break;
         }
@@ -103,13 +106,13 @@ public class AddressRecord extends CvrBitemporalDataRecord {
         this.normalizeAddress(session);
         //session.saveOrUpdate(this.address);
         switch (this.type) {
-            case LOCATION:
+            case TYPE_LOCATION:
                 baseData.setLocationAddress(this.address);
                 break;
-            case POSTAL:
+            case TYPE_POSTAL:
                 baseData.setPostalAddress(this.address);
                 break;
-            case BUSINESS:
+            case TYPE_BUSINESS:
                 baseData.setBusinessAddress(this.address);
                 break;
         }
