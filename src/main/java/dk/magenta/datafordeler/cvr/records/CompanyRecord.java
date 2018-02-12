@@ -580,9 +580,11 @@ public class CompanyRecord extends CvrEntityRecord {
     public void save(Session session) {
         for (AddressRecord address : this.locationAddress) {
             address.normalizeMunicipality(session);
+            address.normalizePostcode(session);
         }
         for (AddressRecord address : this.postalAddress) {
             address.normalizeMunicipality(session);
+            address.normalizePostcode(session);
         }
         super.save(session);
     }

@@ -40,7 +40,7 @@ public class AddressRecord extends CvrBitemporalDataRecord {
         address.setMunicipality(this.municipality);
         address.setHouseNumberFrom(this.houseNumberFrom);
         address.setHouseNumberTo(this.houseNumberTo);
-        //address.setPost(this.post);
+        address.setPost(this.post);
         address.setAddressText(this.addressText);
         address.setCoName(this.coName);
         address.setCountryCode(this.countryCode);
@@ -298,7 +298,7 @@ public class AddressRecord extends CvrBitemporalDataRecord {
     }
 
     //----------------------------------------------------
-/*
+
     public static final String DB_FIELD_POSTCODE_REF = "post";
     public static final String IO_FIELD_POSTCODE_REF = "post";
 
@@ -316,20 +316,22 @@ public class AddressRecord extends CvrBitemporalDataRecord {
     public void setPost(PostCode postCode) {
         this.post = postCode;
     }
-*/
+
     //----------------------------------------------------
 
     public static final String DB_FIELD_POSTCODE = "postnummer";
     public static final String IO_FIELD_POSTCODE = "postnummer";
 
-    @JsonProperty(value = IO_FIELD_POSTCODE)
-    @XmlElement(name = IO_FIELD_POSTCODE)
+    @Transient
     private int postnummer;
 
+    @JsonIgnore
     public int getPostnummer() {
         return this.postnummer;
     }
 
+    @JsonProperty(value = IO_FIELD_POSTCODE)
+    @XmlElement(name = IO_FIELD_POSTCODE)
     public void setPostnummer(int code) {
         this.postnummer = code;
     }
@@ -339,14 +341,16 @@ public class AddressRecord extends CvrBitemporalDataRecord {
     public static final String DB_FIELD_POSTDISTRICT = "postdistrikt";
     public static final String IO_FIELD_POSTDISTRICT = "postdistrikt";
 
-    @JsonProperty(value = IO_FIELD_POSTDISTRICT)
-    @XmlElement(name = IO_FIELD_POSTDISTRICT)
+    @Transient
     private String postdistrikt;
 
+    @JsonIgnore
     public String getPostdistrikt() {
         return this.postdistrikt;
     }
 
+    @JsonProperty(value = IO_FIELD_POSTDISTRICT)
+    @XmlElement(name = IO_FIELD_POSTDISTRICT)
     public void setPostdistrikt(String district) {
         this.postdistrikt = district;
     }
@@ -527,6 +531,12 @@ public class AddressRecord extends CvrBitemporalDataRecord {
     public void normalizeMunicipality(Session session) {
         if (this.municipality != null) {
             this.municipality = Municipality.getMunicipality(this.municipality.getCode(), this.municipality.getName(), session);
+        }
+    }
+
+    public void normalizePostcode(Session session) {
+        if (this.postnummer != 0) {
+            this.post = PostCode.getPostcode(this.postnummer, this.postdistrikt, session);
         }
     }
 }
