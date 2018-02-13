@@ -5,7 +5,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CvrEntityRecord extends CvrBaseRecord {
+public abstract class CvrEntityRecord extends CvrBitemporalRecord {
     public abstract List<CvrRecord> getAll();
 
     public List<CvrRecord> getSince(OffsetDateTime time) {

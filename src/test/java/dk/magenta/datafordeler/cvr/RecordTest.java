@@ -81,20 +81,29 @@ public class RecordTest {
             HashMap<String, Object> filter = new HashMap<>();
             filter.put("cvrNumber", 25052943);
             CompanyRecord companyRecord = QueryManager.getItem(session, CompanyRecord.class, filter);
-            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(companyRecord));
+            //System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(companyRecord));
 
-            //compareJson(companyInputNode, objectMapper.valueToTree(companyRecord), companyInputNode);
+            ArrayList<String> path = new ArrayList<>();
+            path.add("root");
+            compareJson(companyInputNode, objectMapper.valueToTree(companyRecord), path);
         } finally {
             session.close();
         }
     }
 
-    private void compareJson(JsonNode n1, JsonNode n2, JsonNode parent) throws JsonProcessingException {
+    /**
+     * Checks that all items in n1 are also present in n2
+     * @param n1
+     * @param n2
+     * @param path
+     * @throws JsonProcessingException
+     */
+    private void compareJson(JsonNode n1, JsonNode n2, ArrayList<String> path) throws JsonProcessingException {
         if (n1 == null && n2 != null) {
-            System.out.println("Mismatch: "+n1+" != "+n2);
+            System.out.println("Mismatch: "+n1+" != "+n2+" at "+path);
             //System.out.println("Parent: "+objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(parent));
         } else if (n1 != null && n2 == null) {
-            System.out.println("Mismatch: "+n1+" != "+n2);
+            System.out.println("Mismatch: "+n1+" != "+n2+" at "+path);
             //System.out.println("Parent: "+objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(parent));
         } else if (n1.isObject() && n2.isObject()) {
             ObjectNode o1 = (ObjectNode) n1;
@@ -110,15 +119,18 @@ public class RecordTest {
                 String field = o1Fields.next();
                 if (!f2.contains(field)) {
                     //System.out.println("Mismatch: missing field "+field+" in "+objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(o2));
-                    System.out.println("Mismatch: missing field "+field);
+                    System.out.println("Mismatch: missing field "+field+" at "+path);
+                } else {
+                    ArrayList<String> subpath = new ArrayList<>(path);
+                    subpath.add(field);
+                    compareJson(o1.get(field), o2.get(field), subpath);
                 }
-                compareJson(o1.get(field), o2.get(field), o1);
             }
 
         } else if (n1.isArray() && n2.isArray()) {
 
         } else if (!n1.asText().equals(n2.asText())){
-            System.out.println("Mismatch: "+n1.asText()+" != "+n2.asText());
+            System.out.println("Mismatch: "+n1.asText()+" != "+n2.asText()+" at "+path);
             //System.out.println("Parent: "+objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(parent));
         }
     }

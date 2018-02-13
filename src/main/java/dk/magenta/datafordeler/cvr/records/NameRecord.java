@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
@@ -33,6 +34,20 @@ public class NameRecord extends CvrBitemporalDataRecord {
     public String getName() {
         return this.name;
     }
+
+
+
+
+    public static final String DB_FIELD_SECONDARY = "secondary";
+
+    @Column(name = DB_FIELD_SECONDARY)
+    @JsonIgnore
+    private boolean secondary;
+
+    public void setSecondary(boolean secondary) {
+        this.secondary = secondary;
+    }
+
 
 
     @Override

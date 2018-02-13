@@ -10,6 +10,7 @@ import org.hibernate.Session;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -37,10 +38,21 @@ public class CompanyRecord extends CvrEntityRecord {
 
 
 
+    public static final String DB_FIELD_REG_NUMBER = "regNumber";
+    public static final String IO_FIELD_REG_NUMBER = "regNummer";
+
+    @OneToMany(mappedBy = CompanyRegNumberRecord.DB_FIELD_COMPANY, targetEntity = CompanyRegNumberRecord.class, cascade = CascadeType.ALL)
+    @JsonProperty(value = IO_FIELD_REG_NUMBER)
+    private Set<CompanyRegNumberRecord> regNumber;
+
+    public Set<CompanyRegNumberRecord> getRegNumber() {
+        return this.regNumber;
+    }
+
+
 
     public static final String DB_FIELD_ADVERTPROTECTION = "advertProtection";
     public static final String IO_FIELD_ADVERTPROTECTION = "reklamebeskyttet";
-
 
     @Column(name = DB_FIELD_ADVERTPROTECTION)
     @JsonProperty(value = IO_FIELD_ADVERTPROTECTION)
@@ -66,10 +78,20 @@ public class CompanyRecord extends CvrEntityRecord {
 
 
 
+    public static final String DB_FIELD_INDUSTRY_RESPONSIBILITY_CODE = "industryResponsibilityCode";
+    public static final String IO_FIELD_INDUSTRY_RESPONSIBILITY_CODE = "brancheAnsvarskode";
+
+    @Column(name = DB_FIELD_INDUSTRY_RESPONSIBILITY_CODE)
+    @JsonProperty(value = IO_FIELD_INDUSTRY_RESPONSIBILITY_CODE)
+    private int industryResponsibilityCode;
+
+
+
     public static final String DB_FIELD_NAMES = "names";
     public static final String IO_FIELD_NAMES = "navne";
 
     @OneToMany(mappedBy = NameRecord.DB_FIELD_COMPANY, targetEntity = NameRecord.class, cascade = CascadeType.ALL)
+    @Where(clause = NameRecord.DB_FIELD_SECONDARY+"=false")
     @JsonProperty(value = IO_FIELD_NAMES)
     private Set<NameRecord> names;
 
@@ -80,6 +102,29 @@ public class CompanyRecord extends CvrEntityRecord {
     public void setNames(Set<NameRecord> names) {
         this.names = names;
         for (NameRecord record : names) {
+            record.setSecondary(false);
+            record.setCompanyRecord(this);
+        }
+    }
+
+
+
+    public static final String DB_FIELD_SECONDARY_NAMES = "secondaryNames";
+    public static final String IO_FIELD_SECONDARY_NAMES = "binavne";
+
+    @OneToMany(mappedBy = NameRecord.DB_FIELD_COMPANY, targetEntity = NameRecord.class, cascade = CascadeType.ALL)
+    @Where(clause = NameRecord.DB_FIELD_SECONDARY+"=true")
+    @JsonProperty(value = IO_FIELD_SECONDARY_NAMES)
+    private Set<NameRecord> secondaryNames;
+
+    public Set<NameRecord> getSecondaryNames() {
+        return this.secondaryNames;
+    }
+
+    public void setSecondaryNames(Set<NameRecord> names) {
+        this.names = names;
+        for (NameRecord record : names) {
+            record.setSecondary(true);
             record.setCompanyRecord(this);
         }
     }
@@ -460,30 +505,66 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
 
-    @Column
-    @JsonProperty(value = "samtId")
+
+    public static final String DB_FIELD_SAMT_ID = "samtId";
+    public static final String IO_FIELD_SAMT_ID = "samtId";
+
+    @Column(name = DB_FIELD_SAMT_ID)
+    @JsonProperty(value = IO_FIELD_SAMT_ID)
     private long samtId;
 
-    @Column
-    @JsonProperty(value = "fejlRegistreret")
+
+
+    public static final String DB_FIELD_REGISTER_ERROR = "registerError";
+    public static final String IO_FIELD_REGISTER_ERROR = "fejlRegistreret";
+
+    @Column(name = DB_FIELD_REGISTER_ERROR)
+    @JsonProperty(value = IO_FIELD_REGISTER_ERROR)
     private boolean registerError;
 
-    @Column
-    @JsonProperty(value = "dataAdgang")
+
+
+    public static final String DB_FIELD_DATA_ACCESS = "dataAccess";
+    public static final String IO_FIELD_DATA_ACCESS = "dataAdgang";
+
+    @Column(name = DB_FIELD_DATA_ACCESS)
+    @JsonProperty(value = IO_FIELD_DATA_ACCESS)
     private long dataAccess;
 
 
-    @Column
-    @JsonProperty(value = "fejlVedIndlaesning")
+
+    public static final String DB_FIELD_LOADING_ERROR = "loadingError";
+    public static final String IO_FIELD_LOADING_ERROR = "fejlVedIndlaesning";
+
+    @Column(name = DB_FIELD_LOADING_ERROR)
+    @JsonProperty(value = IO_FIELD_LOADING_ERROR)
     private boolean loadingError;
 
 
-                        //"naermesteFremtidigeDato": null,
-                        //"fejlBeskrivelse": null,
+
+    public static final String DB_FIELD_NEAREST_FUTURE_DATE = "nearestFutureDate";
+    public static final String IO_FIELD_NEAREST_FUTURE_DATE = "naermesteFremtidigeDato";
+
+    @Column(name = DB_FIELD_NEAREST_FUTURE_DATE)
+    @JsonProperty(value = IO_FIELD_NEAREST_FUTURE_DATE)
+    private LocalDate nearestFutureDate;
 
 
-    @Column
-    @JsonProperty(value = "virkningsAktoer")
+
+    public static final String DB_FIELD_ERRORDESCRIPTION = "errorDescription";
+    public static final String IO_FIELD_ERRORDESCRIPTION = "fejlBeskrivelse";
+
+    @Column(name = DB_FIELD_ERRORDESCRIPTION)
+    @JsonProperty(value = IO_FIELD_ERRORDESCRIPTION)
+    private String errorDescription;
+
+
+
+    public static final String DB_FIELD_EFFECT_AGENT = "effectAgent";
+    public static final String IO_FIELD_EFFECT_AGENT = "virkningsAktoer";
+
+    @Column(name = DB_FIELD_EFFECT_AGENT)
+    @JsonProperty(value = IO_FIELD_EFFECT_AGENT)
     private String effectAgent;
 
 
@@ -495,6 +576,9 @@ public class CompanyRecord extends CvrEntityRecord {
     public List<CvrRecord> getAll() {
         ArrayList<CvrRecord> list = new ArrayList<>();
         list.add(this);
+        if (this.regNumber != null) {
+            list.addAll(this.regNumber);
+        }
         if (this.names != null) {
             list.addAll(this.names);
         }
