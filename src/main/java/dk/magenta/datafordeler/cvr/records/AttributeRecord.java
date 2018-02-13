@@ -54,21 +54,21 @@ public class AttributeRecord extends CvrBaseRecord {
     @Override
     public void populateBaseData(CompanyBaseData baseData, Session session, Bitemporality bitemporality) {
         for (AttributeValueRecord record : values) {
-            record.populateBaseData(baseData, session, );
+            record.populateBaseData(baseData, session, bitemporality);
         }
     }
 
     @Override
     public void populateBaseData(CompanyUnitBaseData baseData, Session session, Bitemporality bitemporality) {
         for (AttributeValueRecord record : values) {
-            record.populateBaseData(baseData, session, );
+            record.populateBaseData(baseData, session, bitemporality);
         }
     }
 
     @Override
     public void populateBaseData(ParticipantBaseData baseData, Session session, Bitemporality bitemporality) {
         for (AttributeValueRecord record : values) {
-            record.populateBaseData(baseData, session, );
+            record.populateBaseData(baseData, session, bitemporality);
         }
     }
 }
