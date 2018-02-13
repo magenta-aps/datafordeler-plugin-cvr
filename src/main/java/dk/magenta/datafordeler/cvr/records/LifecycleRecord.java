@@ -1,10 +1,12 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import org.hibernate.Session;
 
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
@@ -14,7 +16,11 @@ import java.time.ZoneOffset;
  * Record for Company and CompanyUnit lifecycle data.
  */
 @Entity
-@Table(name = "cvr_record_lifecycle")
+@Table(name = "cvr_record_lifecycle", indexes = {
+        @Index(name = "cvr_record_lifecycle_company", columnList = LifecycleRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = "cvr_record_lifecycle_companyunit", columnList = LifecycleRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = "cvr_record_lifecycle_participant", columnList = LifecycleRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+})
 public class LifecycleRecord extends CvrBitemporalDataRecord {
 
     /*@Override

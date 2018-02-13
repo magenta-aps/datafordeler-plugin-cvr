@@ -7,32 +7,53 @@ import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 import org.hibernate.Session;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 /**
  * Record for Company and CompanyUnit industry.
  */
 @Entity
-@Table(name = "cvr_record_industry")
+@Table(name = "cvr_record_industry", indexes = {
+        @Index(name="cvr_record_industry_code", columnList = CompanyIndustryRecord.DB_FIELD_CODE)
+})
 public class CompanyIndustryRecord extends CvrBitemporalDataRecord {
 
+    public static final String DB_FIELD_INDEX = "index";
+
+    @Column(name = DB_FIELD_INDEX)
     @JsonIgnore
     private int index;
 
-    @JsonProperty(value = "branchekode")
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+
+
+    public static final String DB_FIELD_CODE = "industryCode";
+    public static final String IO_FIELD_CODE = "branchekode";
+
+    @Column(name = DB_FIELD_CODE)
+    @JsonProperty(value = IO_FIELD_CODE)
     private String industryCode;
 
-    @JsonProperty(value = "branchetekst")
+
+
+    public static final String DB_FIELD_TEXT = "industryText";
+    public static final String IO_FIELD_TEXT = "branchetekst";
+
+    @Column(name = DB_FIELD_TEXT)
+    @JsonProperty(value = IO_FIELD_TEXT)
     private String industryText;
 
     public String getIndustryText() {
         return this.industryText;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
-    }
+
 
     @Override
     public void populateBaseData(CompanyBaseData baseData, Session session) {

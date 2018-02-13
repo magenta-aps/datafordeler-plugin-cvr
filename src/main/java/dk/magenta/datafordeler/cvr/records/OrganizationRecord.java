@@ -19,7 +19,7 @@ import java.util.UUID;
 public class OrganizationRecord extends DatabaseEntry {
 
 
-    public static final String DB_FIELD_PARTICIPANT_RELATATION = "companyParticipantRelationRecord";
+    public static final String DB_FIELD_PARTICIPANT_RELATION = "companyParticipantRelationRecord";
 
 
     @ManyToOne(targetEntity = CompanyParticipantRelationRecord.class)

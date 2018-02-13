@@ -2,8 +2,10 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -13,7 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "cvr_record_metadata")
+@Table(name = "cvr_record_metadata", indexes = {
+        @Index(name = "cvr_record_metadata_company", columnList = MetadataRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MetadataRecord extends CvrBitemporalDataRecord {
 

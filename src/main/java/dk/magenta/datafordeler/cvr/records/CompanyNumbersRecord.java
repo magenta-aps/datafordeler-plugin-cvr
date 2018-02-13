@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDate;
 import java.util.regex.Matcher;
@@ -24,13 +25,25 @@ public abstract class CompanyNumbersRecord extends CvrBitemporalDataRecord {
         }
     }
 
-    @JsonProperty(value = "antalAnsatte")
+    public static final String DB_FIELD_EMPLOYEES_BASE = "employees";
+    public static final String IO_FIELD_EMPLOYEES_BASE = "antalAnsatte";
+
+    @Column(name = DB_FIELD_EMPLOYEES_BASE)
+    @JsonProperty(value = IO_FIELD_EMPLOYEES_BASE)
     private int employees;
 
-    @JsonProperty(value = "antalAnsatteMin")
+    public static final String DB_FIELD_EMPLOYEES_LOW = "employeeLow";
+    public static final String IO_FIELD_EMPLOYEES_LOW = "antalAnsatteMin";
+
+    @Column(name = DB_FIELD_EMPLOYEES_LOW)
+    @JsonProperty(value = IO_FIELD_EMPLOYEES_LOW)
     private int employeeLow;
 
-    @JsonProperty(value = "antalAnsatteMax")
+    public static final String DB_FIELD_EMPLOYEES_HIGH = "employeeHigh";
+    public static final String IO_FIELD_EMPLOYEES_HIGH = "antalAnsatteMax";
+
+    @Column(name = DB_FIELD_EMPLOYEES_HIGH)
+    @JsonProperty(value = IO_FIELD_EMPLOYEES_HIGH)
     private int employeeHigh;
 
     @JsonProperty(value = "intervalKodeAntalAnsatte")

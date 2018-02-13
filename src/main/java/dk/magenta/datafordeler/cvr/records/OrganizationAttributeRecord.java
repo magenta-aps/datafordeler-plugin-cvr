@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
@@ -18,7 +19,9 @@ import java.util.Set;
  * kept in {@link AttributeValueRecord}
  */
 @Entity
-@Table(name = "cvr_record_organization_attribute")
+@Table(name = "cvr_record_organization_attribute", indexes = {
+        @Index(name = "cvr_record_organization_attribute_organization", columnList = OrganizationAttributeRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF)
+})
 public class OrganizationAttributeRecord extends CvrNontemporalRecord {
 
 
@@ -70,6 +73,7 @@ public class OrganizationAttributeRecord extends CvrNontemporalRecord {
     public static final String IO_FIELD_ORGANIZATION = "organisation";
 
     @JsonIgnore
+    @JoinColumn(name = DB_FIELD_ORGANIZATION + DatabaseEntry.REF)
     @ManyToOne(targetEntity = OrganizationRecord.class)
     private OrganizationRecord organizationRecord;
 

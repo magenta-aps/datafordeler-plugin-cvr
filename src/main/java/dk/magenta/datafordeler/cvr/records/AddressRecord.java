@@ -24,7 +24,11 @@ import java.util.UUID;
  * Record for Company, CompanyUnit and Participant address data.
  */
 @Entity
-@Table(name = "cvr_record_address")
+@Table(name = "cvr_record_address", indexes = {
+        @Index(name = "cvr_record_address_company", columnList = AddressRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = "cvr_record_address_companyunit", columnList = AddressRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = "cvr_record_address_participant", columnList = AddressRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+})
 public class AddressRecord extends CvrBitemporalDataRecord {
 
     public static final int TYPE_LOCATION = 0;

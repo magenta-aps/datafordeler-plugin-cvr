@@ -81,13 +81,13 @@ public class ParticipantEntityManager extends CvrEntityManager<ParticipantEntity
 
     @Override
     protected UUID generateUUID(ParticipantRecord record) {
-        return ParticipantEntity.generateUUID(record.unitType, record.unitNumber);
+        return ParticipantEntity.generateUUID(record.getUnitType(), record.getUnitNumber());
     }
 
     @Override
     protected ParticipantEntity createBasicEntity(ParticipantRecord record) {
         ParticipantEntity participant = new ParticipantEntity();
-        participant.setParticipantNumber(record.unitNumber);
+        participant.setParticipantNumber(record.getUnitNumber());
         return participant;
     }
 

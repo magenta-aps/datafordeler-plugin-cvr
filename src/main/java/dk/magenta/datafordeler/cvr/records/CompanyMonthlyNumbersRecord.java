@@ -1,25 +1,41 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import org.hibernate.Session;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 /**
  * Record for Company and CompanyUnit monthly employee numbers.
  */
 @Entity
-@Table(name = "cvr_record_monthly_numbers")
+@Table(name = "cvr_record_monthly_numbers", indexes = {
+        @Index(name = "cvr_record_monthlynumbers_company", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = "cvr_record_monthlynumbers_companyunit", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = "cvr_record_monthlynumbers_year", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_YEAR),
+        @Index(name = "cvr_record_monthlynumbers_month", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_MONTH),
+})
 public class CompanyMonthlyNumbersRecord extends CompanyNumbersRecord {
 
-    @JsonProperty(value = "aar")
+    public static final String DB_FIELD_YEAR = "year";
+    public static final String IO_FIELD_YEAR = "aar";
+
+    @Column(name = DB_FIELD_YEAR)
+    @JsonProperty(value = IO_FIELD_YEAR)
     private int year;
 
-    @JsonProperty(value = "maaned")
+    public static final String DB_FIELD_MONTH = "month";
+    public static final String IO_FIELD_MONTH = "maaned";
+
+    @Column(name = DB_FIELD_MONTH)
+    @JsonProperty(value = IO_FIELD_MONTH)
     private int month;
 
     @Override

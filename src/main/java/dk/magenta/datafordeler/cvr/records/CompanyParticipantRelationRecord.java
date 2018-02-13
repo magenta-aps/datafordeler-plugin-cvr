@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
@@ -17,7 +18,10 @@ import java.util.UUID;
  */
 
 @Entity
-@Table(name = "cvr_record_participant_relation")
+@Table(name = "cvr_record_participant_relation", indexes = {
+        @Index(name = "cvr_record_participant_relation_company", columnList = CompanyParticipantRelationRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = "cvr_record_participant_relation_companyunit", columnList = CompanyParticipantRelationRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
 
@@ -31,7 +35,7 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
 
 
 
-    @OneToMany(mappedBy = OrganizationRecord.DB_FIELD_PARTICIPANT_RELATATION, targetEntity = OrganizationRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = OrganizationRecord.DB_FIELD_PARTICIPANT_RELATION, targetEntity = OrganizationRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = "organisationer")
     private Set<OrganizationRecord> organizations;
 

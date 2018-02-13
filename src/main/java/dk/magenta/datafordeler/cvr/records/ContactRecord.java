@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
@@ -9,13 +10,18 @@ import org.hibernate.Session;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 /**
  * Record for Company, CompanyUnit and Participant contact information.
  */
 @Entity
-@Table(name = "cvr_record_contact")
+@Table(name = "cvr_record_contact", indexes = {
+        @Index(name = "cvr_record_contact_company", columnList = ContactRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = "cvr_record_contact_companyunit", columnList = ContactRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = "cvr_record_contact_participant", columnList = ContactRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+})
 public class ContactRecord extends CvrBitemporalDataRecord {
 
     public static final int TYPE_TELEFONNUMMER = 0;

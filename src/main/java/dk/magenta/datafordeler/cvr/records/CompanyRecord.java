@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
 import org.hibernate.Session;
@@ -445,6 +446,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String IO_FIELD_META = "virksomhedMetadata";
 
     @OneToOne(mappedBy = MetadataRecord.DB_FIELD_COMPANY, targetEntity = MetadataRecord.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_META + DatabaseEntry.REF)
     @JsonProperty(value = IO_FIELD_META)
     private MetadataRecord metadata;
 

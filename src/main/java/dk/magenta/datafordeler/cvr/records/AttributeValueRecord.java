@@ -2,21 +2,21 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import org.hibernate.Session;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Record for Company, CompanyUnit or Participant attribute values.
  */
 @Entity
-@Table(name = "cvr_record_attribute_value")
+@Table(name = "cvr_record_attribute_value", indexes = {
+        @Index(name = "cvr_record_attribute_value_attribute", columnList = AttributeValueRecord.DB_FIELD_ATTRIBUTE + DatabaseEntry.REF)
+})
 public class AttributeValueRecord extends CvrBitemporalRecord {
 
     @Column
@@ -28,6 +28,7 @@ public class AttributeValueRecord extends CvrBitemporalRecord {
     public static final String IO_FIELD_ATTRIBUTE = "attribut";
 
     @ManyToOne(targetEntity = AttributeRecord.class)
+    @JoinColumn(name = DB_FIELD_ATTRIBUTE + DatabaseEntry.REF)
     @JsonIgnore
     private AttributeRecord attribute;
 
