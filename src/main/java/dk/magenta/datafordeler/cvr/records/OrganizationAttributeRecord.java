@@ -97,4 +97,29 @@ public class OrganizationAttributeRecord extends CvrNontemporalRecord {
     public void setOrganizationMemberdataRecord(OrganizationMemberdataRecord organizationMemberdataRecord) {
         this.organizationMemberdataRecord = organizationMemberdataRecord;
     }
+
+
+
+    public static final String DB_FIELD_FUSION = "fusionRecord";
+    public static final String IO_FIELD_FUSION = "fusion";
+
+    @JsonIgnore
+    @ManyToOne(targetEntity = OrganizationMemberdataRecord.class)
+    private FusionRecord fusionRecord;
+
+    public void setFusionRecord(FusionRecord fusionRecord) {
+        this.fusionRecord = fusionRecord;
+    }
+
+
+
+    public static final String FUSION_OUTGOING = "fusionOutgoing";
+
+    @JsonIgnore
+    @Column(name = FUSION_OUTGOING)
+    private boolean fusionOutgoing;
+
+    public void setFusionOutgoing(boolean fusionOutgoing) {
+        this.fusionOutgoing = fusionOutgoing;
+    }
 }

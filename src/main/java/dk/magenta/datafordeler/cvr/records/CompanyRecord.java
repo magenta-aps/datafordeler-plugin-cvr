@@ -508,6 +508,26 @@ public class CompanyRecord extends CvrEntityRecord {
 
 
 
+    public static final String DB_FIELD_FUSIONS = "fusions";
+    public static final String IO_FIELD_FUSIONS = "fusioner";
+
+    @OneToMany(mappedBy = FusionRecord.DB_FIELD_COMPANY, targetEntity = FusionRecord.class, cascade = CascadeType.ALL)
+    @JsonProperty(value = IO_FIELD_FUSIONS)
+    private Set<FusionRecord> fusions;
+
+    public Set<FusionRecord> getFusions() {
+        return this.fusions;
+    }
+
+    public void setFusions(Set<FusionRecord> fusions) {
+        this.fusions = fusions;
+        for (FusionRecord fusionRecord : fusions) {
+            fusionRecord.setCompanyRecord(this);
+        }
+    }
+
+
+
     public static final String DB_FIELD_META = "metadata";
     public static final String IO_FIELD_META = "virksomhedMetadata";
 

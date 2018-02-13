@@ -2,21 +2,22 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import org.hibernate.Session;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Record for Company, CompanyUnit or Participant name.
  */
 @Entity
-@Table(name = "cvr_record_name")
+@Table(name = "cvr_record_organization_name", indexes = {
+        @Index(name = "cvr_record_organization_name_organization", columnList = OrganizationNameRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF),
+        @Index(name = "cvr_record_organization_name_fusion", columnList = OrganizationNameRecord.DB_FIELD_FUSION + DatabaseEntry.REF)
+})
 public class OrganizationNameRecord extends CvrBitemporalRecord {
 
     public static final String DB_FIELD_NAME = "name";
@@ -36,6 +37,7 @@ public class OrganizationNameRecord extends CvrBitemporalRecord {
 
     @JsonIgnore
     @ManyToOne(targetEntity = OrganizationRecord.class)
+    @JoinColumn(name = DB_FIELD_ORGANIZATION + DatabaseEntry.REF)
     private OrganizationRecord organizationRecord;
 
     public OrganizationRecord getOrganizationRecord() {
@@ -49,18 +51,21 @@ public class OrganizationNameRecord extends CvrBitemporalRecord {
 
 
 
-    @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) {
-        baseData.setCompanyName(this.name);
+
+
+    public static final String DB_FIELD_FUSION = "fusionRecord";
+
+    @JsonIgnore
+    @ManyToOne(targetEntity = FusionRecord.class)
+    @JoinColumn(name = DB_FIELD_FUSION + DatabaseEntry.REF)
+    private FusionRecord fusionRecord;
+
+    public FusionRecord getFusionRecord() {
+        return this.fusionRecord;
     }
 
-    @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
-        baseData.setName(this.name);
+    public void setFusionRecord(FusionRecord fusionRecord) {
+        this.fusionRecord = fusionRecord;
     }
 
-    @Override
-    public void populateBaseData(ParticipantBaseData baseData, Session session) {
-        baseData.addName(this.name);
-    }
 }
