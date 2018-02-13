@@ -53,7 +53,7 @@ public class CompanyRecord extends CvrEntityRecord {
 
     @Column(name = DB_FIELD_UNITNUMBER)
     @JsonProperty(value = IO_FIELD_UNITNUMBER)
-    private int unitNumber;
+    private long unitNumber;
 
 
 
