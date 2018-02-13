@@ -354,11 +354,32 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
 
-    public static final String DB_FIELD_STATUS = "companyStatus";
-    public static final String IO_FIELD_STATUS = "virksomhedsstatus";
+
+    public static final String DB_FIELD_STATUS = "status";
+    public static final String IO_FIELD_STATUS = "status";
+
+    @OneToMany(mappedBy = CompanyStatusRecord.DB_FIELD_COMPANY, targetEntity = StatusRecord.class, cascade = CascadeType.ALL)
+    @JsonProperty(value = IO_FIELD_STATUS)
+    private Set<StatusRecord> status;
+
+    public Set<StatusRecord> getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(Set<StatusRecord> status) {
+        this.status = status;
+        for (StatusRecord statusRecord : status) {
+            statusRecord.setCompanyRecord(this);
+        }
+    }
+
+
+
+    public static final String DB_FIELD_COMPANYSTATUS = "companyStatus";
+    public static final String IO_FIELD_COMPANYSTATUS = "virksomhedsstatus";
 
     @OneToMany(mappedBy = CompanyStatusRecord.DB_FIELD_COMPANY, targetEntity = CompanyStatusRecord.class, cascade = CascadeType.ALL)
-    @JsonProperty(value = IO_FIELD_STATUS)
+    @JsonProperty(value = IO_FIELD_COMPANYSTATUS)
     private Set<CompanyStatusRecord> companyStatus;
 
     public Set<CompanyStatusRecord> getCompanyStatus() {

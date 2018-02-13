@@ -6,6 +6,7 @@ import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyStatus;
 import org.hibernate.Session;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
@@ -14,13 +15,17 @@ import javax.persistence.Table;
  * Record for Company status data.
  */
 @Entity
-@Table(name = "cvr_record_company_status", indexes = {
-        @Index(name = "cvr_record_status_company", columnList = CompanyStatusRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = "cvr_record_status_companyunit", columnList = CompanyStatusRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+@Table(name = "cvr_record_companystatus", indexes = {
+        @Index(name = "cvr_record_companystatus_company", columnList = CompanyStatusRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = "cvr_record_companystatus_companyunit", columnList = CompanyStatusRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
 })
 public class CompanyStatusRecord extends CvrBitemporalDataRecord {
 
-    @JsonProperty(value = "status")
+    public static final String DB_FIELD_STATUS = "status";
+    public static final String IO_FIELD_STATUS = "status";
+
+    @Column(name = DB_FIELD_STATUS)
+    @JsonProperty(value = IO_FIELD_STATUS)
     private String status;
 
     public String getStatus() {
