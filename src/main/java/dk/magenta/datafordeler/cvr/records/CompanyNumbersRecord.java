@@ -30,21 +30,21 @@ public abstract class CompanyNumbersRecord extends CvrBitemporalDataRecord {
 
     @Column(name = DB_FIELD_EMPLOYEES_BASE)
     @JsonProperty(value = IO_FIELD_EMPLOYEES_BASE)
-    private int employees;
+    private Integer employees;
 
     public static final String DB_FIELD_EMPLOYEES_LOW = "employeeLow";
     public static final String IO_FIELD_EMPLOYEES_LOW = "antalAnsatteMin";
 
     @Column(name = DB_FIELD_EMPLOYEES_LOW)
     @JsonProperty(value = IO_FIELD_EMPLOYEES_LOW)
-    private int employeeLow;
+    private Integer employeeLow;
 
     public static final String DB_FIELD_EMPLOYEES_HIGH = "employeeHigh";
     public static final String IO_FIELD_EMPLOYEES_HIGH = "antalAnsatteMax";
 
     @Column(name = DB_FIELD_EMPLOYEES_HIGH)
     @JsonProperty(value = IO_FIELD_EMPLOYEES_HIGH)
-    private int employeeHigh;
+    private Integer employeeHigh;
 
     @JsonProperty(value = "intervalKodeAntalAnsatte")
     public void setEmployeeRange(String range) {
@@ -57,30 +57,30 @@ public abstract class CompanyNumbersRecord extends CvrBitemporalDataRecord {
 
     @JsonProperty(value = "intervalKodeAntalAnsatte")
     public String getEmployeeRange() {
-        if (this.employeeLow != 0 && this.employeeHigh != 0) {
+        if (this.employeeLow != null && this.employeeLow != 0 && this.employeeHigh != null && this.employeeHigh != 0) {
             return "ANTAL_" + this.employeeLow + "_" + this.employeeHigh;
         }
         return null;
     }
 
-    public int getEmployeeLow() {
+    public Integer getEmployeeLow() {
         return this.employeeLow;
     }
 
-    public int getEmployeeHigh() {
+    public Integer getEmployeeHigh() {
         return this.employeeHigh;
     }
 
 
 
     @JsonProperty(value = "antalAarsvaerk")
-    private int fulltimeEquivalent;
+    private Integer fulltimeEquivalent;
 
     @JsonProperty(value = "antalAarsvaerkMin")
-    private int fulltimeEquivalentLow;
+    private Integer fulltimeEquivalentLow;
 
     @JsonProperty(value = "antalAarsvaerkMax")
-    private int fulltimeEquivalentHigh;
+    private Integer fulltimeEquivalentHigh;
 
     @JsonProperty(value = "intervalKodeAntalAarsvaerk")
     public void setFulltimeEquivalentRange(String range) {
@@ -93,30 +93,30 @@ public abstract class CompanyNumbersRecord extends CvrBitemporalDataRecord {
 
     @JsonProperty(value = "intervalKodeAntalAarsvaerk")
     public String getFulltimeEquivalentRange() {
-        if (this.fulltimeEquivalentLow != 0 && this.fulltimeEquivalentHigh != 0) {
+        if (this.fulltimeEquivalentLow != null && this.fulltimeEquivalentLow != 0 && this.fulltimeEquivalentHigh != null && this.fulltimeEquivalentHigh != 0) {
             return "ANTAL_" + this.fulltimeEquivalentLow + "_" + this.fulltimeEquivalentHigh;
         }
         return null;
     }
 
-    public int getFulltimeEquivalentLow() {
+    public Integer getFulltimeEquivalentLow() {
         return this.fulltimeEquivalentLow;
     }
 
-    public int getFulltimeEquivalentHigh() {
+    public Integer getFulltimeEquivalentHigh() {
         return this.fulltimeEquivalentHigh;
     }
 
 
 
     @JsonProperty(value = "antalInklusivEjere")
-    private int includingOwners;
+    private Integer includingOwners;
 
     @JsonProperty(value = "antalInklusivEjereMin")
-    private int includingOwnersLow;
+    private Integer includingOwnersLow;
 
     @JsonProperty(value = "antalInklusivEjereMax")
-    private int includingOwnersHigh;
+    private Integer includingOwnersHigh;
 
     @JsonProperty(value = "intervalKodeAntalInklusivEjere")
     public void setIncludingOwnersRange(String range) {
@@ -129,17 +129,17 @@ public abstract class CompanyNumbersRecord extends CvrBitemporalDataRecord {
 
     @JsonProperty(value = "intervalKodeAntalInklusivEjere")
     public String getIncludingOwnersRange() {
-        if (this.includingOwnersLow != 0 && this.includingOwnersHigh != 0) {
+        if (this.includingOwnersLow != null && this.includingOwnersLow != 0 && this.includingOwnersHigh != null && this.includingOwnersHigh != 0) {
             return "ANTAL_" + this.includingOwnersLow + "_" + this.includingOwnersHigh;
         }
         return null;
     }
 
-    public int getIncludingOwnersLow() {
+    public Integer getIncludingOwnersLow() {
         return this.includingOwnersLow;
     }
 
-    public int getIncludingOwnersHigh() {
+    public Integer getIncludingOwnersHigh() {
         return this.includingOwnersHigh;
     }
 

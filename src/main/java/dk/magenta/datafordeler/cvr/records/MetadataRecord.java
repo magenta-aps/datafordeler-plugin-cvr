@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import org.hibernate.Session;
 
@@ -11,7 +12,9 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "cvr_record_metadata", indexes = {
@@ -123,6 +126,92 @@ public class MetadataRecord extends CvrBitemporalDataRecord {
             newestSecondaryIndustry3.setIndex(3);
         }
     }
+
+
+
+    public static final String DB_FIELD_NEWEST_STATUS = "newestStatus";
+    public static final String IO_FIELD_NEWEST_STATUS = "nyesteStatus";
+
+    @OneToOne(targetEntity = StatusRecord.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonProperty(value = IO_FIELD_NEWEST_STATUS)
+    private StatusRecord newestStatus;
+
+
+
+
+    public static final String DB_FIELD_NEWEST_CONTACT_DATA = "newestContactData";
+    public static final String IO_FIELD_NEWEST_CONTACT_DATA = "nyesteKontaktoplysninger";
+
+    @OneToMany(targetEntity = MetadataContactRecord.class, mappedBy = MetadataContactRecord.DB_FIELD_METADATA, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<MetadataContactRecord> metadataContactRecords = new HashSet<>();
+
+    @JsonProperty(IO_FIELD_NEWEST_CONTACT_DATA)
+    private void setMetadataContactData(Set<String> contactData) {
+        HashSet<String> contacts = new HashSet<>(contactData);
+        HashSet<MetadataContactRecord> remove = new HashSet<>();
+        for (MetadataContactRecord contactRecord : this.metadataContactRecords) {
+            String data = contactRecord.getData();
+            if (contacts.contains(data)) {
+                contacts.remove(data);
+            } else {
+                remove.add(contactRecord);
+            }
+        }
+        this.metadataContactRecords.removeAll(remove);
+        for (String data : contacts) {
+            MetadataContactRecord newContactRecord = new MetadataContactRecord();
+            newContactRecord.setData(data);
+            newContactRecord.setMetadataRecord(this);
+            this.metadataContactRecords.add(newContactRecord);
+        }
+    }
+
+    @JsonProperty(IO_FIELD_NEWEST_CONTACT_DATA)
+    private Set<String> getMetadataContactData() {
+        HashSet<String> contacts = new HashSet<>();
+        for (MetadataContactRecord metadataContactRecord : this.metadataContactRecords) {
+            contacts.add(metadataContactRecord.getData());
+        }
+        return contacts;
+    }
+
+
+
+    public static final String DB_FIELD_UNIT_COUNT = "unitCount";
+    public static final String IO_FIELD_UNIT_COUNT = "antalPenheder";
+
+    @Column(name = DB_FIELD_UNIT_COUNT)
+    @JsonProperty(value = IO_FIELD_UNIT_COUNT)
+    private int unitCount;
+
+
+
+    public static final String DB_FIELD_NEWEST_YEARLY_NUMBERS = "newestYearlyNumbers";
+    public static final String IO_FIELD_NEWEST_YEARLY_NUMBERS = "nyesteAarsbeskaeftigelse";
+
+    @OneToOne(cascade = CascadeType.ALL, targetEntity = CompanyYearlyNumbersRecord.class)
+    @JsonProperty(value = IO_FIELD_NEWEST_YEARLY_NUMBERS)
+    private CompanyYearlyNumbersRecord newestYearlyNumbers;
+
+
+
+    public static final String DB_FIELD_NEWEST_QUARTERLY_NUMBERS = "newestQuarterlyNumbers";
+    public static final String IO_FIELD_NEWEST_QUARTERLY_NUMBERS = "nyesteKvartalsbeskaeftigelse";
+
+    @OneToOne(cascade = CascadeType.ALL, targetEntity = CompanyQuarterlyNumbersRecord.class)
+    @JsonProperty(value = IO_FIELD_NEWEST_QUARTERLY_NUMBERS)
+    private CompanyQuarterlyNumbersRecord newestQuarterlyNumbers;
+
+
+
+    public static final String DB_FIELD_NEWEST_MONTHLY_NUMBERS = "newestMonthlyNumbers";
+    public static final String IO_FIELD_NEWEST_MONTHLY_NUMBERS = "nyesteMaanedsbeskaeftigelse";
+
+    @OneToOne(cascade = CascadeType.ALL, targetEntity = CompanyMonthlyNumbersRecord.class)
+    @JsonProperty(value = IO_FIELD_NEWEST_MONTHLY_NUMBERS)
+    private CompanyMonthlyNumbersRecord newestMonthlyNumbers;
+
+
 
 
 
