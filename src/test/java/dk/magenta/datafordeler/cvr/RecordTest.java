@@ -59,7 +59,6 @@ public class RecordTest {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        JsonNode companyInputNode = null;
         InputStream input = ParseTest.class.getResourceAsStream("/company_in.json");
         boolean linedFile = false;
         HashMap<Integer, JsonNode> companies = new HashMap<>();
@@ -78,7 +77,7 @@ public class RecordTest {
                     for (JsonNode item : itemList) {
                         String type = item.get("_type").asText();
                         CompanyEntityManager entityManager = (CompanyEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-                        companyInputNode = item.get("_source").get("Vrvirksomhed");
+                        JsonNode companyInputNode = item.get("_source").get("Vrvirksomhed");
                         entityManager.parseData(companyInputNode, importMetadata, session);
                         companies.put(companyInputNode.get("cvrNummer").asInt(), companyInputNode);
                     }
@@ -95,7 +94,7 @@ public class RecordTest {
                 for (JsonNode item : itemList) {
                     String type = item.get("_type").asText();
                     CompanyEntityManager entityManager = (CompanyEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-                    companyInputNode = item.get("_source").get("Vrvirksomhed");
+                    JsonNode companyInputNode = item.get("_source").get("Vrvirksomhed");
                     entityManager.parseData(companyInputNode, importMetadata, session);
                     companies.put(companyInputNode.get("cvrNummer").asInt(), companyInputNode);
                 }
@@ -118,7 +117,7 @@ public class RecordTest {
                 if (companyRecord == null) {
                     System.out.println("Didn't find cvr number "+cvrNumber);
                 } else {
-                    //System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(companyRecord));
+                    System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(companyRecord));
                     compareJson(companies.get(cvrNumber), objectMapper.valueToTree(companyRecord), Collections.singletonList("root"));
                 }
             }
@@ -135,9 +134,6 @@ public class RecordTest {
      * @throws JsonProcessingException
      */
     private void compareJson(JsonNode n1, JsonNode n2, List<String> path) throws JsonProcessingException {
-        if (path.get(path.size()-1).equals("virksomhedMetadata")) {
-            return;
-        }
         if (n1 == null && n2 != null) {
             System.out.println("Mismatch: "+n1+" != "+n2+" at "+path);
         } else if (n1 != null && n2 == null) {

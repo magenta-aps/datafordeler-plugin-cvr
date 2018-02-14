@@ -32,7 +32,7 @@ public class Municipality extends UnversionedEntity {
     private static Logger log = LogManager.getLogger(Municipality.class.getSimpleName());
 
     public static final String DB_FIELD_CODE = "code";
-    public static final String IO_FIELD_CODE = "kommunekode";
+    public static final String IO_FIELD_CODE = "kommuneKode";
 
     @JsonProperty(value = IO_FIELD_CODE)
     @XmlElement(name = IO_FIELD_CODE)
@@ -50,7 +50,7 @@ public class Municipality extends UnversionedEntity {
     //----------------------------------------------------
 
     public static final String DB_FIELD_NAME = "name";
-    public static final String IO_FIELD_NAME = "kommunenavn";
+    public static final String IO_FIELD_NAME = "kommuneNavn";
 
     @JsonProperty(value = IO_FIELD_NAME)
     @XmlElement(name = IO_FIELD_NAME)

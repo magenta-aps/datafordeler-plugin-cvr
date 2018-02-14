@@ -794,6 +794,9 @@ public class CompanyRecord extends CvrEntityRecord {
         for (CompanyFormRecord form : this.companyForm) {
             form.wire(session);
         }
+        if (this.metadata != null) {
+            this.metadata.wire(session);
+        }
         super.save(session);
     }
 }

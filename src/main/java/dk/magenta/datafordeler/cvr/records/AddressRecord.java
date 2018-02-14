@@ -42,7 +42,7 @@ public class AddressRecord extends CvrBitemporalDataRecord {
         Address address = new Address();
         address.setRoadName(this.roadName);
         address.setRoadCode(this.roadCode);
-        address.setMunicipality(this.municipality);
+        address.setMunicipality(this.municipality.getMunicipality());
         address.setHouseNumberFrom(this.houseNumberFrom);
         address.setHouseNumberTo(this.houseNumberTo);
         address.setPost(this.post);
@@ -289,16 +289,14 @@ public class AddressRecord extends CvrBitemporalDataRecord {
 
     @JsonProperty(value = IO_FIELD_MUNICIPALITY)
     @XmlElement(name = IO_FIELD_MUNICIPALITY)
-    @ManyToOne
-    @Cascade(value = org.hibernate.annotations.CascadeType.SAVE_UPDATE)
-    @JoinColumn(name = DB_FIELD_MUNICIPALITY + DatabaseEntry.REF)
-    private Municipality municipality;
+    @OneToOne(cascade = CascadeType.ALL)
+    private AddressMunicipalityRecord municipality;
 
-    public Municipality getMunicipality() {
+    public AddressMunicipalityRecord getMunicipality() {
         return this.municipality;
     }
 
-    public void setMunicipality(Municipality municipality) {
+    public void setMunicipality(AddressMunicipalityRecord municipality) {
         this.municipality = municipality;
     }
 
@@ -307,11 +305,11 @@ public class AddressRecord extends CvrBitemporalDataRecord {
     public static final String DB_FIELD_POSTCODE_REF = "post";
     public static final String IO_FIELD_POSTCODE_REF = "post";
 
-    @JsonProperty(value = IO_FIELD_POSTCODE_REF)
     @XmlElement(name = IO_FIELD_POSTCODE_REF)
     @ManyToOne
     @Cascade(value = org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     @JoinColumn(name = DB_FIELD_POSTCODE_REF + DatabaseEntry.REF)
+    @JsonIgnore
     private PostCode post;
 
     public PostCode getPost() {
@@ -328,14 +326,16 @@ public class AddressRecord extends CvrBitemporalDataRecord {
     public static final String IO_FIELD_POSTCODE = "postnummer";
 
     @Transient
+    @JsonProperty(value = IO_FIELD_POSTCODE)
     private int postnummer;
 
-    @JsonIgnore
     public int getPostnummer() {
+        if (this.post != null) {
+            return this.post.getPostCode();
+        }
         return this.postnummer;
     }
 
-    @JsonProperty(value = IO_FIELD_POSTCODE)
     @XmlElement(name = IO_FIELD_POSTCODE)
     public void setPostnummer(int code) {
         this.postnummer = code;
@@ -347,14 +347,16 @@ public class AddressRecord extends CvrBitemporalDataRecord {
     public static final String IO_FIELD_POSTDISTRICT = "postdistrikt";
 
     @Transient
+    @JsonProperty(value = IO_FIELD_POSTDISTRICT)
     private String postdistrikt;
 
-    @JsonIgnore
     public String getPostdistrikt() {
+        if (this.post != null) {
+            return this.post.getPostDistrict();
+        }
         return this.postdistrikt;
     }
 
-    @JsonProperty(value = IO_FIELD_POSTDISTRICT)
     @XmlElement(name = IO_FIELD_POSTDISTRICT)
     public void setPostdistrikt(String district) {
         this.postdistrikt = district;
@@ -535,9 +537,9 @@ public class AddressRecord extends CvrBitemporalDataRecord {
 
     public void wire(Session session) {
         if (this.municipality != null) {
-            this.municipality = Municipality.getMunicipality(this.municipality.getCode(), this.municipality.getName(), session);
+            this.municipality.wire(session);
         }
-        if (this.postnummer != 0) {
+        if (this.postnummer != 0 && (this.post == null || this.post.getPostCode() != this.postnummer)) {
             this.post = PostCode.getPostcode(this.postnummer, this.postdistrikt, session);
         }
     }
