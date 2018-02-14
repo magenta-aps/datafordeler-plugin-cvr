@@ -213,6 +213,21 @@ public class MetadataRecord extends CvrBitemporalDataRecord {
 
 
 
+    public static final String DB_FIELD_FOUNDING_DATE = "foundingDate";
+    public static final String IO_FIELD_FOUNDING_DATE = "stiftelsesDato";
+
+    @Column(name = DB_FIELD_FOUNDING_DATE)
+    @JsonProperty(value = IO_FIELD_FOUNDING_DATE)
+    private LocalDate foundingDate;
+
+
+
+    public static final String DB_FIELD_EFFECT_DATE = "effectDate";
+    public static final String IO_FIELD_EFFECT_DATE = "virkningsDato";
+
+    @Column(name = DB_FIELD_EFFECT_DATE)
+    @JsonProperty(value = IO_FIELD_EFFECT_DATE)
+    private LocalDate effectDate;
 
 
 
