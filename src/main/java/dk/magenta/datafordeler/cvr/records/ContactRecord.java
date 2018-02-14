@@ -21,6 +21,7 @@ import javax.persistence.Table;
         @Index(name = "cvr_record_contact_company", columnList = ContactRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
         @Index(name = "cvr_record_contact_companyunit", columnList = ContactRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
         @Index(name = "cvr_record_contact_participant", columnList = ContactRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+        @Index(name = "cvr_record_contact_data", columnList = ContactRecord.DB_FIELD_DATA),
 })
 public class ContactRecord extends CvrBitemporalDataRecord {
 
@@ -46,6 +47,18 @@ public class ContactRecord extends CvrBitemporalDataRecord {
     @Column(name = DB_FIELD_SECRET)
     @JsonProperty(value = "hemmelig")
     protected boolean secret;
+
+
+
+    public static final String DB_FIELD_SECONDARY = "secondary";
+
+    @Column(name = DB_FIELD_SECONDARY)
+    @JsonIgnore
+    protected boolean secondary;
+
+    public void setSecondary(boolean secondary) {
+        this.secondary = secondary;
+    }
 
 
 

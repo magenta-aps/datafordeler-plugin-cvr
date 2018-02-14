@@ -395,12 +395,10 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     @Override
     public void save(Session session) {
         for (AddressRecord address : this.locationAddress) {
-            address.normalizeMunicipality(session);
-            address.normalizePostcode(session);
+            address.wire(session);
         }
         for (AddressRecord address : this.postalAddress) {
-            address.normalizeMunicipality(session);
-            address.normalizePostcode(session);
+            address.wire(session);
         }
         super.save(session);
     }

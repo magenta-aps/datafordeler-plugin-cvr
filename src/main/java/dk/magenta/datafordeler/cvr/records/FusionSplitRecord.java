@@ -1,10 +1,8 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.unversioned.CompanyStatus;
-import org.hibernate.Session;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -15,9 +13,21 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "cvr_record_fusion", indexes = {
-        @Index(name = "cvr_record_fusion_company", columnList = FusionRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = "cvr_record_fusion_company", columnList = FusionSplitRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
 })
-public class FusionRecord extends CvrNontemporalDataRecord {
+public class FusionSplitRecord extends CvrNontemporalDataRecord {
+
+    public static final String DB_FIELD_SPLIT = "split";
+
+    @Column(name = DB_FIELD_SPLIT)
+    @JsonIgnore
+    private boolean split;
+
+    public void setSplit(boolean split) {
+        this.split = split;
+    }
+
+
 
     public static final String DB_FIELD_ORGANIZATION_UNITNUMBER = "organizationUnitNumber";
     public static final String IO_FIELD_ORGANIZATION_UNITNUMBER = "enhedsNummerOrganisation";
@@ -51,7 +61,7 @@ public class FusionRecord extends CvrNontemporalDataRecord {
     public void setName(Set<OrganizationNameRecord> name) {
         this.name = name;
         for (OrganizationNameRecord nameRecord : name) {
-            nameRecord.setFusionRecord(this);
+            nameRecord.setFusionSplitRecord(this);
         }
     }
 
@@ -66,7 +76,7 @@ public class FusionRecord extends CvrNontemporalDataRecord {
     public void setIncoming(Set<OrganizationAttributeRecord> incoming) {
         this.incoming = incoming;
         for (OrganizationAttributeRecord attributeRecord : incoming) {
-            attributeRecord.setFusionRecord(this);
+            attributeRecord.setFusionSplitRecord(this);
             attributeRecord.setFusionOutgoing(false);
         }
     }
@@ -84,7 +94,7 @@ public class FusionRecord extends CvrNontemporalDataRecord {
     public void setOutgoing(Set<OrganizationAttributeRecord> outgoing) {
         this.outgoing = outgoing;
         for (OrganizationAttributeRecord attributeRecord : outgoing) {
-            attributeRecord.setFusionRecord(this);
+            attributeRecord.setFusionSplitRecord(this);
             attributeRecord.setFusionOutgoing(true);
         }
     }

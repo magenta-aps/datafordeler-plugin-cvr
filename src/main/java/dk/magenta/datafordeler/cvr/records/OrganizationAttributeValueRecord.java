@@ -17,12 +17,7 @@ import javax.persistence.*;
 @Table(name = "cvr_record_organization_attribute_value", indexes = {
         @Index(name = "cvr_record_organization_attribute_value_attribute", columnList = OrganizationAttributeValueRecord.DB_FIELD_ATTRIBUTE + DatabaseEntry.REF)
 })
-public class OrganizationAttributeValueRecord extends CvrBitemporalRecord {
-
-    @Column
-    @JsonProperty(value = "vaerdi")
-    private String value;
-
+public class OrganizationAttributeValueRecord extends BaseAttributeValueRecord {
 
     public static final String DB_FIELD_ATTRIBUTE = "attribute";
     public static final String IO_FIELD_ATTRIBUTE = "attribut";

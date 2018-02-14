@@ -31,12 +31,16 @@ public class CompanyMonthlyNumbersRecord extends CompanyNumbersRecord {
     @JsonProperty(value = IO_FIELD_YEAR)
     private int year;
 
+
+
     public static final String DB_FIELD_MONTH = "month";
     public static final String IO_FIELD_MONTH = "maaned";
 
     @Column(name = DB_FIELD_MONTH)
     @JsonProperty(value = IO_FIELD_MONTH)
     private int month;
+
+
 
     @Override
     public void populateBaseData(CompanyBaseData baseData, Session session) throws ParseException {

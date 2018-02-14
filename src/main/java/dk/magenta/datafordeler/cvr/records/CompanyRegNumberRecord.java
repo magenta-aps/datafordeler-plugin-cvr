@@ -14,6 +14,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "cvr_record_company_regnumber", indexes = {
         @Index(name = "cvr_record_regnumber_company", columnList = CompanyRegNumberRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = "cvr_record_regnumber_data", columnList = CompanyRegNumberRecord.DB_FIELD_REGNUMBER),
 })
 public class CompanyRegNumberRecord extends CvrBitemporalDataRecord {
 

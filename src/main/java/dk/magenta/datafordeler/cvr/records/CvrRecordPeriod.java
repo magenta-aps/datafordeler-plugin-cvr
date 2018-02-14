@@ -13,9 +13,10 @@ import java.time.LocalDate;
 public class CvrRecordPeriod {
 
     public static final String DB_FIELD_VALID_FROM = "validFrom";
+    public static final String IO_FIELD_VALID_FROM = "gyldigFra";
 
     @Column(name = DB_FIELD_VALID_FROM)
-    @JsonProperty(value = "gyldigFra")
+    @JsonProperty(value = IO_FIELD_VALID_FROM)
     private LocalDate validFrom;
 
     public LocalDate getValidFrom() {
@@ -27,9 +28,10 @@ public class CvrRecordPeriod {
     }
 
     public static final String DB_FIELD_VALID_TO = "validTo";
+    public static final String IO_FIELD_VALID_TO = "gyldigTil";
 
     @Column(name = DB_FIELD_VALID_TO)
-    @JsonProperty(value = "gyldigTil")
+    @JsonProperty(value = IO_FIELD_VALID_TO)
     private LocalDate validTo;
 
     public LocalDate getValidTo() {

@@ -3,10 +3,6 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
-import org.hibernate.Session;
 
 import javax.persistence.*;
 
@@ -53,19 +49,19 @@ public class OrganizationNameRecord extends CvrBitemporalRecord {
 
 
 
-    public static final String DB_FIELD_FUSION = "fusionRecord";
+    public static final String DB_FIELD_FUSION = "fusionSplitRecord";
 
     @JsonIgnore
-    @ManyToOne(targetEntity = FusionRecord.class)
+    @ManyToOne(targetEntity = FusionSplitRecord.class)
     @JoinColumn(name = DB_FIELD_FUSION + DatabaseEntry.REF)
-    private FusionRecord fusionRecord;
+    private FusionSplitRecord fusionSplitRecord;
 
-    public FusionRecord getFusionRecord() {
-        return this.fusionRecord;
+    public FusionSplitRecord getFusionSplitRecord() {
+        return this.fusionSplitRecord;
     }
 
-    public void setFusionRecord(FusionRecord fusionRecord) {
-        this.fusionRecord = fusionRecord;
+    public void setFusionSplitRecord(FusionSplitRecord fusionSplitRecord) {
+        this.fusionSplitRecord = fusionSplitRecord;
     }
 
 }

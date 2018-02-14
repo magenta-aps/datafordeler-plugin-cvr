@@ -25,12 +25,18 @@ import java.util.UUID;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
 
-    @OneToOne
-    @JsonProperty(value = "deltager")
+    public static final String DB_FIELD_PARTICIPANT = "participant";
+    public static final String IO_FIELD_PARTICIPANT = "deltager";
+
+    @OneToOne(targetEntity = ParticipantRelationRecord.class)
+    @JsonProperty(value = IO_FIELD_PARTICIPANT)
     private ParticipantRelationRecord participant;
 
     public void setParticipant(ParticipantRelationRecord participant) {
         this.participant = participant;
+        if (participant != null) {
+            participant.setCompanyParticipantRelationRecord(this);
+        }
     }
 
 
@@ -72,7 +78,9 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
 
     public void save(Session session) {
         super.save(session);
-        this.participant.save(session);
+        if (this.participant != null) {
+            this.participant.save(session);
+        }
         /*for (OrganizationRecord organizationRecord : this.organizations) {
             organizationRecord.save(session);
         }*/

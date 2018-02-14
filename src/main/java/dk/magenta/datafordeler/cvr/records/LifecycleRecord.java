@@ -23,11 +23,6 @@ import java.time.ZoneOffset;
 })
 public class LifecycleRecord extends CvrBitemporalDataRecord {
 
-    /*@Override
-    public String getContainerName() {
-        return "livsforloeb";
-    }*/
-
     @Override
     public void populateBaseData(CompanyBaseData baseData, Session session) {
         if (this.getValidFrom() != null) {

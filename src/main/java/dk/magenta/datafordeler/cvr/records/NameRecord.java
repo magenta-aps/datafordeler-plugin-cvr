@@ -21,14 +21,15 @@ import javax.persistence.Table;
         @Index(name = "cvr_record_name_company", columnList = NameRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
         @Index(name = "cvr_record_name_companyunit", columnList = NameRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
         @Index(name = "cvr_record_name_participant", columnList = NameRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+        @Index(name = "cvr_record_name_data", columnList = NameRecord.DB_FIELD_NAME),
 })
 public class NameRecord extends CvrBitemporalDataRecord {
 
     public static final String DB_FIELD_NAME = "name";
     public static final String IO_FIELD_NAME = "navn";
 
-    @Column(name = DB_FIELD_NAME)
-    @JsonProperty(value = "navn")
+    @Column(name = DB_FIELD_NAME, length = 8000)
+    @JsonProperty(value = IO_FIELD_NAME)
     private String name;
 
     public String getName() {

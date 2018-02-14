@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
@@ -21,7 +22,11 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MetadataRecord extends CvrBitemporalDataRecord {
 
-    @JsonProperty(value = "sammensatStatus")
+    public static final String DB_FIELD_AGGREGATE_STATUS = "aggregateStatus";
+    public static final String IO_FIELD_AGGREGATE_STATUS = "sammensatStatus";
+
+    @Column(name = DB_FIELD_AGGREGATE_STATUS)
+    @JsonProperty(value = IO_FIELD_AGGREGATE_STATUS)
     private String aggregateStatus;
 
     public String getAggregateStatus() {

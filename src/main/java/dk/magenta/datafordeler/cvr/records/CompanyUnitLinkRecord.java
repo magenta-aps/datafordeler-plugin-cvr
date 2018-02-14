@@ -9,6 +9,7 @@ import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
 import org.hibernate.Session;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
@@ -23,7 +24,11 @@ import java.util.UUID;
 })
 public class CompanyUnitLinkRecord extends CvrBitemporalDataRecord {
 
-    @JsonProperty(value = "pNummer")
+    public static final String DB_FIELD_PNUMBER = "pNumber";
+    public static final String IO_FIELD_PNUMBER = "pNummer";
+
+    @Column(name = DB_FIELD_PNUMBER)
+    @JsonProperty(value = IO_FIELD_PNUMBER)
     private int pNumber;
 
     @Override

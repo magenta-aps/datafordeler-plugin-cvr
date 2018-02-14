@@ -28,6 +28,7 @@ import java.util.UUID;
         @Index(name = "cvr_record_address_company", columnList = AddressRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
         @Index(name = "cvr_record_address_companyunit", columnList = AddressRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
         @Index(name = "cvr_record_address_participant", columnList = AddressRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+        @Index(name = "cvr_record_address_municipality", columnList = AddressRecord.DB_FIELD_MUNICIPALITY + DatabaseEntry.REF),
 })
 public class AddressRecord extends CvrBitemporalDataRecord {
 
@@ -532,13 +533,10 @@ public class AddressRecord extends CvrBitemporalDataRecord {
         return address;
     }
 
-    public void normalizeMunicipality(Session session) {
+    public void wire(Session session) {
         if (this.municipality != null) {
             this.municipality = Municipality.getMunicipality(this.municipality.getCode(), this.municipality.getName(), session);
         }
-    }
-
-    public void normalizePostcode(Session session) {
         if (this.postnummer != 0) {
             this.post = PostCode.getPostcode(this.postnummer, this.postdistrikt, session);
         }

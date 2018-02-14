@@ -26,9 +26,11 @@ import java.util.Set;
 })
 public class AttributeRecord extends CvrNontemporalDataRecord {
 
+    public static final String DB_FIELD_SEQUENCENUMBER = "sequenceNumber";
+    public static final String IO_FIELD_SEQUENCENUMBER = "sekvensnr";
 
-    @Column
-    @JsonProperty(value = "sekvensnr")
+    @Column(name = DB_FIELD_SEQUENCENUMBER)
+    @JsonProperty(value = IO_FIELD_SEQUENCENUMBER)
     private int sequenceNumber;
 
     public int getSequenceNumber() {
@@ -36,8 +38,11 @@ public class AttributeRecord extends CvrNontemporalDataRecord {
     }
 
 
-    @Column
-    @JsonProperty(value = "type")
+    public static final String DB_FIELD_TYPE = "type";
+    public static final String IO_FIELD_TYPE = "type";
+
+    @Column(name = DB_FIELD_TYPE)
+    @JsonProperty(value = IO_FIELD_TYPE)
     private String type;
 
     public String getType() {
@@ -45,8 +50,11 @@ public class AttributeRecord extends CvrNontemporalDataRecord {
     }
 
 
-    @Column
-    @JsonProperty(value = "vaerditype")
+    public static final String DB_FIELD_VALUETYPE = "valueType";
+    public static final String IO_FIELD_VALUETYPE = "vaerditype";
+
+    @Column(name = DB_FIELD_VALUETYPE)
+    @JsonProperty(value = IO_FIELD_VALUETYPE)
     private String valueType;
 
     public String getValueType() {
@@ -54,10 +62,13 @@ public class AttributeRecord extends CvrNontemporalDataRecord {
     }
 
 
+
+    public static final String IO_FIELD_VALUES = "vaerdier";
+
     @OneToMany(mappedBy = AttributeValueRecord.DB_FIELD_ATTRIBUTE, targetEntity = AttributeValueRecord.class, cascade = CascadeType.ALL)
     private Set<AttributeValueRecord> values;
 
-    @JsonProperty(value = "vaerdier")
+    @JsonProperty(value = IO_FIELD_VALUES)
     public void setValues(Collection<AttributeValueRecord> values) {
         for (AttributeValueRecord record : values) {
             record.setAttribute(this);

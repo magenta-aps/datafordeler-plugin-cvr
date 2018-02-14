@@ -3,13 +3,8 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
-import org.hibernate.Session;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,9 +19,11 @@ import java.util.Set;
 })
 public class OrganizationAttributeRecord extends CvrNontemporalRecord {
 
+    public static final String DB_FIELD_SEQUENCENUMBER = "sequenceNumber";
+    public static final String IO_FIELD_SEQUENCENUMBER = "sekvensnr";
 
-    @Column
-    @JsonProperty(value = "sekvensnr")
+    @Column(name = DB_FIELD_SEQUENCENUMBER)
+    @JsonProperty(value = IO_FIELD_SEQUENCENUMBER)
     private int sequenceNumber;
 
     public int getSequenceNumber() {
@@ -34,8 +31,11 @@ public class OrganizationAttributeRecord extends CvrNontemporalRecord {
     }
 
 
-    @Column
-    @JsonProperty(value = "type")
+    public static final String DB_FIELD_TYPE = "type";
+    public static final String IO_FIELD_TYPE = "type";
+
+    @Column(name = DB_FIELD_TYPE)
+    @JsonProperty(value = IO_FIELD_TYPE)
     private String type;
 
     public String getType() {
@@ -43,8 +43,11 @@ public class OrganizationAttributeRecord extends CvrNontemporalRecord {
     }
 
 
-    @Column
-    @JsonProperty(value = "vaerditype")
+    public static final String DB_FIELD_VALUETYPE = "valueType";
+    public static final String IO_FIELD_VALUETYPE = "vaerditype";
+
+    @Column(name = DB_FIELD_VALUETYPE)
+    @JsonProperty(value = IO_FIELD_VALUETYPE)
     private String valueType;
 
     public String getValueType() {
@@ -52,10 +55,13 @@ public class OrganizationAttributeRecord extends CvrNontemporalRecord {
     }
 
 
+
+    public static final String IO_FIELD_VALUES = "vaerdier";
+
     @OneToMany(mappedBy = OrganizationAttributeValueRecord.DB_FIELD_ATTRIBUTE, targetEntity = OrganizationAttributeValueRecord.class, cascade = CascadeType.ALL)
     private Set<OrganizationAttributeValueRecord> values;
 
-    @JsonProperty(value = "vaerdier")
+    @JsonProperty(value = IO_FIELD_VALUES)
     public void setValues(Set<OrganizationAttributeValueRecord> values) {
         for (OrganizationAttributeValueRecord record : values) {
             record.setAttribute(this);
@@ -100,15 +106,14 @@ public class OrganizationAttributeRecord extends CvrNontemporalRecord {
 
 
 
-    public static final String DB_FIELD_FUSION = "fusionRecord";
-    public static final String IO_FIELD_FUSION = "fusion";
+    public static final String DB_FIELD_FUSION = "fusionSplitRecord";
 
     @JsonIgnore
-    @ManyToOne(targetEntity = OrganizationMemberdataRecord.class)
-    private FusionRecord fusionRecord;
+    @ManyToOne(targetEntity = FusionSplitRecord.class)
+    private FusionSplitRecord fusionSplitRecord;
 
-    public void setFusionRecord(FusionRecord fusionRecord) {
-        this.fusionRecord = fusionRecord;
+    public void setFusionSplitRecord(FusionSplitRecord fusionSplitRecord) {
+        this.fusionSplitRecord = fusionSplitRecord;
     }
 
 
