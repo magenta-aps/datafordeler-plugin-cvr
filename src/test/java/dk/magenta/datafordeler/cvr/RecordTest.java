@@ -106,8 +106,6 @@ public class RecordTest {
             input.close();
         }
 
-        System.out.println(companies.keySet());
-
         session = sessionManager.getSessionFactory().openSession();
         try {
             for (int cvrNumber : companies.keySet()) {
@@ -117,7 +115,6 @@ public class RecordTest {
                 if (companyRecord == null) {
                     System.out.println("Didn't find cvr number "+cvrNumber);
                 } else {
-                    System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(companyRecord));
                     compareJson(companies.get(cvrNumber), objectMapper.valueToTree(companyRecord), Collections.singletonList("root"));
                 }
             }
