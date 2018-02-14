@@ -10,6 +10,7 @@ import org.hibernate.Session;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -52,7 +53,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
 
     @Column(name = DB_FIELD_UNITNUMBER)
     @JsonProperty(value = IO_FIELD_UNITNUMBER)
-    private int unitNumber;
+    private long unitNumber;
 
 
 
@@ -194,7 +195,8 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public static final String DB_FIELD_PRIMARY_INDUSTRY = "primaryIndustry";
     public static final String IO_FIELD_PRIMARY_INDUSTRY = "hovedbranche";
 
-    @OneToMany(mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, targetEntity = CompanyIndustryRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANYUNIT, targetEntity = CompanyIndustryRecord.class, cascade = CascadeType.ALL)
+    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=0")
     @JsonProperty(value = IO_FIELD_PRIMARY_INDUSTRY)
     private Set<CompanyIndustryRecord> primaryIndustry;
 
@@ -214,7 +216,8 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public static final String DB_FIELD_SECONDARY_INDUSTRY1 = "secondaryIndustry1";
     public static final String IO_FIELD_SECONDARY_INDUSTRY1 = "bibranche1";
 
-    @OneToMany(mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, targetEntity = CompanyIndustryRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANYUNIT, targetEntity = CompanyIndustryRecord.class, cascade = CascadeType.ALL)
+    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=1")
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY1)
     private Set<CompanyIndustryRecord> secondaryIndustry1;
 
@@ -229,7 +232,8 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public static final String DB_FIELD_SECONDARY_INDUSTRY2 = "secondaryIndustry2";
     public static final String IO_FIELD_SECONDARY_INDUSTRY2 = "bibranche2";
 
-    @OneToMany(mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, targetEntity = CompanyIndustryRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANYUNIT, targetEntity = CompanyIndustryRecord.class, cascade = CascadeType.ALL)
+    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=2")
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY2)
     private Set<CompanyIndustryRecord> secondaryIndustry2;
 
@@ -244,7 +248,8 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public static final String DB_FIELD_SECONDARY_INDUSTRY3 = "secondaryIndustry3";
     public static final String IO_FIELD_SECONDARY_INDUSTRY3 = "bibranche3";
 
-    @OneToMany(mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, targetEntity = CompanyIndustryRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANYUNIT, targetEntity = CompanyIndustryRecord.class, cascade = CascadeType.ALL)
+    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=3")
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY3)
     private Set<CompanyIndustryRecord> secondaryIndustry3;
 
@@ -259,7 +264,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public static final String DB_FIELD_YEARLY_NUMBERS = "yearlyNumbers";
     public static final String IO_FIELD_YEARLY_NUMBERS = "aarsbeskaeftigelse";
 
-    @OneToMany(mappedBy = CompanyYearlyNumbersRecord.DB_FIELD_COMPANY, targetEntity = CompanyYearlyNumbersRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = CompanyYearlyNumbersRecord.DB_FIELD_COMPANYUNIT, targetEntity = CompanyYearlyNumbersRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_YEARLY_NUMBERS)
     private Set<CompanyYearlyNumbersRecord> yearlyNumbers;
 
@@ -272,7 +277,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public static final String DB_FIELD_QUARTERLY_NUMBERS = "quarterlyNumbers";
     public static final String IO_FIELD_QUARTERLY_NUMBERS = "kvartalsbeskaeftigelse";
 
-    @OneToMany(mappedBy = CompanyQuarterlyNumbersRecord.DB_FIELD_COMPANY, targetEntity = CompanyQuarterlyNumbersRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = CompanyQuarterlyNumbersRecord.DB_FIELD_COMPANYUNIT, targetEntity = CompanyQuarterlyNumbersRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_QUARTERLY_NUMBERS)
     private Set<CompanyQuarterlyNumbersRecord> quarterlyNumbers;
 
@@ -311,10 +316,114 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     @JsonProperty(value = "deltagerRelation")
     private Set<CompanyParticipantRelationRecord> participantRelations;
 
+    public void setParticipantRelations(Set<CompanyParticipantRelationRecord> participantRelations) {
+        this.participantRelations = participantRelations;
+        for (CompanyParticipantRelationRecord participantRelationRecord : participantRelations) {
+            participantRelationRecord.setCompanyUnitRecord(this);
+        }
+    }
+
+
+
     @OneToMany(mappedBy = CompanyLinkRecord.DB_FIELD_COMPANYUNIT, targetEntity = CompanyLinkRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = "virksomhedsrelation")
     private Set<CompanyLinkRecord> companyLinkRecords;
 
+    public void setCompanyLinkRecords(Set<CompanyLinkRecord> companyLinkRecords) {
+        this.companyLinkRecords = companyLinkRecords;
+        for (CompanyLinkRecord companyLinkRecord : companyLinkRecords) {
+            companyLinkRecord.setCompanyUnitRecord(this);
+        }
+    }
+
+
+
+    public static final String DB_FIELD_INDUSTRY_RESPONSIBILITY_CODE = "industryResponsibilityCode";
+    public static final String IO_FIELD_INDUSTRY_RESPONSIBILITY_CODE = "brancheAnsvarskode";
+
+    @Column(name = DB_FIELD_INDUSTRY_RESPONSIBILITY_CODE, nullable = true)
+    @JsonProperty(value = IO_FIELD_INDUSTRY_RESPONSIBILITY_CODE)
+    private Integer industryResponsibilityCode;
+
+
+
+    public static final String DB_FIELD_SAMT_ID = "samtId";
+    public static final String IO_FIELD_SAMT_ID = "samtId";
+
+    @Column(name = DB_FIELD_SAMT_ID)
+    @JsonProperty(value = IO_FIELD_SAMT_ID)
+    private long samtId;
+
+
+
+    public static final String DB_FIELD_UNITTYPE = "unitType";
+    public static final String IO_FIELD_UNITTYPE = "enhedstype";
+
+    @Column(name = DB_FIELD_UNITTYPE)
+    @JsonProperty(value = IO_FIELD_UNITTYPE)
+    private String unitType;
+
+
+
+    public static final String DB_FIELD_REGISTER_ERROR = "registerError";
+    public static final String IO_FIELD_REGISTER_ERROR = "fejlRegistreret";
+
+    @Column(name = DB_FIELD_REGISTER_ERROR)
+    @JsonProperty(value = IO_FIELD_REGISTER_ERROR)
+    private boolean registerError;
+
+
+
+    public static final String DB_FIELD_DATA_ACCESS = "dataAccess";
+    public static final String IO_FIELD_DATA_ACCESS = "dataAdgang";
+
+    @Column(name = DB_FIELD_DATA_ACCESS)
+    @JsonProperty(value = IO_FIELD_DATA_ACCESS)
+    private long dataAccess;
+
+
+
+    public static final String DB_FIELD_LOADING_ERROR = "loadingError";
+    public static final String IO_FIELD_LOADING_ERROR = "fejlVedIndlaesning";
+
+    @Column(name = DB_FIELD_LOADING_ERROR)
+    @JsonProperty(value = IO_FIELD_LOADING_ERROR)
+    private boolean loadingError;
+
+
+
+    public static final String DB_FIELD_NEAREST_FUTURE_DATE = "nearestFutureDate";
+    public static final String IO_FIELD_NEAREST_FUTURE_DATE = "naermesteFremtidigeDato";
+
+    @Column(name = DB_FIELD_NEAREST_FUTURE_DATE)
+    @JsonProperty(value = IO_FIELD_NEAREST_FUTURE_DATE)
+    private LocalDate nearestFutureDate;
+
+    public void setNearestFutureDate(LocalDate nearestFutureDate) {
+        this.nearestFutureDate = nearestFutureDate;
+    }
+
+    public LocalDate getNearestFutureDate() {
+        return this.nearestFutureDate;
+    }
+
+
+
+    public static final String DB_FIELD_ERRORDESCRIPTION = "errorDescription";
+    public static final String IO_FIELD_ERRORDESCRIPTION = "fejlBeskrivelse";
+
+    @Column(name = DB_FIELD_ERRORDESCRIPTION)
+    @JsonProperty(value = IO_FIELD_ERRORDESCRIPTION)
+    private String errorDescription;
+
+
+
+    public static final String DB_FIELD_EFFECT_AGENT = "effectAgent";
+    public static final String IO_FIELD_EFFECT_AGENT = "virkningsAktoer";
+
+    @Column(name = DB_FIELD_EFFECT_AGENT)
+    @JsonProperty(value = IO_FIELD_EFFECT_AGENT)
+    private String effectAgent;
 
     // enhedstype
     // dataAdgang

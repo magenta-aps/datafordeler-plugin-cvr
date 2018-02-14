@@ -14,8 +14,10 @@ import dk.magenta.datafordeler.core.io.ImportMetadata;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntityManager;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
+import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntityManager;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 import dk.magenta.datafordeler.cvr.records.CompanyRecord;
+import dk.magenta.datafordeler.cvr.records.CompanyUnitRecord;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.junit.Assert;
@@ -116,6 +118,76 @@ public class RecordTest {
                     System.out.println("Didn't find cvr number "+cvrNumber);
                 } else {
                     compareJson(companies.get(cvrNumber), objectMapper.valueToTree(companyRecord), Collections.singletonList("root"));
+                }
+            }
+        } finally {
+            session.close();
+        }
+    }
+
+
+    @Test
+    public void testCompanyUnit() throws DataFordelerException, IOException {
+        ImportMetadata importMetadata = new ImportMetadata();
+        Session session = sessionManager.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        InputStream input = ParseTest.class.getResourceAsStream("/unit.json");
+        boolean linedFile = false;
+        HashMap<Integer, JsonNode> units = new HashMap<>();
+        try {
+            importMetadata.setSession(session);
+
+            if (linedFile) {
+                int lineNumber = 0;
+                Scanner lineScanner = new Scanner(input, "UTF-8").useDelimiter("\n");
+                while (lineScanner.hasNext()) {
+                    String data = lineScanner.next();
+
+                    JsonNode root = objectMapper.readTree(data);
+                    JsonNode itemList = root.get("hits").get("hits");
+                    Assert.assertTrue(itemList.isArray());
+                    for (JsonNode item : itemList) {
+                        String type = item.get("_type").asText();
+                        CompanyUnitEntityManager entityManager = (CompanyUnitEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
+                        JsonNode unitInputNode = item.get("_source").get("VrproduktionsEnhed");
+                        entityManager.parseData(unitInputNode, importMetadata, session);
+                        units.put(unitInputNode.get("pNummer").asInt(), unitInputNode);
+                    }
+                    lineNumber++;
+                    System.out.println("loaded line " + lineNumber);
+                    if (lineNumber >= 10) {
+                        break;
+                    }
+                }
+            } else {
+                JsonNode root = objectMapper.readTree(input);
+                JsonNode itemList = root.get("hits").get("hits");
+                Assert.assertTrue(itemList.isArray());
+                for (JsonNode item : itemList) {
+                    String type = item.get("_type").asText();
+                    CompanyUnitEntityManager entityManager = (CompanyUnitEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
+                    JsonNode unitInputNode = item.get("_source").get("VrproduktionsEnhed");
+                    entityManager.parseData(unitInputNode, importMetadata, session);
+                    units.put(unitInputNode.get("pNummer").asInt(), unitInputNode);
+                }
+            }
+            transaction.commit();
+        } finally {
+            session.close();
+            QueryManager.clearCaches();
+            input.close();
+        }
+
+        session = sessionManager.getSessionFactory().openSession();
+        try {
+            for (int pNumber : units.keySet()) {
+                HashMap<String, Object> filter = new HashMap<>();
+                filter.put("pNumber", pNumber);
+                CompanyUnitRecord companyUnitRecord = QueryManager.getItem(session, CompanyUnitRecord.class, filter);
+                if (companyUnitRecord == null) {
+                    System.out.println("Didn't find p number "+pNumber);
+                } else {
+                    compareJson(units.get(pNumber), objectMapper.valueToTree(companyUnitRecord), Collections.singletonList("root"));
                 }
             }
         } finally {
