@@ -57,7 +57,7 @@ public abstract class CompanyNumbersRecord extends CvrBitemporalDataRecord {
 
     @JsonProperty(value = "intervalKodeAntalAnsatte")
     public String getEmployeeRange() {
-        if (this.employeeLow != null && this.employeeLow != 0 && this.employeeHigh != null && this.employeeHigh != 0) {
+        if (this.employeeLow != null && this.employeeHigh != null) {
             return "ANTAL_" + this.employeeLow + "_" + this.employeeHigh;
         }
         return null;
@@ -93,7 +93,7 @@ public abstract class CompanyNumbersRecord extends CvrBitemporalDataRecord {
 
     @JsonProperty(value = "intervalKodeAntalAarsvaerk")
     public String getFulltimeEquivalentRange() {
-        if (this.fulltimeEquivalentLow != null && this.fulltimeEquivalentLow != 0 && this.fulltimeEquivalentHigh != null && this.fulltimeEquivalentHigh != 0) {
+        if (this.fulltimeEquivalentLow != null && this.fulltimeEquivalentHigh != null) {
             return "ANTAL_" + this.fulltimeEquivalentLow + "_" + this.fulltimeEquivalentHigh;
         }
         return null;
@@ -129,7 +129,7 @@ public abstract class CompanyNumbersRecord extends CvrBitemporalDataRecord {
 
     @JsonProperty(value = "intervalKodeAntalInklusivEjere")
     public String getIncludingOwnersRange() {
-        if (this.includingOwnersLow != null && this.includingOwnersLow != 0 && this.includingOwnersHigh != null && this.includingOwnersHigh != 0) {
+        if (this.includingOwnersLow != null && this.includingOwnersHigh != null) {
             return "ANTAL_" + this.includingOwnersLow + "_" + this.includingOwnersHigh;
         }
         return null;

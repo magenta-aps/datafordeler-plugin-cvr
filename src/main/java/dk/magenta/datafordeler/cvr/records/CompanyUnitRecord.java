@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
@@ -338,6 +339,25 @@ public class CompanyUnitRecord extends CvrEntityRecord {
 
 
 
+    public static final String DB_FIELD_META = "metadata";
+    public static final String IO_FIELD_META = "produktionsEnhedMetadata";
+
+    @OneToOne(mappedBy = CompanyUnitMetadataRecord.DB_FIELD_COMPANYUNIT, targetEntity = CompanyUnitMetadataRecord.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_META + DatabaseEntry.REF)
+    @JsonProperty(value = IO_FIELD_META)
+    private CompanyUnitMetadataRecord metadata;
+
+    public void setMetadata(CompanyUnitMetadataRecord metadata) {
+        this.metadata = metadata;
+        this.metadata.setCompanyUnitRecord(this);
+    }
+
+    public CompanyUnitMetadataRecord getMetadata() {
+        return this.metadata;
+    }
+
+
+
     public static final String DB_FIELD_INDUSTRY_RESPONSIBILITY_CODE = "industryResponsibilityCode";
     public static final String IO_FIELD_INDUSTRY_RESPONSIBILITY_CODE = "brancheAnsvarskode";
 
@@ -508,6 +528,9 @@ public class CompanyUnitRecord extends CvrEntityRecord {
         }
         for (AddressRecord address : this.postalAddress) {
             address.wire(session);
+        }
+        if (this.metadata != null) {
+            this.metadata.wire(session);
         }
         super.save(session);
     }
