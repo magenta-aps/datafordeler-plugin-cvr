@@ -2,8 +2,6 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import org.hibernate.Session;
 
 import javax.persistence.*;
@@ -16,12 +14,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Entity
-@Table(name = "cvr_record_metadata", indexes = {
-        @Index(name = "cvr_record_metadata_company", columnList = MetadataRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-})
+
+@MappedSuperclass
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MetadataRecord extends CvrBitemporalDataRecord {
+public abstract class MetadataRecord extends CvrBitemporalDataRecord {
 
     public static final String DB_FIELD_AGGREGATE_STATUS = "aggregateStatus";
     public static final String IO_FIELD_AGGREGATE_STATUS = "sammensatStatus";
@@ -142,14 +138,16 @@ public class MetadataRecord extends CvrBitemporalDataRecord {
     public static final String DB_FIELD_NEWEST_CONTACT_DATA = "newestContactData";
     public static final String IO_FIELD_NEWEST_CONTACT_DATA = "nyesteKontaktoplysninger";
 
-    @OneToMany(targetEntity = MetadataContactRecord.class, mappedBy = MetadataContactRecord.DB_FIELD_METADATA, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<MetadataContactRecord> metadataContactRecords = new HashSet<>();
+    public abstract Set<MetadataContactRecord> getMetadataContactRecords();
+
+    public abstract void setMetadataContactRecords(Set<MetadataContactRecord> metadataContactRecords);
 
     @JsonProperty(IO_FIELD_NEWEST_CONTACT_DATA)
     private void setMetadataContactData(Set<String> contactData) {
         HashSet<String> contacts = new HashSet<>(contactData);
         HashSet<MetadataContactRecord> remove = new HashSet<>();
-        for (MetadataContactRecord contactRecord : this.metadataContactRecords) {
+        Set<MetadataContactRecord> contactRecords = this.getMetadataContactRecords();
+        for (MetadataContactRecord contactRecord : contactRecords) {
             String data = contactRecord.getData();
             if (contacts.contains(data)) {
                 contacts.remove(data);
@@ -157,19 +155,19 @@ public class MetadataRecord extends CvrBitemporalDataRecord {
                 remove.add(contactRecord);
             }
         }
-        this.metadataContactRecords.removeAll(remove);
+        contactRecords.removeAll(remove);
         for (String data : contacts) {
             MetadataContactRecord newContactRecord = new MetadataContactRecord();
             newContactRecord.setData(data);
-            newContactRecord.setMetadataRecord(this);
-            this.metadataContactRecords.add(newContactRecord);
+            contactRecords.add(newContactRecord);
         }
+        this.setMetadataContactRecords(contactRecords);
     }
 
     @JsonProperty(IO_FIELD_NEWEST_CONTACT_DATA)
     private Set<String> getMetadataContactData() {
         HashSet<String> contacts = new HashSet<>();
-        for (MetadataContactRecord metadataContactRecord : this.metadataContactRecords) {
+        for (MetadataContactRecord metadataContactRecord : this.getMetadataContactRecords()) {
             contacts.add(metadataContactRecord.getData());
         }
         return contacts;

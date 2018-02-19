@@ -603,17 +603,17 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_META = "metadata";
     public static final String IO_FIELD_META = "virksomhedMetadata";
 
-    @OneToOne(mappedBy = MetadataRecord.DB_FIELD_COMPANY, targetEntity = MetadataRecord.class, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = CompanyMetadataRecord.DB_FIELD_COMPANY, targetEntity = CompanyMetadataRecord.class, cascade = CascadeType.ALL)
     @JoinColumn(name = DB_FIELD_META + DatabaseEntry.REF)
     @JsonProperty(value = IO_FIELD_META)
-    private MetadataRecord metadata;
+    private CompanyMetadataRecord metadata;
 
-    public void setMetadata(MetadataRecord metadata) {
+    public void setMetadata(CompanyMetadataRecord metadata) {
         this.metadata = metadata;
         this.metadata.setCompanyRecord(this);
     }
 
-    public MetadataRecord getMetadata() {
+    public CompanyMetadataRecord getMetadata() {
         return this.metadata;
     }
 

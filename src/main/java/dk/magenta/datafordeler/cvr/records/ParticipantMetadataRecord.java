@@ -6,13 +6,7 @@ import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import org.hibernate.Session;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -36,7 +30,7 @@ public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
     public static final String DB_FIELD_NEWEST_CONTACT_DATA = "newestContactData";
     public static final String IO_FIELD_NEWEST_CONTACT_DATA = "nyesteKontaktoplysninger";
 
-    @OneToMany(targetEntity = MetadataContactRecord.class, mappedBy = MetadataContactRecord.DB_FIELD_METADATA, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(targetEntity = MetadataContactRecord.class, mappedBy = MetadataContactRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<MetadataContactRecord> metadataContactRecords = new HashSet<>();
 
     @JsonProperty(IO_FIELD_NEWEST_CONTACT_DATA)
