@@ -16,8 +16,10 @@ import dk.magenta.datafordeler.cvr.data.company.CompanyEntityManager;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntityManager;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
+import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntityManager;
 import dk.magenta.datafordeler.cvr.records.CompanyRecord;
 import dk.magenta.datafordeler.cvr.records.CompanyUnitRecord;
+import dk.magenta.datafordeler.cvr.records.ParticipantRecord;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.junit.Assert;
@@ -178,6 +180,9 @@ public class RecordTest {
             input.close();
         }
 
+
+
+
         session = sessionManager.getSessionFactory().openSession();
         try {
             for (int pNumber : units.keySet()) {
@@ -194,6 +199,81 @@ public class RecordTest {
             session.close();
         }
     }
+
+
+
+    @Test
+    public void testParticipant() throws DataFordelerException, IOException {
+        ImportMetadata importMetadata = new ImportMetadata();
+        Session session = sessionManager.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        InputStream input = ParseTest.class.getResourceAsStream("/person.json");
+        boolean linedFile = false;
+        HashMap<Long, JsonNode> persons = new HashMap<>();
+        try {
+            importMetadata.setSession(session);
+
+            if (linedFile) {
+                int lineNumber = 0;
+                Scanner lineScanner = new Scanner(input, "UTF-8").useDelimiter("\n");
+                while (lineScanner.hasNext()) {
+                    String data = lineScanner.next();
+
+                    JsonNode root = objectMapper.readTree(data);
+                    JsonNode itemList = root.get("hits").get("hits");
+                    Assert.assertTrue(itemList.isArray());
+                    for (JsonNode item : itemList) {
+                        String type = item.get("_type").asText();
+                        ParticipantEntityManager entityManager = (ParticipantEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
+                        JsonNode participantInputNode = item.get("_source").get("Vrdeltagerperson");
+                        entityManager.parseData(participantInputNode, importMetadata, session);
+                        persons.put(participantInputNode.get("enhedsNummer").asLong(), participantInputNode);
+                    }
+                    lineNumber++;
+                    System.out.println("loaded line " + lineNumber);
+                    if (lineNumber >= 10) {
+                        break;
+                    }
+                }
+            } else {
+                JsonNode root = objectMapper.readTree(input);
+                JsonNode itemList = root.get("hits").get("hits");
+                Assert.assertTrue(itemList.isArray());
+                for (JsonNode item : itemList) {
+                    String type = item.get("_type").asText();
+                    ParticipantEntityManager entityManager = (ParticipantEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
+                    JsonNode unitInputNode = item.get("_source").get("Vrdeltagerperson");
+                    entityManager.parseData(unitInputNode, importMetadata, session);
+                    persons.put(unitInputNode.get("enhedsNummer").asLong(), unitInputNode);
+                }
+            }
+            transaction.commit();
+        } finally {
+            session.close();
+            QueryManager.clearCaches();
+            input.close();
+        }
+
+
+
+
+        session = sessionManager.getSessionFactory().openSession();
+        try {
+            for (long participantNumber : persons.keySet()) {
+                HashMap<String, Object> filter = new HashMap<>();
+                filter.put("unitNumber", participantNumber);
+                ParticipantRecord companyUnitRecord = QueryManager.getItem(session, ParticipantRecord.class, filter);
+                if (companyUnitRecord == null) {
+                    System.out.println("Didn't find participant number "+participantNumber);
+                } else {
+                    compareJson(persons.get(participantNumber), objectMapper.valueToTree(companyUnitRecord), Collections.singletonList("root"));
+                }
+            }
+        } finally {
+            session.close();
+        }
+    }
+
 
     /**
      * Checks that all items in n1 are also present in n2

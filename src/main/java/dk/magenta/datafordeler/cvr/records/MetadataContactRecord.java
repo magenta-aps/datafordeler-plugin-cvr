@@ -34,4 +34,14 @@ public class MetadataContactRecord extends CvrNontemporalRecord {
     public void setMetadataRecord(MetadataRecord metadataRecord) {
         this.metadataRecord = metadataRecord;
     }
+
+    public static final String DB_FIELD_PARTICIPANT_METADATA = "participantMetadataRecord";
+
+    @ManyToOne(targetEntity = ParticipantMetadataRecord.class)
+    @JoinColumn(name = DB_FIELD_PARTICIPANT_METADATA + DatabaseEntry.REF)
+    private ParticipantMetadataRecord participantMetadataRecord;
+
+    public void setParticipantMetadataRecord(ParticipantMetadataRecord participantMetadataRecord) {
+        this.participantMetadataRecord = participantMetadataRecord;
+    }
 }

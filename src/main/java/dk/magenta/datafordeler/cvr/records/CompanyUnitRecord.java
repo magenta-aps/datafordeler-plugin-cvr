@@ -367,13 +367,6 @@ public class CompanyUnitRecord extends CvrEntityRecord {
 
 
 
-    public static final String DB_FIELD_SAMT_ID = "samtId";
-    public static final String IO_FIELD_SAMT_ID = "samtId";
-
-    @Column(name = DB_FIELD_SAMT_ID)
-    @JsonProperty(value = IO_FIELD_SAMT_ID)
-    private long samtId;
-
 
 
     public static final String DB_FIELD_UNITTYPE = "unitType";
@@ -384,66 +377,6 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     private String unitType;
 
 
-
-    public static final String DB_FIELD_REGISTER_ERROR = "registerError";
-    public static final String IO_FIELD_REGISTER_ERROR = "fejlRegistreret";
-
-    @Column(name = DB_FIELD_REGISTER_ERROR)
-    @JsonProperty(value = IO_FIELD_REGISTER_ERROR)
-    private boolean registerError;
-
-
-
-    public static final String DB_FIELD_DATA_ACCESS = "dataAccess";
-    public static final String IO_FIELD_DATA_ACCESS = "dataAdgang";
-
-    @Column(name = DB_FIELD_DATA_ACCESS)
-    @JsonProperty(value = IO_FIELD_DATA_ACCESS)
-    private long dataAccess;
-
-
-
-    public static final String DB_FIELD_LOADING_ERROR = "loadingError";
-    public static final String IO_FIELD_LOADING_ERROR = "fejlVedIndlaesning";
-
-    @Column(name = DB_FIELD_LOADING_ERROR)
-    @JsonProperty(value = IO_FIELD_LOADING_ERROR)
-    private boolean loadingError;
-
-
-
-    public static final String DB_FIELD_NEAREST_FUTURE_DATE = "nearestFutureDate";
-    public static final String IO_FIELD_NEAREST_FUTURE_DATE = "naermesteFremtidigeDato";
-
-    @Column(name = DB_FIELD_NEAREST_FUTURE_DATE)
-    @JsonProperty(value = IO_FIELD_NEAREST_FUTURE_DATE)
-    private LocalDate nearestFutureDate;
-
-    public void setNearestFutureDate(LocalDate nearestFutureDate) {
-        this.nearestFutureDate = nearestFutureDate;
-    }
-
-    public LocalDate getNearestFutureDate() {
-        return this.nearestFutureDate;
-    }
-
-
-
-    public static final String DB_FIELD_ERRORDESCRIPTION = "errorDescription";
-    public static final String IO_FIELD_ERRORDESCRIPTION = "fejlBeskrivelse";
-
-    @Column(name = DB_FIELD_ERRORDESCRIPTION)
-    @JsonProperty(value = IO_FIELD_ERRORDESCRIPTION)
-    private String errorDescription;
-
-
-
-    public static final String DB_FIELD_EFFECT_AGENT = "effectAgent";
-    public static final String IO_FIELD_EFFECT_AGENT = "virkningsAktoer";
-
-    @Column(name = DB_FIELD_EFFECT_AGENT)
-    @JsonProperty(value = IO_FIELD_EFFECT_AGENT)
-    private String effectAgent;
 
     // enhedstype
     // dataAdgang

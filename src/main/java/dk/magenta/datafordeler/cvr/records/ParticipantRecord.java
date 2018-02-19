@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantType;
@@ -77,6 +78,7 @@ public class ParticipantRecord extends CvrEntityRecord {
     public void setLocationAddress(Set<AddressRecord> locationAddress) {
         for (AddressRecord record : locationAddress) {
             record.setType(AddressRecord.TYPE_LOCATION);
+            record.setParticipantRecord(this);
         }
         this.locationAddress = locationAddress;
     }
@@ -94,6 +96,7 @@ public class ParticipantRecord extends CvrEntityRecord {
     public void setPostalAddress(Set<AddressRecord> postalAddress) {
         for (AddressRecord record : postalAddress) {
             record.setType(AddressRecord.TYPE_POSTAL);
+            record.setParticipantRecord(this);
         }
         this.postalAddress = postalAddress;
     }
@@ -187,8 +190,44 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-    @JsonProperty(value = "stilling")
+
+    public static final String DB_FIELD_POSITION = "position";
+    public static final String IO_FIELD_POSITION = "stilling";
+
+    @Column(name = DB_FIELD_POSITION)
+    @JsonProperty(value = IO_FIELD_POSITION)
     public String position;
+
+
+
+    public static final String DB_FIELD_BUSINESS_KEY = "businessKey";
+    public static final String IO_FIELD_BUSINESS_KEY = "forretningsnoegle";
+
+    @Column(name = DB_FIELD_BUSINESS_KEY)
+    @JsonProperty(value = IO_FIELD_BUSINESS_KEY)
+    public Long businessKey;
+
+
+
+    public static final String DB_FIELD_META = "metadata";
+    public static final String IO_FIELD_META = "deltagerpersonMetadata";
+
+    @OneToOne(mappedBy = ParticipantMetadataRecord.DB_FIELD_PARTICIPANT, targetEntity = ParticipantMetadataRecord.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_META + DatabaseEntry.REF)
+    @JsonProperty(value = IO_FIELD_META)
+    private ParticipantMetadataRecord metadata;
+
+    public void setMetadata(ParticipantMetadataRecord metadata) {
+        this.metadata = metadata;
+        this.metadata.setParticipantRecord(this);
+    }
+
+    public ParticipantMetadataRecord getMetadata() {
+        return this.metadata;
+    }
+
+
+
 
 
     @JsonIgnore
@@ -252,6 +291,7 @@ public class ParticipantRecord extends CvrEntityRecord {
         for (AddressRecord address : this.businessAddress) {
             address.wire(session);
         }
+        this.metadata.wire(session);
         super.save(session);
     }
 }
