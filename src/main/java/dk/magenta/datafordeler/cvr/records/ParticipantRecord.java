@@ -228,6 +228,21 @@ public class ParticipantRecord extends CvrEntityRecord {
 
 
 
+    //CompanyParticipantRelationRecord
+    public static final String DB_FIELD_COMPANY_RELATION = "companyRelation";
+    public static final String IO_FIELD_COMPANY_RELATION = "virksomhedSummariskRelation";
+
+    @OneToMany(mappedBy = CompanyParticipantRelationRecord.DB_FIELD_PARTICIPANT, targetEntity = CompanyParticipantRelationRecord.class, cascade = CascadeType.ALL)
+    @JsonProperty(value = IO_FIELD_COMPANY_RELATION)
+    private Set<CompanyParticipantRelationRecord> companyRelation;
+
+    public void setCompanyRelation(Set<CompanyParticipantRelationRecord> companyRelation) {
+        this.companyRelation = companyRelation;
+        for (CompanyParticipantRelationRecord companyParticipantRelationRecord : companyRelation) {
+            companyParticipantRelationRecord.setParticipantRecord(this);
+        }
+    }
+
 
 
     @JsonIgnore
@@ -254,6 +269,9 @@ public class ParticipantRecord extends CvrEntityRecord {
         }
         if (this.emailAddress != null) {
             list.addAll(this.emailAddress);
+        }
+        if (this.companyRelation != null) {
+            list.addAll(this.companyRelation);
         }
         if (this.attributes != null) {
             for (AttributeRecord attributeRecord : this.attributes) {

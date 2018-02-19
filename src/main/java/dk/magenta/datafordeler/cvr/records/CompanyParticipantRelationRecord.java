@@ -21,15 +21,16 @@ import java.util.UUID;
 @Table(name = "cvr_record_participant_relation", indexes = {
         @Index(name = "cvr_record_participant_relation_company", columnList = CompanyParticipantRelationRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
         @Index(name = "cvr_record_participant_relation_companyunit", columnList = CompanyParticipantRelationRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = "cvr_record_participant_relation_participant", columnList = CompanyParticipantRelationRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
 
-    public static final String DB_FIELD_PARTICIPANT = "participant";
-    public static final String IO_FIELD_PARTICIPANT = "deltager";
+    public static final String DB_FIELD_PARTICIPANT_RELATION = "participant";
+    public static final String IO_FIELD_PARTICIPANT_RELATION = "deltager";
 
-    @OneToOne(targetEntity = ParticipantRelationRecord.class)
-    @JsonProperty(value = IO_FIELD_PARTICIPANT)
+    @OneToOne(targetEntity = ParticipantRelationRecord.class, cascade = CascadeType.ALL)
+    @JsonProperty(value = IO_FIELD_PARTICIPANT_RELATION)
     private ParticipantRelationRecord participant;
 
     public void setParticipant(ParticipantRelationRecord participant) {
@@ -37,6 +38,20 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
         if (participant != null) {
             participant.setCompanyParticipantRelationRecord(this);
         }
+    }
+
+
+
+    public static final String DB_FIELD_COMPANY_RELATION = "company";
+    public static final String IO_FIELD_COMPANY_RELATION = "virksomhed";
+
+    @OneToOne(targetEntity = CompanyRelationRecord.class, cascade = CascadeType.ALL)
+    @JsonProperty(value = IO_FIELD_COMPANY_RELATION)
+    private CompanyRelationRecord company;
+
+    public void setCompany(CompanyRelationRecord company) {
+        this.company = company;
+        company.setCompanyParticipantRelationRecord(this);
     }
 
 

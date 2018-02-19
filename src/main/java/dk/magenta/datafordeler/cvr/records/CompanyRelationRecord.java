@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -12,9 +15,9 @@ import java.util.UUID;
  * Record for one participant on a Company or CompanyUnit
  */
 @Entity
-@Table(name = "cvr_record_participant_relation_participant")
+@Table(name = "cvr_record_participant_relation_company")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ParticipantRelationRecord extends CvrBitemporalRecord {
+public class CompanyRelationRecord extends CvrBitemporalRecord {
 
     public static final String DB_FIELD_UNITNUMBER = "unitNumber";
     public static final String IO_FIELD_UNITNUMBER = "enhedsNummer";
@@ -33,7 +36,17 @@ public class ParticipantRelationRecord extends CvrBitemporalRecord {
     public String unitType;
 
 
-    @OneToOne(targetEntity = CompanyParticipantRelationRecord.class, mappedBy = CompanyParticipantRelationRecord.DB_FIELD_PARTICIPANT_RELATION)
+
+    public static final String DB_FIELD_CVRNUMBER = "cvrNumber";
+    public static final String IO_FIELD_CVRNUMBER = "cvrNummer";
+
+    @Column(name = DB_FIELD_CVRNUMBER)
+    @JsonProperty(value = IO_FIELD_CVRNUMBER)
+    public long cvrNumber;
+
+
+
+    @OneToOne(targetEntity = CompanyParticipantRelationRecord.class, mappedBy = CompanyParticipantRelationRecord.DB_FIELD_COMPANY_RELATION)
     @JsonIgnore
     private CompanyParticipantRelationRecord companyParticipantRelationRecord;
 
