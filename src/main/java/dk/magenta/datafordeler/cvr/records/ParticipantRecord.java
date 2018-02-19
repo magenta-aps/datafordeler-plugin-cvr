@@ -209,6 +209,15 @@ public class ParticipantRecord extends CvrEntityRecord {
 
 
 
+    public static final String DB_FIELD_STATUS_CODE = "statusCode";
+    public static final String IO_FIELD_STATUS_CODE = "statusKode";
+
+    @Column(name = DB_FIELD_STATUS_CODE)
+    @JsonProperty(value = IO_FIELD_STATUS_CODE)
+    public Long statusCode;
+
+
+
     public static final String DB_FIELD_META = "metadata";
     public static final String IO_FIELD_META = "deltagerpersonMetadata";
 
