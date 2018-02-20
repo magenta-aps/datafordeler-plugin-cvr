@@ -28,6 +28,7 @@ import java.util.UUID;
         @Index(name = "cvr_record_address_company", columnList = AddressRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
         @Index(name = "cvr_record_address_companyunit", columnList = AddressRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
         @Index(name = "cvr_record_address_participant", columnList = AddressRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+        @Index(name = "cvr_record_address_type", columnList = AddressRecord.DB_FIELD_TYPE),
         @Index(name = "cvr_record_address_municipality", columnList = AddressRecord.DB_FIELD_MUNICIPALITY + DatabaseEntry.REF),
 })
 public class AddressRecord extends CvrBitemporalDataRecord {

@@ -22,7 +22,10 @@ import java.util.UUID;
  * with this class at the base.
  */
 @Entity
-@Table(name="cvr_record_companyunitrecord")
+@Table(name="cvr_record_companyunitrecord", indexes = {
+        @Index(name = "cvr_record_companyunit_pnumber", columnList = CompanyUnitRecord.DB_FIELD_P_NUMBER),
+        @Index(name = "cvr_record_companyunit_unitnumber", columnList = CompanyUnitRecord.DB_FIELD_UNITNUMBER),
+})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyUnitRecord extends CvrEntityRecord {
 

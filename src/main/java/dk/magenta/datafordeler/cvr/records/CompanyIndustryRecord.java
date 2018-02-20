@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
@@ -17,7 +18,9 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "cvr_record_industry", indexes = {
-        @Index(name="cvr_record_industry_code", columnList = CompanyIndustryRecord.DB_FIELD_CODE)
+        @Index(name = "cvr_record_industry_company", columnList = CompanyIndustryRecord.DB_FIELD_COMPANY + DatabaseEntry.REF + "," + CompanyIndustryRecord.DB_FIELD_INDEX),
+        @Index(name = "cvr_record_industry_companyunit", columnList = CompanyIndustryRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF + "," + CompanyIndustryRecord.DB_FIELD_INDEX),
+        //@Index(name="cvr_record_industry_code", columnList = CompanyIndustryRecord.DB_FIELD_CODE)
 })
 public class CompanyIndustryRecord extends CvrBitemporalDataRecord {
 

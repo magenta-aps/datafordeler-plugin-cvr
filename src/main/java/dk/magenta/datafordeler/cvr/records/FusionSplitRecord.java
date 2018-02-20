@@ -13,7 +13,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "cvr_record_fusion", indexes = {
-        @Index(name = "cvr_record_fusion_company", columnList = FusionSplitRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = "cvr_record_fusion_company", columnList = FusionSplitRecord.DB_FIELD_COMPANY + DatabaseEntry.REF + "," + FusionSplitRecord.DB_FIELD_SPLIT),
 })
 public class FusionSplitRecord extends CvrNontemporalDataRecord {
 
