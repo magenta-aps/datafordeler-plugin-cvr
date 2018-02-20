@@ -257,7 +257,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     @JsonIgnore
     public List<CvrRecord> getAll() {
         ArrayList<CvrRecord> list = new ArrayList<>();
-        list.add(this);
         if (this.names != null) {
             list.addAll(this.names);
         }

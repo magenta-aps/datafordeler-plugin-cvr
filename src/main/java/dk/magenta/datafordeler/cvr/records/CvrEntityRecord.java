@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.Session;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -27,9 +28,14 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord {
         return newer;
     }
 
-
-
-
+    @Override
+    public void save(Session session) {
+        super.save(session);
+        for (CvrRecord record : this.getAll()) {
+            System.out.println("sub of "+this+": "+record);
+            record.save(session);
+        }
+    }
 
     public static final String DB_FIELD_SAMT_ID = "samtId";
     public static final String IO_FIELD_SAMT_ID = "samtId";

@@ -628,7 +628,6 @@ public class CompanyRecord extends CvrEntityRecord {
     @Override
     public List<CvrRecord> getAll() {
         ArrayList<CvrRecord> list = new ArrayList<>();
-        list.add(this);
         if (this.regNumber != null) {
             list.addAll(this.regNumber);
         }
