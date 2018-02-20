@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dk.magenta.datafordeler.core.Application;
+import dk.magenta.datafordeler.core.database.Effect;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.core.database.Registration;
 import dk.magenta.datafordeler.core.database.SessionManager;
@@ -13,15 +14,17 @@ import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.io.ImportMetadata;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntityManager;
+import dk.magenta.datafordeler.cvr.data.company.CompanyRecordQuery;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntityManager;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntityManager;
-import dk.magenta.datafordeler.cvr.records.CompanyRecord;
-import dk.magenta.datafordeler.cvr.records.CompanyUnitRecord;
-import dk.magenta.datafordeler.cvr.records.ParticipantRecord;
+import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
+import dk.magenta.datafordeler.cvr.records.*;
+import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -128,6 +131,27 @@ public class RecordTest {
                     compareJson(companies.get(cvrNumber), objectMapper.valueToTree(companyRecord), Collections.singletonList("root"));
                 }
             }
+
+            CompanyRecordQuery query = new CompanyRecordQuery();
+            query.setKommunekoder(101);
+            query.setTelefonnummer("33369696");
+            query.setEmailadresse("info@magenta.dk");
+            query.setReklamebeskyttelse("true");
+            query.setVirksomhedsform(80);
+            query.setVirksomhedsnavn("MAGENTA ApS");
+
+            //OffsetDateTime time = OffsetDateTime.now();
+            OffsetDateTime time = OffsetDateTime.parse("2001-01-01T00:00:00Z");
+            query.setRegistrationTo(time);
+            //query.setEffectFrom(time);
+            //query.setEffectTo(time);
+            query.applyFilters(session);
+
+            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(
+                    QueryManager.getAllEntities(session, query, CompanyRecord.class)
+            ));
+
+
         } finally {
             session.close();
         }

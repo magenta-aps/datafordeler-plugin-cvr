@@ -19,8 +19,10 @@ import javax.persistence.*;
 })
 public class CompanyFormRecord extends CvrBitemporalDataRecord {
 
+    public static final String IO_FIELD_CODE = "virksomhedsformkode";
+
     @Transient
-    @JsonProperty(value = "virksomhedsformkode")
+    @JsonProperty(value = IO_FIELD_CODE)
     private String companyFormCode;
 
     public String getCompanyFormCode() {
@@ -30,8 +32,10 @@ public class CompanyFormRecord extends CvrBitemporalDataRecord {
         return this.companyFormCode;
     }
 
+    public static final String IO_FIELD_SHORT_DESCRIPTION = "kortBeskrivelse";
+
     @Transient
-    @JsonProperty(value = "kortBeskrivelse")
+    @JsonProperty(value = IO_FIELD_SHORT_DESCRIPTION)
     private String shortDescription;
 
     public String getShortDescription() {
@@ -41,8 +45,10 @@ public class CompanyFormRecord extends CvrBitemporalDataRecord {
         return this.shortDescription;
     }
 
+    public static final String IO_FIELD_LONG_DESCRIPTION = "langBeskrivelse";
+
     @Transient
-    @JsonProperty(value = "langBeskrivelse")
+    @JsonProperty(value = IO_FIELD_LONG_DESCRIPTION)
     private String longDescription;
 
     public String getLongDescription() {
@@ -52,8 +58,10 @@ public class CompanyFormRecord extends CvrBitemporalDataRecord {
         return this.longDescription;
     }
 
+    public static final String IO_FIELD_RESPONSIBLE_DATASOURCE = "ansvarligDataleverandoer";
+
     @Transient
-    @JsonProperty(value = "ansvarligDataleverandoer")
+    @JsonProperty(value = IO_FIELD_RESPONSIBLE_DATASOURCE)
     private String responsibleDatasource;
 
     public String getResponsibleDatasource() {
@@ -62,6 +70,8 @@ public class CompanyFormRecord extends CvrBitemporalDataRecord {
         }
         return this.responsibleDatasource;
     }
+
+    public static final String DB_FIELD_FORM = "companyForm";
 
     @ManyToOne(targetEntity = CompanyForm.class)
     @JsonIgnore

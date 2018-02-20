@@ -308,7 +308,6 @@ public class AddressRecord extends CvrBitemporalDataRecord {
 
     @XmlElement(name = IO_FIELD_POSTCODE_REF)
     @ManyToOne
-    @Cascade(value = org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     @JoinColumn(name = DB_FIELD_POSTCODE_REF + DatabaseEntry.REF)
     @JsonIgnore
     private PostCode post;
