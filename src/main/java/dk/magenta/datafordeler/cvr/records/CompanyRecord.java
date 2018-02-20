@@ -11,10 +11,7 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Base record for Company data, parsed from JSON into a tree of objects
@@ -37,6 +34,11 @@ public class CompanyRecord extends CvrEntityRecord {
 
     public int getCvrNumber() {
         return this.cvrNumber;
+    }
+
+    @JsonIgnore
+    public Map<String, Object> getIdentifyingFilter() {
+        return Collections.singletonMap(DB_FIELD_CVR_NUMBER, this.cvrNumber);
     }
 
 

@@ -58,8 +58,7 @@ public class RecordTest {
         schemaMap.put("deltager", ParticipantEntity.schema);
     }
 
-    @Test
-    public void testCompany() throws DataFordelerException, IOException {
+    private HashMap<Integer, JsonNode> loadCompany() throws IOException, DataFordelerException {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
@@ -109,8 +108,15 @@ public class RecordTest {
             QueryManager.clearCaches();
             input.close();
         }
+        return companies;
+    }
 
-        session = sessionManager.getSessionFactory().openSession();
+    @Test
+    public void testCompany() throws DataFordelerException, IOException {
+        this.loadCompany();
+        this.loadCompany();
+        HashMap<Integer, JsonNode> companies = this.loadCompany();
+        Session session = sessionManager.getSessionFactory().openSession();
         try {
             for (int cvrNumber : companies.keySet()) {
                 HashMap<String, Object> filter = new HashMap<>();
@@ -128,8 +134,7 @@ public class RecordTest {
     }
 
 
-    @Test
-    public void testCompanyUnit() throws DataFordelerException, IOException {
+    private HashMap<Integer, JsonNode> loadUnits() throws IOException, DataFordelerException {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
@@ -179,11 +184,15 @@ public class RecordTest {
             QueryManager.clearCaches();
             input.close();
         }
+        return units;
+    }
 
-
-
-
-        session = sessionManager.getSessionFactory().openSession();
+    @Test
+    public void testCompanyUnit() throws DataFordelerException, IOException {
+        this.loadUnits();
+        this.loadUnits();
+        HashMap<Integer, JsonNode> units = this.loadUnits();
+        Session session = sessionManager.getSessionFactory().openSession();
         try {
             for (int pNumber : units.keySet()) {
                 HashMap<String, Object> filter = new HashMap<>();
@@ -201,9 +210,7 @@ public class RecordTest {
     }
 
 
-
-    @Test
-    public void testParticipant() throws DataFordelerException, IOException {
+    private HashMap<Long, JsonNode> loadParticipant() throws IOException, DataFordelerException {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
@@ -253,11 +260,15 @@ public class RecordTest {
             QueryManager.clearCaches();
             input.close();
         }
+        return persons;
+    }
 
-
-
-
-        session = sessionManager.getSessionFactory().openSession();
+    @Test
+    public void testParticipant() throws DataFordelerException, IOException {
+        this.loadParticipant();
+        this.loadParticipant();
+        HashMap<Long, JsonNode> persons = this.loadParticipant();
+        Session session = sessionManager.getSessionFactory().openSession();
         try {
             for (long participantNumber : persons.keySet()) {
                 HashMap<String, Object> filter = new HashMap<>();

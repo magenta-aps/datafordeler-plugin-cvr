@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.QueryManager;
 import org.hibernate.Session;
 
 import javax.persistence.Column;
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @MappedSuperclass
 public abstract class CvrEntityRecord extends CvrBitemporalRecord {
@@ -28,12 +30,17 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord {
         return newer;
     }
 
+    public abstract Map<String, Object> getIdentifyingFilter();
+
     @Override
     public void save(Session session) {
+        CvrEntityRecord existing = QueryManager.getItem(session, this.getClass(), this.getIdentifyingFilter());
         super.save(session);
         for (CvrRecord record : this.getAll()) {
-            System.out.println("sub of "+this+": "+record);
             record.save(session);
+        }
+        if (existing != null) {
+            session.delete(existing);
         }
     }
 

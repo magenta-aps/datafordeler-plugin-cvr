@@ -11,10 +11,7 @@ import org.hibernate.Session;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Base record for Participant data, parsed from JSON into a tree of objects
@@ -34,6 +31,11 @@ public class ParticipantRecord extends CvrEntityRecord {
 
     public long getUnitNumber() {
         return this.unitNumber;
+    }
+
+    @JsonIgnore
+    public Map<String, Object> getIdentifyingFilter() {
+        return Collections.singletonMap(DB_FIELD_UNIT_NUMBER, this.unitNumber);
     }
 
 
