@@ -1,16 +1,18 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.database.QueryManager;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 import org.hibernate.Session;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @MappedSuperclass
 public abstract class CvrEntityRecord extends CvrBitemporalRecord {
@@ -32,9 +34,14 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord {
 
     public abstract Map<String, Object> getIdentifyingFilter();
 
+    public abstract UUID generateUUID();
+
     @Override
     public void save(Session session) {
         CvrEntityRecord existing = QueryManager.getItem(session, this.getClass(), this.getIdentifyingFilter());
+        if (this.identification == null) {
+            this.identification = QueryManager.getOrCreateIdentification(session, this.generateUUID(), CvrPlugin.getDomain());
+        }
         super.save(session);
         for (CvrRecord record : this.getAll()) {
             record.save(session);
@@ -43,6 +50,10 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord {
             session.delete(existing);
         }
     }
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    protected Identification identification;
+
 
     public static final String DB_FIELD_SAMT_ID = "samtId";
     public static final String IO_FIELD_SAMT_ID = "samtId";

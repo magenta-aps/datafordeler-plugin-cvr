@@ -706,6 +706,7 @@ public class CompanyRecord extends CvrEntityRecord {
         return list;
     }
 
+    @Override
     public UUID generateUUID() {
         return CompanyEntity.generateUUID(this.cvrNumber);
     }

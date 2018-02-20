@@ -332,7 +332,12 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         }
         timer.measure(TASK_PARSE);
 
+        
+        
+        toplevelRecord.save(session);
 
+        
+        
         timer.start(TASK_FIND_ENTITY);
         this.checkInterrupt(importMetadata);
         UUID uuid = this.generateUUID(toplevelRecord);
@@ -352,11 +357,6 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             log.debug("Using existing entity");
         }
         timer.measure(TASK_FIND_ENTITY);
-
-
-
-        toplevelRecord.save(session);
-
 
 
 
