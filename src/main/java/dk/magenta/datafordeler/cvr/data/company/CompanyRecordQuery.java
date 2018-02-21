@@ -21,29 +21,6 @@ import java.util.*;
 public class CompanyRecordQuery extends CompanyQuery {
 
     @Override
-    public void setFromParameters(ParameterMap parameters) {
-        this.setCvrNumre(parameters.get(CVRNUMMER));
-        this.setReklamebeskyttelse(parameters.getFirst(REKLAMEBESKYTTELSE));
-        this.setVirksomhedsnavn(parameters.getFirst(NAVN));
-        this.setTelefonnummer(parameters.getFirst(TELEFONNUMMER));
-        this.setTelefaxnummer(parameters.getFirst(TELEFAXNUMMER));
-        this.setEmailadresse(parameters.getFirst(EMAILADRESSE));
-        this.setVirksomhedsform(parameters.getFirst(VIRKSOMHEDSFORM));
-        this.setKommunekoder(parameters.get(KOMMUNEKODE));
-    }
-
-    @Override
-    public Class<CompanyEntity> getEntityClass() {
-        return CompanyEntity.class;
-    }
-
-    @Override
-    public Class getDataClass() {
-        return CompanyBaseData.class;
-    }
-
-
-    @Override
     public LookupDefinition getLookupDefinition() {
         CvrRecordLookupDefinition lookupDefinition = new CvrRecordLookupDefinition(this, null);
 

@@ -18,9 +18,24 @@ import java.util.*;
  */
 public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
 
+    public static final String P_NUMBER = CompanyUnitEntity.IO_FIELD_PNUMBER;
     public static final String ASSOCIATED_COMPANY_CVR = CompanyUnitBaseData.IO_FIELD_CVR_NUMBER;
     public static final String PRIMARYINDUSTRY = CompanyUnitBaseData.IO_FIELD_PRIMARY_INDUSTRY;
     public static final String KOMMUNEKODE = Municipality.IO_FIELD_CODE;
+
+    @QueryField(type = QueryField.FieldType.INT, queryName = P_NUMBER)
+    private String pNumber;
+
+    public String getpNumber() {
+        return this.pNumber;
+    }
+
+    public void setpNumber(String pNumber) {
+        this.pNumber = pNumber;
+        if (pNumber != null) {
+            this.increaseDataParamCount();
+        }
+    }
 
     @QueryField(type = QueryField.FieldType.INT, queryName = ASSOCIATED_COMPANY_CVR)
     private String associatedCompanyCvrNumber;
@@ -59,14 +74,28 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
     }
 
     public void addKommunekode(String kommunekode) {
-        this.kommunekoder.add(kommunekode);
         if (kommunekode != null) {
+            this.kommunekoder.add(kommunekode);
             this.increaseDataParamCount();
         }
     }
 
     public void addKommunekode(int kommunekode) {
         this.addKommunekode(String.format("%03d", kommunekode));
+    }
+
+    public void setKommunekoder(String kommunekode) {
+        this.kommunekoder.clear();
+        this.addKommunekode(kommunekode);
+    }
+
+    public void setKommunekoder(Collection<String> kommunekoder) {
+        this.kommunekoder.clear();
+        if (kommunekoder != null) {
+            for (String kommunekode : kommunekoder) {
+                this.addKommunekode(kommunekode);
+            }
+        }
     }
 
 
@@ -104,12 +133,11 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
     public LookupDefinition getLookupDefinition() {
         LookupDefinition lookupDefinition = new LookupDefinition(this, CompanyUnitBaseData.class);
 
-        /*if (this.pNumber != null) {
-            lookupDefinition.put(LookupDefinition.entityref + ".pNumber", this.pNumber);
-        }*/
-
+        if (this.pNumber != null) {
+            lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + CompanyUnitEntity.DB_FIELD_PNUMBER, this.pNumber, Long.class);
+        }
         if (this.associatedCompanyCvrNumber != null) {
-            lookupDefinition.put(CompanyUnitBaseData.DB_FIELD_CVR_NUMBER + LookupDefinition.separator + IntegerData.DB_FIELD_VALUE, this.associatedCompanyCvrNumber, Long.class);
+            lookupDefinition.put(CompanyUnitBaseData.DB_FIELD_CVR_NUMBER + LookupDefinition.separator + IntegerData.DB_FIELD_VALUE, this.associatedCompanyCvrNumber, Integer.class);
         }
         if (this.primaryIndustry != null) {
             lookupDefinition.put(CompanyUnitBaseData.DB_FIELD_PRIMARY_INDUSTRY + LookupDefinition.separator + IndustryData.DB_FIELD_INDUSTRY + LookupDefinition.separator + Industry.DB_FIELD_CODE, this.primaryIndustry, String.class);

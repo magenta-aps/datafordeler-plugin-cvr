@@ -23,7 +23,7 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
 
 
 
-    @QueryField(type = QueryField.FieldType.INT, queryName = UNITNUMBER)
+    @QueryField(type = QueryField.FieldType.LONG, queryName = UNITNUMBER)
     private String enhedsNummer;
 
     public String getEnhedsNummer() {
@@ -63,14 +63,28 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
     }
 
     public void addKommunekode(String kommunekode) {
-        this.kommunekoder.add(kommunekode);
         if (kommunekode != null) {
+            this.kommunekoder.add(kommunekode);
             this.increaseDataParamCount();
         }
     }
 
     public void addKommunekode(int kommunekode) {
         this.addKommunekode(String.format("%03d", kommunekode));
+    }
+
+    public void setKommunekoder(String kommunekode) {
+        this.kommunekoder.clear();
+        this.addKommunekode(kommunekode);
+    }
+
+    public void setKommunekoder(Collection<String> kommunekoder) {
+        this.kommunekoder.clear();
+        if (kommunekoder != null) {
+            for (String kommunekode : kommunekoder) {
+                this.addKommunekode(kommunekode);
+            }
+        }
     }
 
 
@@ -111,7 +125,7 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
         LookupDefinition lookupDefinition = new LookupDefinition(this, ParticipantBaseData.class);
 
         if (this.enhedsNummer != null) {
-            lookupDefinition.put(ParticipantBaseData.DB_FIELD_UNIT_NUMBER + LookupDefinition.separator + IntegerData.DB_FIELD_VALUE, this.enhedsNummer, Integer.class);
+            lookupDefinition.put(ParticipantBaseData.DB_FIELD_UNIT_NUMBER + LookupDefinition.separator + IntegerData.DB_FIELD_VALUE, this.enhedsNummer, Long.class);
         }
 
         if (this.navne != null) {

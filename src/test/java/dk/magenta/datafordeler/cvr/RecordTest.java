@@ -17,8 +17,10 @@ import dk.magenta.datafordeler.cvr.data.company.CompanyEntityManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyRecordQuery;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntityManager;
+import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitRecordQuery;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntityManager;
+import dk.magenta.datafordeler.cvr.data.participant.ParticipantRecordQuery;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 import dk.magenta.datafordeler.cvr.records.*;
 import org.hibernate.Filter;
@@ -133,24 +135,57 @@ public class RecordTest {
             }
 
             CompanyRecordQuery query = new CompanyRecordQuery();
-            query.setKommunekoder(101);
-            query.setTelefonnummer("33369696");
-            query.setEmailadresse("info@magenta.dk");
-            query.setReklamebeskyttelse("true");
-            query.setVirksomhedsform(80);
-            query.setVirksomhedsnavn("MAGENTA ApS");
-
-            //OffsetDateTime time = OffsetDateTime.now();
-            OffsetDateTime time = OffsetDateTime.parse("2001-01-01T00:00:00Z");
+            OffsetDateTime time = OffsetDateTime.now();
             query.setRegistrationTo(time);
-            //query.setEffectFrom(time);
-            //query.setEffectTo(time);
+            query.setEffectFrom(time);
+            query.setEffectTo(time);
             query.applyFilters(session);
 
-            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(
-                    QueryManager.getAllEntities(session, query, CompanyRecord.class)
-            ));
+            query.setKommunekoder(101);
+            Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
+            query.setKommunekoder((String) null);
+            query.setTelefonnummer("33369696");
+            Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
+            query.setTelefonnummer(null);
+            query.setEmailadresse("info@magenta.dk");
+            Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
+            query.setEmailadresse(null);
+            query.setReklamebeskyttelse("true");
+            Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
+            query.setReklamebeskyttelse(null);
+            query.setVirksomhedsform(80);
+            Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
+            query.setVirksomhedsform(null);
+            query.setVirksomhedsnavn("MAGENTA ApS");
+            Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
 
+
+
+
+            time = OffsetDateTime.parse("1998-01-01T00:00:00Z");
+            query.setRegistrationTo(time);
+            query.setEffectFrom(time);
+            query.setEffectTo(time);
+            query.applyFilters(session);
+
+
+            query.setKommunekoder(101);
+            Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
+            query.setKommunekoder((String) null);
+            query.setTelefonnummer("33369696");
+            Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
+            query.setTelefonnummer(null);
+            query.setEmailadresse("info@magenta.dk");
+            Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
+            query.setEmailadresse(null);
+            query.setReklamebeskyttelse("true");
+            Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
+            query.setReklamebeskyttelse(null);
+            query.setVirksomhedsform(80);
+            Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
+            query.setVirksomhedsform(null);
+            query.setVirksomhedsnavn("MAGENTA ApS");
+            Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
 
         } finally {
             session.close();
@@ -228,6 +263,47 @@ public class RecordTest {
                     compareJson(units.get(pNumber), objectMapper.valueToTree(companyUnitRecord), Collections.singletonList("root"));
                 }
             }
+
+
+            CompanyUnitRecordQuery query = new CompanyUnitRecordQuery();
+            OffsetDateTime time = OffsetDateTime.parse("2017-01-01T00:00:00Z");
+            query.setRegistrationTo(time);
+            query.setEffectFrom(time);
+            query.setEffectTo(time);
+            query.applyFilters(session);
+
+            query.setPrimaryIndustry("478900");
+            Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyUnitRecord.class).size());
+            query.setPrimaryIndustry(null);
+            query.setAssociatedCompanyCvrNumber("37952273");
+            Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyUnitRecord.class).size());
+            query.setAssociatedCompanyCvrNumber(null);
+            query.setpNumber("1021686405");
+            Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyUnitRecord.class).size());
+            query.setpNumber(null);
+            query.setKommunekoder("561");
+            Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyUnitRecord.class).size());
+            query.setKommunekoder((String) null);
+
+
+            time = OffsetDateTime.parse("1900-01-01T00:00:00Z");
+            query.setRegistrationTo(time);
+            query.setEffectFrom(time);
+            query.setEffectTo(time);
+            query.applyFilters(session);
+
+
+            query.setPrimaryIndustry("478900");
+            Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyUnitRecord.class).size());
+            query.setPrimaryIndustry(null);
+            query.setAssociatedCompanyCvrNumber("37952273");
+            Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyUnitRecord.class).size());
+            query.setAssociatedCompanyCvrNumber(null);
+            query.setpNumber("1021686405");
+            Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyUnitRecord.class).size());
+            query.setpNumber(null);
+            query.addKommunekode(101);
+            Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyUnitRecord.class).size());
         } finally {
             session.close();
         }
@@ -304,6 +380,23 @@ public class RecordTest {
                     compareJson(persons.get(participantNumber), objectMapper.valueToTree(companyUnitRecord), Collections.singletonList("root"));
                 }
             }
+
+            ParticipantRecordQuery query = new ParticipantRecordQuery();
+            OffsetDateTime time = OffsetDateTime.now();
+            query.setRegistrationTo(time);
+            query.setEffectFrom(time);
+            query.setEffectTo(time);
+            query.applyFilters(session);
+
+            query.setEnhedsNummer("4000004988");
+            Assert.assertEquals(1, QueryManager.getAllEntities(session, query, ParticipantRecord.class).size());
+            query.setEnhedsNummer(null);
+            query.setNavne("Morten*");
+            Assert.assertEquals(1, QueryManager.getAllEntities(session, query, ParticipantRecord.class).size());
+            query.setNavne(null);
+            query.addKommunekode("101");
+            Assert.assertEquals(1, QueryManager.getAllEntities(session, query, ParticipantRecord.class).size());
+
         } finally {
             session.close();
         }
