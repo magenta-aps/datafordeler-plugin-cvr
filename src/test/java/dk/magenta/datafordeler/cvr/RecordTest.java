@@ -267,7 +267,7 @@ public class RecordTest {
 
             CompanyUnitRecordQuery query = new CompanyUnitRecordQuery();
             OffsetDateTime time = OffsetDateTime.parse("2017-01-01T00:00:00Z");
-            query.setRegistrationTo(time);
+            //query.setRegistrationTo(time);
             query.setEffectFrom(time);
             query.setEffectTo(time);
             query.applyFilters(session);
@@ -300,7 +300,7 @@ public class RecordTest {
             Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyUnitRecord.class).size());
             query.setAssociatedCompanyCvrNumber(null);
             query.setpNumber("1021686405");
-            Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyUnitRecord.class).size());
+            Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyUnitRecord.class).size());
             query.setpNumber(null);
             query.addKommunekode(101);
             Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyUnitRecord.class).size());
@@ -396,6 +396,27 @@ public class RecordTest {
             query.setNavne(null);
             query.addKommunekode("101");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, ParticipantRecord.class).size());
+            query.setKommunekoder((String) null);
+
+
+
+            time = OffsetDateTime.parse("1900-01-01T00:00:00Z");
+            //query.setRegistrationTo(time);
+            query.setEffectFrom(time);
+            query.setEffectTo(time);
+            query.applyFilters(session);
+
+
+
+            query.setEnhedsNummer("4000004988");
+            Assert.assertEquals(1, QueryManager.getAllEntities(session, query, ParticipantRecord.class).size());
+            query.setEnhedsNummer(null);
+            query.setNavne("Morten*");
+            Assert.assertEquals(1, QueryManager.getAllEntities(session, query, ParticipantRecord.class).size());
+            query.setNavne(null);
+            query.addKommunekode("101");
+            Assert.assertEquals(0, QueryManager.getAllEntities(session, query, ParticipantRecord.class).size());
+            query.setKommunekoder((String) null);
 
         } finally {
             session.close();

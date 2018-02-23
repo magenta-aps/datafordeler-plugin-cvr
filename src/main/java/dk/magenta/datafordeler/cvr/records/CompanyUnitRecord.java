@@ -231,7 +231,8 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_TO+" >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR "+CvrRecordPeriod.DB_FIELD_VALID_TO+" is null)"),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
-    })@JsonProperty(value = IO_FIELD_PRIMARY_INDUSTRY)
+    })
+    @JsonProperty(value = IO_FIELD_PRIMARY_INDUSTRY)
     private Set<CompanyIndustryRecord> primaryIndustry;
 
     public void setPrimaryIndustry(Set<CompanyIndustryRecord> primaryIndustry) {
