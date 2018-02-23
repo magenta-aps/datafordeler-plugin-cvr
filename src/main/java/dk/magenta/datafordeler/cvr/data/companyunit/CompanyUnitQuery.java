@@ -126,15 +126,15 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
 
 
     @QueryField(type = QueryField.FieldType.STRING, queryName = KOMMUNEKODE)
-    private List<String> kommunekoder = new ArrayList<>();
+    private List<String> kommunekode = new ArrayList<>();
 
     public Collection<String> getKommuneKode() {
-        return kommunekoder;
+        return kommunekode;
     }
 
     public void addKommuneKode(String kommunekode) {
         if (kommunekode != null) {
-            this.kommunekoder.add(kommunekode);
+            this.kommunekode.add(kommunekode);
             this.increaseDataParamCount();
         }
     }
@@ -144,12 +144,12 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
     }
 
     public void setKommuneKode(String kommunekode) {
-        this.kommunekoder.clear();
+        this.kommunekode.clear();
         this.addKommuneKode(kommunekode);
     }
 
     public void setKommuneKode(Collection<String> kommunekoder) {
-        this.kommunekoder.clear();
+        this.kommunekode.clear();
         if (kommunekoder != null) {
             for (String kommunekode : kommunekoder) {
                 this.addKommuneKode(kommunekode);
@@ -158,7 +158,7 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
     }
 
     public void clearKommuneKode() {
-        this.kommunekoder.clear();
+        this.kommunekode.clear();
     }
 
 
@@ -168,7 +168,7 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
         map.put(P_NUMBER, this.pNummer);
         map.put(ASSOCIATED_COMPANY_CVR, this.associatedCompanyCvrNumber);
         map.put(PRIMARYINDUSTRY, this.primaryIndustry);
-        map.put(KOMMUNEKODE, this.kommunekoder);
+        map.put(KOMMUNEKODE, this.kommunekode);
         return map;
     }
 
@@ -205,13 +205,13 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
             lookupDefinition.put(CompanyUnitBaseData.DB_FIELD_PRIMARY_INDUSTRY + LookupDefinition.separator + IndustryData.DB_FIELD_INDUSTRY + LookupDefinition.separator + Industry.DB_FIELD_CODE, this.primaryIndustry, String.class);
             lookupDefinition.put(CompanyUnitBaseData.DB_FIELD_PRIMARY_INDUSTRY + LookupDefinition.separator + IndustryData.DB_FIELD_PRIMARY, true, Boolean.class);
         }
-        if (this.kommunekoder != null && !this.kommunekoder.isEmpty()) {
+        if (this.kommunekode != null && !this.kommunekode.isEmpty()) {
             StringJoiner sj = new StringJoiner(LookupDefinition.separator);
             sj.add(CompanyUnitBaseData.DB_FIELD_LOCATION_ADDRESS);
             sj.add(AddressData.DB_FIELD_ADDRESS);
             sj.add(Address.DB_FIELD_MUNICIPALITY);
             sj.add(Municipality.DB_FIELD_CODE);
-            lookupDefinition.put(sj.toString(), this.kommunekoder, Integer.class);
+            lookupDefinition.put(sj.toString(), this.kommunekode, Integer.class);
         }
         if (this.getKommunekodeRestriction() != null && !this.getKommunekodeRestriction().isEmpty()) {
             StringJoiner sj = new StringJoiner(LookupDefinition.separator);
