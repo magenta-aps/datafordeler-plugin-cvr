@@ -716,7 +716,7 @@ public class QueryTest {
             loadParticipant(importMetadata);
 
             ParticipantQuery query = new ParticipantQuery();
-            query.setNavne("Morten Kjærsgaard");
+            query.setNavn("Morten Kjærsgaard");
 
             List<ParticipantEntity> entities = QueryManager.getAllEntities(session, query, ParticipantEntity.class);
             List<Object> wrapped = participantOutputWrapper.wrapResults(entities);
@@ -736,12 +736,12 @@ public class QueryTest {
             assertJsonEquality(objectMapper.readTree(firstImport), objectMapper.readTree(secondImport), true, true);
 
             query = new ParticipantQuery();
-            query.addKommunekode(101);
+            query.addKommuneKode(101);
             entities = QueryManager.getAllEntities(session, query, ParticipantEntity.class);
             Assert.assertEquals(1, entities.size());
 
             query = new ParticipantQuery();
-            query.addKommunekode("*");
+            query.setKommuneKode("*");
             entities = QueryManager.getAllEntities(session, query, ParticipantEntity.class);
             Assert.assertEquals(1, entities.size());
 
