@@ -6,9 +6,7 @@ import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import org.hibernate.Session;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Record for one participating organization on a Company or CompanyUnit
