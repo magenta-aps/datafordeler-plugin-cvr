@@ -26,24 +26,24 @@ public class ParticipantRecordQuery extends ParticipantQuery {
     public LookupDefinition getLookupDefinition() {
         LookupDefinition lookupDefinition = new CvrRecordLookupDefinition(this, null);
 
-        if (this.getEnhedsNummer() != null) {
+        if (this.getEnhedsNummer() != null && !this.getEnhedsNummer().isEmpty()) {
             lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + ParticipantRecord.DB_FIELD_UNIT_NUMBER, this.getEnhedsNummer(), Long.class);
         }
 
-        if (this.getNavne() != null) {
-            lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + ParticipantRecord.DB_FIELD_NAMES + LookupDefinition.separator + NameRecord.DB_FIELD_NAME, this.getNavne(), String.class);
+        if (this.getNavn() != null && !this.getNavn().isEmpty()) {
+            lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + ParticipantRecord.DB_FIELD_NAMES + LookupDefinition.separator + NameRecord.DB_FIELD_NAME, this.getNavn(), String.class);
         }
 
-        if (!this.getKommunekoder().isEmpty()) {
+        if (this.getKommuneKode() != null && !this.getKommuneKode().isEmpty()) {
             StringJoiner sj = new StringJoiner(LookupDefinition.separator);
             sj.add(LookupDefinition.entityref);
             sj.add(ParticipantRecord.DB_FIELD_LOCATION_ADDRESS);
             sj.add(AddressRecord.DB_FIELD_MUNICIPALITY);
             sj.add(AddressMunicipalityRecord.DB_FIELD_MUNICIPALITY);
             sj.add(Municipality.DB_FIELD_CODE);
-            lookupDefinition.put(sj.toString(), this.getKommunekoder(), Integer.class);
+            lookupDefinition.put(sj.toString(), this.getKommuneKode(), Integer.class);
         }
-        if (!this.getKommunekodeRestriction().isEmpty()) {
+        if (this.getKommunekodeRestriction() != null && !this.getKommunekodeRestriction().isEmpty()) {
             StringJoiner sj = new StringJoiner(LookupDefinition.separator);
             sj.add(LookupDefinition.entityref);
             sj.add(ParticipantRecord.DB_FIELD_LOCATION_ADDRESS);

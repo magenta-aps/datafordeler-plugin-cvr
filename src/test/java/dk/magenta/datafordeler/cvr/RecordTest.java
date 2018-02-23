@@ -141,23 +141,24 @@ public class RecordTest {
             query.setEffectTo(time);
             query.applyFilters(session);
 
-            query.setKommunekoder(101);
+            query.setKommuneKode(101);
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
-            query.setKommunekoder((String) null);
+            query.clearKommuneKoder();
             query.setTelefonnummer("33369696");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
-            query.setTelefonnummer(null);
+            query.clearTelefonnummer();
             query.setEmailadresse("info@magenta.dk");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
-            query.setEmailadresse(null);
+            query.clearEmailadresse();
             query.setReklamebeskyttelse("true");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
-            query.setReklamebeskyttelse(null);
+            query.clearReklamebeskyttelse();
             query.setVirksomhedsform(80);
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
-            query.setVirksomhedsform(null);
+            query.clearVirksomhedsform();
             query.setVirksomhedsnavn("MAGENTA ApS");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
+            query.clearKommuneKoder();
 
 
 
@@ -169,23 +170,24 @@ public class RecordTest {
             query.applyFilters(session);
 
 
-            query.setKommunekoder(101);
+            query.setKommuneKode(101);
             Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
-            query.setKommunekoder((String) null);
+            query.clearKommuneKoder();
             query.setTelefonnummer("33369696");
             Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
-            query.setTelefonnummer(null);
+            query.clearTelefonnummer();
             query.setEmailadresse("info@magenta.dk");
             Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
-            query.setEmailadresse(null);
+            query.clearEmailadresse();
             query.setReklamebeskyttelse("true");
             Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
             query.setReklamebeskyttelse(null);
             query.setVirksomhedsform(80);
             Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
-            query.setVirksomhedsform(null);
+            query.clearVirksomhedsform();
             query.setVirksomhedsnavn("MAGENTA ApS");
             Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
+            query.clearVirksomhedsnavn();
 
         } finally {
             session.close();
@@ -274,16 +276,16 @@ public class RecordTest {
 
             query.setPrimaryIndustry("478900");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyUnitRecord.class).size());
-            query.setPrimaryIndustry(null);
-            query.setAssociatedCompanyCvrNumber("37952273");
+            query.clearPrimaryIndustry();
+            query.setAssociatedCompanyCvrNummer("37952273");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyUnitRecord.class).size());
-            query.setAssociatedCompanyCvrNumber(null);
-            query.setpNumber("1021686405");
+            query.clearAssociatedCompanyCvrNummer();
+            query.setPNummer("1021686405");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyUnitRecord.class).size());
-            query.setpNumber(null);
-            query.setKommunekoder("561");
+            query.clearPNummer();
+            query.setKommuneKode("561");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyUnitRecord.class).size());
-            query.setKommunekoder((String) null);
+            query.clearKommuneKode();
 
 
             time = OffsetDateTime.parse("1900-01-01T00:00:00Z");
@@ -295,15 +297,17 @@ public class RecordTest {
 
             query.setPrimaryIndustry("478900");
             Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyUnitRecord.class).size());
-            query.setPrimaryIndustry(null);
-            query.setAssociatedCompanyCvrNumber("37952273");
+            query.clearPrimaryIndustry();
+            query.setAssociatedCompanyCvrNummer("37952273");
             Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyUnitRecord.class).size());
-            query.setAssociatedCompanyCvrNumber(null);
-            query.setpNumber("1021686405");
+            query.clearAssociatedCompanyCvrNummer();
+            query.setPNummer("1021686405");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyUnitRecord.class).size());
-            query.setpNumber(null);
-            query.addKommunekode(101);
+            query.clearPNummer();
+            query.setKommuneKode("101");
             Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyUnitRecord.class).size());
+            query.clearKommuneKode();
+
         } finally {
             session.close();
         }
@@ -390,13 +394,13 @@ public class RecordTest {
 
             query.setEnhedsNummer("4000004988");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, ParticipantRecord.class).size());
-            query.setEnhedsNummer(null);
-            query.setNavne("Morten*");
+            query.clearEnhedsNummer();
+            query.setNavn("Morten*");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, ParticipantRecord.class).size());
-            query.setNavne(null);
-            query.addKommunekode("101");
+            query.clearNavn();
+            query.setKommuneKode("101");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, ParticipantRecord.class).size());
-            query.setKommunekoder((String) null);
+            query.setKommuneKode((String) null);
 
 
 
@@ -410,13 +414,13 @@ public class RecordTest {
 
             query.setEnhedsNummer("4000004988");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, ParticipantRecord.class).size());
-            query.setEnhedsNummer(null);
-            query.setNavne("Morten*");
+            query.clearEnhedsNummer();
+            query.setNavn("Morten*");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, ParticipantRecord.class).size());
-            query.setNavne(null);
-            query.addKommunekode("101");
+            query.clearNavn();
+            query.setKommuneKode("101");
             Assert.assertEquals(0, QueryManager.getAllEntities(session, query, ParticipantRecord.class).size());
-            query.setKommunekoder((String) null);
+            query.setKommuneKode((String) null);
 
         } finally {
             session.close();

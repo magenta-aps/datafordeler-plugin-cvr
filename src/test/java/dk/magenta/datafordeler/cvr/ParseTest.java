@@ -125,7 +125,7 @@ public class ParseTest {
                 List<? extends Registration> registrations = entityManager.parseData(item.get("_source").get("Vrdeltagerperson"), importMetadata, session);
                 System.out.println("registrations.size: " + registrations.size());
                 System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations));
-                Assert.assertEquals(4, registrations.size());
+                Assert.assertEquals(5, registrations.size());
             }
         } finally {
             transaction.rollback();
