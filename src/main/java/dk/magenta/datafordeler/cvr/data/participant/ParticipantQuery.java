@@ -23,7 +23,7 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
 
 
 
-    @QueryField(type = QueryField.FieldType.INT, queryName = UNITNUMBER)
+    @QueryField(type = QueryField.FieldType.LONG, queryName = UNITNUMBER)
     private List<String> enhedsNummer = new ArrayList<>();
 
     public Collection<String> getEnhedsNummer() {
@@ -58,15 +58,15 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
 
 
     @QueryField(type = QueryField.FieldType.STRING, queryName = KOMMUNEKODE)
-    private List<String> kommunekoder = new ArrayList<>();
+    private List<String> kommunekode = new ArrayList<>();
 
     public Collection<String> getKommuneKode() {
-        return kommunekoder;
+        return kommunekode;
     }
 
     public void addKommuneKode(String kommunekode) {
         if (kommunekode != null) {
-            this.kommunekoder.add(kommunekode);
+            this.kommunekode.add(kommunekode);
             this.increaseDataParamCount();
         }
     }
@@ -76,12 +76,12 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
     }
 
     public void setKommuneKode(String kommunekode) {
-        this.kommunekoder.clear();
+        this.kommunekode.clear();
         this.addKommuneKode(kommunekode);
     }
 
     public void setKommuneKode(Collection<String> kommunekoder) {
-        this.kommunekoder.clear();
+        this.kommunekode.clear();
         if (kommunekoder != null) {
             for (String kommunekode : kommunekoder) {
                 this.addKommuneKode(kommunekode);
@@ -90,7 +90,7 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
     }
 
     public void clearKommuneKode() {
-        this.kommunekoder.clear();
+        this.kommunekode.clear();
     }
 
 
@@ -137,7 +137,7 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
         HashMap<String, Object> map = new HashMap<>();
         map.put(UNITNUMBER, this.enhedsNummer);
         map.put(NAVN, this.navn);
-        map.put(KOMMUNEKODE, this.kommunekoder);
+        map.put(KOMMUNEKODE, this.kommunekode);
         return map;
     }
 
@@ -165,20 +165,20 @@ public class ParticipantQuery extends CvrQuery<ParticipantEntity> {
         LookupDefinition lookupDefinition = new LookupDefinition(this, ParticipantBaseData.class);
 
         if (this.enhedsNummer != null && !this.enhedsNummer.isEmpty()) {
-            lookupDefinition.put(ParticipantBaseData.DB_FIELD_UNIT_NUMBER + LookupDefinition.separator + IntegerData.DB_FIELD_VALUE, this.enhedsNummer, Integer.class);
+            lookupDefinition.put(ParticipantBaseData.DB_FIELD_UNIT_NUMBER + LookupDefinition.separator + IntegerData.DB_FIELD_VALUE, this.enhedsNummer, Long.class);
         }
 
         if (this.navn != null && !this.navn.isEmpty()) {
             lookupDefinition.put(ParticipantBaseData.DB_FIELD_NAMES + LookupDefinition.separator + TextData.DB_FIELD_VALUE, this.navn, String.class);
         }
 
-        if (this.kommunekoder != null && !this.kommunekoder.isEmpty()) {
+        if (this.kommunekode != null && !this.kommunekode.isEmpty()) {
             StringJoiner sj = new StringJoiner(LookupDefinition.separator);
             sj.add(ParticipantBaseData.DB_FIELD_LOCATION_ADDRESS);
             sj.add(AddressData.DB_FIELD_ADDRESS);
             sj.add(Address.DB_FIELD_MUNICIPALITY);
             sj.add(Municipality.DB_FIELD_CODE);
-            lookupDefinition.put(sj.toString(), this.kommunekoder, Integer.class);
+            lookupDefinition.put(sj.toString(), this.kommunekode, Integer.class);
         }
         if (this.getKommunekodeRestriction() != null && !this.getKommunekodeRestriction().isEmpty()) {
             StringJoiner sj = new StringJoiner(LookupDefinition.separator);

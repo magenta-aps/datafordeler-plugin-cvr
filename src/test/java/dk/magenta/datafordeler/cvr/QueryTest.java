@@ -24,7 +24,6 @@ import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntityManager;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantOutputWrapper;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantQuery;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -313,7 +312,7 @@ public class QueryTest {
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
             query = new CompanyQuery();
-            query.addKommunekode(101);
+            query.addKommuneKode(101);
             entities = QueryManager.getAllEntities(session, query, CompanyEntity.class);
             Assert.assertEquals(1, entities.size());
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
