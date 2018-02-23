@@ -12,7 +12,6 @@ import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Container for a query for Companies, defining fields and database lookup
@@ -261,43 +260,44 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
 
     @QueryField(type = QueryField.FieldType.STRING, queryName = KOMMUNEKODE)
-    private List<String> kommunekoder = new ArrayList<>();
+    private List<String> kommunekode = new ArrayList<>();
 
-    public Collection<String> getKommunekoder() {
-        return this.kommunekoder;
+    public Collection<String> getKommuneKode() {
+        return this.kommunekode;
     }
 
-    public void addKommunekode(String kommunekode) {
+    public void addKommuneKode(String kommunekode) {
+        this.kommunekode.add(kommunekode);
         if (kommunekode != null) {
-            this.kommunekoder.add(kommunekode);
+            this.kommunekode.add(kommunekode);
             this.increaseDataParamCount();
         }
     }
 
-    public void addKommunekode(int kommunekode) {
-        this.addKommunekode(String.format("%03d", kommunekode));
+    public void addKommuneKode(int kommunekode) {
+        this.addKommuneKode(String.format("%03d", kommunekode));
     }
 
-    public void setKommunekoder(String kommunekode) {
-        this.kommunekoder.clear();
-        this.addKommunekode(kommunekode);
+    public void setKommunekode(String kommunekode) {
+        this.kommunekode.clear();
+        this.addKommuneKode(kommunekode);
     }
 
-    public void setKommunekoder(Collection<String> kommunekoder) {
-        this.kommunekoder.clear();
+    public void setKommuneKode(Collection<String> kommunekoder) {
+        this.kommunekode.clear();
         if (kommunekoder != null) {
             for (String kommunekode : kommunekoder) {
-                this.addKommunekode(kommunekode);
+                this.addKommuneKode(kommunekode);
             }
         }
     }
 
-    public void setKommunekoder(int kommunekode) {
-        this.setKommunekoder(String.format("%03d", kommunekode));
+    public void setKommuneKode(int kommunekode) {
+        this.setKommunekode(String.format("%03d", kommunekode));
     }
 
     public void clearKommuneKoder() {
-        this.kommunekoder.clear();
+        this.kommunekode.clear();
     }
 
 
@@ -311,7 +311,7 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
         map.put(TELEFAXNUMMER, this.telefaxnummer);
         map.put(EMAILADRESSE, this.emailadresse);
         map.put(VIRKSOMHEDSFORM, this.virksomhedsform);
-        map.put(KOMMUNEKODE, this.kommunekoder);
+        map.put(KOMMUNEKODE, this.kommunekode);
         return map;
     }
 
@@ -325,7 +325,7 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
         this.setTelefaxnummer(parameters.getI(TELEFAXNUMMER));
         this.setEmailadresse(parameters.getI(EMAILADRESSE));
         this.setVirksomhedsform(parameters.getI(VIRKSOMHEDSFORM));
-        this.setKommunekoder(parameters.getI(KOMMUNEKODE));
+        this.setKommuneKode(parameters.getI(KOMMUNEKODE));
     }
 
     @Override
@@ -364,13 +364,13 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
         if (this.emailadresse != null && !this.emailadresse.isEmpty()) {
             lookupDefinition.put(CompanyBaseData.DB_FIELD_EMAIL + LookupDefinition.separator + ContactData.DB_FIELD_VALUE, this.emailadresse, String.class);
         }
-        if (this.kommunekoder != null && !this.kommunekoder.isEmpty()) {
+        if (this.kommunekode != null && !this.kommunekode.isEmpty()) {
             StringJoiner sj = new StringJoiner(LookupDefinition.separator);
             sj.add(CompanyBaseData.DB_FIELD_LOCATION_ADDRESS);
             sj.add(AddressData.DB_FIELD_ADDRESS);
             sj.add(Address.DB_FIELD_MUNICIPALITY);
             sj.add(Municipality.DB_FIELD_CODE);
-            lookupDefinition.put(sj.toString(), this.kommunekoder, Integer.class);
+            lookupDefinition.put(sj.toString(), this.kommunekode, Integer.class);
         }
 
         if (this.getKommunekodeRestriction() != null && !this.getKommunekodeRestriction().isEmpty()) {
