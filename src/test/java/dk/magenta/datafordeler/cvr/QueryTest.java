@@ -574,7 +574,7 @@ public class QueryTest {
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
             query = new CompanyUnitQuery();
-            query.addKommunekode(101);
+            query.addKommuneKode(101);
             entities = QueryManager.getAllEntities(session, query, CompanyUnitEntity.class);
             Assert.assertEquals(5, entities.size());
             List<UUID> expected = Arrays.asList(UUID.fromString("cd834835-384b-3026-8fd8-ec24095aa446"),
@@ -587,7 +587,7 @@ public class QueryTest {
             }
 
             query = new CompanyUnitQuery();
-            query.setAssociatedCompanyCvrNumber("36238208");
+            query.setAssociatedCompanyCvrNummer("36238208");
             entities = QueryManager.getAllEntities(session, query, CompanyUnitEntity.class);
             Assert.assertEquals(1, entities.size());
 

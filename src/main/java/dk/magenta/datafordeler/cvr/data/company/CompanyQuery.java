@@ -12,6 +12,7 @@ import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Container for a query for Companies, defining fields and database lookup
@@ -35,8 +36,8 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
     }
 
     public void addCvrNummer(String cvrnummer) {
-        this.cvrNumre.add(cvrnummer);
         if (cvrnummer != null) {
+            this.cvrNumre.add(cvrnummer);
             this.increaseDataParamCount();
         }
     }
@@ -55,6 +56,10 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
         }
     }
 
+    public void clearCvrNumre() {
+        this.cvrNumre.clear();
+    }
+
 
     @QueryField(type = QueryField.FieldType.STRING, queryName = REKLAMEBESKYTTELSE)
     private String reklamebeskyttelse;
@@ -70,85 +75,187 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
         }
     }
 
-    @QueryField(type = QueryField.FieldType.STRING, queryName = NAVN)
-    private String virksomhedsnavn;
+    public void clearReklamebeskyttelse() {
+        this.reklamebeskyttelse = null;
+    }
 
-    public String getVirksomhedsnavn() {
+
+
+
+    @QueryField(type = QueryField.FieldType.STRING, queryName = NAVN)
+    private List<String> virksomhedsnavn = new ArrayList<>();
+
+    public List<String> getVirksomhedsnavn() {
         return this.virksomhedsnavn;
     }
 
-    public void setVirksomhedsnavn(String virksomhedsnavn) {
-        this.virksomhedsnavn = virksomhedsnavn;
+    public void addVirksomhedsnavn(String virksomhedsnavn) {
         if (virksomhedsnavn != null) {
+            this.virksomhedsnavn.add(virksomhedsnavn);
             this.increaseDataParamCount();
         }
     }
+
+    public void setVirksomhedsnavn(String virksomhedsnavn) {
+        this.virksomhedsnavn.clear();
+        this.addVirksomhedsnavn(virksomhedsnavn);
+    }
+
+    public void setVirksomhedsnavn(Collection<String> virksomhedsnavne) {
+        this.virksomhedsnavn.clear();
+        if (virksomhedsnavne != null) {
+            for (String virksomhedsnavn : virksomhedsnavne) {
+                this.addVirksomhedsnavn(virksomhedsnavn);
+            }
+        }
+    }
+
+    public void clearVirksomhedsnavn() {
+        this.virksomhedsnavn.clear();
+    }
+
 
 
     @QueryField(type = QueryField.FieldType.STRING, queryName = TELEFONNUMMER)
-    private String telefonnummer;
+    private List<String> telefonnummer = new ArrayList<>();
 
-    public String getTelefonnummer() {
+    public List<String> getTelefonnummer() {
         return this.telefonnummer;
     }
 
-    public void setTelefonnummer(String telefonnummer) {
-        this.telefonnummer = telefonnummer;
+    public void addTelefonnummer(String telefonnummer) {
         if (telefonnummer != null) {
+            this.telefonnummer.add(telefonnummer);
             this.increaseDataParamCount();
         }
+    }
+
+    public void setTelefonnummer(String telefonnummer) {
+        this.telefonnummer.clear();
+        this.addTelefonnummer(telefonnummer);
+    }
+
+    public void setTelefonnummer(Collection<String> telefonnumre) {
+        this.telefonnummer.clear();
+        if (telefonnumre != null) {
+            for (String telefonnummer : telefonnumre) {
+                this.addTelefonnummer(telefonnummer);
+            }
+        }
+    }
+
+    public void clearTelefonnummer() {
+        this.telefonnummer.clear();
     }
 
 
 
     @QueryField(type = QueryField.FieldType.STRING, queryName = TELEFAXNUMMER)
-    private String telefaxnummer;
+    private List<String> telefaxnummer = new ArrayList<>();
 
-    public String getTelefaxnummer() {
+    public List<String> getTelefaxnummer() {
         return this.telefaxnummer;
     }
 
-    public void setTelefaxnummer(String telefaxnummer) {
-        this.telefaxnummer = telefaxnummer;
+    public void addTelefaxnummer(String telefaxnummer) {
         if (telefaxnummer != null) {
+            this.telefaxnummer.add(telefaxnummer);
             this.increaseDataParamCount();
         }
+    }
+
+    public void setTelefaxnummer(String telefaxnummer) {
+        this.telefaxnummer.clear();
+        this.addTelefaxnummer(telefaxnummer);
+    }
+
+    public void setTelefaxnummer(Collection<String> telefaxnumre) {
+        this.telefaxnummer.clear();
+        if (telefaxnumre != null) {
+            for (String telefaxnummer : telefaxnumre) {
+                this.addTelefaxnummer(telefaxnummer);
+            }
+        }
+    }
+
+    public void clearTelefaxnummer() {
+        this.telefaxnummer.clear();
     }
 
 
 
     @QueryField(type = QueryField.FieldType.STRING, queryName = EMAILADRESSE)
-    private String emailadresse;
+    private List<String> emailadresse = new ArrayList<>();
 
-    public String getEmailadresse() {
+    public List<String> getEmailadresse() {
         return this.emailadresse;
     }
 
-    public void setEmailadresse(String emailadresse) {
-        this.emailadresse = emailadresse;
+    public void addEmailadresse(String emailadresse) {
         if (emailadresse != null) {
+            this.emailadresse.add(emailadresse);
             this.increaseDataParamCount();
         }
+    }
+
+    public void setEmailadresse(String emailadresse) {
+        this.emailadresse.clear();
+        this.addEmailadresse(emailadresse);
+    }
+
+    public void setEmailadresse(Collection<String> emailadresser) {
+        this.emailadresse.clear();
+        if (emailadresser != null) {
+            for (String emailadresse : emailadresser) {
+                this.addEmailadresse(emailadresse);
+            }
+        }
+    }
+
+    public void clearEmailadresse() {
+        this.emailadresse.clear();
     }
 
 
 
     @QueryField(type = QueryField.FieldType.STRING, queryName = VIRKSOMHEDSFORM)
-    private String virksomhedsform;
+    private List<String> virksomhedsform = new ArrayList<>();
 
-    public String getVirksomhedsform() {
+    public List<String> getVirksomhedsform() {
         return this.virksomhedsform;
     }
 
-    public void setVirksomhedsform(String virksomhedsform) {
-        this.virksomhedsform = virksomhedsform;
+    public void addVirksomhedsform(String virksomhedsform) {
         if (virksomhedsform != null) {
+            this.virksomhedsform.add(virksomhedsform);
             this.increaseDataParamCount();
         }
     }
 
+    public void addVirksomhedsform(int virksomhedsform) {
+        this.addVirksomhedsform(Integer.toString(virksomhedsform));
+    }
+
+    public void setVirksomhedsform(String virksomhedsform) {
+        this.virksomhedsform.clear();
+        this.addVirksomhedsform(virksomhedsform);
+    }
+
     public void setVirksomhedsform(int virksomhedsform) {
         this.setVirksomhedsform(Integer.toString(virksomhedsform));
+    }
+
+    public void setVirksomhedsform(Collection<String> virksomhedsformer) {
+        this.virksomhedsform.clear();
+        if (virksomhedsformer != null) {
+            for (String virksomhedsform : virksomhedsformer) {
+                this.addVirksomhedsform(virksomhedsform);
+            }
+        }
+    }
+
+    public void clearVirksomhedsform() {
+        this.virksomhedsform.clear();
     }
 
 
@@ -189,6 +296,10 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
         this.setKommunekoder(String.format("%03d", kommunekode));
     }
 
+    public void clearKommuneKoder() {
+        this.kommunekoder.clear();
+    }
+
 
     @Override
     public Map<String, Object> getSearchParameters() {
@@ -206,14 +317,15 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     @Override
     public void setFromParameters(ParameterMap parameters) {
+        System.out.println("setFromParameters");
         this.setCvrNumre(parameters.get(CVRNUMMER));
         this.setReklamebeskyttelse(parameters.getFirst(REKLAMEBESKYTTELSE));
-        this.setVirksomhedsnavn(parameters.getFirst(NAVN));
-        this.setTelefonnummer(parameters.getFirst(TELEFONNUMMER));
-        this.setTelefaxnummer(parameters.getFirst(TELEFAXNUMMER));
-        this.setEmailadresse(parameters.getFirst(EMAILADRESSE));
-        this.setVirksomhedsform(parameters.getFirst(VIRKSOMHEDSFORM));
-        this.setKommunekoder(parameters.get(KOMMUNEKODE));
+        this.setVirksomhedsnavn(parameters.getI(NAVN));
+        this.setTelefonnummer(parameters.getI(TELEFONNUMMER));
+        this.setTelefaxnummer(parameters.getI(TELEFAXNUMMER));
+        this.setEmailadresse(parameters.getI(EMAILADRESSE));
+        this.setVirksomhedsform(parameters.getI(VIRKSOMHEDSFORM));
+        this.setKommunekoder(parameters.getI(KOMMUNEKODE));
     }
 
     @Override
@@ -234,25 +346,25 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
         if (!this.cvrNumre.isEmpty()) {
             lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + CompanyEntity.DB_FIELD_CVR, this.cvrNumre, Integer.class);
         }
-        if (this.virksomhedsform != null) {
+        if (this.virksomhedsform != null && !this.virksomhedsform.isEmpty()) {
             lookupDefinition.put(CompanyBaseData.DB_FIELD_FORM + LookupDefinition.separator + CompanyFormData.DB_FIELD_FORM + LookupDefinition.separator + CompanyForm.DB_FIELD_CODE, this.virksomhedsform, String.class);
         }
         if (this.reklamebeskyttelse != null) {
             lookupDefinition.put(CompanyBaseData.DB_FIELD_ADVERTPROTECTION + LookupDefinition.separator + BooleanData.DB_FIELD_VALUE, this.reklamebeskyttelse, Boolean.class);
         }
-        if (this.virksomhedsnavn != null) {
+        if (this.virksomhedsnavn != null && !this.virksomhedsnavn.isEmpty()) {
             lookupDefinition.put(CompanyBaseData.DB_FIELD_NAME, this.virksomhedsnavn, String.class);
         }
-        if (this.telefonnummer != null) {
+        if (this.telefonnummer != null && !this.telefonnummer.isEmpty()) {
             lookupDefinition.put(CompanyBaseData.DB_FIELD_PHONENUMBER + LookupDefinition.separator + ContactData.DB_FIELD_VALUE, this.telefonnummer, String.class);
         }
-        if (this.telefaxnummer != null) {
+        if (this.telefaxnummer != null && !this.telefaxnummer.isEmpty()) {
             lookupDefinition.put(CompanyBaseData.DB_FIELD_FAXNUMBER + LookupDefinition.separator + ContactData.DB_FIELD_VALUE, this.telefaxnummer, String.class);
         }
-        if (this.emailadresse != null) {
+        if (this.emailadresse != null && !this.emailadresse.isEmpty()) {
             lookupDefinition.put(CompanyBaseData.DB_FIELD_EMAIL + LookupDefinition.separator + ContactData.DB_FIELD_VALUE, this.emailadresse, String.class);
         }
-        if (!this.kommunekoder.isEmpty()) {
+        if (this.kommunekoder != null && !this.kommunekoder.isEmpty()) {
             StringJoiner sj = new StringJoiner(LookupDefinition.separator);
             sj.add(CompanyBaseData.DB_FIELD_LOCATION_ADDRESS);
             sj.add(AddressData.DB_FIELD_ADDRESS);
@@ -261,7 +373,7 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
             lookupDefinition.put(sj.toString(), this.kommunekoder, Integer.class);
         }
 
-        if (!this.getKommunekodeRestriction().isEmpty()) {
+        if (this.getKommunekodeRestriction() != null && !this.getKommunekodeRestriction().isEmpty()) {
             StringJoiner sj = new StringJoiner(LookupDefinition.separator);
             sj.add(CompanyBaseData.DB_FIELD_LOCATION_ADDRESS);
             sj.add(AddressData.DB_FIELD_ADDRESS);
