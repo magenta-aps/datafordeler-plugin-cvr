@@ -13,6 +13,7 @@ import org.hibernate.Session;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -537,5 +538,41 @@ public class AddressRecord extends CvrBitemporalDataRecord {
         if (this.postnummer != 0 && (this.post == null || this.post.getPostCode() != this.postnummer)) {
             this.post = PostCode.getPostcode(this.postnummer, this.postdistrikt, session);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        AddressRecord that = (AddressRecord) o;
+        return type == that.type &&
+                roadCode == that.roadCode &&
+                postnummer == that.postnummer &&
+                Objects.equals(addressId, that.addressId) &&
+                Objects.equals(cityName, that.cityName) &&
+                Objects.equals(supplementalCityName, that.supplementalCityName) &&
+                Objects.equals(roadName, that.roadName) &&
+                Objects.equals(houseNumberFrom, that.houseNumberFrom) &&
+                Objects.equals(houseNumberTo, that.houseNumberTo) &&
+                Objects.equals(letterFrom, that.letterFrom) &&
+                Objects.equals(letterTo, that.letterTo) &&
+                Objects.equals(floor, that.floor) &&
+                Objects.equals(door, that.door) &&
+                Objects.equals(municipality, that.municipality) &&
+                Objects.equals(post, that.post) &&
+                Objects.equals(postdistrikt, that.postdistrikt) &&
+                Objects.equals(postBox, that.postBox) &&
+                Objects.equals(coName, that.coName) &&
+                Objects.equals(countryCode, that.countryCode) &&
+                Objects.equals(addressText, that.addressText) &&
+                Objects.equals(lastValidated, that.lastValidated) &&
+                Objects.equals(freeText, that.freeText);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), type, addressId, roadCode, cityName, supplementalCityName, roadName, houseNumberFrom, houseNumberTo, letterFrom, letterTo, floor, door, municipality, post, postnummer, postdistrikt, postBox, coName, countryCode, addressText, lastValidated, freeText);
     }
 }

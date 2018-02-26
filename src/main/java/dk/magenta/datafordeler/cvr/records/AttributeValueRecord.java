@@ -8,6 +8,7 @@ import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import org.hibernate.Session;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 /**
  * Record for Company, CompanyUnit or Participant attribute values.
@@ -61,4 +62,5 @@ public class AttributeValueRecord extends BaseAttributeValueRecord {
                 this.attribute.getSequenceNumber()
         );
     }
+
 }

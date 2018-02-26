@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -30,5 +31,19 @@ public class OrganizationMemberdataRecord extends CvrRecord {
         for (OrganizationAttributeRecord attributeRecord : attributes) {
             attributeRecord.setOrganizationMemberdataRecord(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrganizationMemberdataRecord that = (OrganizationMemberdataRecord) o;
+        return Objects.equals(attributes, that.attributes);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(attributes);
     }
 }

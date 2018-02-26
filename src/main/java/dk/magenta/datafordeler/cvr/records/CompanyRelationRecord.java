@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -68,5 +69,22 @@ public class CompanyRelationRecord extends CvrBitemporalRecord {
             registrationFrom = this.getLastUpdated();
         }
         return registrationFrom;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        CompanyRelationRecord that = (CompanyRelationRecord) o;
+        return unitNumber == that.unitNumber &&
+                cvrNumber == that.cvrNumber &&
+                Objects.equals(unitType, that.unitType);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), unitNumber, unitType, cvrNumber);
     }
 }

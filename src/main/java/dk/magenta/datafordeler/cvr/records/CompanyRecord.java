@@ -60,6 +60,13 @@ public class CompanyRecord extends CvrEntityRecord {
         }
     }
 
+    public void addRegNumber(CompanyRegNumberRecord record) {
+        if (!this.regNumber.contains(record)) {
+            record.setCompanyRecord(this);
+            this.regNumber.add(record);
+        }
+    }
+
 
 
     public static final String DB_FIELD_ADVERTPROTECTION = "advertProtection";
@@ -110,7 +117,7 @@ public class CompanyRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_NAMES)
-    private Set<NameRecord> names;
+    private Set<NameRecord> names = new HashSet<>();
 
     public Set<NameRecord> getNames() {
         return this.names;
@@ -124,6 +131,14 @@ public class CompanyRecord extends CvrEntityRecord {
         }
     }
 
+    public void addName(NameRecord record) {
+        if (!this.names.contains(record)) {
+            record.setSecondary(false);
+            record.setCompanyRecord(this);
+            this.names.add(record);
+        }
+    }
+
 
 
     public static final String DB_FIELD_SECONDARY_NAMES = "secondaryNames";
@@ -132,7 +147,7 @@ public class CompanyRecord extends CvrEntityRecord {
     @OneToMany(mappedBy = NameRecord.DB_FIELD_COMPANY, targetEntity = NameRecord.class, cascade = CascadeType.ALL)
     @Where(clause = NameRecord.DB_FIELD_SECONDARY+"=true")
     @JsonProperty(value = IO_FIELD_SECONDARY_NAMES)
-    private Set<NameRecord> secondaryNames;
+    private Set<NameRecord> secondaryNames = new HashSet<>();
 
     public Set<NameRecord> getSecondaryNames() {
         return this.secondaryNames;
@@ -143,6 +158,14 @@ public class CompanyRecord extends CvrEntityRecord {
         for (NameRecord record : secondaryNames) {
             record.setSecondary(true);
             record.setCompanyRecord(this);
+        }
+    }
+
+    public void addSecondaryName(NameRecord record) {
+        if (!this.secondaryNames.contains(record)) {
+            record.setSecondary(true);
+            record.setCompanyRecord(this);
+            this.secondaryNames.add(record);
         }
     }
 
@@ -159,7 +182,7 @@ public class CompanyRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_LOCATION_ADDRESS)
-    private Set<AddressRecord> locationAddress;
+    private Set<AddressRecord> locationAddress = new HashSet<>();
 
     public void setLocationAddress(Set<AddressRecord> locationAddress) {
         for (AddressRecord record : locationAddress) {
@@ -167,6 +190,14 @@ public class CompanyRecord extends CvrEntityRecord {
             record.setCompanyRecord(this);
         }
         this.locationAddress = locationAddress;
+    }
+
+    public void addLocationAddress(AddressRecord record) {
+        if (!this.locationAddress.contains(record)) {
+            record.setType(AddressRecord.TYPE_LOCATION);
+            record.setCompanyRecord(this);
+            this.locationAddress.add(record);
+        }
     }
 
     public Set<AddressRecord> getLocationAddress() {
@@ -187,7 +218,7 @@ public class CompanyRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_POSTAL_ADDRESS)
-    private Set<AddressRecord> postalAddress;
+    private Set<AddressRecord> postalAddress = new HashSet<>();
 
     public void setPostalAddress(Set<AddressRecord> postalAddress) {
         for (AddressRecord record : postalAddress) {
@@ -195,6 +226,14 @@ public class CompanyRecord extends CvrEntityRecord {
             record.setCompanyRecord(this);
         }
         this.postalAddress = postalAddress;
+    }
+
+    public void addPostalAddress(AddressRecord record) {
+        if (!this.postalAddress.contains(record)) {
+            record.setType(AddressRecord.TYPE_POSTAL);
+            record.setCompanyRecord(this);
+            this.postalAddress.add(record);
+        }
     }
 
     public Set<AddressRecord> getPostalAddress() {
@@ -214,7 +253,7 @@ public class CompanyRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_PHONE)
-    private Set<ContactRecord> phoneNumber;
+    private Set<ContactRecord> phoneNumber = new HashSet<>();
 
     public void setPhoneNumber(Set<ContactRecord> phoneNumber) {
         for (ContactRecord record : phoneNumber) {
@@ -224,6 +263,20 @@ public class CompanyRecord extends CvrEntityRecord {
         }
         this.phoneNumber = phoneNumber;
     }
+
+    public void addPhoneNumber(ContactRecord record) {
+        if (!this.phoneNumber.contains(record)) {
+            record.setType(ContactRecord.TYPE_TELEFONNUMMER);
+            record.setCompanyRecord(this);
+            record.setSecondary(false);
+            this.phoneNumber.add(record);
+        }
+    }
+
+    public Set<ContactRecord> getPhoneNumber() {
+        return this.phoneNumber;
+    }
+
 
 
     public static final String DB_FIELD_PHONE_SECONDARY = "secondaryPhoneNumber";
@@ -237,7 +290,7 @@ public class CompanyRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_PHONE_SECONDARY)
-    private Set<ContactRecord> secondaryPhoneNumber;
+    private Set<ContactRecord> secondaryPhoneNumber = new HashSet<>();
 
     public void setSecondaryPhoneNumber(Set<ContactRecord> secondaryPhoneNumber) {
         for (ContactRecord record : secondaryPhoneNumber) {
@@ -246,6 +299,19 @@ public class CompanyRecord extends CvrEntityRecord {
             record.setCompanyRecord(this);
         }
         this.secondaryPhoneNumber = secondaryPhoneNumber;
+    }
+
+    public void addSecondaryPhoneNumber(ContactRecord record) {
+        if (!this.phoneNumber.contains(record)) {
+            record.setType(ContactRecord.TYPE_TELEFONNUMMER);
+            record.setCompanyRecord(this);
+            record.setSecondary(true);
+            this.phoneNumber.add(record);
+        }
+    }
+
+    public Set<ContactRecord> getSecondaryPhoneNumber() {
+        return this.secondaryPhoneNumber;
     }
 
 
@@ -261,14 +327,28 @@ public class CompanyRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_FAX)
-    private Set<ContactRecord> faxNumber;
+    private Set<ContactRecord> faxNumber = new HashSet<>();
 
     public void setFaxNumber(Set<ContactRecord> faxNumber) {
         for (ContactRecord record : faxNumber) {
             record.setType(ContactRecord.TYPE_TELEFAXNUMMER);
+            record.setSecondary(false);
             record.setCompanyRecord(this);
         }
         this.faxNumber = faxNumber;
+    }
+
+    public void addFaxNumber(ContactRecord record) {
+        if (!this.faxNumber.contains(record)) {
+            record.setType(ContactRecord.TYPE_TELEFAXNUMMER);
+            record.setCompanyRecord(this);
+            record.setSecondary(false);
+            this.faxNumber.add(record);
+        }
+    }
+
+    public Set<ContactRecord> getFaxNumber() {
+        return this.faxNumber;
     }
 
 
@@ -284,7 +364,7 @@ public class CompanyRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_FAX_SECONDARY)
-    private Set<ContactRecord> secondaryFaxNumber;
+    private Set<ContactRecord> secondaryFaxNumber = new HashSet<>();
 
     public void setSecondaryFaxNumber(Set<ContactRecord> secondaryFaxNumber) {
         for (ContactRecord record : secondaryFaxNumber) {
@@ -293,6 +373,19 @@ public class CompanyRecord extends CvrEntityRecord {
             record.setCompanyRecord(this);
         }
         this.secondaryFaxNumber = secondaryFaxNumber;
+    }
+
+    public void addSecondaryFaxNumber(ContactRecord record) {
+        if (!this.faxNumber.contains(record)) {
+            record.setType(ContactRecord.TYPE_TELEFAXNUMMER);
+            record.setCompanyRecord(this);
+            record.setSecondary(true);
+            this.faxNumber.add(record);
+        }
+    }
+
+    public Set<ContactRecord> getSecondaryFaxNumber() {
+        return this.secondaryFaxNumber;
     }
 
 
@@ -308,7 +401,7 @@ public class CompanyRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_EMAIL)
-    private Set<ContactRecord> emailAddress;
+    private Set<ContactRecord> emailAddress = new HashSet<>();
 
     public void setEmailAddress(Set<ContactRecord> emailAddress) {
         for (ContactRecord record : emailAddress) {
@@ -316,6 +409,18 @@ public class CompanyRecord extends CvrEntityRecord {
             record.setCompanyRecord(this);
         }
         this.emailAddress = emailAddress;
+    }
+
+    public void addEmailAddress(ContactRecord record) {
+        if (!this.emailAddress.contains(record)) {
+            record.setType(ContactRecord.TYPE_EMAILADRESSE);
+            record.setCompanyRecord(this);
+            this.emailAddress.add(record);
+        }
+    }
+
+    public Set<ContactRecord> getEmailAddress() {
+        return this.emailAddress;
     }
 
 
@@ -331,7 +436,7 @@ public class CompanyRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_HOMEPAGE)
-    private Set<ContactRecord> homepage;
+    private Set<ContactRecord> homepage = new HashSet<>();
 
     public void setHomepage(Set<ContactRecord> homepage) {
         for (ContactRecord record : homepage) {
@@ -339,6 +444,18 @@ public class CompanyRecord extends CvrEntityRecord {
             record.setCompanyRecord(this);
         }
         this.homepage = homepage;
+    }
+
+    public void addHomepage(ContactRecord record) {
+        if (!this.homepage.contains(record)) {
+            record.setType(ContactRecord.TYPE_HJEMMESIDE);
+            record.setCompanyRecord(this);
+            this.homepage.add(record);
+        }
+    }
+
+    public Set<ContactRecord> getHomepage() {
+        return this.homepage;
     }
 
 
@@ -354,7 +471,7 @@ public class CompanyRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_MANDATORY_EMAIL)
-    private Set<ContactRecord> mandatoryEmailAddress;
+    private Set<ContactRecord> mandatoryEmailAddress = new HashSet<>();
 
     public void setMandatoryEmailAddress(Set<ContactRecord> mandatoryEmailAddress) {
         for (ContactRecord record : mandatoryEmailAddress) {
@@ -364,6 +481,18 @@ public class CompanyRecord extends CvrEntityRecord {
         this.mandatoryEmailAddress = mandatoryEmailAddress;
     }
 
+    public void addMandatoryEmailAddress(ContactRecord record) {
+        if (!this.mandatoryEmailAddress.contains(record)) {
+            record.setType(ContactRecord.TYPE_OBLIGATORISK_EMAILADRESSE);
+            record.setCompanyRecord(this);
+            this.mandatoryEmailAddress.add(record);
+        }
+    }
+
+    public Set<ContactRecord> getMandatoryEmailAddress() {
+        return this.mandatoryEmailAddress;
+    }
+
 
 
     public static final String DB_FIELD_LIFECYCLE = "lifecycle";
@@ -371,17 +500,24 @@ public class CompanyRecord extends CvrEntityRecord {
 
     @OneToMany(mappedBy = LifecycleRecord.DB_FIELD_COMPANY, targetEntity = LifecycleRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_LIFECYCLE)
-    private Set<LifecycleRecord> lifecycle;
-
-    public Set<LifecycleRecord> getLifecycle() {
-        return this.lifecycle;
-    }
+    private Set<LifecycleRecord> lifecycle = new HashSet<>();
 
     public void setLifecycle(Set<LifecycleRecord> lifecycle) {
         this.lifecycle = lifecycle;
         for (LifecycleRecord lifecycleRecord : lifecycle) {
             lifecycleRecord.setCompanyRecord(this);
         }
+    }
+
+    public void addLifecycle(LifecycleRecord record) {
+        if (!this.lifecycle.contains(record)) {
+            record.setCompanyRecord(this);
+            this.lifecycle.add(record);
+        }
+    }
+
+    public Set<LifecycleRecord> getLifecycle() {
+        return this.lifecycle;
     }
 
 
@@ -392,7 +528,7 @@ public class CompanyRecord extends CvrEntityRecord {
     @OneToMany(mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, targetEntity = CompanyIndustryRecord.class, cascade = CascadeType.ALL)
     @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=0")
     @JsonProperty(value = IO_FIELD_PRIMARY_INDUSTRY)
-    private Set<CompanyIndustryRecord> primaryIndustry;
+    private Set<CompanyIndustryRecord> primaryIndustry = new HashSet<>();
 
     public void setPrimaryIndustry(Set<CompanyIndustryRecord> primaryIndustry) {
         for (CompanyIndustryRecord record : primaryIndustry) {
@@ -402,9 +538,18 @@ public class CompanyRecord extends CvrEntityRecord {
         this.primaryIndustry = primaryIndustry;
     }
 
+    public void addPrimaryIndustry(CompanyIndustryRecord record) {
+        if (!this.primaryIndustry.contains(record)) {
+            record.setIndex(0);
+            record.setCompanyRecord(this);
+            this.primaryIndustry.add(record);
+        }
+    }
+
     public Set<CompanyIndustryRecord> getPrimaryIndustry() {
         return this.primaryIndustry;
     }
+
 
 
     public static final String DB_FIELD_SECONDARY_INDUSTRY1 = "secondaryIndustry1";
@@ -413,7 +558,7 @@ public class CompanyRecord extends CvrEntityRecord {
     @OneToMany(mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, targetEntity = CompanyIndustryRecord.class, cascade = CascadeType.ALL)
     @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=1")
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY1)
-    private Set<CompanyIndustryRecord> secondaryIndustry1;
+    private Set<CompanyIndustryRecord> secondaryIndustry1 = new HashSet<>();
 
     public void setSecondaryIndustry1(Set<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
@@ -423,6 +568,19 @@ public class CompanyRecord extends CvrEntityRecord {
         this.secondaryIndustry1 = secondaryIndustryRecords;
     }
 
+    public void addSecondaryIndustry1(CompanyIndustryRecord record) {
+        if (!this.secondaryIndustry1.contains(record)) {
+            record.setIndex(1);
+            record.setCompanyRecord(this);
+            this.secondaryIndustry1.add(record);
+        }
+    }
+
+    public Set<CompanyIndustryRecord> getSecondaryIndustry1() {
+        return this.secondaryIndustry1;
+    }
+
+
 
     public static final String DB_FIELD_SECONDARY_INDUSTRY2 = "secondaryIndustry2";
     public static final String IO_FIELD_SECONDARY_INDUSTRY2 = "bibranche2";
@@ -430,7 +588,7 @@ public class CompanyRecord extends CvrEntityRecord {
     @OneToMany(mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, targetEntity = CompanyIndustryRecord.class, cascade = CascadeType.ALL)
     @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=2")
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY2)
-    private Set<CompanyIndustryRecord> secondaryIndustry2;
+    private Set<CompanyIndustryRecord> secondaryIndustry2 = new HashSet<>();
 
     public void setSecondaryIndustry2(Set<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
@@ -440,6 +598,19 @@ public class CompanyRecord extends CvrEntityRecord {
         this.secondaryIndustry2 = secondaryIndustryRecords;
     }
 
+    public void addSecondaryIndustry2(CompanyIndustryRecord record) {
+        if (!this.secondaryIndustry2.contains(record)) {
+            record.setIndex(2);
+            record.setCompanyRecord(this);
+            this.secondaryIndustry2.add(record);
+        }
+    }
+
+    public Set<CompanyIndustryRecord> getSecondaryIndustry2() {
+        return this.secondaryIndustry2;
+    }
+
+
 
     public static final String DB_FIELD_SECONDARY_INDUSTRY3 = "secondaryIndustry3";
     public static final String IO_FIELD_SECONDARY_INDUSTRY3 = "bibranche3";
@@ -447,7 +618,7 @@ public class CompanyRecord extends CvrEntityRecord {
     @OneToMany(mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, targetEntity = CompanyIndustryRecord.class, cascade = CascadeType.ALL)
     @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=3")
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY3)
-    private Set<CompanyIndustryRecord> secondaryIndustry3;
+    private Set<CompanyIndustryRecord> secondaryIndustry3 = new HashSet<>();
 
     public void setSecondaryIndustry3(Set<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
@@ -457,6 +628,18 @@ public class CompanyRecord extends CvrEntityRecord {
         this.secondaryIndustry3 = secondaryIndustryRecords;
     }
 
+    public void addSecondaryIndustry3(CompanyIndustryRecord record) {
+        if (!this.secondaryIndustry3.contains(record)) {
+            record.setIndex(3);
+            record.setCompanyRecord(this);
+            this.secondaryIndustry3.add(record);
+        }
+    }
+
+    public Set<CompanyIndustryRecord> getSecondaryIndustry3() {
+        return this.secondaryIndustry3;
+    }
+
 
 
     public static final String DB_FIELD_STATUS = "status";
@@ -464,17 +647,24 @@ public class CompanyRecord extends CvrEntityRecord {
 
     @OneToMany(mappedBy = CompanyStatusRecord.DB_FIELD_COMPANY, targetEntity = StatusRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_STATUS)
-    private Set<StatusRecord> status;
-
-    public Set<StatusRecord> getStatus() {
-        return this.status;
-    }
+    private Set<StatusRecord> status = new HashSet<>();
 
     public void setStatus(Set<StatusRecord> status) {
         this.status = status;
         for (StatusRecord statusRecord : status) {
             statusRecord.setCompanyRecord(this);
         }
+    }
+
+    public void addStatus(StatusRecord record) {
+        if (!this.status.contains(record)) {
+            record.setCompanyRecord(this);
+            this.status.add(record);
+        }
+    }
+
+    public Set<StatusRecord> getStatus() {
+        return this.status;
     }
 
 
@@ -484,17 +674,25 @@ public class CompanyRecord extends CvrEntityRecord {
 
     @OneToMany(mappedBy = CompanyStatusRecord.DB_FIELD_COMPANY, targetEntity = CompanyStatusRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_COMPANYSTATUS)
-    private Set<CompanyStatusRecord> companyStatus;
+    private Set<CompanyStatusRecord> companyStatus = new HashSet<>();
 
-    public Set<CompanyStatusRecord> getCompanyStatus() {
-        return this.companyStatus;
-    }
 
     public void setCompanyStatus(Set<CompanyStatusRecord> companyStatus) {
         this.companyStatus = companyStatus;
         for (CompanyStatusRecord statusRecord : companyStatus) {
             statusRecord.setCompanyRecord(this);
         }
+    }
+
+    public void addCompanyStatus(CompanyStatusRecord record) {
+        if (!this.companyStatus.contains(record)) {
+            record.setCompanyRecord(this);
+            this.companyStatus.add(record);
+        }
+    }
+
+    public Set<CompanyStatusRecord> getCompanyStatus() {
+        return this.companyStatus;
     }
 
 
@@ -504,14 +702,24 @@ public class CompanyRecord extends CvrEntityRecord {
 
     @OneToMany(mappedBy = CompanyFormRecord.DB_FIELD_COMPANY, targetEntity = CompanyFormRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_FORM)
-    private Set<CompanyFormRecord> companyForm;
-
+    private Set<CompanyFormRecord> companyForm = new HashSet<>();
 
     public void setCompanyForm(Set<CompanyFormRecord> companyForm) {
         this.companyForm = companyForm;
         for (CompanyFormRecord formRecord : companyForm) {
             formRecord.setCompanyRecord(this);
         }
+    }
+
+    public void addCompanyForm(CompanyFormRecord record) {
+        if (!this.companyForm.contains(record)) {
+            record.setCompanyRecord(this);
+            this.companyForm.add(record);
+        }
+    }
+
+    public Set<CompanyFormRecord> getCompanyForm() {
+        return this.companyForm;
     }
 
 
@@ -521,13 +729,24 @@ public class CompanyRecord extends CvrEntityRecord {
 
     @OneToMany(mappedBy = CompanyYearlyNumbersRecord.DB_FIELD_COMPANY, targetEntity = CompanyYearlyNumbersRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_YEARLY_NUMBERS)
-    private Set<CompanyYearlyNumbersRecord> yearlyNumbers;
+    private Set<CompanyYearlyNumbersRecord> yearlyNumbers = new HashSet<>();
 
     public void setYearlyNumbers(Set<CompanyYearlyNumbersRecord> yearlyNumbers) {
         this.yearlyNumbers = yearlyNumbers;
         for (CompanyYearlyNumbersRecord yearlyNumbersRecord : yearlyNumbers) {
             yearlyNumbersRecord.setCompanyRecord(this);
         }
+    }
+
+    public void addYearlyNumbers(CompanyYearlyNumbersRecord record) {
+        if (!this.yearlyNumbers.contains(record)) {
+            record.setCompanyRecord(this);
+            this.yearlyNumbers.add(record);
+        }
+    }
+
+    public Set<CompanyYearlyNumbersRecord> getYearlyNumbers() {
+        return this.yearlyNumbers;
     }
 
 
@@ -537,13 +756,24 @@ public class CompanyRecord extends CvrEntityRecord {
 
     @OneToMany(mappedBy = CompanyQuarterlyNumbersRecord.DB_FIELD_COMPANY, targetEntity = CompanyQuarterlyNumbersRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_QUARTERLY_NUMBERS)
-    private Set<CompanyQuarterlyNumbersRecord> quarterlyNumbers;
+    private Set<CompanyQuarterlyNumbersRecord> quarterlyNumbers = new HashSet<>();
 
     public void setQuarterlyNumbers(Set<CompanyQuarterlyNumbersRecord> quarterlyNumbers) {
         this.quarterlyNumbers = quarterlyNumbers;
         for (CompanyQuarterlyNumbersRecord quarterlyNumbersRecord : quarterlyNumbers) {
             quarterlyNumbersRecord.setCompanyRecord(this);
         }
+    }
+
+    public void addQuarterlyNumbers(CompanyQuarterlyNumbersRecord record) {
+        if (!this.quarterlyNumbers.contains(record)) {
+            record.setCompanyRecord(this);
+            this.quarterlyNumbers.add(record);
+        }
+    }
+
+    public Set<CompanyQuarterlyNumbersRecord> getQuarterlyNumbers() {
+        return this.quarterlyNumbers;
     }
 
 
@@ -553,13 +783,24 @@ public class CompanyRecord extends CvrEntityRecord {
 
     @OneToMany(mappedBy = CompanyMonthlyNumbersRecord.DB_FIELD_COMPANY, targetEntity = CompanyMonthlyNumbersRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_MONTHLY_NUMBERS)
-    private Set<CompanyMonthlyNumbersRecord> monthlyNumbers;
+    private Set<CompanyMonthlyNumbersRecord> monthlyNumbers = new HashSet<>();
 
     public void setMonthlyNumbers(Set<CompanyMonthlyNumbersRecord> monthlyNumbers) {
         this.monthlyNumbers = monthlyNumbers;
         for (CompanyMonthlyNumbersRecord monthlyNumbersRecord : monthlyNumbers) {
             monthlyNumbersRecord.setCompanyRecord(this);
         }
+    }
+
+    public void addMonthlyNumbers(CompanyMonthlyNumbersRecord record) {
+        if (!this.monthlyNumbers.contains(record)) {
+            record.setCompanyRecord(this);
+            this.monthlyNumbers.add(record);
+        }
+    }
+
+    public Set<CompanyMonthlyNumbersRecord> getMonthlyNumbers() {
+        return this.monthlyNumbers;
     }
 
 
@@ -569,13 +810,24 @@ public class CompanyRecord extends CvrEntityRecord {
 
     @OneToMany(mappedBy = AttributeRecord.DB_FIELD_COMPANY, targetEntity = AttributeRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_ATTRIBUTES)
-    private Set<AttributeRecord> attributes;
+    private Set<AttributeRecord> attributes = new HashSet<>();
 
     public void setAttributes(Set<AttributeRecord> attributes) {
         this.attributes = attributes;
         for (AttributeRecord attributeRecord : attributes) {
             attributeRecord.setCompanyRecord(this);
         }
+    }
+
+    public void addAttributes(AttributeRecord record) {
+        if (!this.attributes.contains(record)) {
+            record.setCompanyRecord(this);
+            this.attributes.add(record);
+        }
+    }
+
+    public Set<AttributeRecord> getAttributes() {
+        return this.attributes;
     }
 
 
@@ -585,13 +837,24 @@ public class CompanyRecord extends CvrEntityRecord {
 
     @OneToMany(mappedBy = CompanyUnitLinkRecord.DB_FIELD_COMPANY, targetEntity = CompanyUnitLinkRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_P_UNITS)
-    private Set<CompanyUnitLinkRecord> productionUnits;
+    private Set<CompanyUnitLinkRecord> productionUnits = new HashSet<>();
 
     public void setProductionUnits(Set<CompanyUnitLinkRecord> productionUnits) {
         this.productionUnits = productionUnits;
         for (CompanyUnitLinkRecord unitLinkRecord : productionUnits) {
             unitLinkRecord.setCompanyRecord(this);
         }
+    }
+
+    public void addProductionUnit(CompanyUnitLinkRecord record) {
+        if (!this.productionUnits.contains(record)) {
+            record.setCompanyRecord(this);
+            this.productionUnits.add(record);
+        }
+    }
+
+    public Set<CompanyUnitLinkRecord> getProductionUnits() {
+        return this.productionUnits;
     }
 
 
@@ -601,13 +864,24 @@ public class CompanyRecord extends CvrEntityRecord {
 
     @OneToMany(mappedBy = CompanyParticipantRelationRecord.DB_FIELD_COMPANY, targetEntity = CompanyParticipantRelationRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_PARTICIPANTS)
-    private Set<CompanyParticipantRelationRecord> participants;
+    private Set<CompanyParticipantRelationRecord> participants = new HashSet<>();
 
     public void setParticipants(Set<CompanyParticipantRelationRecord> participants) {
         this.participants = participants;
         for (CompanyParticipantRelationRecord participantRelationRecord : participants) {
             participantRelationRecord.setCompanyRecord(this);
         }
+    }
+
+    public void addParticipant(CompanyParticipantRelationRecord record) {
+        if (!this.participants.contains(record)) {
+            record.setCompanyRecord(this);
+            this.participants.add(record);
+        }
+    }
+
+    public Set<CompanyParticipantRelationRecord> getParticipants() {
+        return this.participants;
     }
 
 
@@ -618,7 +892,7 @@ public class CompanyRecord extends CvrEntityRecord {
     @OneToMany(mappedBy = FusionSplitRecord.DB_FIELD_COMPANY, targetEntity = FusionSplitRecord.class, cascade = CascadeType.ALL)
     @Where(clause = FusionSplitRecord.DB_FIELD_SPLIT+"=false")
     @JsonProperty(value = IO_FIELD_FUSIONS)
-    private Set<FusionSplitRecord> fusions;
+    private Set<FusionSplitRecord> fusions = new HashSet<>();
 
     public Set<FusionSplitRecord> getFusions() {
         return this.fusions;
@@ -632,6 +906,15 @@ public class CompanyRecord extends CvrEntityRecord {
         }
     }
 
+    public void addFusion(FusionSplitRecord record) {
+        if (!this.fusions.contains(record)) {
+            record.setCompanyRecord(this);
+            record.setSplit(false);
+            this.fusions.add(record);
+        }
+    }
+
+
 
 
     public static final String DB_FIELD_SPLITS = "splits";
@@ -640,7 +923,7 @@ public class CompanyRecord extends CvrEntityRecord {
     @OneToMany(mappedBy = FusionSplitRecord.DB_FIELD_COMPANY, targetEntity = FusionSplitRecord.class, cascade = CascadeType.ALL)
     @Where(clause = FusionSplitRecord.DB_FIELD_SPLIT+"=true")
     @JsonProperty(value = IO_FIELD_SPLITS)
-    private Set<FusionSplitRecord> splits;
+    private Set<FusionSplitRecord> splits = new HashSet<>();
 
     public Set<FusionSplitRecord> getSplits() {
         return this.splits;
@@ -651,6 +934,14 @@ public class CompanyRecord extends CvrEntityRecord {
         for (FusionSplitRecord fusionSplitRecord : splits) {
             fusionSplitRecord.setCompanyRecord(this);
             fusionSplitRecord.setSplit(true);
+        }
+    }
+
+    public void addSplit(FusionSplitRecord record) {
+        if (!this.fusions.contains(record)) {
+            record.setCompanyRecord(this);
+            record.setSplit(true);
+            this.fusions.add(record);
         }
     }
 
@@ -787,4 +1078,5 @@ public class CompanyRecord extends CvrEntityRecord {
         }
         super.save(session);
     }
+
 }

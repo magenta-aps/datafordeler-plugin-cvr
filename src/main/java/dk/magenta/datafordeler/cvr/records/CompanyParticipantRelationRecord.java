@@ -10,6 +10,7 @@ import org.hibernate.Session;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -126,4 +127,20 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
                 this.getOrganizationIdentifications(session)
         );
     }*/
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        CompanyParticipantRelationRecord that = (CompanyParticipantRelationRecord) o;
+        return Objects.equals(participant, that.participant) &&
+                Objects.equals(organizations, that.organizations);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), participant, organizations);
+    }
 }

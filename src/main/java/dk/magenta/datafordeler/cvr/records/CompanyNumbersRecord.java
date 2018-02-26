@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -160,5 +161,27 @@ public abstract class CompanyNumbersRecord extends CvrBitemporalDataRecord {
 
     public LocalDate getValidTo() {
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        CompanyNumbersRecord that = (CompanyNumbersRecord) o;
+        return Objects.equals(employees, that.employees) &&
+                Objects.equals(employeeLow, that.employeeLow) &&
+                Objects.equals(employeeHigh, that.employeeHigh) &&
+                Objects.equals(fulltimeEquivalent, that.fulltimeEquivalent) &&
+                Objects.equals(fulltimeEquivalentLow, that.fulltimeEquivalentLow) &&
+                Objects.equals(fulltimeEquivalentHigh, that.fulltimeEquivalentHigh) &&
+                Objects.equals(includingOwners, that.includingOwners) &&
+                Objects.equals(includingOwnersLow, that.includingOwnersLow) &&
+                Objects.equals(includingOwnersHigh, that.includingOwnersHigh);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), employees, employeeLow, employeeHigh, fulltimeEquivalent, fulltimeEquivalentLow, fulltimeEquivalentHigh, includingOwners, includingOwnersLow, includingOwnersHigh);
     }
 }

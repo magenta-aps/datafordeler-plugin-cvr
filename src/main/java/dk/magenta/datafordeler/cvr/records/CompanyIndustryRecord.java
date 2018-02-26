@@ -12,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import java.util.Objects;
 
 /**
  * Record for Company and CompanyUnit industry.
@@ -94,5 +95,21 @@ public class CompanyIndustryRecord extends CvrBitemporalDataRecord {
                 baseData.setSecondaryIndustry3(industry);
                 break;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        CompanyIndustryRecord that = (CompanyIndustryRecord) o;
+        return index == that.index &&
+                Objects.equals(industryCode, that.industryCode) &&
+                Objects.equals(industryText, that.industryText);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), index, industryCode, industryText);
     }
 }

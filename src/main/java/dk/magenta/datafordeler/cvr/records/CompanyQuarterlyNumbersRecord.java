@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import java.util.Objects;
 
 /**
  * Record for Company and CompanyUnit quarterly employee numbers.
@@ -64,5 +65,20 @@ public class CompanyQuarterlyNumbersRecord extends CompanyNumbersRecord {
                 this.getIncludingOwnersLow(),
                 this.getIncludingOwnersHigh()
         );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        CompanyQuarterlyNumbersRecord that = (CompanyQuarterlyNumbersRecord) o;
+        return year == that.year &&
+                quarter == that.quarter;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), year, quarter);
     }
 }

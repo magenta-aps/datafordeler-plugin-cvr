@@ -336,8 +336,8 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         
         toplevelRecord.save(session);
 
-        
-        
+/*
+
         timer.start(TASK_FIND_ENTITY);
         this.checkInterrupt(importMetadata);
         UUID uuid = this.generateUUID(toplevelRecord);
@@ -365,13 +365,13 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         HashSet<R> entityRegistrations = new HashSet<>();
         OffsetDateTime lastUpdate = this.getLastUpdated(session);
         List<CvrRecord> recentlyUpdated = toplevelRecord.getSince(lastUpdate);
-
+*/
         /*for (CvrBaseRecord rec : recentlyUpdated) {
             if (rec.getLastUpdated() == null) {
                 rec.setLastUpdated(lastUpdate);
             }
         }*/
-
+/*
         ListHashMap<Bitemporality, CvrRecord> groups = this.sortIntoGroups(recentlyUpdated);
 
         for (Bitemporality bitemporality : groups.keySet()) {
@@ -444,7 +444,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         registrations.addAll(entityRegistrations);
 
         this.checkInterrupt(importMetadata);
-
+*/
         return registrations;
     }
 

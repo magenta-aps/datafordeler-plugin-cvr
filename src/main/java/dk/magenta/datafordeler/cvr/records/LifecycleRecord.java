@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.Objects;
 
 /**
  * Record for Company and CompanyUnit lifecycle data.
@@ -42,4 +43,5 @@ public class LifecycleRecord extends CvrBitemporalDataRecord {
             baseData.setLifecycleStop(OffsetDateTime.of(this.getValidTo(), LocalTime.MIDNIGHT, ZoneOffset.UTC));
         }
     }
+
 }

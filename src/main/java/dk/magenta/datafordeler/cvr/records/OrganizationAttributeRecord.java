@@ -6,6 +6,7 @@ import dk.magenta.datafordeler.core.database.DatabaseEntry;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -126,5 +127,22 @@ public class OrganizationAttributeRecord extends CvrNontemporalRecord {
 
     public void setFusionOutgoing(boolean fusionOutgoing) {
         this.fusionOutgoing = fusionOutgoing;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrganizationAttributeRecord that = (OrganizationAttributeRecord) o;
+        return sequenceNumber == that.sequenceNumber &&
+                fusionOutgoing == that.fusionOutgoing &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(valueType, that.valueType) &&
+                Objects.equals(values, that.values);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sequenceNumber, type, valueType, values, fusionOutgoing);
     }
 }

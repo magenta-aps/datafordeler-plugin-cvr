@@ -12,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import java.util.Objects;
 
 /**
  * Record for Company, CompanyUnit and Participant contact information.
@@ -121,5 +122,22 @@ public class ContactRecord extends CvrBitemporalDataRecord {
                 baseData.setEmailAddress(this.contactInformation, this.secret);
                 break;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        ContactRecord that = (ContactRecord) o;
+        return secret == that.secret &&
+                secondary == that.secondary &&
+                type == that.type &&
+                Objects.equals(contactInformation, that.contactInformation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), contactInformation, secret, secondary, type);
     }
 }

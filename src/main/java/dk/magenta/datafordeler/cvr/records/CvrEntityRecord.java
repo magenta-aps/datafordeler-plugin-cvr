@@ -42,13 +42,102 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord {
         if (this.identification == null) {
             this.identification = QueryManager.getOrCreateIdentification(session, this.generateUUID(), CvrPlugin.getDomain());
         }
-        super.save(session);
-        for (CvrRecord record : this.getAll()) {
-            record.save(session);
+        if (existing != null && !existing.getId().equals(this.getId()) && existing instanceof CompanyRecord && this instanceof CompanyRecord) {
+            CompanyRecord c = (CompanyRecord) existing;
+            CompanyRecord t = (CompanyRecord) this;
+            for (NameRecord nameRecord : t.getNames()) {
+                c.addName(nameRecord);
+            }
+            for (NameRecord nameRecord : t.getSecondaryNames()) {
+                c.addSecondaryName(nameRecord);
+            }
+            for (AddressRecord addressRecord : t.getLocationAddress()) {
+                c.addLocationAddress(addressRecord);
+            }
+            for (AddressRecord addressRecord : t.getPostalAddress()) {
+                c.addPostalAddress(addressRecord);
+            }
+            for (ContactRecord contactRecord : t.getPhoneNumber()) {
+                c.addPhoneNumber(contactRecord);
+            }
+            for (ContactRecord contactRecord : t.getSecondaryPhoneNumber()) {
+                c.addSecondaryPhoneNumber(contactRecord);
+            }
+            for (ContactRecord contactRecord : t.getFaxNumber()) {
+                c.addFaxNumber(contactRecord);
+            }
+            for (ContactRecord contactRecord : t.getSecondaryFaxNumber()) {
+                c.addSecondaryFaxNumber(contactRecord);
+            }
+            for (ContactRecord contactRecord : t.getEmailAddress()) {
+                c.addEmailAddress(contactRecord);
+            }
+            for (ContactRecord contactRecord : t.getHomepage()) {
+                c.addHomepage(contactRecord);
+            }
+            for (ContactRecord contactRecord : t.getMandatoryEmailAddress()) {
+                c.addMandatoryEmailAddress(contactRecord);
+            }
+            for (LifecycleRecord lifecycleRecord : t.getLifecycle()) {
+                c.addLifecycle(lifecycleRecord);
+            }
+            for (CompanyIndustryRecord companyIndustryRecord : t.getPrimaryIndustry()) {
+                c.addPrimaryIndustry(companyIndustryRecord);
+            }
+            for (CompanyIndustryRecord companyIndustryRecord : t.getSecondaryIndustry1()) {
+                c.addSecondaryIndustry1(companyIndustryRecord);
+            }
+            for (CompanyIndustryRecord companyIndustryRecord : t.getSecondaryIndustry2()) {
+                c.addSecondaryIndustry2(companyIndustryRecord);
+            }
+            for (CompanyIndustryRecord companyIndustryRecord : t.getSecondaryIndustry3()) {
+                c.addSecondaryIndustry3(companyIndustryRecord);
+            }
+            for (StatusRecord statusRecord : t.getStatus()) {
+                c.addStatus(statusRecord);
+            }
+            for (CompanyStatusRecord statusRecord : t.getCompanyStatus()) {
+                c.addCompanyStatus(statusRecord);
+            }
+            for (CompanyFormRecord formRecord : t.getCompanyForm()) {
+                c.addCompanyForm(formRecord);
+            }
+            for (CompanyYearlyNumbersRecord yearlyNumbersRecord : t.getYearlyNumbers()) {
+                c.addYearlyNumbers(yearlyNumbersRecord);
+            }
+            for (CompanyQuarterlyNumbersRecord quarterlyNumbersRecord : t.getQuarterlyNumbers()) {
+                c.addQuarterlyNumbers(quarterlyNumbersRecord);
+            }
+            for (CompanyMonthlyNumbersRecord monthlyNumbersRecord : t.getMonthlyNumbers()) {
+                c.addMonthlyNumbers(monthlyNumbersRecord);
+            }
+            for (AttributeRecord attributeRecord : t.getAttributes()) {
+                c.addAttributes(attributeRecord);
+            }
+            for (CompanyUnitLinkRecord companyUnitLinkRecord : t.getProductionUnits()) {
+                c.addProductionUnit(companyUnitLinkRecord);
+            }
+            for (CompanyParticipantRelationRecord participantRelationRecord : t.getParticipants()) {
+                c.addParticipant(participantRelationRecord);
+            }
+            for (FusionSplitRecord fusionSplitRecord : t.getFusions()) {
+                c.addFusion(fusionSplitRecord);
+            }
+            for (FusionSplitRecord fusionSplitRecord : t.getSplits()) {
+                c.addSplit(fusionSplitRecord);
+            }
+
+
+            existing.save(session);
+        } else {
+            super.save(session);
+            for (CvrRecord record : this.getAll()) {
+                record.save(session);
+            }
         }
-        if (existing != null) {
+        /*if (existing != null) {
             session.delete(existing);
-        }
+        }*/
     }
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})

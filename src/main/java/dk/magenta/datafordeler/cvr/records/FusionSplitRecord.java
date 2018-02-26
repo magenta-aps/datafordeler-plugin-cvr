@@ -6,6 +6,7 @@ import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -97,5 +98,22 @@ public class FusionSplitRecord extends CvrNontemporalDataRecord {
             attributeRecord.setFusionSplitRecord(this);
             attributeRecord.setFusionOutgoing(true);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FusionSplitRecord that = (FusionSplitRecord) o;
+        return split == that.split &&
+                organizationUnitNumber == that.organizationUnitNumber &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(incoming, that.incoming) &&
+                Objects.equals(outgoing, that.outgoing);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(split, organizationUnitNumber, name, incoming, outgoing);
     }
 }

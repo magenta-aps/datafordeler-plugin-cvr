@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.util.Equality;
 import dk.magenta.datafordeler.core.util.ListHashMap;
 
 import javax.persistence.Column;
@@ -10,6 +11,7 @@ import javax.persistence.MappedSuperclass;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Collection;
+import java.util.Objects;
 
 @MappedSuperclass
 public class CvrBitemporalRecord extends CvrRecord implements Comparable<CvrBitemporalRecord> {
@@ -82,6 +84,13 @@ public class CvrBitemporalRecord extends CvrRecord implements Comparable<CvrBite
         }
     }
 
+
+    /*public void merge(CvrBitemporalRecord other) {
+        if (other != null && other.getClass() == this.getClass()) {
+
+        }
+    }*/
+
     /**
      * For sorting purposes; we implement the Comparable interface, so we should
      * provide a comparison method. Here, we sort CvrRecord objects by registrationFrom, with nulls first
@@ -124,5 +133,21 @@ public class CvrBitemporalRecord extends CvrRecord implements Comparable<CvrBite
             recordGroups.add(groupKey, record);
         }
         return recordGroups;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CvrBitemporalRecord that = (CvrBitemporalRecord) o;
+        return Equality.equal(lastUpdated, that.lastUpdated) &&
+                Equality.equal(lastLoaded, that.lastLoaded) &&
+                Objects.equals(validity, that.validity) &&
+                Equality.equal(registrationTo, that.registrationTo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(lastUpdated, lastLoaded, validity, registrationTo);
     }
 }

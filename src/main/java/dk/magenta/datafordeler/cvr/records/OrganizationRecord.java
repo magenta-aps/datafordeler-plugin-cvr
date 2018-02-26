@@ -6,6 +6,7 @@ import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import org.hibernate.Session;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -94,4 +95,20 @@ public class OrganizationRecord extends DatabaseEntry {
         return UUID.nameUUIDFromBytes(uuidInput.getBytes());
     }*/
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrganizationRecord that = (OrganizationRecord) o;
+        return unitNumber == that.unitNumber &&
+                Objects.equals(mainType, that.mainType) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(attributes, that.attributes) &&
+                Objects.equals(memberData, that.memberData);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(unitNumber, mainType, name, attributes, memberData);
+    }
 }

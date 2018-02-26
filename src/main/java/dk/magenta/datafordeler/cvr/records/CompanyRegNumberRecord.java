@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import java.util.Objects;
 
 /**
  * Record for Company, CompanyUnit or Participant name.
@@ -29,4 +30,18 @@ public class CompanyRegNumberRecord extends CvrBitemporalDataRecord {
         return this.regNumber;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        CompanyRegNumberRecord that = (CompanyRegNumberRecord) o;
+        return Objects.equals(regNumber, that.regNumber);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), regNumber);
+    }
 }

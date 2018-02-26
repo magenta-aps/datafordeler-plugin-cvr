@@ -8,6 +8,7 @@ import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import org.hibernate.Session;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 /**
  * Record for Company form.
@@ -87,4 +88,21 @@ public class CompanyFormRecord extends CvrBitemporalDataRecord {
         this.companyForm = CompanyForm.getForm(this.companyFormCode, this.shortDescription, this.longDescription, this.responsibleDatasource, session);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        CompanyFormRecord that = (CompanyFormRecord) o;
+        return Objects.equals(companyFormCode, that.companyFormCode) &&
+                Objects.equals(shortDescription, that.shortDescription) &&
+                Objects.equals(longDescription, that.longDescription) &&
+                Objects.equals(responsibleDatasource, that.responsibleDatasource) &&
+                Objects.equals(companyForm, that.companyForm);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), companyFormCode, shortDescription, longDescription, responsibleDatasource, companyForm);
+    }
 }

@@ -1,10 +1,12 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.util.Equality;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  * The object representation of a “periode” JSON object from the source
@@ -40,5 +42,19 @@ public class CvrRecordPeriod {
 
     public void setValidTo(LocalDate validTo) {
         this.validTo = validTo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CvrRecordPeriod that = (CvrRecordPeriod) o;
+        return Equality.equal(validFrom, that.validFrom) &&
+               Equality.equal(validTo, that.validTo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(validFrom, validTo);
     }
 }

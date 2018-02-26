@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import java.util.Objects;
 
 /**
  * Record for Company and CompanyUnit monthly employee numbers.
@@ -68,5 +69,20 @@ public class CompanyMonthlyNumbersRecord extends CompanyNumbersRecord {
                 this.getIncludingOwnersLow(),
                 this.getIncludingOwnersHigh()
         );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        CompanyMonthlyNumbersRecord that = (CompanyMonthlyNumbersRecord) o;
+        return year == that.year &&
+                month == that.month;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), year, month);
     }
 }

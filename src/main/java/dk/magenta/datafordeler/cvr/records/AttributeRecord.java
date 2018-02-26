@@ -10,6 +10,7 @@ import org.hibernate.Session;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -100,5 +101,21 @@ public class AttributeRecord extends CvrNontemporalDataRecord {
         for (AttributeValueRecord record : values) {
             record.populateBaseData(baseData, session);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AttributeRecord that = (AttributeRecord) o;
+        return sequenceNumber == that.sequenceNumber &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(valueType, that.valueType) &&
+                Objects.equals(values, that.values);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sequenceNumber, type, valueType, values);
     }
 }

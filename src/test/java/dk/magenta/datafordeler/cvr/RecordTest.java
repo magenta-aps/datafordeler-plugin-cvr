@@ -58,11 +58,16 @@ public class RecordTest {
         schemaMap.put("deltager", ParticipantEntity.schema);
     }
 
+
     private HashMap<Integer, JsonNode> loadCompany() throws IOException, DataFordelerException {
+        return loadCompany("/company_in.json");
+    }
+
+    private HashMap<Integer, JsonNode> loadCompany(String resource) throws IOException, DataFordelerException {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        InputStream input = ParseTest.class.getResourceAsStream("/company_in.json");
+        InputStream input = ParseTest.class.getResourceAsStream(resource);
         boolean linedFile = false;
         HashMap<Integer, JsonNode> companies = new HashMap<>();
         try {
@@ -183,6 +188,44 @@ public class RecordTest {
             query.setVirksomhedsnavn("MAGENTA ApS");
             Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
             query.clearVirksomhedsnavn();
+
+        } finally {
+            session.close();
+        }
+    }
+
+    @Test
+    public void testUpdateCompany() throws IOException, DataFordelerException {
+        loadCompany("/company_in.json");
+        loadCompany("/company_in2.json");
+        Session session = sessionManager.getSessionFactory().openSession();
+        try {
+            CompanyRecordQuery query = new CompanyRecordQuery();
+            query.setCvrNumre("25052943");
+            List<CompanyRecord> records = QueryManager.getAllEntities(session, query, CompanyRecord.class);
+            CompanyRecord companyRecord = records.get(0);
+            Assert.assertEquals(3, companyRecord.getNames().size());
+            Assert.assertEquals(1, companyRecord.getSecondaryNames().size());
+            Assert.assertEquals(1, companyRecord.getPostalAddress().size());
+            Assert.assertEquals(5, companyRecord.getLocationAddress().size());
+            Assert.assertEquals(2, companyRecord.getPhoneNumber().size());
+            Assert.assertEquals(0, companyRecord.getFaxNumber().size());
+            Assert.assertEquals(2, companyRecord.getEmailAddress().size());
+            Assert.assertEquals(2, companyRecord.getLifecycle().size());
+            Assert.assertEquals(5, companyRecord.getPrimaryIndustry().size());
+            Assert.assertEquals(1, companyRecord.getSecondaryIndustry1().size());
+            Assert.assertEquals(0, companyRecord.getSecondaryIndustry2().size());
+            Assert.assertEquals(0, companyRecord.getSecondaryIndustry3().size());
+            Assert.assertEquals(0, companyRecord.getStatus().size());
+            Assert.assertEquals(2, companyRecord.getCompanyStatus().size());
+            Assert.assertEquals(16, companyRecord.getYearlyNumbers().size());
+            Assert.assertEquals(64, companyRecord.getQuarterlyNumbers().size());
+            Assert.assertEquals(16, companyRecord.getAttributes().size());
+            Assert.assertEquals(3, companyRecord.getProductionUnits().size());
+            Assert.assertEquals(13, companyRecord.getParticipants().size());
+            Assert.assertEquals(1, companyRecord.getFusions().size());
+            Assert.assertEquals(1, companyRecord.getSplits().size());
+
 
         } finally {
             session.close();
