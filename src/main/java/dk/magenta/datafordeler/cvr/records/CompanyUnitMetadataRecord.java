@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import org.hibernate.Session;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -82,12 +83,60 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
         return latest;
     }
 
+
+
+    public static final String DB_FIELD_NEWEST_LOCATION = "newestLocation";
+    public static final String IO_FIELD_NEWEST_LOCATION = "nyesteBeliggenhedsadresse";
+
+    @OneToMany(targetEntity = AddressRecord.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonProperty(value = IO_FIELD_NEWEST_LOCATION)
+    private Set<AddressRecord> newestLocation = new HashSet<>();
+
+    public void setNewestLocation(Set<AddressRecord> newestLocation) {
+        this.newestLocation = newestLocation;
+    }
+
+    @JsonSetter(IO_FIELD_NEWEST_LOCATION)
+    public void addNewestLocation(AddressRecord newestLocation) {
+        if (!this.newestLocation.contains(newestLocation)) {
+            newestLocation.setMetadataRecord(this);
+            this.newestLocation.add(newestLocation);
+        }
+    }
+
+    @JsonIgnore
+    public Set<AddressRecord> getNewestLocation() {
+        return this.newestLocation;
+    }
+
+    @JsonGetter(IO_FIELD_NEWEST_LOCATION)
+    public AddressRecord getLatestNewestLocation() {
+        AddressRecord latest = null;
+        for (AddressRecord nameRecord : this.newestLocation) {
+            if (latest == null || nameRecord.getLastUpdated().isAfter(latest.getLastUpdated())) {
+                latest = nameRecord;
+            }
+        }
+        return latest;
+    }
+
+    @Override
+    public void wire(Session session) {
+        for (AddressRecord addressRecord : this.newestLocation) {
+            addressRecord.wire(session);
+        }
+    }
+
+
     @Override
     public boolean merge(MetadataRecord other) {
         if (other != null && !other.getId().equals(this.getId()) && other instanceof CompanyUnitMetadataRecord) {
             CompanyUnitMetadataRecord existing = (CompanyUnitMetadataRecord) other;
             for (NameRecord nameRecord : this.getNewestName()) {
                 existing.addNewestName(nameRecord);
+            }
+            for (AddressRecord addressRecord : this.getNewestLocation()) {
+                existing.addNewestLocation(addressRecord);
             }
             return true;
         }

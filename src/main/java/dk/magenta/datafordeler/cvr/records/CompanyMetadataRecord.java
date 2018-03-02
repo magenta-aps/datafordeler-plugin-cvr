@@ -94,6 +94,44 @@ public class CompanyMetadataRecord extends MetadataRecord {
 
 
 
+    public static final String DB_FIELD_NEWEST_LOCATION = "newestLocation";
+    public static final String IO_FIELD_NEWEST_LOCATION = "nyesteBeliggenhedsadresse";
+
+    @OneToMany(targetEntity = AddressRecord.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonProperty(value = IO_FIELD_NEWEST_LOCATION)
+    private Set<AddressRecord> newestLocation = new HashSet<>();
+
+    public void setNewestLocation(Set<AddressRecord> newestLocation) {
+        this.newestLocation = newestLocation;
+    }
+
+    @JsonSetter(IO_FIELD_NEWEST_LOCATION)
+    public void addNewestLocation(AddressRecord newestLocation) {
+        if (!this.newestLocation.contains(newestLocation)) {
+            newestLocation.setMetadataRecord(this);
+            this.newestLocation.add(newestLocation);
+        }
+    }
+
+    @JsonIgnore
+    public Set<AddressRecord> getNewestLocation() {
+        return this.newestLocation;
+    }
+
+    @JsonGetter(IO_FIELD_NEWEST_LOCATION)
+    public AddressRecord getLatestNewestLocation() {
+        AddressRecord latest = null;
+        for (AddressRecord nameRecord : this.newestLocation) {
+            if (latest == null || nameRecord.getLastUpdated().isAfter(latest.getLastUpdated())) {
+                latest = nameRecord;
+            }
+        }
+        return latest;
+    }
+
+
+
+
     public static final String DB_FIELD_NEWEST_STATUS = "newestStatus";
     public static final String IO_FIELD_NEWEST_STATUS = "nyesteStatus";
 
@@ -145,11 +183,14 @@ public class CompanyMetadataRecord extends MetadataRecord {
     }
 
 
-
+    @Override
     public void wire(Session session) {
         super.wire(session);
         for (CompanyFormRecord companyFormRecord : this.newestForm) {
             companyFormRecord.wire(session);
+        }
+        for (AddressRecord addressRecord : this.newestLocation) {
+            addressRecord.wire(session);
         }
     }
 
@@ -162,6 +203,9 @@ public class CompanyMetadataRecord extends MetadataRecord {
             }
             for (CompanyFormRecord formRecord : this.getNewestForm()) {
                 existing.addNewestForm(formRecord);
+            }
+            for (AddressRecord addressRecord : this.getNewestLocation()) {
+                existing.addNewestLocation(addressRecord);
             }
             return true;
         }
