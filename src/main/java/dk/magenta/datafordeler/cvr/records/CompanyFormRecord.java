@@ -17,7 +17,7 @@ import java.util.Objects;
 @Table(name = "cvr_record_company_form", indexes = {
         @Index(name = "cvr_record_form_company", columnList = CompanyFormRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
         @Index(name = "cvr_record_form_companyunit", columnList = CompanyFormRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        //@Index(name = "cvr_record_form_companymeta", columnList = CompanyFormRecord.DB_FIELD_COMPANY_META + DatabaseEntry.REF),
+        @Index(name = "cvr_record_form_companymeta", columnList = CompanyFormRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
 })
 public class CompanyFormRecord extends CvrBitemporalDataRecord {
 

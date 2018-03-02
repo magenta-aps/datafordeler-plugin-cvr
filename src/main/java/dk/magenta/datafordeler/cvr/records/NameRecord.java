@@ -22,6 +22,8 @@ import java.util.Objects;
         @Index(name = "cvr_record_name_company", columnList = NameRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
         @Index(name = "cvr_record_name_companyunit", columnList = NameRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
         @Index(name = "cvr_record_name_participant", columnList = NameRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+        @Index(name = "cvr_record_name_companymetadata", columnList = NameRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
+        @Index(name = "cvr_record_name_unitmetadata", columnList = NameRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
         @Index(name = "cvr_record_name_data", columnList = NameRecord.DB_FIELD_NAME),
 })
 public class NameRecord extends CvrBitemporalDataMetaRecord {
