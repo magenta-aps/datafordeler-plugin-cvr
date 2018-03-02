@@ -67,7 +67,10 @@ public class RecordTest {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        InputStream input = ParseTest.class.getResourceAsStream(resource);
+        InputStream input = RecordTest.class.getResourceAsStream(resource);
+        if (input == null) {
+            throw new MissingResourceException("Missing resource \""+resource+"\"", resource, "key");
+        }
         boolean linedFile = false;
         HashMap<Integer, JsonNode> companies = new HashMap<>();
         try {
@@ -225,19 +228,21 @@ public class RecordTest {
             Assert.assertEquals(13, companyRecord.getParticipants().size());
             Assert.assertEquals(1, companyRecord.getFusions().size());
             Assert.assertEquals(1, companyRecord.getSplits().size());
-
-
         } finally {
             session.close();
         }
     }
 
 
-    private HashMap<Integer, JsonNode> loadUnits() throws IOException, DataFordelerException {
+    private HashMap<Integer, JsonNode> loadUnit(String resource) throws IOException, DataFordelerException {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        InputStream input = ParseTest.class.getResourceAsStream("/unit.json");
+        System.out.println("resource: "+resource);
+        InputStream input = RecordTest.class.getResourceAsStream(resource);
+        if (input == null) {
+            throw new MissingResourceException("Missing resource \""+resource+"\"", resource, "key");
+        }
         boolean linedFile = false;
         HashMap<Integer, JsonNode> units = new HashMap<>();
         try {
@@ -288,9 +293,9 @@ public class RecordTest {
 
     @Test
     public void testCompanyUnit() throws DataFordelerException, IOException {
-        this.loadUnits();
-        this.loadUnits();
-        HashMap<Integer, JsonNode> units = this.loadUnits();
+        this.loadUnit("/unit.json");
+        this.loadUnit("/unit.json");
+        HashMap<Integer, JsonNode> units = this.loadUnit("/unit.json");
         Session session = sessionManager.getSessionFactory().openSession();
         try {
             for (int pNumber : units.keySet()) {
@@ -352,11 +357,46 @@ public class RecordTest {
     }
 
 
-    private HashMap<Long, JsonNode> loadParticipant() throws IOException, DataFordelerException {
+    @Test
+    public void testUpdateCompanyUnit() throws IOException, DataFordelerException {
+        loadUnit("/unit.json");
+        loadUnit("/unit2.json");
+        Session session = sessionManager.getSessionFactory().openSession();
+        try {
+            CompanyUnitRecordQuery query = new CompanyUnitRecordQuery();
+            query.setPNummer("1020895337");
+            List<CompanyUnitRecord> records = QueryManager.getAllEntities(session, query, CompanyUnitRecord.class);
+            Assert.assertEquals(1, records.size());
+            CompanyUnitRecord companyUnitRecord = records.get(0);
+            Assert.assertEquals(2, companyUnitRecord.getNames().size());
+            Assert.assertEquals(1, companyUnitRecord.getPostalAddress().size());
+            Assert.assertEquals(2, companyUnitRecord.getLocationAddress().size());
+            Assert.assertEquals(1, companyUnitRecord.getPhoneNumber().size());
+            Assert.assertEquals(0, companyUnitRecord.getFaxNumber().size());
+            Assert.assertEquals(2, companyUnitRecord.getEmailAddress().size());
+            Assert.assertEquals(2, companyUnitRecord.getLifecycle().size());
+            Assert.assertEquals(2, companyUnitRecord.getPrimaryIndustry().size());
+            Assert.assertEquals(1, companyUnitRecord.getSecondaryIndustry1().size());
+            Assert.assertEquals(0, companyUnitRecord.getSecondaryIndustry2().size());
+            Assert.assertEquals(0, companyUnitRecord.getSecondaryIndustry3().size());
+            Assert.assertEquals(1, companyUnitRecord.getYearlyNumbers().size());
+            Assert.assertEquals(4, companyUnitRecord.getQuarterlyNumbers().size());
+            Assert.assertEquals(1, companyUnitRecord.getAttributes().size());
+            Assert.assertEquals(0, companyUnitRecord.getParticipants().size());
+        } finally {
+            session.close();
+        }
+    }
+
+
+    private HashMap<Long, JsonNode> loadParticipant(String resource) throws IOException, DataFordelerException {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        InputStream input = ParseTest.class.getResourceAsStream("/person.json");
+        InputStream input = ParseTest.class.getResourceAsStream(resource);
+        if (input == null) {
+            throw new MissingResourceException("Missing resource \""+resource+"\"", resource, "key");
+        }
         boolean linedFile = false;
         HashMap<Long, JsonNode> persons = new HashMap<>();
         try {
@@ -407,25 +447,25 @@ public class RecordTest {
 
     @Test
     public void testParticipant() throws DataFordelerException, IOException {
-        this.loadParticipant();
-        this.loadParticipant();
-        HashMap<Long, JsonNode> persons = this.loadParticipant();
+        loadParticipant("/person.json");
+        loadParticipant("/person.json");
+        HashMap<Long, JsonNode> persons = loadParticipant("/person.json");
         Session session = sessionManager.getSessionFactory().openSession();
         try {
             for (long participantNumber : persons.keySet()) {
                 HashMap<String, Object> filter = new HashMap<>();
                 filter.put("unitNumber", participantNumber);
-                ParticipantRecord companyUnitRecord = QueryManager.getItem(session, ParticipantRecord.class, filter);
-                if (companyUnitRecord == null) {
+                ParticipantRecord participantRecord = QueryManager.getItem(session, ParticipantRecord.class, filter);
+                if (participantRecord == null) {
                     System.out.println("Didn't find participant number "+participantNumber);
                 } else {
-                    compareJson(persons.get(participantNumber), objectMapper.valueToTree(companyUnitRecord), Collections.singletonList("root"));
+                    compareJson(persons.get(participantNumber), objectMapper.valueToTree(participantRecord), Collections.singletonList("root"));
                 }
             }
 
             ParticipantRecordQuery query = new ParticipantRecordQuery();
             OffsetDateTime time = OffsetDateTime.now();
-            query.setRegistrationTo(time);
+            //query.setRegistrationTo(time);
             query.setEffectFrom(time);
             query.setEffectTo(time);
             query.applyFilters(session);
@@ -433,12 +473,14 @@ public class RecordTest {
             query.setEnhedsNummer("4000004988");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, ParticipantRecord.class).size());
             query.clearEnhedsNummer();
+
             query.setNavn("Morten*");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, ParticipantRecord.class).size());
             query.clearNavn();
+
             query.setKommuneKode("101");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, ParticipantRecord.class).size());
-            query.setKommuneKode((String) null);
+            query.clearKommuneKode();
 
 
 
@@ -460,6 +502,31 @@ public class RecordTest {
             Assert.assertEquals(0, QueryManager.getAllEntities(session, query, ParticipantRecord.class).size());
             query.setKommuneKode((String) null);
 
+        } finally {
+            session.close();
+        }
+    }
+
+    @Test
+    public void testUpdateParticipant() throws IOException, DataFordelerException {
+        loadParticipant("/person.json");
+        loadParticipant("/person2.json");
+        Session session = sessionManager.getSessionFactory().openSession();
+        try {
+            ParticipantRecordQuery query = new ParticipantRecordQuery();
+            query.setEnhedsNummer("4000004988");
+            List<ParticipantRecord> records = QueryManager.getAllEntities(session, query, ParticipantRecord.class);
+            Assert.assertEquals(1, records.size());
+            ParticipantRecord participantRecord = records.get(0);
+            Assert.assertEquals(2, participantRecord.getNames().size());
+            Assert.assertEquals(1, participantRecord.getPostalAddress().size());
+            Assert.assertEquals(5, participantRecord.getLocationAddress().size());
+            Assert.assertEquals(1, participantRecord.getBusinessAddress().size());
+            Assert.assertEquals(1, participantRecord.getPhoneNumber().size());
+            Assert.assertEquals(0, participantRecord.getFaxNumber().size());
+            Assert.assertEquals(1, participantRecord.getEmailAddress().size());
+            Assert.assertEquals(5, participantRecord.getCompanyRelation().size());
+            Assert.assertEquals(0, participantRecord.getAttributes().size());
         } finally {
             session.close();
         }

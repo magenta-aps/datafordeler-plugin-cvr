@@ -196,7 +196,6 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
      */
     @Override
     public List<? extends Registration> parseData(InputStream registrationData, ImportMetadata importMetadata) throws DataFordelerException {
-
         Session session = importMetadata.getSession();
         if (session != null) {
             Industry.initializeCache(session);
@@ -336,6 +335,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         
         toplevelRecord.save(session);
 
+
 /*
 
         timer.start(TASK_FIND_ENTITY);
@@ -365,12 +365,14 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         HashSet<R> entityRegistrations = new HashSet<>();
         OffsetDateTime lastUpdate = this.getLastUpdated(session);
         List<CvrRecord> recentlyUpdated = toplevelRecord.getSince(lastUpdate);
+
 */
         /*for (CvrBaseRecord rec : recentlyUpdated) {
             if (rec.getLastUpdated() == null) {
                 rec.setLastUpdated(lastUpdate);
             }
         }*/
+
 /*
         ListHashMap<Bitemporality, CvrRecord> groups = this.sortIntoGroups(recentlyUpdated);
 
@@ -444,6 +446,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         registrations.addAll(entityRegistrations);
 
         this.checkInterrupt(importMetadata);
+
 */
         return registrations;
     }

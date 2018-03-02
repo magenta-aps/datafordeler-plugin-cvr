@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.Session;
@@ -141,6 +142,7 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     public static final String DB_FIELD_NEWEST_CONTACT_DATA = "newestContactData";
     public static final String IO_FIELD_NEWEST_CONTACT_DATA = "nyesteKontaktoplysninger";
 
+    @JsonIgnore
     public abstract Set<MetadataContactRecord> getMetadataContactRecords();
 
     public abstract void setMetadataContactRecords(Set<MetadataContactRecord> metadataContactRecords);

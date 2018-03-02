@@ -83,6 +83,14 @@ public class CompanyUnitRecord extends CvrEntityRecord {
         }
     }
 
+    public void addName(NameRecord record) {
+        if (!this.names.contains(record)) {
+            record.setSecondary(false);
+            record.setCompanyUnitRecord(this);
+            this.names.add(record);
+        }
+    }
+
 
 
     public static final String DB_FIELD_LOCATION_ADDRESS = "locationAddress";
@@ -105,9 +113,19 @@ public class CompanyUnitRecord extends CvrEntityRecord {
         }
         this.locationAddress = locationAddress;
     }
+
+    public void addLocationAddress(AddressRecord record) {
+        if (!this.locationAddress.contains(record)) {
+            record.setType(AddressRecord.TYPE_LOCATION);
+            record.setCompanyUnitRecord(this);
+            this.locationAddress.add(record);
+        }
+    }
+
     public Set<AddressRecord> getLocationAddress() {
         return this.locationAddress;
     }
+
 
 
     public static final String DB_FIELD_POSTAL_ADDRESS = "postalAddress";
@@ -128,6 +146,14 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             record.setCompanyUnitRecord(this);
         }
         this.postalAddress = postalAddress;
+    }
+
+    public void addPostalAddress(AddressRecord record) {
+        if (!this.postalAddress.contains(record)) {
+            record.setType(AddressRecord.TYPE_POSTAL);
+            record.setCompanyUnitRecord(this);
+            this.postalAddress.add(record);
+        }
     }
 
     public Set<AddressRecord> getPostalAddress() {
@@ -155,6 +181,19 @@ public class CompanyUnitRecord extends CvrEntityRecord {
         this.phoneNumber = phoneNumber;
     }
 
+    public void addPhoneNumber(ContactRecord record) {
+        if (!this.phoneNumber.contains(record)) {
+            record.setType(ContactRecord.TYPE_TELEFONNUMMER);
+            record.setCompanyUnitRecord(this);
+            record.setSecondary(false);
+            this.phoneNumber.add(record);
+        }
+    }
+
+    public Set<ContactRecord> getPhoneNumber() {
+        return this.phoneNumber;
+    }
+
 
 
     public static final String DB_FIELD_FAX = "faxNumber";
@@ -175,6 +214,19 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             record.setCompanyUnitRecord(this);
         }
         this.faxNumber = faxNumber;
+    }
+
+    public void addFaxNumber(ContactRecord record) {
+        if (!this.faxNumber.contains(record)) {
+            record.setType(ContactRecord.TYPE_TELEFAXNUMMER);
+            record.setCompanyUnitRecord(this);
+            record.setSecondary(false);
+            this.faxNumber.add(record);
+        }
+    }
+
+    public Set<ContactRecord> getFaxNumber() {
+        return this.faxNumber;
     }
 
 
@@ -199,6 +251,18 @@ public class CompanyUnitRecord extends CvrEntityRecord {
         this.emailAddress = emailAddress;
     }
 
+    public void addEmailAddress(ContactRecord record) {
+        if (!this.emailAddress.contains(record)) {
+            record.setType(ContactRecord.TYPE_EMAILADRESSE);
+            record.setCompanyUnitRecord(this);
+            this.emailAddress.add(record);
+        }
+    }
+
+    public Set<ContactRecord> getEmailAddress() {
+        return this.emailAddress;
+    }
+
 
 
     public static final String DB_FIELD_LIFECYCLE = "lifecycle";
@@ -208,15 +272,22 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     @JsonProperty(value = IO_FIELD_LIFECYCLE)
     private Set<LifecycleRecord> lifecycle;
 
-    public Set<LifecycleRecord> getLifecycle() {
-        return this.lifecycle;
-    }
-
     public void setLifecycle(Set<LifecycleRecord> lifecycle) {
         this.lifecycle = lifecycle;
         for (LifecycleRecord lifecycleRecord : lifecycle) {
             lifecycleRecord.setCompanyUnitRecord(this);
         }
+    }
+
+    public void addLifecycle(LifecycleRecord record) {
+        if (!this.lifecycle.contains(record)) {
+            record.setCompanyUnitRecord(this);
+            this.lifecycle.add(record);
+        }
+    }
+
+    public Set<LifecycleRecord> getLifecycle() {
+        return this.lifecycle;
     }
 
 
@@ -240,6 +311,14 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             record.setCompanyUnitRecord(this);
         }
         this.primaryIndustry = primaryIndustry;
+    }
+
+    public void addPrimaryIndustry(CompanyIndustryRecord record) {
+        if (!this.primaryIndustry.contains(record)) {
+            record.setIndex(0);
+            record.setCompanyUnitRecord(this);
+            this.primaryIndustry.add(record);
+        }
     }
 
     public Set<CompanyIndustryRecord> getPrimaryIndustry() {
@@ -267,6 +346,20 @@ public class CompanyUnitRecord extends CvrEntityRecord {
         this.secondaryIndustry1 = secondaryIndustryRecords;
     }
 
+    public void addSecondaryIndustry1(CompanyIndustryRecord record) {
+        if (!this.secondaryIndustry1.contains(record)) {
+            record.setIndex(1);
+            record.setCompanyUnitRecord(this);
+            this.secondaryIndustry1.add(record);
+        }
+    }
+
+    public Set<CompanyIndustryRecord> getSecondaryIndustry1() {
+        return this.secondaryIndustry1;
+    }
+
+
+
     public static final String DB_FIELD_SECONDARY_INDUSTRY2 = "secondaryIndustry2";
     public static final String IO_FIELD_SECONDARY_INDUSTRY2 = "bibranche2";
 
@@ -287,6 +380,20 @@ public class CompanyUnitRecord extends CvrEntityRecord {
         }
         this.secondaryIndustry2 = secondaryIndustryRecords;
     }
+
+    public void addSecondaryIndustry2(CompanyIndustryRecord record) {
+        if (!this.secondaryIndustry2.contains(record)) {
+            record.setIndex(2);
+            record.setCompanyUnitRecord(this);
+            this.secondaryIndustry2.add(record);
+        }
+    }
+
+    public Set<CompanyIndustryRecord> getSecondaryIndustry2() {
+        return this.secondaryIndustry2;
+    }
+
+
 
     public static final String DB_FIELD_SECONDARY_INDUSTRY3 = "secondaryIndustry3";
     public static final String IO_FIELD_SECONDARY_INDUSTRY3 = "bibranche3";
@@ -309,6 +416,20 @@ public class CompanyUnitRecord extends CvrEntityRecord {
         this.secondaryIndustry3 = secondaryIndustryRecords;
     }
 
+    public void addSecondaryIndustry3(CompanyIndustryRecord record) {
+        if (!this.secondaryIndustry3.contains(record)) {
+            record.setIndex(3);
+            record.setCompanyUnitRecord(this);
+            this.secondaryIndustry3.add(record);
+        }
+    }
+
+    public Set<CompanyIndustryRecord> getSecondaryIndustry3() {
+        return this.secondaryIndustry3;
+    }
+
+
+
     public static final String DB_FIELD_YEARLY_NUMBERS = "yearlyNumbers";
     public static final String IO_FIELD_YEARLY_NUMBERS = "aarsbeskaeftigelse";
 
@@ -327,6 +448,20 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             yearlyNumbersRecord.setCompanyUnitRecord(this);
         }
     }
+
+    public void addYearlyNumbers(CompanyYearlyNumbersRecord record) {
+        if (!this.yearlyNumbers.contains(record)) {
+            record.setCompanyUnitRecord(this);
+            this.yearlyNumbers.add(record);
+        }
+    }
+
+    public Set<CompanyYearlyNumbersRecord> getYearlyNumbers() {
+        return this.yearlyNumbers;
+    }
+
+
+
     public static final String DB_FIELD_QUARTERLY_NUMBERS = "quarterlyNumbers";
     public static final String IO_FIELD_QUARTERLY_NUMBERS = "kvartalsbeskaeftigelse";
 
@@ -345,6 +480,19 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             quarterlyNumbersRecord.setCompanyUnitRecord(this);
         }
     }
+
+    public void addQuarterlyNumbers(CompanyQuarterlyNumbersRecord record) {
+        if (!this.quarterlyNumbers.contains(record)) {
+            record.setCompanyUnitRecord(this);
+            this.quarterlyNumbers.add(record);
+        }
+    }
+
+    public Set<CompanyQuarterlyNumbersRecord> getQuarterlyNumbers() {
+        return this.quarterlyNumbers;
+    }
+
+
 
     //public static final String DB_FIELD_MONTHLY_NUMBERS = "monthlyNumbers";
     //public static final String IO_FIELD_MONTHLY_NUMBERS = "maanedsbeskaeftigelse";
@@ -373,6 +521,17 @@ public class CompanyUnitRecord extends CvrEntityRecord {
         }
     }
 
+    public void addAttributes(AttributeRecord record) {
+        if (!this.attributes.contains(record)) {
+            record.setCompanyUnitRecord(this);
+            this.attributes.add(record);
+        }
+    }
+
+    public Set<AttributeRecord> getAttributes() {
+        return this.attributes;
+    }
+
 
 
     @OneToMany(mappedBy = CompanyParticipantRelationRecord.DB_FIELD_COMPANYUNIT, targetEntity = CompanyParticipantRelationRecord.class, cascade = CascadeType.ALL)
@@ -390,6 +549,18 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             participantRelationRecord.setCompanyUnitRecord(this);
         }
     }
+
+    public void addParticipant(CompanyParticipantRelationRecord record) {
+        if (!this.participantRelations.contains(record)) {
+            record.setCompanyUnitRecord(this);
+            this.participantRelations.add(record);
+        }
+    }
+
+    public Set<CompanyParticipantRelationRecord> getParticipants() {
+        return this.participantRelations;
+    }
+
 
 
     public static final String DB_FIELD_COMPANY_LINK = "companyLinkRecords";
@@ -409,6 +580,17 @@ public class CompanyUnitRecord extends CvrEntityRecord {
         for (CompanyLinkRecord companyLinkRecord : companyLinkRecords) {
             companyLinkRecord.setCompanyUnitRecord(this);
         }
+    }
+
+    public void addCompanyLinkRecord(CompanyLinkRecord record) {
+        if (!this.companyLinkRecords.contains(record)) {
+            record.setCompanyUnitRecord(this);
+            this.companyLinkRecords.add(record);
+        }
+    }
+
+    public Set<CompanyLinkRecord> getCompanyLinkRecords() {
+        return this.companyLinkRecords;
     }
 
 
@@ -545,6 +727,70 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             this.metadata.wire(session);
         }
         super.save(session);
+    }
+
+
+    @Override
+    public boolean merge(CvrEntityRecord other) {
+        if (other != null && !other.getId().equals(this.getId()) && other instanceof CompanyUnitRecord) {
+            CompanyUnitRecord existing = (CompanyUnitRecord) other;
+            for (NameRecord nameRecord : this.getNames()) {
+                existing.addName(nameRecord);
+            }
+//            for (NameRecord nameRecord : this.getSecondaryNames()) {
+//                existing.addSecondaryName(nameRecord);
+//            }
+            for (AddressRecord addressRecord : this.getLocationAddress()) {
+                existing.addLocationAddress(addressRecord);
+            }
+            for (AddressRecord addressRecord : this.getPostalAddress()) {
+                existing.addPostalAddress(addressRecord);
+            }
+            for (ContactRecord contactRecord : this.getPhoneNumber()) {
+                existing.addPhoneNumber(contactRecord);
+            }
+//            for (ContactRecord contactRecord : this.getSecondaryPhoneNumber()) {
+//                existing.addSecondaryPhoneNumber(contactRecord);
+//            }
+            for (ContactRecord contactRecord : this.getFaxNumber()) {
+                existing.addFaxNumber(contactRecord);
+            }
+//            for (ContactRecord contactRecord : this.getSecondaryFaxNumber()) {
+//                existing.addSecondaryFaxNumber(contactRecord);
+//            }
+            for (ContactRecord contactRecord : this.getEmailAddress()) {
+                existing.addEmailAddress(contactRecord);
+            }
+            for (LifecycleRecord lifecycleRecord : this.getLifecycle()) {
+                existing.addLifecycle(lifecycleRecord);
+            }
+            for (CompanyIndustryRecord companyIndustryRecord : this.getPrimaryIndustry()) {
+                existing.addPrimaryIndustry(companyIndustryRecord);
+            }
+            for (CompanyIndustryRecord companyIndustryRecord : this.getSecondaryIndustry1()) {
+                existing.addSecondaryIndustry1(companyIndustryRecord);
+            }
+            for (CompanyIndustryRecord companyIndustryRecord : this.getSecondaryIndustry2()) {
+                existing.addSecondaryIndustry2(companyIndustryRecord);
+            }
+            for (CompanyIndustryRecord companyIndustryRecord : this.getSecondaryIndustry3()) {
+                existing.addSecondaryIndustry3(companyIndustryRecord);
+            }
+            for (CompanyYearlyNumbersRecord yearlyNumbersRecord : this.getYearlyNumbers()) {
+                existing.addYearlyNumbers(yearlyNumbersRecord);
+            }
+            for (CompanyQuarterlyNumbersRecord quarterlyNumbersRecord : this.getQuarterlyNumbers()) {
+                existing.addQuarterlyNumbers(quarterlyNumbersRecord);
+            }
+            for (AttributeRecord attributeRecord : this.getAttributes()) {
+                existing.addAttributes(attributeRecord);
+            }
+            for (CompanyParticipantRelationRecord participantRelationRecord : this.getParticipants()) {
+                existing.addParticipant(participantRelationRecord);
+            }
+            return true;
+        }
+        return false;
     }
 
 }

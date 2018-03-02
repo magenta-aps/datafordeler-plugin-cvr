@@ -85,7 +85,9 @@ public class CompanyFormRecord extends CvrBitemporalDataRecord {
     }
 
     public void wire(Session session) {
-        this.companyForm = CompanyForm.getForm(this.companyFormCode, this.shortDescription, this.longDescription, this.responsibleDatasource, session);
+        if (this.companyFormCode != null && (this.companyForm == null || !this.companyFormCode.equals(this.companyForm.getCompanyFormCode()))) {
+            this.companyForm = CompanyForm.getForm(this.companyFormCode, this.shortDescription, this.longDescription, this.responsibleDatasource, session);
+        }
     }
 
     @Override

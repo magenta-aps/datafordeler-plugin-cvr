@@ -1079,4 +1079,94 @@ public class CompanyRecord extends CvrEntityRecord {
         super.save(session);
     }
 
+    @Override
+    public boolean merge(CvrEntityRecord other) {
+        if (other != null && !other.getId().equals(this.getId()) && other instanceof CompanyRecord) {
+            CompanyRecord existing = (CompanyRecord) other;
+            for (NameRecord nameRecord : this.getNames()) {
+                existing.addName(nameRecord);
+            }
+            for (NameRecord nameRecord : this.getSecondaryNames()) {
+                existing.addSecondaryName(nameRecord);
+            }
+            for (AddressRecord addressRecord : this.getLocationAddress()) {
+                existing.addLocationAddress(addressRecord);
+            }
+            for (AddressRecord addressRecord : this.getPostalAddress()) {
+                existing.addPostalAddress(addressRecord);
+            }
+            for (ContactRecord contactRecord : this.getPhoneNumber()) {
+                existing.addPhoneNumber(contactRecord);
+            }
+            for (ContactRecord contactRecord : this.getSecondaryPhoneNumber()) {
+                existing.addSecondaryPhoneNumber(contactRecord);
+            }
+            for (ContactRecord contactRecord : this.getFaxNumber()) {
+                existing.addFaxNumber(contactRecord);
+            }
+            for (ContactRecord contactRecord : this.getSecondaryFaxNumber()) {
+                existing.addSecondaryFaxNumber(contactRecord);
+            }
+            for (ContactRecord contactRecord : this.getEmailAddress()) {
+                existing.addEmailAddress(contactRecord);
+            }
+            for (ContactRecord contactRecord : this.getHomepage()) {
+                existing.addHomepage(contactRecord);
+            }
+            for (ContactRecord contactRecord : this.getMandatoryEmailAddress()) {
+                existing.addMandatoryEmailAddress(contactRecord);
+            }
+            for (LifecycleRecord lifecycleRecord : this.getLifecycle()) {
+                existing.addLifecycle(lifecycleRecord);
+            }
+            for (CompanyIndustryRecord companyIndustryRecord : this.getPrimaryIndustry()) {
+                existing.addPrimaryIndustry(companyIndustryRecord);
+            }
+            for (CompanyIndustryRecord companyIndustryRecord : this.getSecondaryIndustry1()) {
+                existing.addSecondaryIndustry1(companyIndustryRecord);
+            }
+            for (CompanyIndustryRecord companyIndustryRecord : this.getSecondaryIndustry2()) {
+                existing.addSecondaryIndustry2(companyIndustryRecord);
+            }
+            for (CompanyIndustryRecord companyIndustryRecord : this.getSecondaryIndustry3()) {
+                existing.addSecondaryIndustry3(companyIndustryRecord);
+            }
+            for (StatusRecord statusRecord : this.getStatus()) {
+                existing.addStatus(statusRecord);
+            }
+            for (CompanyStatusRecord statusRecord : this.getCompanyStatus()) {
+                existing.addCompanyStatus(statusRecord);
+            }
+            for (CompanyFormRecord formRecord : this.getCompanyForm()) {
+                existing.addCompanyForm(formRecord);
+            }
+            for (CompanyYearlyNumbersRecord yearlyNumbersRecord : this.getYearlyNumbers()) {
+                existing.addYearlyNumbers(yearlyNumbersRecord);
+            }
+            for (CompanyQuarterlyNumbersRecord quarterlyNumbersRecord : this.getQuarterlyNumbers()) {
+                existing.addQuarterlyNumbers(quarterlyNumbersRecord);
+            }
+            for (CompanyMonthlyNumbersRecord monthlyNumbersRecord : this.getMonthlyNumbers()) {
+                existing.addMonthlyNumbers(monthlyNumbersRecord);
+            }
+            for (AttributeRecord attributeRecord : this.getAttributes()) {
+                existing.addAttributes(attributeRecord);
+            }
+            for (CompanyUnitLinkRecord companyUnitLinkRecord : this.getProductionUnits()) {
+                existing.addProductionUnit(companyUnitLinkRecord);
+            }
+            for (CompanyParticipantRelationRecord participantRelationRecord : this.getParticipants()) {
+                existing.addParticipant(participantRelationRecord);
+            }
+            for (FusionSplitRecord fusionSplitRecord : this.getFusions()) {
+                existing.addFusion(fusionSplitRecord);
+            }
+            for (FusionSplitRecord fusionSplitRecord : this.getSplits()) {
+                existing.addSplit(fusionSplitRecord);
+            }
+            return true;
+        }
+        return false;
+    }
+
 }

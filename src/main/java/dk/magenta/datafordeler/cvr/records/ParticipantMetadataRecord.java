@@ -34,6 +34,11 @@ public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
     @JsonProperty(value = IO_FIELD_NEWEST_LOCATION)
     private AddressRecord newestLocation;
 
+    public void setNewestLocation(AddressRecord newestLocation) {
+        System.out.println("setNewestLocation "+newestLocation.getMunicipality().getMunicipalityCode()+ " = "+System.identityHashCode(newestLocation.getMunicipality()));
+        this.newestLocation = newestLocation;
+    }
+
 
 
     public static final String DB_FIELD_NEWEST_CONTACT_DATA = "newestContactData";

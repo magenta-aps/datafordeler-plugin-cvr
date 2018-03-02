@@ -30,6 +30,11 @@ public class AddressMunicipalityRecord extends CvrBitemporalRecord {
         return this.municipalityCode;
     }
 
+    public void setMunicipalityCode(int municipalityCode) {
+        System.out.println("setMunicipalityCode "+municipalityCode+ " on "+System.identityHashCode(this));
+        this.municipalityCode = municipalityCode;
+    }
+
     public static final String IO_FIELD_MUNICIPALITY_NAME = "kommuneNavn";
 
     @Transient
@@ -43,7 +48,10 @@ public class AddressMunicipalityRecord extends CvrBitemporalRecord {
         return this.municipalityName;
     }
 
-
+    public void setMunicipalityName(String municipalityName) {
+        System.out.println("setMunicipalityName "+municipalityName);
+        this.municipalityName = municipalityName;
+    }
 
     public static final String DB_FIELD_MUNICIPALITY = "municipality";
 
@@ -57,7 +65,9 @@ public class AddressMunicipalityRecord extends CvrBitemporalRecord {
     }
 
     public void wire(Session session) {
-        this.municipality = Municipality.getMunicipality(this.municipalityCode, this.municipalityName, session);
+        if (this.municipalityCode != 0 && (this.municipality == null || this.municipality.getCode() != this.municipalityCode)) {
+            this.municipality = Municipality.getMunicipality(this.municipalityCode, this.municipalityName, session);
+        }
     }
 
 }

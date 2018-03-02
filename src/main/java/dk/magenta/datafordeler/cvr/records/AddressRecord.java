@@ -284,16 +284,18 @@ public class AddressRecord extends CvrBitemporalDataRecord {
     public static final String DB_FIELD_MUNICIPALITY = "municipality";
     public static final String IO_FIELD_MUNICIPALITY = "kommune";
 
-    @JsonProperty(value = IO_FIELD_MUNICIPALITY)
     @XmlElement(name = IO_FIELD_MUNICIPALITY)
     @OneToOne(cascade = CascadeType.ALL)
     private AddressMunicipalityRecord municipality;
 
+    @JsonProperty(value = IO_FIELD_MUNICIPALITY)
     public AddressMunicipalityRecord getMunicipality() {
         return this.municipality;
     }
 
+    @JsonProperty(value = IO_FIELD_MUNICIPALITY)
     public void setMunicipality(AddressMunicipalityRecord municipality) {
+        System.out.println("AddressRecord.setMunicipality "+municipality.getMunicipalityCode()+" = "+System.identityHashCode(municipality));
         this.municipality = municipality;
     }
 
