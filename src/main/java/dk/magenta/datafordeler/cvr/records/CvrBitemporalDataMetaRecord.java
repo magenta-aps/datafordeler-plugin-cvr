@@ -3,27 +3,20 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 
-import javax.persistence.*;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 
-@Entity
-@Table(name = "cvr_record_metadata_contact", indexes = {
-        @Index(name = "cvr_record_metadata_contact_companymetadata", columnList = MetadataContactRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
-        @Index(name = "cvr_record_metadata_contact_unitmetadata", columnList = MetadataContactRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
-        @Index(name = "cvr_record_metadata_contact_participantmetadata", columnList = MetadataContactRecord.DB_FIELD_PARTICIPANT_METADATA + DatabaseEntry.REF)
-})
-public class MetadataContactRecord extends CvrNontemporalRecord {
+@MappedSuperclass
+public class CvrBitemporalDataMetaRecord extends CvrBitemporalDataRecord {
 
-    public static final String DB_FIELD_DATA = "data";
-
-    @Column(name = DB_FIELD_DATA)
-    private String data;
-
-    public String getData() {
-        return this.data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
+    public void setMetadataRecord(MetadataRecord metadataRecord) {
+        if (metadataRecord instanceof CompanyMetadataRecord) {
+            this.setCompanyMetadataRecord((CompanyMetadataRecord) metadataRecord);
+        }
+        if (metadataRecord instanceof CompanyUnitMetadataRecord) {
+            this.setUnitMetadataRecord((CompanyUnitMetadataRecord) metadataRecord);
+        }
     }
 
 
@@ -63,4 +56,5 @@ public class MetadataContactRecord extends CvrNontemporalRecord {
     public void setParticipantMetadataRecord(ParticipantMetadataRecord participantMetadataRecord) {
         this.participantMetadataRecord = participantMetadataRecord;
     }
+
 }

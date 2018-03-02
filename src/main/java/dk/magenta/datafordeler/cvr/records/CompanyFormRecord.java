@@ -17,8 +17,22 @@ import java.util.Objects;
 @Table(name = "cvr_record_company_form", indexes = {
         @Index(name = "cvr_record_form_company", columnList = CompanyFormRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
         @Index(name = "cvr_record_form_companyunit", columnList = CompanyFormRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        //@Index(name = "cvr_record_form_companymeta", columnList = CompanyFormRecord.DB_FIELD_COMPANY_META + DatabaseEntry.REF),
 })
 public class CompanyFormRecord extends CvrBitemporalDataRecord {
+
+    public static final String DB_FIELD_COMPANY_METADATA = "companyMetadataRecord";
+
+    @ManyToOne(targetEntity = CompanyMetadataRecord.class)
+    @JoinColumn(name = DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF)
+    @JsonIgnore
+    private CompanyMetadataRecord companyMetadataRecord;
+
+    public void setCompanyMetadataRecord(CompanyMetadataRecord companyMetadataRecord) {
+        this.companyMetadataRecord = companyMetadataRecord;
+    }
+
+
 
     public static final String IO_FIELD_CODE = "virksomhedsformkode";
 

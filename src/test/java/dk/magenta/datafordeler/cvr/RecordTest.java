@@ -161,6 +161,7 @@ public class RecordTest {
             query.clearVirksomhedsform();
             query.setVirksomhedsnavn("MAGENTA ApS");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
+            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(QueryManager.getAllEntities(session, query, CompanyRecord.class)));
             query.clearKommuneKoder();
 
 
@@ -191,6 +192,7 @@ public class RecordTest {
             query.setVirksomhedsnavn("MAGENTA ApS");
             Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
             query.clearVirksomhedsnavn();
+
 
         } finally {
             session.close();
@@ -228,6 +230,10 @@ public class RecordTest {
             Assert.assertEquals(13, companyRecord.getParticipants().size());
             Assert.assertEquals(1, companyRecord.getFusions().size());
             Assert.assertEquals(1, companyRecord.getSplits().size());
+            Assert.assertEquals(2, companyRecord.getMetadata().getNewestName().size());
+            Assert.assertEquals(2, companyRecord.getMetadata().getNewestForm().size());
+
+            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(companyRecord));
         } finally {
             session.close();
         }
@@ -383,6 +389,7 @@ public class RecordTest {
             Assert.assertEquals(4, companyUnitRecord.getQuarterlyNumbers().size());
             Assert.assertEquals(1, companyUnitRecord.getAttributes().size());
             Assert.assertEquals(0, companyUnitRecord.getParticipants().size());
+            Assert.assertEquals(2, companyUnitRecord.getMetadata().getNewestName().size());
         } finally {
             session.close();
         }

@@ -1164,6 +1164,7 @@ public class CompanyRecord extends CvrEntityRecord {
             for (FusionSplitRecord fusionSplitRecord : this.getSplits()) {
                 existing.addSplit(fusionSplitRecord);
             }
+            this.metadata.merge(existing.getMetadata());
             return true;
         }
         return false;

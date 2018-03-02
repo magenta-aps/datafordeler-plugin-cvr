@@ -1,14 +1,9 @@
 package dk.magenta.datafordeler.cvr.records;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import org.hibernate.Session;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
@@ -35,23 +30,45 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     }
 
 
+//
+//    public static final String DB_FIELD_NEWEST_NAME = "newestName";
+//    public static final String IO_FIELD_NEWEST_NAME = "nyesteNavn";
+//
+//    @OneToMany(targetEntity = NameRecord.class, mappedBy = NameRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JsonProperty(value = IO_FIELD_NEWEST_NAME)
+//    private Set<NameRecord> newestName = new HashSet<>();
+//
+//    public void setNewestName(Set<NameRecord> newestName) {
+//        this.newestName = newestName;
+//    }
+//
+//    @JsonSetter(IO_FIELD_NEWEST_NAME)
+//    public void addNewestName(NameRecord newestName) {
+//        if (!this.newestName.contains(newestName)) {
+//            newestName.setMetadataRecord(this);
+//            this.newestName.add(newestName);
+//        }
+//    }
+//
+//    @JsonIgnore
+//    public Set<NameRecord> getNewestName() {
+//        return this.newestName;
+//    }
+//
+//    @JsonGetter(IO_FIELD_NEWEST_NAME)
+//    public NameRecord getLatestNewestName() {
+//        NameRecord latest = null;
+//        for (NameRecord nameRecord : this.newestName) {
+//            if (latest == null || nameRecord.getLastUpdated().isAfter(latest.getLastUpdated())) {
+//                latest = nameRecord;
+//            }
+//        }
+//        return latest;
+//    }
 
-    public static final String DB_FIELD_NEWEST_NAME = "newestName";
-    public static final String IO_FIELD_NEWEST_NAME = "nyesteNavn";
-
-    @OneToOne(targetEntity = NameRecord.class, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonProperty(value = IO_FIELD_NEWEST_NAME)
-    private NameRecord newestName;
 
 
 
-
-    public static final String DB_FIELD_NEWEST_FORM = "newestForm";
-    public static final String IO_FIELD_NEWEST_FORM = "nyesteVirksomhedsform";
-
-    @OneToOne(targetEntity = CompanyFormRecord.class, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonProperty(value = IO_FIELD_NEWEST_FORM)
-    private CompanyFormRecord newestForm;
 
 
 
@@ -61,7 +78,6 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     @OneToOne(targetEntity = AddressRecord.class, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonProperty(value = IO_FIELD_NEWEST_LOCATION)
     private AddressRecord newestLocation;
-
 
 
 
@@ -235,9 +251,6 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
 
 
     public void wire(Session session) {
-        if (this.newestForm != null) {
-            this.newestForm.wire(session);
-        }
         if (this.newestLocation != null) {
             this.newestLocation.wire(session);
         }
@@ -301,4 +314,6 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
         }
         return null;
     }
+
+    public abstract boolean merge(MetadataRecord other);
 }

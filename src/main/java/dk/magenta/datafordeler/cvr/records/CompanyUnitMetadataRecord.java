@@ -1,6 +1,9 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 
 import javax.persistence.*;
@@ -41,5 +44,53 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
         for (MetadataContactRecord metadataContactRecord : metadataContactRecords) {
             metadataContactRecord.setUnitMetadataRecord(this);
         }
+    }
+
+
+    public static final String DB_FIELD_NEWEST_NAME = "newestName";
+    public static final String IO_FIELD_NEWEST_NAME = "nyesteNavn";
+
+    @OneToMany(targetEntity = NameRecord.class, mappedBy = NameRecord.DB_FIELD_UNIT_METADATA, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonProperty(value = IO_FIELD_NEWEST_NAME)
+    private Set<NameRecord> newestName = new HashSet<>();
+
+    public void setNewestName(Set<NameRecord> newestName) {
+        this.newestName = newestName;
+    }
+
+    @JsonSetter(IO_FIELD_NEWEST_NAME)
+    public void addNewestName(NameRecord newestName) {
+        if (!this.newestName.contains(newestName)) {
+            newestName.setMetadataRecord(this);
+            this.newestName.add(newestName);
+        }
+    }
+
+    @JsonIgnore
+    public Set<NameRecord> getNewestName() {
+        return this.newestName;
+    }
+
+    @JsonGetter(IO_FIELD_NEWEST_NAME)
+    public NameRecord getLatestNewestName() {
+        NameRecord latest = null;
+        for (NameRecord nameRecord : this.newestName) {
+            if (latest == null || nameRecord.getLastUpdated().isAfter(latest.getLastUpdated())) {
+                latest = nameRecord;
+            }
+        }
+        return latest;
+    }
+
+    @Override
+    public boolean merge(MetadataRecord other) {
+        if (other != null && !other.getId().equals(this.getId()) && other instanceof CompanyUnitMetadataRecord) {
+            CompanyUnitMetadataRecord existing = (CompanyUnitMetadataRecord) other;
+            for (NameRecord nameRecord : this.getNewestName()) {
+                existing.addNewestName(nameRecord);
+            }
+            return true;
+        }
+        return false;
     }
 }

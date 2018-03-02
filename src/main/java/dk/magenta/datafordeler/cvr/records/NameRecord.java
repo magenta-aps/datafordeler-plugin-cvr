@@ -24,7 +24,7 @@ import java.util.Objects;
         @Index(name = "cvr_record_name_participant", columnList = NameRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
         @Index(name = "cvr_record_name_data", columnList = NameRecord.DB_FIELD_NAME),
 })
-public class NameRecord extends CvrBitemporalDataRecord {
+public class NameRecord extends CvrBitemporalDataMetaRecord {
 
     public static final String DB_FIELD_NAME = "name";
     public static final String IO_FIELD_NAME = "navn";

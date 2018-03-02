@@ -1,7 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import org.hibernate.Session;
 
@@ -21,9 +20,77 @@ public class CompanyMetadataRecord extends MetadataRecord {
     public static final String DB_FIELD_NEWEST_FORM = "newestForm";
     public static final String IO_FIELD_NEWEST_FORM = "nyesteVirksomhedsform";
 
-    @OneToOne(targetEntity = CompanyFormRecord.class, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonProperty(value = IO_FIELD_NEWEST_FORM)
-    private CompanyFormRecord newestForm;
+    @OneToMany(mappedBy = CompanyFormRecord.DB_FIELD_COMPANY_METADATA, targetEntity = CompanyFormRecord.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CompanyFormRecord> newestForm = new HashSet<>();
+
+    public void setNewestForm(Set<CompanyFormRecord> newestForm) {
+        this.newestForm = newestForm;
+    }
+
+    @JsonSetter(IO_FIELD_NEWEST_FORM)
+    public void addNewestForm(CompanyFormRecord newestForm) {
+        if (!this.newestForm.contains(newestForm)) {
+            newestForm.setCompanyMetadataRecord(this);
+            this.newestForm.add(newestForm);
+        }
+    }
+
+    @JsonIgnore
+    public Set<CompanyFormRecord> getNewestForm() {
+        return this.newestForm;
+    }
+
+    @JsonGetter(IO_FIELD_NEWEST_FORM)
+    public CompanyFormRecord getLatestNewestForm() {
+        CompanyFormRecord latest = null;
+        for (CompanyFormRecord companyFormRecord : this.newestForm) {
+            if (latest == null || companyFormRecord.getLastUpdated().isAfter(latest.getLastUpdated())) {
+                latest = companyFormRecord;
+            }
+        }
+        return latest;
+    }
+
+
+
+
+
+    public static final String DB_FIELD_NEWEST_NAME = "newestName";
+    public static final String IO_FIELD_NEWEST_NAME = "nyesteNavn";
+
+    @OneToMany(targetEntity = NameRecord.class, mappedBy = NameRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonProperty(value = IO_FIELD_NEWEST_NAME)
+    private Set<NameRecord> newestName = new HashSet<>();
+
+    public void setNewestName(Set<NameRecord> newestName) {
+        this.newestName = newestName;
+    }
+
+    @JsonSetter(IO_FIELD_NEWEST_NAME)
+    public void addNewestName(NameRecord newestName) {
+        if (!this.newestName.contains(newestName)) {
+            newestName.setMetadataRecord(this);
+            this.newestName.add(newestName);
+        }
+    }
+
+    @JsonIgnore
+    public Set<NameRecord> getNewestName() {
+        return this.newestName;
+    }
+
+    @JsonGetter(IO_FIELD_NEWEST_NAME)
+    public NameRecord getLatestNewestName() {
+        NameRecord latest = null;
+        for (NameRecord nameRecord : this.newestName) {
+            if (latest == null || nameRecord.getLastUpdated().isAfter(latest.getLastUpdated())) {
+                latest = nameRecord;
+            }
+        }
+        return latest;
+    }
+
+
 
 
 
@@ -81,8 +148,23 @@ public class CompanyMetadataRecord extends MetadataRecord {
 
     public void wire(Session session) {
         super.wire(session);
-        if (this.newestForm != null) {
-            this.newestForm.wire(session);
+        for (CompanyFormRecord companyFormRecord : this.newestForm) {
+            companyFormRecord.wire(session);
         }
+    }
+
+    @Override
+    public boolean merge(MetadataRecord other) {
+        if (other != null && !other.getId().equals(this.getId()) && other instanceof CompanyMetadataRecord) {
+            CompanyMetadataRecord existing = (CompanyMetadataRecord) other;
+            for (NameRecord nameRecord : this.getNewestName()) {
+                existing.addNewestName(nameRecord);
+            }
+            for (CompanyFormRecord formRecord : this.getNewestForm()) {
+                existing.addNewestForm(formRecord);
+            }
+            return true;
+        }
+        return false;
     }
 }

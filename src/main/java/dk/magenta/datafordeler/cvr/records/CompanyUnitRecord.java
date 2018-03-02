@@ -788,6 +788,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             for (CompanyParticipantRelationRecord participantRelationRecord : this.getParticipants()) {
                 existing.addParticipant(participantRelationRecord);
             }
+            this.metadata.merge(existing.getMetadata());
             return true;
         }
         return false;
