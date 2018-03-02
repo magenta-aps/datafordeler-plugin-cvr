@@ -295,7 +295,6 @@ public class AddressRecord extends CvrBitemporalDataRecord {
 
     @JsonProperty(value = IO_FIELD_MUNICIPALITY)
     public void setMunicipality(AddressMunicipalityRecord municipality) {
-        System.out.println("AddressRecord.setMunicipality "+municipality.getMunicipalityCode()+" = "+System.identityHashCode(municipality));
         this.municipality = municipality;
     }
 

@@ -31,7 +31,6 @@ public class AddressMunicipalityRecord extends CvrBitemporalRecord {
     }
 
     public void setMunicipalityCode(int municipalityCode) {
-        System.out.println("setMunicipalityCode "+municipalityCode+ " on "+System.identityHashCode(this));
         this.municipalityCode = municipalityCode;
     }
 
@@ -49,7 +48,6 @@ public class AddressMunicipalityRecord extends CvrBitemporalRecord {
     }
 
     public void setMunicipalityName(String municipalityName) {
-        System.out.println("setMunicipalityName "+municipalityName);
         this.municipalityName = municipalityName;
     }
 
