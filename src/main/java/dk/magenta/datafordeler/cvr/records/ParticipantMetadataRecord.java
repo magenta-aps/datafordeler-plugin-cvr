@@ -1,7 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Effect;
 import dk.magenta.datafordeler.core.database.Registration;
@@ -25,18 +24,41 @@ public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
     public static final String DB_FIELD_NEWEST_LOCATION = "newestLocation";
     public static final String IO_FIELD_NEWEST_LOCATION = "nyesteBeliggenhedsadresse";
 
-    @OneToOne(targetEntity = AddressRecord.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(targetEntity = AddressRecord.class, mappedBy = AddressRecord.DB_FIELD_PARTICIPANT_METADATA, cascade = CascadeType.ALL, orphanRemoval = true)
     @Filters({
             @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_TO+" >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR "+CvrRecordPeriod.DB_FIELD_VALID_TO+" is null)"),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_NEWEST_LOCATION)
-    private AddressRecord newestLocation;
+    private Set<AddressRecord> newestLocation = new HashSet<>();
 
-    public void setNewestLocation(AddressRecord newestLocation) {
-        System.out.println("setNewestLocation "+newestLocation.getMunicipality().getMunicipalityCode()+ " = "+System.identityHashCode(newestLocation.getMunicipality()));
+    public void setNewestLocation(Set<AddressRecord> newestLocation) {
         this.newestLocation = newestLocation;
+    }
+
+    @JsonSetter(IO_FIELD_NEWEST_LOCATION)
+    public void addNewestLocation(AddressRecord newestLocation) {
+        if (newestLocation != null && !this.newestLocation.contains(newestLocation)) {
+            newestLocation.setParticipantMetadataRecord(this);
+            this.newestLocation.add(newestLocation);
+        }
+    }
+
+    @JsonIgnore
+    public Set<AddressRecord> getNewestLocation() {
+        return this.newestLocation;
+    }
+
+    @JsonGetter(IO_FIELD_NEWEST_LOCATION)
+    public AddressRecord getLatestNewestLocation() {
+        AddressRecord latest = null;
+        for (AddressRecord nameRecord : this.newestLocation) {
+            if (latest == null || nameRecord.getLastUpdated().isAfter(latest.getLastUpdated())) {
+                latest = nameRecord;
+            }
+        }
+        return latest;
     }
 
 
@@ -44,7 +66,7 @@ public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
     public static final String DB_FIELD_NEWEST_CONTACT_DATA = "newestContactData";
     public static final String IO_FIELD_NEWEST_CONTACT_DATA = "nyesteKontaktoplysninger";
 
-    @OneToMany(targetEntity = MetadataContactRecord.class, mappedBy = MetadataContactRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(targetEntity = MetadataContactRecord.class, mappedBy = MetadataContactRecord.DB_FIELD_PARTICIPANT_METADATA, cascade = CascadeType.ALL, orphanRemoval = true)
     @Filters({
             @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_TO+" >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR "+CvrRecordPeriod.DB_FIELD_VALID_TO+" is null)"),
@@ -53,11 +75,13 @@ public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
     private Set<MetadataContactRecord> metadataContactRecords = new HashSet<>();
 
     @JsonProperty(IO_FIELD_NEWEST_CONTACT_DATA)
-    private void setMetadataContactData(Set<String> contactData) {
+    public void setMetadataContactData(Set<String> contactData) {
+        System.out.println("setMetadataContactData "+contactData+" (on meta "+System.identityHashCode(this)+")");
         HashSet<String> contacts = new HashSet<>(contactData);
         HashSet<MetadataContactRecord> remove = new HashSet<>();
         for (MetadataContactRecord contactRecord : this.metadataContactRecords) {
             String data = contactRecord.getData();
+            System.out.println("Existing contactrecord: "+data);
             if (contacts.contains(data)) {
                 contacts.remove(data);
             } else {
@@ -73,8 +97,16 @@ public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
         }
     }
 
+    public void addMetadataContactData(MetadataContactRecord contactRecord) {
+        if (contactRecord != null && !this.metadataContactRecords.contains(contactRecord)) {
+            System.out.println("adding "+contactRecord.getData()+" (on meta "+System.identityHashCode(this)+")");
+            contactRecord.setParticipantMetadataRecord(this);
+            this.metadataContactRecords.add(contactRecord);
+        }
+    }
+
     @JsonProperty(IO_FIELD_NEWEST_CONTACT_DATA)
-    private Set<String> getMetadataContactData() {
+    public Set<String> getMetadataContactData() {
         HashSet<String> contacts = new HashSet<>();
         for (MetadataContactRecord metadataContactRecord : this.metadataContactRecords) {
             contacts.add(metadataContactRecord.getData());
@@ -83,9 +115,24 @@ public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
     }
 
     public void wire(Session session) {
-        if (this.newestLocation != null) {
-            this.newestLocation.wire(session);
+        for (AddressRecord addressRecord : this.newestLocation) {
+            addressRecord.wire(session);
         }
+    }
+
+    public boolean merge(ParticipantMetadataRecord existing) {
+        System.out.println("Merging meta "+System.identityHashCode(this) +" onto meta "+System.identityHashCode(existing));
+
+        if (existing != null && !existing.getId().equals(this.getId())) {
+            for (AddressRecord addressRecord : this.getNewestLocation()) {
+                existing.addNewestLocation(addressRecord);
+            }
+            for (MetadataContactRecord contactRecord : this.metadataContactRecords) {
+                existing.addMetadataContactData(contactRecord);
+            }
+            return true;
+        }
+        return false;
     }
 
 }

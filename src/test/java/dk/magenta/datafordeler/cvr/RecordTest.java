@@ -24,6 +24,7 @@ import dk.magenta.datafordeler.cvr.records.CompanyUnitRecord;
 import dk.magenta.datafordeler.cvr.records.ParticipantRecord;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -233,6 +234,8 @@ public class RecordTest {
             Assert.assertEquals(2, companyRecord.getMetadata().getNewestName().size());
             Assert.assertEquals(2, companyRecord.getMetadata().getNewestForm().size());
             Assert.assertEquals(2, companyRecord.getMetadata().getNewestLocation().size());
+            Assert.assertEquals(2, companyRecord.getMetadata().getNewestPrimaryIndustry().size());
+            Assert.assertEquals(1, companyRecord.getMetadata().getNewestSecondaryIndustry1().size());
 
             System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(companyRecord));
         } finally {
@@ -392,6 +395,8 @@ public class RecordTest {
             Assert.assertEquals(0, companyUnitRecord.getParticipants().size());
             Assert.assertEquals(2, companyUnitRecord.getMetadata().getNewestName().size());
             Assert.assertEquals(2, companyUnitRecord.getMetadata().getNewestLocation().size());
+            Assert.assertEquals(2, companyUnitRecord.getMetadata().getNewestPrimaryIndustry().size());
+            Assert.assertEquals(1, companyUnitRecord.getMetadata().getNewestSecondaryIndustry1().size());
         } finally {
             session.close();
         }
@@ -519,7 +524,9 @@ public class RecordTest {
     @Test
     public void testUpdateParticipant() throws IOException, DataFordelerException {
         loadParticipant("/person.json");
+        System.out.println("---------------");
         loadParticipant("/person2.json");
+        System.out.println("---------------");
         Session session = sessionManager.getSessionFactory().openSession();
         try {
             ParticipantRecordQuery query = new ParticipantRecordQuery();
@@ -536,6 +543,7 @@ public class RecordTest {
             Assert.assertEquals(1, participantRecord.getEmailAddress().size());
             Assert.assertEquals(5, participantRecord.getCompanyRelation().size());
             Assert.assertEquals(0, participantRecord.getAttributes().size());
+            Assert.assertEquals(1, participantRecord.getMetadata().getMetadataContactData().size());
         } finally {
             session.close();
         }

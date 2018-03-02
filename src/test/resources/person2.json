@@ -1132,7 +1132,9 @@
                 },
                 "sidstOpdateret": "2012-05-30T17:31:08.000+02:00"
               },
-              "nyesteKontaktoplysninger": []
+              "nyesteKontaktoplysninger": [
+                "12345678"
+              ]
             },
             "samtId": 1,
             "fejlRegistreret": false,

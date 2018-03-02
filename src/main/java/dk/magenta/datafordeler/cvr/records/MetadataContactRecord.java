@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "cvr_record_metadata_contact", indexes = {
@@ -61,6 +62,20 @@ public class MetadataContactRecord extends CvrNontemporalRecord {
     private ParticipantMetadataRecord participantMetadataRecord;
 
     public void setParticipantMetadataRecord(ParticipantMetadataRecord participantMetadataRecord) {
+        System.out.println("Setting participantMetadataRecord to "+System.identityHashCode(participantMetadataRecord));
         this.participantMetadataRecord = participantMetadataRecord;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MetadataContactRecord that = (MetadataContactRecord) o;
+        return Objects.equals(data, that.data);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(data);
     }
 }

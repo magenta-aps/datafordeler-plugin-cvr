@@ -1043,11 +1043,9 @@ public class CompanyRecord extends CvrEntityRecord {
         if (this.participants != null) {
             list.addAll(this.participants);
         }
-
         if (this.metadata != null) {
             list.addAll(this.metadata.extractRecords(this, true));
         }
-
         return list;
     }
 

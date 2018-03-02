@@ -455,6 +455,8 @@ public class ParticipantRecord extends CvrEntityRecord {
 
     @Override
     public void save(Session session) {
+        System.out.println("Saving base "+System.identityHashCode(this)+" with meta "+System.identityHashCode(this.metadata));
+        System.out.println("meta "+System.identityHashCode(this.metadata)+" has contacts "+this.metadata.getMetadataContactData());
         for (AddressRecord address : this.locationAddress) {
             address.wire(session);
         }
@@ -471,6 +473,7 @@ public class ParticipantRecord extends CvrEntityRecord {
     @Override
     public boolean merge(CvrEntityRecord other) {
         if (other != null && !other.getId().equals(this.getId()) && other instanceof ParticipantRecord) {
+            System.out.println("Merging base "+System.identityHashCode(this) +" onto base "+System.identityHashCode(other) );
             ParticipantRecord existing = (ParticipantRecord) other;
             for (NameRecord nameRecord : this.getNames()) {
                 existing.addName(nameRecord);
@@ -499,6 +502,8 @@ public class ParticipantRecord extends CvrEntityRecord {
             for (CompanyParticipantRelationRecord companyParticipantRelationRecord : this.getCompanyRelation()) {
                 existing.addCompanyRelation(companyParticipantRelationRecord);
             }
+            this.metadata.merge(existing.getMetadata());
+            System.out.println("meta now has contacts "+this.metadata.getMetadataContactData());
             return true;
         }
         return false;

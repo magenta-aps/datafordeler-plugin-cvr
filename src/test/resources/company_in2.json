@@ -4132,9 +4132,17 @@
                   "gyldigFra": "2014-01-01",
                   "gyldigTil": null
                 },
-                "sidstOpdateret": "2015-05-22T11:37:32.000+02:00"
+                "sidstOpdateret": "2016-05-22T11:37:32.000+02:00"
               },
-              "nyesteBibranche1": null,
+              "nyesteBibranche1": {
+                "branchekode": "620200",
+                "branchetekst": "Konsulentbistand vedrørende informationsteknologi",
+                "periode": {
+                  "gyldigFra": "2014-01-01",
+                  "gyldigTil": null
+                },
+                "sidstOpdateret": "2016-05-22T11:37:32.000+02:00"
+              },
               "nyesteBibranche2": null,
               "nyesteBibranche3": null,
               "nyesteStatus": null,
