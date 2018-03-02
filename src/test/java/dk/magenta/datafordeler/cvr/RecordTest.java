@@ -233,6 +233,8 @@ public class RecordTest {
             Assert.assertEquals(2, companyRecord.getMetadata().getNewestName().size());
             Assert.assertEquals(2, companyRecord.getMetadata().getNewestForm().size());
             Assert.assertEquals(2, companyRecord.getMetadata().getNewestLocation().size());
+            Assert.assertEquals(2, companyRecord.getMetadata().getNewestPrimaryIndustry().size());
+            Assert.assertEquals(1, companyRecord.getMetadata().getNewestSecondaryIndustry1().size());
 
             System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(companyRecord));
         } finally {
@@ -392,6 +394,8 @@ public class RecordTest {
             Assert.assertEquals(0, companyUnitRecord.getParticipants().size());
             Assert.assertEquals(2, companyUnitRecord.getMetadata().getNewestName().size());
             Assert.assertEquals(2, companyUnitRecord.getMetadata().getNewestLocation().size());
+            Assert.assertEquals(2, companyUnitRecord.getMetadata().getNewestPrimaryIndustry().size());
+            Assert.assertEquals(1, companyUnitRecord.getMetadata().getNewestSecondaryIndustry1().size());
         } finally {
             session.close();
         }
