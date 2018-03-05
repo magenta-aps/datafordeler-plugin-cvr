@@ -29,7 +29,6 @@ public class OrganizationNameRecord extends CvrBitemporalRecord {
 
 
     public static final String DB_FIELD_ORGANIZATION = "organizationRecord";
-    public static final String IO_FIELD_ORGANIZATION = "organisation";
 
     @JsonIgnore
     @ManyToOne(targetEntity = OrganizationRecord.class)
@@ -46,6 +45,20 @@ public class OrganizationNameRecord extends CvrBitemporalRecord {
 
 
 
+    public static final String DB_FIELD_OFFICE_UNIT = "officeUnitRecord";
+
+    @JsonIgnore
+    @ManyToOne(targetEntity = OfficeRelationUnitRecord.class)
+    @JoinColumn(name = DB_FIELD_OFFICE_UNIT + DatabaseEntry.REF)
+    private OfficeRelationUnitRecord officeUnitRecord;
+
+    public OfficeRelationUnitRecord getOfficeUnitRecord() {
+        return this.officeUnitRecord;
+    }
+
+    public void setOfficeUnitRecord(OfficeRelationUnitRecord officeUnitRecord) {
+        this.officeUnitRecord = officeUnitRecord;
+    }
 
 
 

@@ -25,7 +25,11 @@ public class ParticipantRelationRecord extends CvrBitemporalRecord {
 
     @Column(name = DB_FIELD_UNITNUMBER)
     @JsonProperty(value = IO_FIELD_UNITNUMBER)
-    public long unitNumber;
+    private long unitNumber;
+
+    public long getUnitNumber() {
+        return this.unitNumber;
+    }
 
 
 
@@ -35,6 +39,11 @@ public class ParticipantRelationRecord extends CvrBitemporalRecord {
     @Column(name = DB_FIELD_UNITTYPE)
     @JsonProperty(value = IO_FIELD_UNITTYPE)
     public String unitType;
+
+    public String getUnitType() {
+        return this.unitType;
+    }
+
 
 
     @OneToOne(targetEntity = CompanyParticipantRelationRecord.class, mappedBy = CompanyParticipantRelationRecord.DB_FIELD_PARTICIPANT_RELATION)

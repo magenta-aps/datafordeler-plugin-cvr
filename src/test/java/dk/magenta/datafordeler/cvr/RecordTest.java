@@ -19,9 +19,7 @@ import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitRecordQuery;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntityManager;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantRecordQuery;
-import dk.magenta.datafordeler.cvr.records.CompanyRecord;
-import dk.magenta.datafordeler.cvr.records.CompanyUnitRecord;
-import dk.magenta.datafordeler.cvr.records.ParticipantRecord;
+import dk.magenta.datafordeler.cvr.records.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -236,6 +234,17 @@ public class RecordTest {
             Assert.assertEquals(2, companyRecord.getMetadata().getNewestLocation().size());
             Assert.assertEquals(2, companyRecord.getMetadata().getNewestPrimaryIndustry().size());
             Assert.assertEquals(1, companyRecord.getMetadata().getNewestSecondaryIndustry1().size());
+
+            boolean found = false;
+            for (CompanyParticipantRelationRecord participantRelationRecord : companyRecord.getParticipants()) {
+                if (participantRelationRecord.getParticipant().getUnitNumber() == 4000032977L) {
+                    found = true;
+                    Assert.assertEquals(1, participantRelationRecord.getOffices().size());
+                    OfficeRelationRecord officeRelationRecord = participantRelationRecord.getOffices().iterator().next();
+                    Assert.assertEquals(1, officeRelationRecord.getAttributes().size());
+                }
+            }
+            Assert.assertTrue(found);
 
             System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(companyRecord));
         } finally {

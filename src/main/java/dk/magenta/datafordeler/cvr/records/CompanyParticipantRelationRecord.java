@@ -10,6 +10,7 @@ import org.hibernate.Session;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -39,6 +40,30 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
         if (participant != null) {
             participant.setCompanyParticipantRelationRecord(this);
         }
+    }
+
+    public ParticipantRelationRecord getParticipant() {
+        return this.participant;
+    }
+
+
+
+    public static final String DB_FIELD_OFFICES = "offices";
+    public static final String IO_FIELD_OFFICES = "kontorsteder";
+
+    @OneToMany(targetEntity = OfficeRelationRecord.class, cascade = CascadeType.ALL)
+    @JsonProperty(value = IO_FIELD_OFFICES)
+    private Set<OfficeRelationRecord> offices = new HashSet<>();
+
+    public void setOffices(Set<OfficeRelationRecord> offices) {
+        this.offices = offices;
+        for (OfficeRelationRecord office : offices) {
+            office.setCompanyParticipantRelationRecord(this);
+        }
+    }
+
+    public Set<OfficeRelationRecord> getOffices() {
+        return this.offices;
     }
 
 
@@ -100,6 +125,12 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
         /*for (OrganizationRecord organizationRecord : this.organizations) {
             organizationRecord.save(session);
         }*/
+    }
+
+    public void wire(Session session) {
+        for (OfficeRelationRecord officeRelationRecord : this.offices) {
+            officeRelationRecord.wire(session);
+        }
     }
 
     /*private Set<Identification> getOrganizationIdentifications(Session session) {

@@ -24,8 +24,9 @@ import java.util.UUID;
         @Index(name = "cvr_record_address_company", columnList = AddressRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
         @Index(name = "cvr_record_address_companyunit", columnList = AddressRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
         @Index(name = "cvr_record_address_participant", columnList = AddressRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
-        @Index(name = "cvr_record_name_companymetadata", columnList = AddressRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
-        @Index(name = "cvr_record_name_unitmetadata", columnList = AddressRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
+        @Index(name = "cvr_record_address_companymetadata", columnList = AddressRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
+        @Index(name = "cvr_record_address_unitmetadata", columnList = AddressRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
+        @Index(name = "cvr_record_address_officeunit", columnList = AddressRecord.DB_FIELD_OFFICE_UNIT + DatabaseEntry.REF),
         @Index(name = "cvr_record_address_type", columnList = AddressRecord.DB_FIELD_TYPE),
         @Index(name = "cvr_record_address_municipality", columnList = AddressRecord.DB_FIELD_MUNICIPALITY + DatabaseEntry.REF),
 })
@@ -60,6 +61,20 @@ public class AddressRecord extends CvrBitemporalDataMetaRecord {
         address.setPostnummer(this.postnummer);
         address.setSupplementalCityName(this.supplementalCityName);
         return address;
+    }
+
+
+
+
+    public static final String DB_FIELD_OFFICE_UNIT = "officeUnitRecord";
+
+    @ManyToOne(targetEntity = OfficeRelationUnitRecord.class)
+    @JoinColumn(name = DB_FIELD_OFFICE_UNIT + DatabaseEntry.REF)
+    @JsonIgnore
+    private OfficeRelationUnitRecord officeUnitRecord;
+
+    public void setOfficeUnitRecord(OfficeRelationUnitRecord officeUnitRecord) {
+        this.officeUnitRecord = officeUnitRecord;
     }
 
 

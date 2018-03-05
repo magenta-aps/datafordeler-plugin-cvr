@@ -75,7 +75,7 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
     public void addName(NameRecord record) {
-        if (!this.names.contains(record)) {
+        if (record != null && !this.names.contains(record)) {
             record.setSecondary(false);
             record.setParticipantRecord(this);
             this.names.add(record);
@@ -110,7 +110,7 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
     public void addLocationAddress(AddressRecord record) {
-        if (!this.locationAddress.contains(record)) {
+        if (record != null && !this.locationAddress.contains(record)) {
             record.setType(AddressRecord.TYPE_LOCATION);
             record.setParticipantRecord(this);
             this.locationAddress.add(record);
@@ -145,7 +145,7 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
     public void addPostalAddress(AddressRecord record) {
-        if (!this.postalAddress.contains(record)) {
+        if (record != null && !this.postalAddress.contains(record)) {
             record.setType(AddressRecord.TYPE_POSTAL);
             record.setParticipantRecord(this);
             this.postalAddress.add(record);
@@ -180,7 +180,7 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
     public void addBusinessAddress(AddressRecord record) {
-        if (!this.businessAddress.contains(record)) {
+        if (record != null && !this.businessAddress.contains(record)) {
             record.setType(AddressRecord.TYPE_BUSINESS);
             record.setParticipantRecord(this);
             this.businessAddress.add(record);
@@ -215,7 +215,7 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
     public void addPhoneNumber(ContactRecord record) {
-        if (!this.phoneNumber.contains(record)) {
+        if (record != null && !this.phoneNumber.contains(record)) {
             record.setType(ContactRecord.TYPE_TELEFONNUMMER);
             record.setParticipantRecord(this);
             record.setSecondary(false);
@@ -251,7 +251,7 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
     public void addFaxNumber(ContactRecord record) {
-        if (!this.faxNumber.contains(record)) {
+        if (record != null && !this.faxNumber.contains(record)) {
             record.setType(ContactRecord.TYPE_TELEFAXNUMMER);
             record.setParticipantRecord(this);
             record.setSecondary(false);
@@ -287,7 +287,7 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
     public void addEmailAddress(ContactRecord record) {
-        if (!this.emailAddress.contains(record)) {
+        if (record != null && !this.emailAddress.contains(record)) {
             record.setType(ContactRecord.TYPE_EMAILADRESSE);
             record.setParticipantRecord(this);
             this.emailAddress.add(record);
@@ -320,7 +320,7 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
     public void addAttributes(AttributeRecord record) {
-        if (!this.attributes.contains(record)) {
+        if (record != null && !this.attributes.contains(record)) {
             record.setParticipantRecord(this);
             this.attributes.add(record);
         }
@@ -390,7 +390,7 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
     public void addCompanyRelation(CompanyParticipantRelationRecord record) {
-        if (!this.companyRelation.contains(record)) {
+        if (record != null && !this.companyRelation.contains(record)) {
             record.setParticipantRecord(this);
             this.companyRelation.add(record);
         }
@@ -455,8 +455,6 @@ public class ParticipantRecord extends CvrEntityRecord {
 
     @Override
     public void save(Session session) {
-        System.out.println("Saving base "+System.identityHashCode(this)+" with meta "+System.identityHashCode(this.metadata));
-        System.out.println("meta "+System.identityHashCode(this.metadata)+" has contacts "+this.metadata.getMetadataContactData());
         for (AddressRecord address : this.locationAddress) {
             address.wire(session);
         }
@@ -473,7 +471,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     @Override
     public boolean merge(CvrEntityRecord other) {
         if (other != null && !other.getId().equals(this.getId()) && other instanceof ParticipantRecord) {
-            System.out.println("Merging base "+System.identityHashCode(this) +" onto base "+System.identityHashCode(other) );
             ParticipantRecord existing = (ParticipantRecord) other;
             for (NameRecord nameRecord : this.getNames()) {
                 existing.addName(nameRecord);
@@ -503,7 +500,6 @@ public class ParticipantRecord extends CvrEntityRecord {
                 existing.addCompanyRelation(companyParticipantRelationRecord);
             }
             this.metadata.merge(existing.getMetadata());
-            System.out.println("meta now has contacts "+this.metadata.getMetadataContactData());
             return true;
         }
         return false;
