@@ -16,7 +16,9 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "cvr_record_organization_attribute", indexes = {
-        @Index(name = "cvr_record_organization_attribute_organization", columnList = OrganizationAttributeRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF)
+        @Index(name = "cvr_record_organization_attribute_organization", columnList = OrganizationAttributeRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF),
+        @Index(name = "cvr_record_organization_attribute_fusion", columnList = OrganizationAttributeRecord.DB_FIELD_FUSION + DatabaseEntry.REF),
+        @Index(name = "cvr_record_organization_attribute_office", columnList = OrganizationAttributeRecord.DB_FIELD_OFFICE + DatabaseEntry.REF)
 })
 public class OrganizationAttributeRecord extends CvrNontemporalRecord {
 
@@ -128,6 +130,20 @@ public class OrganizationAttributeRecord extends CvrNontemporalRecord {
     public void setFusionOutgoing(boolean fusionOutgoing) {
         this.fusionOutgoing = fusionOutgoing;
     }
+
+
+
+    public static final String DB_FIELD_OFFICE = "officeRelationRecord";
+
+    @JsonIgnore
+    @ManyToOne(targetEntity = OfficeRelationRecord.class)
+    private OfficeRelationRecord officeRelationRecord;
+
+    public void setOfficeRelationRecord(OfficeRelationRecord officeRelationRecord) {
+        this.officeRelationRecord = officeRelationRecord;
+    }
+
+
 
     @Override
     public boolean equals(Object o) {

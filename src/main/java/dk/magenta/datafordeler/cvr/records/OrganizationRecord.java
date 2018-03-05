@@ -73,6 +73,16 @@ public class OrganizationRecord extends DatabaseEntry {
         }
     }
 
+    public void addAttribute(OrganizationAttributeRecord attribute) {
+        if (attribute != null && !this.attributes.contains(attribute)) {
+            attribute.setOrganizationRecord(this);
+            this.attributes.add(attribute);
+        }
+    }
+
+    public Set<OrganizationAttributeRecord> getAttributes() {
+        return this.attributes;
+    }
 
 
 
