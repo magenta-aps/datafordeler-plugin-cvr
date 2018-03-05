@@ -62,7 +62,6 @@ public class MetadataContactRecord extends CvrNontemporalRecord {
     private ParticipantMetadataRecord participantMetadataRecord;
 
     public void setParticipantMetadataRecord(ParticipantMetadataRecord participantMetadataRecord) {
-        System.out.println("Setting participantMetadataRecord to "+System.identityHashCode(participantMetadataRecord));
         this.participantMetadataRecord = participantMetadataRecord;
     }
 

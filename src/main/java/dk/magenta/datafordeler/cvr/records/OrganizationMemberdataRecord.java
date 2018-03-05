@@ -23,25 +23,29 @@ public class OrganizationMemberdataRecord extends CvrRecord {
     }
 
 
-    @OneToMany(mappedBy = OrganizationAttributeRecord.DB_FIELD_ORGANIZATION_MEMBERDATA, targetEntity = OrganizationAttributeRecord.class, cascade = CascadeType.ALL)
-    @JsonProperty(value = "attributter")
-    public Set<OrganizationAttributeRecord> attributes = new HashSet<>();
 
-    public void setAttributes(Set<OrganizationAttributeRecord> attributes) {
+    public static final String DB_FIELD_ATTRIBUTES = "attributes";
+    public static final String IO_FIELD_ATTRIBUTES = "attributter";
+
+    @OneToMany(mappedBy = AttributeRecord.DB_FIELD_ORGANIZATION_MEMBERDATA, targetEntity = AttributeRecord.class, cascade = CascadeType.ALL)
+    @JsonProperty(value = IO_FIELD_ATTRIBUTES)
+    public Set<AttributeRecord> attributes = new HashSet<>();
+
+    public void setAttributes(Set<AttributeRecord> attributes) {
         this.attributes = attributes;
-        for (OrganizationAttributeRecord attributeRecord : attributes) {
+        for (AttributeRecord attributeRecord : attributes) {
             attributeRecord.setOrganizationMemberdataRecord(this);
         }
     }
 
-    public void addAttribute(OrganizationAttributeRecord attribute) {
+    public void addAttribute(AttributeRecord attribute) {
         if (attribute != null && !this.attributes.contains(attribute)) {
             attribute.setOrganizationMemberdataRecord(this);
             this.attributes.add(attribute);
         }
     }
 
-    public Set<OrganizationAttributeRecord> getAttributes() {
+    public Set<AttributeRecord> getAttributes() {
         return this.attributes;
     }
 

@@ -61,33 +61,38 @@ public class OrganizationRecord extends DatabaseEntry {
 
 
 
+    public static final String DB_FIELD_ATTRIBUTES = "attributes";
+    public static final String IO_FIELD_ATTRIBUTES = "attributter";
 
-    @OneToMany(mappedBy = OrganizationAttributeRecord.DB_FIELD_ORGANIZATION, targetEntity = OrganizationAttributeRecord.class, cascade = CascadeType.ALL)
-    @JsonProperty(value = "attributter")
-    public Set<OrganizationAttributeRecord> attributes;
+    @OneToMany(mappedBy = AttributeRecord.DB_FIELD_ORGANIZATION, targetEntity = AttributeRecord.class, cascade = CascadeType.ALL)
+    @JsonProperty(value = IO_FIELD_ATTRIBUTES)
+    public Set<AttributeRecord> attributes;
 
-    public void setAttributes(Set<OrganizationAttributeRecord> attributes) {
+    public void setAttributes(Set<AttributeRecord> attributes) {
         this.attributes = attributes;
-        for (OrganizationAttributeRecord attributeRecord : attributes) {
+        for (AttributeRecord attributeRecord : attributes) {
             attributeRecord.setOrganizationRecord(this);
         }
     }
 
-    public void addAttribute(OrganizationAttributeRecord attribute) {
+    public void addAttribute(AttributeRecord attribute) {
         if (attribute != null && !this.attributes.contains(attribute)) {
             attribute.setOrganizationRecord(this);
             this.attributes.add(attribute);
         }
     }
 
-    public Set<OrganizationAttributeRecord> getAttributes() {
+    public Set<AttributeRecord> getAttributes() {
         return this.attributes;
     }
 
 
 
+    public static final String DB_FIELD_MEMBERDATA = "memberData";
+    public static final String IO_FIELD_MEMBERDATA = "medlemsData";
+
     @OneToMany(mappedBy = OrganizationMemberdataRecord.DB_FIELD_ORGANIZATION, targetEntity = OrganizationMemberdataRecord.class, cascade = CascadeType.ALL)
-    @JsonProperty(value = "medlemsData")
+    @JsonProperty(value = IO_FIELD_MEMBERDATA)
     public Set<OrganizationMemberdataRecord> memberData;
 
     public void setMemberData(Set<OrganizationMemberdataRecord> memberData) {

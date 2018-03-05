@@ -70,20 +70,20 @@ public class FusionSplitRecord extends CvrNontemporalDataRecord {
     public static final String DB_FIELD_INCOMING = "incoming";
     public static final String IO_FIELD_INCOMING = "indgaaende";
 
-    @OneToMany(mappedBy = OrganizationAttributeRecord.DB_FIELD_FUSION, targetEntity = OrganizationAttributeRecord.class, cascade = CascadeType.ALL)
-    @Where(clause = OrganizationAttributeRecord.FUSION_OUTGOING+"=false")
+    @OneToMany(mappedBy = AttributeRecord.DB_FIELD_FUSION, targetEntity = AttributeRecord.class, cascade = CascadeType.ALL)
+    @Where(clause = AttributeRecord.DB_FIELD_FUSION_OUTGOING +"=false")
     @JsonProperty(value = IO_FIELD_INCOMING)
-    private Set<OrganizationAttributeRecord> incoming = new HashSet<>();
+    private Set<AttributeRecord> incoming = new HashSet<>();
 
-    public void setIncoming(Set<OrganizationAttributeRecord> incoming) {
+    public void setIncoming(Set<AttributeRecord> incoming) {
         this.incoming = incoming;
-        for (OrganizationAttributeRecord attributeRecord : incoming) {
+        for (AttributeRecord attributeRecord : incoming) {
             attributeRecord.setFusionSplitRecord(this);
             attributeRecord.setFusionOutgoing(false);
         }
     }
 
-    public void addIncoming(OrganizationAttributeRecord attribute) {
+    public void addIncoming(AttributeRecord attribute) {
         if (attribute != null && !this.incoming.contains(attribute)) {
             attribute.setFusionSplitRecord(this);
             attribute.setFusionOutgoing(false);
@@ -91,7 +91,7 @@ public class FusionSplitRecord extends CvrNontemporalDataRecord {
         }
     }
 
-    public Set<OrganizationAttributeRecord> getIncoming() {
+    public Set<AttributeRecord> getIncoming() {
         return this.incoming;
     }
 
@@ -100,20 +100,20 @@ public class FusionSplitRecord extends CvrNontemporalDataRecord {
     public static final String DB_FIELD_OUTGOING = "outgoing";
     public static final String IO_FIELD_OUTGOING = "udgaaende";
 
-    @OneToMany(mappedBy = OrganizationAttributeRecord.DB_FIELD_FUSION, targetEntity = OrganizationAttributeRecord.class, cascade = CascadeType.ALL)
-    @Where(clause = OrganizationAttributeRecord.FUSION_OUTGOING+"=true")
+    @OneToMany(mappedBy = AttributeRecord.DB_FIELD_FUSION, targetEntity = AttributeRecord.class, cascade = CascadeType.ALL)
+    @Where(clause = AttributeRecord.DB_FIELD_FUSION_OUTGOING +"=true")
     @JsonProperty(value = IO_FIELD_OUTGOING)
-    private Set<OrganizationAttributeRecord> outgoing = new HashSet<>();
+    private Set<AttributeRecord> outgoing = new HashSet<>();
 
-    public void setOutgoing(Set<OrganizationAttributeRecord> outgoing) {
+    public void setOutgoing(Set<AttributeRecord> outgoing) {
         this.outgoing = outgoing;
-        for (OrganizationAttributeRecord attributeRecord : outgoing) {
+        for (AttributeRecord attributeRecord : outgoing) {
             attributeRecord.setFusionSplitRecord(this);
             attributeRecord.setFusionOutgoing(true);
         }
     }
 
-    public void addOutgoing(OrganizationAttributeRecord attribute) {
+    public void addOutgoing(AttributeRecord attribute) {
         if (attribute != null && !this.outgoing.contains(attribute)) {
             attribute.setFusionSplitRecord(this);
             attribute.setFusionOutgoing(true);
@@ -121,7 +121,7 @@ public class FusionSplitRecord extends CvrNontemporalDataRecord {
         }
     }
 
-    public Set<OrganizationAttributeRecord> getOutgoing() {
+    public Set<AttributeRecord> getOutgoing() {
         return this.outgoing;
     }
 

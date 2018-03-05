@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
@@ -23,6 +24,9 @@ import java.util.Set;
         @Index(name = "cvr_record_attribute_company", columnList = AttributeRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
         @Index(name = "cvr_record_attribute_companyunit", columnList = AttributeRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
         @Index(name = "cvr_record_attribute_participant", columnList = AttributeRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+        @Index(name = "cvr_record_attribute_organization", columnList = AttributeRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF),
+        @Index(name = "cvr_record_attribute_fusion", columnList = AttributeRecord.DB_FIELD_FUSION + DatabaseEntry.REF),
+        @Index(name = "cvr_record_attribute_office", columnList = AttributeRecord.DB_FIELD_OFFICE + DatabaseEntry.REF)
 })
 public class AttributeRecord extends CvrNontemporalDataRecord {
 
@@ -82,6 +86,81 @@ public class AttributeRecord extends CvrNontemporalDataRecord {
 
 
 
+
+
+
+    public static final String DB_FIELD_ORGANIZATION = "organizationRecord";
+
+    @JsonIgnore
+    @JoinColumn(name = DB_FIELD_ORGANIZATION + DatabaseEntry.REF)
+    @ManyToOne(targetEntity = OrganizationRecord.class)
+    private OrganizationRecord organizationRecord;
+
+    public OrganizationRecord getOrganizationRecord() {
+        return this.organizationRecord;
+    }
+
+    public void setOrganizationRecord(OrganizationRecord organizationRecord) {
+        this.organizationRecord = organizationRecord;
+    }
+
+
+
+    public static final String DB_FIELD_ORGANIZATION_MEMBERDATA = "organizationMemberdataRecord";
+
+    @JsonIgnore
+    @ManyToOne(targetEntity = OrganizationMemberdataRecord.class)
+    @JoinColumn(name = DB_FIELD_ORGANIZATION_MEMBERDATA + DatabaseEntry.REF)
+    private OrganizationMemberdataRecord organizationMemberdataRecord;
+
+    public void setOrganizationMemberdataRecord(OrganizationMemberdataRecord organizationMemberdataRecord) {
+        this.organizationMemberdataRecord = organizationMemberdataRecord;
+    }
+
+
+
+    public static final String DB_FIELD_FUSION = "fusionSplitRecord";
+
+    @JsonIgnore
+    @ManyToOne(targetEntity = FusionSplitRecord.class)
+    @JoinColumn(name = DB_FIELD_FUSION + DatabaseEntry.REF)
+    private FusionSplitRecord fusionSplitRecord;
+
+    public void setFusionSplitRecord(FusionSplitRecord fusionSplitRecord) {
+        this.fusionSplitRecord = fusionSplitRecord;
+    }
+
+
+
+    public static final String DB_FIELD_FUSION_OUTGOING = "fusionOutgoing";
+
+    @JsonIgnore
+    @Column(name = DB_FIELD_FUSION_OUTGOING)
+    private boolean fusionOutgoing;
+
+    public void setFusionOutgoing(boolean fusionOutgoing) {
+        this.fusionOutgoing = fusionOutgoing;
+    }
+
+
+
+    public static final String DB_FIELD_OFFICE = "officeRelationRecord";
+
+    @JsonIgnore
+    @ManyToOne(targetEntity = OfficeRelationRecord.class)
+    @JoinColumn(name = DB_FIELD_OFFICE + DatabaseEntry.REF)
+    private OfficeRelationRecord officeRelationRecord;
+
+    public void setOfficeRelationRecord(OfficeRelationRecord officeRelationRecord) {
+        this.officeRelationRecord = officeRelationRecord;
+    }
+
+
+
+
+
+
+
     @Override
     public void populateBaseData(CompanyBaseData baseData, Session session) {
         for (AttributeValueRecord record : values) {
@@ -111,11 +190,12 @@ public class AttributeRecord extends CvrNontemporalDataRecord {
         return sequenceNumber == that.sequenceNumber &&
                 Objects.equals(type, that.type) &&
                 Objects.equals(valueType, that.valueType) &&
-                Objects.equals(values, that.values);
+                Objects.equals(values, that.values) &&
+                fusionOutgoing == that.fusionOutgoing;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sequenceNumber, type, valueType, values);
+        return Objects.hash(sequenceNumber, type, valueType, values, fusionOutgoing);
     }
 }

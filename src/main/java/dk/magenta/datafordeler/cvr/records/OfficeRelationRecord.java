@@ -30,19 +30,28 @@ public class OfficeRelationRecord extends CvrBitemporalRecord {
 
 
 
+    public static final String DB_FIELD_ATTRIBUTES = "attributes";
+    public static final String IO_FIELD_ATTRIBUTES = "attributter";
 
+    @OneToMany(targetEntity = AttributeRecord.class, mappedBy = AttributeRecord.DB_FIELD_OFFICE, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonProperty(value = IO_FIELD_ATTRIBUTES)
+    private Set<AttributeRecord> attributes = new HashSet<>();
 
-    @OneToMany(targetEntity = OrganizationAttributeRecord.class, mappedBy = OrganizationAttributeRecord.DB_FIELD_OFFICE, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<OrganizationAttributeRecord> attributes = new HashSet<>();
+    public void setAttributes(Set<AttributeRecord> attributes) {
+        this.attributes = attributes;
+        for (AttributeRecord attributeRecord : attributes) {
+            attributeRecord.setOfficeRelationRecord(this);
+        }
+    }
 
-    public void addAttribute(OrganizationAttributeRecord attribute) {
+    public void addAttribute(AttributeRecord attribute) {
         if (attribute != null && !this.attributes.contains(attribute)) {
             attribute.setOfficeRelationRecord(this);
             this.attributes.add(attribute);
         }
     }
 
-    public Set<OrganizationAttributeRecord> getAttributes() {
+    public Set<AttributeRecord> getAttributes() {
         return this.attributes;
     }
 
