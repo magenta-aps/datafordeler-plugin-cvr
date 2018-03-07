@@ -16,6 +16,7 @@ import java.util.Objects;
         @Index(name = "cvr_record_name1_unitmetadata", columnList = BaseNameRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
         @Index(name = "cvr_record_name1_participantrelation", columnList = BaseNameRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF),
         @Index(name = "cvr_record_name1_organization", columnList = BaseNameRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF),
+        @Index(name = "cvr_record_name1_office", columnList = BaseNameRecord.DB_FIELD_OFFICE_UNIT + DatabaseEntry.REF),
         @Index(name = "cvr_record_name1_fusion", columnList = BaseNameRecord.DB_FIELD_FUSION + DatabaseEntry.REF),
         @Index(name = "cvr_record_name1_data", columnList = BaseNameRecord.DB_FIELD_NAME),
 })

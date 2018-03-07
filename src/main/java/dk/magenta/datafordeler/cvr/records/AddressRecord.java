@@ -30,6 +30,7 @@ import java.util.UUID;
         @Index(name = "cvr_record_address_participantrelation", columnList = AddressRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF),
         @Index(name = "cvr_record_address_type", columnList = AddressRecord.DB_FIELD_TYPE),
         @Index(name = "cvr_record_address_municipality", columnList = AddressRecord.DB_FIELD_MUNICIPALITY + DatabaseEntry.REF),
+        @Index(name = "cvr_record_address_postcode", columnList = AddressRecord.DB_FIELD_POSTCODE_REF + DatabaseEntry.REF),
 })
 public class AddressRecord extends CvrBitemporalDataMetaRecord {
 
@@ -335,7 +336,7 @@ public class AddressRecord extends CvrBitemporalDataMetaRecord {
     public static final String IO_FIELD_POSTCODE_REF = "post";
 
     @XmlElement(name = IO_FIELD_POSTCODE_REF)
-    @ManyToOne
+    @ManyToOne(targetEntity = PostCode.class)
     @JoinColumn(name = DB_FIELD_POSTCODE_REF + DatabaseEntry.REF)
     @JsonIgnore
     private PostCode post;
@@ -604,7 +605,6 @@ public class AddressRecord extends CvrBitemporalDataMetaRecord {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(super.hashCode(), type, addressId, roadCode, cityName, supplementalCityName, roadName, houseNumberFrom, houseNumberTo, letterFrom, letterTo, floor, door, municipality, post, postnummer, postdistrikt, postBox, coName, countryCode, addressText, lastValidated, freeText);
     }
 }

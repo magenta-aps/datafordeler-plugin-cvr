@@ -31,6 +31,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.OffsetDateTime;
@@ -93,11 +94,26 @@ public class RecordTest {
                         String type = item.get("_type").asText();
                         CompanyEntityManager entityManager = (CompanyEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
                         JsonNode companyInputNode = item.get("_source").get("Vrvirksomhed");
-                        entityManager.parseData(companyInputNode, importMetadata, session);
-                        companies.put(companyInputNode.get("cvrNummer").asInt(), companyInputNode);
+
+                        try {
+                            ArrayNode arrayNode = (ArrayNode) companyInputNode.get("deltagerRelation");
+                            for (JsonNode j : arrayNode) {
+                                JsonNode k = j.get("deltager").get("organisationstype");
+                                if (!k.isNull()) {
+                                    System.out.println("Not null");
+                                }
+                            }
+                        } catch (Exception e) {}
+
+                        //CompanyRecord companyRecord = objectMapper.treeToValue(companyInputNode, CompanyRecord.class);
+
+                        //entityManager.parseData(companyInputNode, importMetadata, session);
+                        //companies.put(companyInputNode.get("cvrNummer").asInt(), companyInputNode);
                     }
                     lineNumber++;
-                    System.out.println("loaded line " + lineNumber);
+                    if (lineNumber % 100 == 0) {
+                        System.out.println("loaded line " + lineNumber);
+                    }
                 }
             } else {
                 JsonNode root = objectMapper.readTree(input);
@@ -281,6 +297,12 @@ public class RecordTest {
         } finally {
             session.close();
         }
+    }
+
+
+    @Test
+    public void foo() throws IOException, DataFordelerException {
+        loadCompany(new FileInputStream("/home/lars/Projekt/datafordeler/core/local/cvr/virksomhed_2018-03-05"), true);
     }
 
 

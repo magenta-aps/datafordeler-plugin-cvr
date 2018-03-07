@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -9,12 +10,15 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "cvr_record_participant_relation_organization_memberdata")
+@Table(name = "cvr_record_participant_relation_organization_memberdata", indexes = {
+        @Index(name = "cvr_record_participant_relation_organization_memberdata_organization", columnList = OrganizationMemberdataRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF)
+})
 public class OrganizationMemberdataRecord extends CvrRecord {
 
     public static final String DB_FIELD_ORGANIZATION = "organizationRecord";
 
     @ManyToOne(targetEntity = OrganizationRecord.class)
+    @JoinColumn(name = DB_FIELD_ORGANIZATION + DatabaseEntry.REF)
     @JsonIgnore
     private OrganizationRecord organizationRecord;
 

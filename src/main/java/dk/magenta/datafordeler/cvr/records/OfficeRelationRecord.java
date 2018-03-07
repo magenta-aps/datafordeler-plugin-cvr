@@ -1,31 +1,28 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.core.database.Identification;
 import org.hibernate.Session;
 
 import javax.persistence.*;
-import java.time.OffsetDateTime;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Record for one participant on a Company or CompanyUnit
  */
 @Entity
 @Table(name = "cvr_record_participant_relation_office", indexes = {
+        @Index(name = "cvr_record_participant_relation_company", columnList = OfficeRelationRecord.DB_FIELD_COMPANY_RELATION + DatabaseEntry.REF),
         @Index(name = "cvr_record_participant_relation_office_unit", columnList = OfficeRelationRecord.DB_FIELD_UNIT + DatabaseEntry.REF)
 })
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class OfficeRelationRecord extends CvrNontemporalRecord {
 
+    public static final String DB_FIELD_COMPANY_RELATION = "companyParticipantRelationRecord";
 
     @ManyToOne(targetEntity = CompanyParticipantRelationRecord.class)
+    @JoinColumn(name = DB_FIELD_COMPANY_RELATION + DatabaseEntry.REF)
     private CompanyParticipantRelationRecord companyParticipantRelationRecord;
 
     public void setCompanyParticipantRelationRecord(CompanyParticipantRelationRecord companyParticipantRelationRecord) {

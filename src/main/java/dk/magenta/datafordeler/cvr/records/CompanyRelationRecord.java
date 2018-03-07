@@ -1,7 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Column;
@@ -17,7 +16,6 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "cvr_record_participant_relation_company")
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyRelationRecord extends CvrBitemporalRecord {
 
     public static final String DB_FIELD_UNITNUMBER = "unitNumber";

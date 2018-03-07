@@ -1,6 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
@@ -16,8 +16,9 @@ import java.util.Set;
  * Record for one participating organization on a Company or CompanyUnit
  */
 @Entity
-@Table(name = "cvr_record_participant_relation_organization")
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Table(name = "cvr_record_participant_relation_organization", indexes = {
+        @Index(name = "cvr_record_participant_relation_organization_company", columnList = OrganizationRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF)
+})
 public class OrganizationRecord extends DatabaseEntry {
 
 
@@ -25,6 +26,8 @@ public class OrganizationRecord extends DatabaseEntry {
 
 
     @ManyToOne(targetEntity = CompanyParticipantRelationRecord.class)
+    @JoinColumn(name = DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF)
+    @JsonIgnore
     private CompanyParticipantRelationRecord companyParticipantRelationRecord;
 
     public void setCompanyParticipantRelationRecord(CompanyParticipantRelationRecord companyParticipantRelationRecord) {

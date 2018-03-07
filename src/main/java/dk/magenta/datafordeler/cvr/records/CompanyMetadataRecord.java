@@ -14,8 +14,8 @@ import java.util.Set;
 @Entity
 @Table(name = "cvr_record_metadata", indexes = {
         @Index(name = "cvr_record_metadata_company", columnList = MetadataRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = "cvr_record_metadata_unit", columnList = MetadataRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
 })
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyMetadataRecord extends MetadataRecord {
 
 

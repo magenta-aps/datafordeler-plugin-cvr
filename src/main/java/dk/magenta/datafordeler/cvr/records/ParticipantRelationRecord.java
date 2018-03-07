@@ -1,7 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.Session;
 
@@ -17,7 +16,6 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "cvr_record_participant_relation_participant")
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class ParticipantRelationRecord extends CvrBitemporalRecord {
 
     public static final String DB_FIELD_UNITNUMBER = "unitNumber";
@@ -42,6 +40,34 @@ public class ParticipantRelationRecord extends CvrBitemporalRecord {
 
     public String getUnitType() {
         return this.unitType;
+    }
+
+
+
+
+
+    public static final String DB_FIELD_BUSINESS_KEY = "businessKey";
+    public static final String IO_FIELD_BUSINESS_KEY = "forretningsnoegle";
+
+    @Column(name = DB_FIELD_BUSINESS_KEY)
+    @JsonProperty(value = IO_FIELD_BUSINESS_KEY)
+    public Integer businessKey;
+
+    public Integer getBusinessKey() {
+        return this.businessKey;
+    }
+
+
+
+    //This field is null for every single input
+    public static final String IO_FIELD_ORGANIZATION_TYPE = "organisationstype";
+
+    @Transient
+    @JsonProperty(value = IO_FIELD_ORGANIZATION_TYPE)
+    public Integer organizationType;
+
+    public Integer getOrganizationType() {
+        return this.organizationType;
     }
 
 

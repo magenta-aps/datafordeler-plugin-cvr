@@ -16,7 +16,6 @@ import java.util.Set;
 @Table(name = "cvr_record_metadata_participant", indexes = {
         @Index(name = "cvr_record_metadata_participant", columnList = ParticipantMetadataRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
 })
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
 
     public static final String DB_FIELD_NEWEST_LOCATION = "newestLocation";

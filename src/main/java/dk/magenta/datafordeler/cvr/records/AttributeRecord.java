@@ -25,6 +25,7 @@ import java.util.Set;
         @Index(name = "cvr_record_attribute_companyunit", columnList = AttributeRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
         @Index(name = "cvr_record_attribute_participant", columnList = AttributeRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
         @Index(name = "cvr_record_attribute_organization", columnList = AttributeRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF),
+        @Index(name = "cvr_record_attribute_organization_memberdata", columnList = AttributeRecord.DB_FIELD_ORGANIZATION_MEMBERDATA + DatabaseEntry.REF),
         @Index(name = "cvr_record_attribute_fusion", columnList = AttributeRecord.DB_FIELD_FUSION + DatabaseEntry.REF),
         @Index(name = "cvr_record_attribute_office", columnList = AttributeRecord.DB_FIELD_OFFICE + DatabaseEntry.REF)
 })
