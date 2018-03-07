@@ -19,8 +19,6 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
 
-
-
     public static final String DB_FIELD_NEWEST_LOCATION = "newestLocation";
     public static final String IO_FIELD_NEWEST_LOCATION = "nyesteBeliggenhedsadresse";
 
@@ -114,21 +112,25 @@ public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
         return contacts;
     }
 
+    public Set<MetadataContactRecord> getMetadataContactRecords() {
+        return this.metadataContactRecords;
+    }
+
+
+
     public void wire(Session session) {
         for (AddressRecord addressRecord : this.newestLocation) {
             addressRecord.wire(session);
         }
     }
 
-    public boolean merge(ParticipantMetadataRecord existing) {
-        System.out.println("Merging meta "+System.identityHashCode(this) +" onto meta "+System.identityHashCode(existing));
-
-        if (existing != null && !existing.getId().equals(this.getId())) {
-            for (AddressRecord addressRecord : this.getNewestLocation()) {
-                existing.addNewestLocation(addressRecord);
+    public boolean merge(ParticipantMetadataRecord other) {
+        if (other != null && !other.getId().equals(this.getId())) {
+            for (AddressRecord addressRecord : other.getNewestLocation()) {
+                this.addNewestLocation(addressRecord);
             }
-            for (MetadataContactRecord contactRecord : this.metadataContactRecords) {
-                existing.addMetadataContactData(contactRecord);
+            for (MetadataContactRecord contactRecord : other.getMetadataContactRecords()) {
+                this.addMetadataContactData(contactRecord);
             }
             return true;
         }

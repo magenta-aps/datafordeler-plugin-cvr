@@ -84,4 +84,11 @@ public class ParticipantRelationRecord extends CvrBitemporalRecord {
     public int hashCode() {
         return Objects.hash(super.hashCode(), unitNumber, unitType);
     }
+
+    public void merge(ParticipantRelationRecord otherParticipant) {
+        if (otherParticipant != null) {
+            // TODO
+            this.unitType = otherParticipant.getUnitType();
+        }
+    }
 }

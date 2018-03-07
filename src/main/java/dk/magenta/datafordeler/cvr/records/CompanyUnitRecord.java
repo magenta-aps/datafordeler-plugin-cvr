@@ -733,62 +733,62 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     @Override
     public boolean merge(CvrEntityRecord other) {
         if (other != null && !other.getId().equals(this.getId()) && other instanceof CompanyUnitRecord) {
-            CompanyUnitRecord existing = (CompanyUnitRecord) other;
-            for (NameRecord nameRecord : this.getNames()) {
-                existing.addName(nameRecord);
+            CompanyUnitRecord otherRecord = (CompanyUnitRecord) other;
+            for (NameRecord nameRecord : otherRecord.getNames()) {
+                this.addName(nameRecord);
             }
 //            for (NameRecord nameRecord : this.getSecondaryNames()) {
-//                existing.addSecondaryName(nameRecord);
+//                this.addSecondaryName(nameRecord);
 //            }
-            for (AddressRecord addressRecord : this.getLocationAddress()) {
-                existing.addLocationAddress(addressRecord);
+            for (AddressRecord addressRecord : otherRecord.getLocationAddress()) {
+                this.addLocationAddress(addressRecord);
             }
-            for (AddressRecord addressRecord : this.getPostalAddress()) {
-                existing.addPostalAddress(addressRecord);
+            for (AddressRecord addressRecord : otherRecord.getPostalAddress()) {
+                this.addPostalAddress(addressRecord);
             }
-            for (ContactRecord contactRecord : this.getPhoneNumber()) {
-                existing.addPhoneNumber(contactRecord);
+            for (ContactRecord contactRecord : otherRecord.getPhoneNumber()) {
+                this.addPhoneNumber(contactRecord);
             }
-//            for (ContactRecord contactRecord : this.getSecondaryPhoneNumber()) {
-//                existing.addSecondaryPhoneNumber(contactRecord);
+//            for (ContactRecord contactRecord : otherRecord.getSecondaryPhoneNumber()) {
+//                this.addSecondaryPhoneNumber(contactRecord);
 //            }
-            for (ContactRecord contactRecord : this.getFaxNumber()) {
-                existing.addFaxNumber(contactRecord);
+            for (ContactRecord contactRecord : otherRecord.getFaxNumber()) {
+                this.addFaxNumber(contactRecord);
             }
-//            for (ContactRecord contactRecord : this.getSecondaryFaxNumber()) {
-//                existing.addSecondaryFaxNumber(contactRecord);
+//            for (ContactRecord contactRecord : otherRecord.getSecondaryFaxNumber()) {
+//                this.addSecondaryFaxNumber(contactRecord);
 //            }
-            for (ContactRecord contactRecord : this.getEmailAddress()) {
-                existing.addEmailAddress(contactRecord);
+            for (ContactRecord contactRecord : otherRecord.getEmailAddress()) {
+                this.addEmailAddress(contactRecord);
             }
-            for (LifecycleRecord lifecycleRecord : this.getLifecycle()) {
-                existing.addLifecycle(lifecycleRecord);
+            for (LifecycleRecord lifecycleRecord : otherRecord.getLifecycle()) {
+                this.addLifecycle(lifecycleRecord);
             }
-            for (CompanyIndustryRecord companyIndustryRecord : this.getPrimaryIndustry()) {
-                existing.addPrimaryIndustry(companyIndustryRecord);
+            for (CompanyIndustryRecord companyIndustryRecord : otherRecord.getPrimaryIndustry()) {
+                this.addPrimaryIndustry(companyIndustryRecord);
             }
-            for (CompanyIndustryRecord companyIndustryRecord : this.getSecondaryIndustry1()) {
-                existing.addSecondaryIndustry1(companyIndustryRecord);
+            for (CompanyIndustryRecord companyIndustryRecord : otherRecord.getSecondaryIndustry1()) {
+                this.addSecondaryIndustry1(companyIndustryRecord);
             }
-            for (CompanyIndustryRecord companyIndustryRecord : this.getSecondaryIndustry2()) {
-                existing.addSecondaryIndustry2(companyIndustryRecord);
+            for (CompanyIndustryRecord companyIndustryRecord : otherRecord.getSecondaryIndustry2()) {
+                this.addSecondaryIndustry2(companyIndustryRecord);
             }
-            for (CompanyIndustryRecord companyIndustryRecord : this.getSecondaryIndustry3()) {
-                existing.addSecondaryIndustry3(companyIndustryRecord);
+            for (CompanyIndustryRecord companyIndustryRecord : otherRecord.getSecondaryIndustry3()) {
+                this.addSecondaryIndustry3(companyIndustryRecord);
             }
-            for (CompanyYearlyNumbersRecord yearlyNumbersRecord : this.getYearlyNumbers()) {
-                existing.addYearlyNumbers(yearlyNumbersRecord);
+            for (CompanyYearlyNumbersRecord yearlyNumbersRecord : otherRecord.getYearlyNumbers()) {
+                this.addYearlyNumbers(yearlyNumbersRecord);
             }
-            for (CompanyQuarterlyNumbersRecord quarterlyNumbersRecord : this.getQuarterlyNumbers()) {
-                existing.addQuarterlyNumbers(quarterlyNumbersRecord);
+            for (CompanyQuarterlyNumbersRecord quarterlyNumbersRecord : otherRecord.getQuarterlyNumbers()) {
+                this.addQuarterlyNumbers(quarterlyNumbersRecord);
             }
-            for (AttributeRecord attributeRecord : this.getAttributes()) {
-                existing.addAttributes(attributeRecord);
+            for (AttributeRecord attributeRecord : otherRecord.getAttributes()) {
+                this.addAttributes(attributeRecord);
             }
-            for (CompanyParticipantRelationRecord participantRelationRecord : this.getParticipants()) {
-                existing.addParticipant(participantRelationRecord);
+            for (CompanyParticipantRelationRecord participantRelationRecord : otherRecord.getParticipants()) {
+                this.addParticipant(participantRelationRecord);
             }
-            this.metadata.merge(existing.getMetadata());
+            this.metadata.merge(otherRecord.getMetadata());
             return true;
         }
         return false;

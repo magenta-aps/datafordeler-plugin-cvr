@@ -26,7 +26,11 @@ public class OfficeRelationUnitRecord extends CvrBitemporalRecord {
 
     @Column(name = DB_FIELD_UNITNUMBER)
     @JsonProperty(value = IO_FIELD_UNITNUMBER)
-    public long unitNumber;
+    private long unitNumber;
+
+    public long getUnitNumber() {
+        return this.unitNumber;
+    }
 
 
 
@@ -35,7 +39,11 @@ public class OfficeRelationUnitRecord extends CvrBitemporalRecord {
 
     @Column(name = DB_FIELD_UNITTYPE)
     @JsonProperty(value = IO_FIELD_UNITTYPE)
-    public String unitType;
+    private String unitType;
+
+    public String getUnitType() {
+        return this.unitType;
+    }
 
 
 
@@ -44,7 +52,11 @@ public class OfficeRelationUnitRecord extends CvrBitemporalRecord {
 
     @Column(name = DB_FIELD_BUSINESS_KEY)
     @JsonProperty(value = IO_FIELD_BUSINESS_KEY)
-    public long businessKey;
+    private long businessKey;
+
+    public long getBusinessKey() {
+        return this.businessKey;
+    }
 
 
 
@@ -52,7 +64,7 @@ public class OfficeRelationUnitRecord extends CvrBitemporalRecord {
 
     @OneToMany(mappedBy = OrganizationNameRecord.DB_FIELD_OFFICE_UNIT, targetEntity = OrganizationNameRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_NAME)
-    public Set<OrganizationNameRecord> names = new HashSet<>();
+    private Set<OrganizationNameRecord> names = new HashSet<>();
 
     public Set<OrganizationNameRecord> getNames() {
         return this.names;
@@ -79,7 +91,7 @@ public class OfficeRelationUnitRecord extends CvrBitemporalRecord {
 
     @OneToMany(mappedBy = AddressRecord.DB_FIELD_OFFICE_UNIT, targetEntity = AddressRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_LOCATION_ADDRESS)
-    public Set<AddressRecord> locationAddress;
+    private Set<AddressRecord> locationAddress = new HashSet<>();
 
     public void setLocationAddress(Set<AddressRecord> locationAddress) {
         for (AddressRecord record : locationAddress) {
@@ -107,4 +119,14 @@ public class OfficeRelationUnitRecord extends CvrBitemporalRecord {
         }
     }
 
+    public void merge(OfficeRelationUnitRecord other) {
+        if (other != null) {
+            for (OrganizationNameRecord name : other.getNames()) {
+                this.addName(name);
+            }
+            for (AddressRecord address : other.getLocationAddress()) {
+                this.addLocationAddress(address);
+            }
+        }
+    }
 }

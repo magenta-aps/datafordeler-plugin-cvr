@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.OffsetDateTime;
@@ -63,14 +64,18 @@ public class RecordTest {
     }
 
     private HashMap<Integer, JsonNode> loadCompany(String resource) throws IOException, DataFordelerException {
-        ImportMetadata importMetadata = new ImportMetadata();
-        Session session = sessionManager.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
         InputStream input = RecordTest.class.getResourceAsStream(resource);
         if (input == null) {
             throw new MissingResourceException("Missing resource \""+resource+"\"", resource, "key");
         }
-        boolean linedFile = false;
+        return loadCompany(input, false);
+    }
+
+    private HashMap<Integer, JsonNode> loadCompany(InputStream input, boolean linedFile) throws IOException, DataFordelerException {
+        ImportMetadata importMetadata = new ImportMetadata();
+        Session session = sessionManager.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+
         HashMap<Integer, JsonNode> companies = new HashMap<>();
         try {
             importMetadata.setSession(session);
@@ -93,9 +98,6 @@ public class RecordTest {
                     }
                     lineNumber++;
                     System.out.println("loaded line " + lineNumber);
-                    if (lineNumber >= 10) {
-                        break;
-                    }
                 }
             } else {
                 JsonNode root = objectMapper.readTree(input);
@@ -226,7 +228,7 @@ public class RecordTest {
             Assert.assertEquals(64, companyRecord.getQuarterlyNumbers().size());
             Assert.assertEquals(16, companyRecord.getAttributes().size());
             Assert.assertEquals(3, companyRecord.getProductionUnits().size());
-            Assert.assertEquals(13, companyRecord.getParticipants().size());
+            Assert.assertEquals(12, companyRecord.getParticipants().size());
             Assert.assertEquals(1, companyRecord.getFusions().size());
             Assert.assertEquals(1, companyRecord.getSplits().size());
             Assert.assertEquals(2, companyRecord.getMetadata().getNewestName().size());
@@ -235,18 +237,43 @@ public class RecordTest {
             Assert.assertEquals(2, companyRecord.getMetadata().getNewestPrimaryIndustry().size());
             Assert.assertEquals(1, companyRecord.getMetadata().getNewestSecondaryIndustry1().size());
 
-            boolean found = false;
+            boolean foundParticipantData = false;
             for (CompanyParticipantRelationRecord participantRelationRecord : companyRecord.getParticipants()) {
-                if (participantRelationRecord.getParticipant().getUnitNumber() == 4000032977L) {
-                    found = true;
+                if (participantRelationRecord.getParticipant().getUnitNumber() == 4000004988L) {
+                    foundParticipantData = true;
                     Assert.assertEquals(1, participantRelationRecord.getOffices().size());
                     OfficeRelationRecord officeRelationRecord = participantRelationRecord.getOffices().iterator().next();
-                    Assert.assertEquals(1, officeRelationRecord.getAttributes().size());
+                    Assert.assertEquals(2, officeRelationRecord.getAttributes().size());
+                    Assert.assertEquals(2, officeRelationRecord.getOfficeRelationUnitRecord().getNames().size());
+                    Assert.assertEquals(2, officeRelationRecord.getOfficeRelationUnitRecord().getLocationAddress().size());
+
+                    boolean foundOrganization1 = false;
+                    boolean foundOrganization2 = false;
+                    for (OrganizationRecord organizationRecord : participantRelationRecord.getOrganizations()) {
+                        if (organizationRecord.getUnitNumber() == 4004733975L) {
+                            foundOrganization1 = true;
+                            Assert.assertEquals(2, organizationRecord.getNames().size());
+                            Assert.assertEquals(2, organizationRecord.getAttributes().size());
+                        }
+                        if (organizationRecord.getUnitNumber() == 4004733976L) {
+                            foundOrganization2 = true;
+                            Assert.assertEquals(2, organizationRecord.getMemberData().size());
+                            for (OrganizationMemberdataRecord organizationMemberdataRecord : organizationRecord.getMemberData()) {
+                                if (organizationMemberdataRecord.getIndex() == 0) {
+                                    Assert.assertEquals(1, organizationMemberdataRecord.getAttributes().size());
+                                }
+                                if (organizationMemberdataRecord.getIndex() == 1) {
+                                    Assert.assertEquals(4, organizationMemberdataRecord.getAttributes().size());
+                                }
+                            }
+                        }
+                    }
+                    Assert.assertTrue(foundOrganization1);
+                    Assert.assertTrue(foundOrganization2);
                 }
             }
-            Assert.assertTrue(found);
+            Assert.assertTrue(foundParticipantData);
 
-            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(companyRecord));
         } finally {
             session.close();
         }

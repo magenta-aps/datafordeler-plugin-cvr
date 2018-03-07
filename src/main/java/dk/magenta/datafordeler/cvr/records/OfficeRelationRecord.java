@@ -50,6 +50,11 @@ public class OfficeRelationRecord extends CvrNontemporalRecord {
         this.officeRelationUnitRecord = officeRelationUnitRecord;
     }
 
+    @JsonIgnore
+    public Long getOfficeUnitNumber() {
+        return this.officeRelationUnitRecord != null ? this.officeRelationUnitRecord.getUnitNumber() : null;
+    }
+
 
 
     public static final String DB_FIELD_ATTRIBUTES = "attributes";
@@ -81,6 +86,19 @@ public class OfficeRelationRecord extends CvrNontemporalRecord {
     public void wire(Session session) {
         if (this.officeRelationUnitRecord != null) {
             this.officeRelationUnitRecord.wire(session);
+        }
+    }
+
+    public void merge(OfficeRelationRecord other) {
+        if (other != null) {
+            if (this.officeRelationUnitRecord != null) {
+                this.officeRelationUnitRecord.merge(other.getOfficeRelationUnitRecord());
+            } else {
+                this.setOfficeRelationUnitRecord(other.getOfficeRelationUnitRecord());
+            }
+            for (AttributeRecord attribute : other.getAttributes()) {
+                this.addAttribute(attribute);
+            }
         }
     }
 

@@ -24,6 +24,22 @@ public class OrganizationMemberdataRecord extends CvrRecord {
 
 
 
+    public static final String DB_FIELD_INDEX = "index";
+
+    @Column(name = DB_FIELD_INDEX)
+    @JsonIgnore
+    private int index;
+
+    public int getIndex() {
+        return this.index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+
+
     public static final String DB_FIELD_ATTRIBUTES = "attributes";
     public static final String IO_FIELD_ATTRIBUTES = "attributter";
 
@@ -61,7 +77,14 @@ public class OrganizationMemberdataRecord extends CvrRecord {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(attributes);
+    }
+
+    public void merge(OrganizationMemberdataRecord other) {
+        if (other != null) {
+            for (AttributeRecord attribute : other.getAttributes()) {
+                this.addAttribute(attribute);
+            }
+        }
     }
 }

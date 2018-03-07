@@ -470,36 +470,36 @@ public class ParticipantRecord extends CvrEntityRecord {
 
     @Override
     public boolean merge(CvrEntityRecord other) {
-        if (other != null && !other.getId().equals(this.getId()) && other instanceof ParticipantRecord) {
-            ParticipantRecord existing = (ParticipantRecord) other;
-            for (NameRecord nameRecord : this.getNames()) {
-                existing.addName(nameRecord);
+        if (other != null && !Objects.equals(this.getId(), other.getId()) && other instanceof ParticipantRecord) {
+            ParticipantRecord otherRecord = (ParticipantRecord) other;
+            for (NameRecord nameRecord : otherRecord.getNames()) {
+                this.addName(nameRecord);
             }
-            for (AddressRecord addressRecord : this.getLocationAddress()) {
-                existing.addLocationAddress(addressRecord);
+            for (AddressRecord addressRecord : otherRecord.getLocationAddress()) {
+                this.addLocationAddress(addressRecord);
             }
-            for (AddressRecord addressRecord : this.getPostalAddress()) {
-                existing.addPostalAddress(addressRecord);
+            for (AddressRecord addressRecord : otherRecord.getPostalAddress()) {
+                this.addPostalAddress(addressRecord);
             }
-            for (AddressRecord addressRecord : this.getBusinessAddress()) {
-                existing.addBusinessAddress(addressRecord);
+            for (AddressRecord addressRecord : otherRecord.getBusinessAddress()) {
+                this.addBusinessAddress(addressRecord);
             }
-            for (ContactRecord contactRecord : this.getPhoneNumber()) {
-                existing.addPhoneNumber(contactRecord);
+            for (ContactRecord contactRecord : otherRecord.getPhoneNumber()) {
+                this.addPhoneNumber(contactRecord);
             }
-            for (ContactRecord contactRecord : this.getFaxNumber()) {
-                existing.addFaxNumber(contactRecord);
+            for (ContactRecord contactRecord : otherRecord.getFaxNumber()) {
+                this.addFaxNumber(contactRecord);
             }
-            for (ContactRecord contactRecord : this.getEmailAddress()) {
-                existing.addEmailAddress(contactRecord);
+            for (ContactRecord contactRecord : otherRecord.getEmailAddress()) {
+                this.addEmailAddress(contactRecord);
             }
-            for (AttributeRecord attributeRecord : this.getAttributes()) {
-                existing.addAttributes(attributeRecord);
+            for (AttributeRecord attributeRecord : otherRecord.getAttributes()) {
+                this.addAttributes(attributeRecord);
             }
-            for (CompanyParticipantRelationRecord companyParticipantRelationRecord : this.getCompanyRelation()) {
-                existing.addCompanyRelation(companyParticipantRelationRecord);
+            for (CompanyParticipantRelationRecord companyParticipantRelationRecord : otherRecord.getCompanyRelation()) {
+                this.addCompanyRelation(companyParticipantRelationRecord);
             }
-            this.metadata.merge(existing.getMetadata());
+            this.metadata.merge(otherRecord.getMetadata());
             return true;
         }
         return false;

@@ -44,7 +44,7 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord {
         if (this.identification == null) {
             this.identification = QueryManager.getOrCreateIdentification(session, this.generateUUID(), CvrPlugin.getDomain());
         }
-        if (this.merge(existing)) {
+        if (existing != null && existing.merge(this)) {
             existing.save(session);
         } else {
             super.save(session);

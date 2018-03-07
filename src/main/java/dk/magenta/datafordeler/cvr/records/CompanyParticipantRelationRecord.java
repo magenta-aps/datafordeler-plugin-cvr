@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
@@ -44,6 +45,11 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
 
     public ParticipantRelationRecord getParticipant() {
         return this.participant;
+    }
+
+    @JsonIgnore
+    public Long getParticipantUnitNumber() {
+        return this.participant != null ? this.participant.getUnitNumber() : null;
     }
 
 
@@ -91,6 +97,17 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
         for (OrganizationRecord organizationRecord : organizations) {
             organizationRecord.setCompanyParticipantRelationRecord(this);
         }
+    }
+
+    public void addOrganization(OrganizationRecord organization) {
+        if (!this.organizations.contains(organization)) {
+            organization.setCompanyParticipantRelationRecord(this);
+            this.organizations.add(organization);
+        }
+    }
+
+    public Set<OrganizationRecord> getOrganizations() {
+        return this.organizations;
     }
 
 
@@ -159,6 +176,81 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
         );
     }*/
 
+/*
+    public static void merge(Set<CompanyParticipantRelationRecord> origin, Set<CompanyParticipantRelationRecord> destination, CompanyRecord companyRecord) {
+        for (CompanyParticipantRelationRecord originParticipantRelation : origin) {
+            ParticipantRelationRecord originParticipant = originParticipantRelation.getParticipant();
+            if (originParticipant != null) {
+                long originUnitNumber = originParticipant.getUnitNumber();
+                for (CompanyParticipantRelationRecord destinationParticipantRelation : destination) {
+                    ParticipantRelationRecord destinationParticipant = destinationParticipantRelation.getParticipant();
+                    if (destinationParticipant != null) {
+                        if (destinationParticipant.getUnitNumber() == originUnitNumber) {
+
+                            // Merge participant
+                            destinationParticipant.merge(originParticipant);
+*/
+                            // Merge offices
+/*
+                            hvis samme enhedsnummer, merge objects
+                            ellers tilføj til liste
+
+                            // Merge organization
+
+                            hvis samme enhedsnummer, merge objects
+                            ellers tilføj til liste
+
+*/
+/*
+                            return;
+                        }
+                    }
+                }
+            }
+            originParticipantRelation.setCompanyRecord(companyRecord);
+            destination.add(originParticipantRelation);
+        }
+    }
+*/
+
+
+    public void merge(CompanyParticipantRelationRecord other) {
+
+        this.getParticipant().merge(other.getParticipant());
+
+        for (OfficeRelationRecord otherOffice : other.getOffices()) {
+            Long otherUnitNumber = otherOffice.getOfficeUnitNumber();
+            boolean found = false;
+            if (otherUnitNumber != null) {
+                for (OfficeRelationRecord ourOffice : this.offices) {
+                    if (otherUnitNumber.equals(ourOffice.getOfficeUnitNumber())) {
+                        ourOffice.merge(otherOffice);
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            if (!found) {
+                otherOffice.setCompanyParticipantRelationRecord(this);
+                this.offices.add(otherOffice);
+            }
+        }
+
+        for (OrganizationRecord otherOrganization : other.getOrganizations()) {
+            long otherUnitNumber = otherOrganization.getUnitNumber();
+            boolean found = false;
+            for (OrganizationRecord ourOrganization : this.organizations) {
+                if (ourOrganization.getUnitNumber() == otherUnitNumber) {
+                    ourOrganization.merge(otherOrganization);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                this.addOrganization(otherOrganization);
+            }
+        }
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -166,12 +258,11 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         CompanyParticipantRelationRecord that = (CompanyParticipantRelationRecord) o;
-        return Objects.equals(participant, that.participant) &&
-                Objects.equals(organizations, that.organizations);
+        return Objects.equals(participant, that.participant);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), participant, organizations);
+        return Objects.hash(super.hashCode(), participant);
     }
 }

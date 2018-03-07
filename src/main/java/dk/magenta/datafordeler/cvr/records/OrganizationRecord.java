@@ -2,10 +2,13 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import org.hibernate.Session;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -30,32 +33,55 @@ public class OrganizationRecord extends DatabaseEntry {
 
 
 
-    @Column
-    @JsonProperty(value = "enhedsNummerOrganisation")
-    public long unitNumber;
+    public static final String DB_FIELD_UNIT_NUMBER = "unitNumber";
+    public static final String IO_FIELD_UNIT_NUMBER = "enhedsNummerOrganisation";
 
 
+    @Column(name = DB_FIELD_UNIT_NUMBER)
+    @JsonProperty(value = IO_FIELD_UNIT_NUMBER)
+    private long unitNumber;
 
-
-    @Column
-    @JsonProperty(value = "hovedtype")
-    public String mainType;
-
-
-
-
-    @OneToMany(mappedBy = OrganizationNameRecord.DB_FIELD_ORGANIZATION, targetEntity = OrganizationNameRecord.class, cascade = CascadeType.ALL)
-    @JsonProperty(value = "organisationsNavn")
-    public Set<OrganizationNameRecord> name;
-
-    public Set<OrganizationNameRecord> getName() {
-        return this.name;
+    public long getUnitNumber() {
+        return this.unitNumber;
     }
 
-    public void setName(Set<OrganizationNameRecord> name) {
-        this.name = name;
-        for (OrganizationNameRecord nameRecord : name) {
+
+
+    public static final String DB_FIELD_MAIN_TYPE = "mainType";
+    public static final String IO_FIELD_MAIN_TYPE = "hovedtype";
+
+    @Column(name = DB_FIELD_MAIN_TYPE)
+    @JsonProperty(value = IO_FIELD_MAIN_TYPE)
+    private String mainType;
+
+    public String getMainType() {
+        return this.mainType;
+    }
+
+
+
+    public static final String DB_FIELD_NAME = "names";
+    public static final String IO_FIELD_NAME = "organisationsNavn";
+
+    @OneToMany(mappedBy = OrganizationNameRecord.DB_FIELD_ORGANIZATION, targetEntity = OrganizationNameRecord.class, cascade = CascadeType.ALL)
+    @JsonProperty(value = IO_FIELD_NAME)
+    public Set<OrganizationNameRecord> names;
+
+    public Set<OrganizationNameRecord> getNames() {
+        return this.names;
+    }
+
+    public void setNames(Set<OrganizationNameRecord> names) {
+        this.names = names;
+        for (OrganizationNameRecord nameRecord : names) {
             nameRecord.setOrganizationRecord(this);
+        }
+    }
+
+    public void addName(OrganizationNameRecord name) {
+        if (name != null && !this.names.contains(name)) {
+            name.setOrganizationRecord(this);
+            this.names.add(name);
         }
     }
 
@@ -93,22 +119,36 @@ public class OrganizationRecord extends DatabaseEntry {
 
     @OneToMany(mappedBy = OrganizationMemberdataRecord.DB_FIELD_ORGANIZATION, targetEntity = OrganizationMemberdataRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_MEMBERDATA)
-    public Set<OrganizationMemberdataRecord> memberData;
+    public Set<OrganizationMemberdataRecord> memberData = new HashSet<>();
 
-    public void setMemberData(Set<OrganizationMemberdataRecord> memberData) {
+    @JsonSetter(value = IO_FIELD_MEMBERDATA)
+    public void setMemberData(List<OrganizationMemberdataRecord> memberData) {
+        this.memberData.clear();
+        this.memberData.addAll(memberData);
+        int index = 0;
+        for (OrganizationMemberdataRecord memberdataRecord : memberData) {
+            memberdataRecord.setOrganizationRecord(this);
+            memberdataRecord.setIndex(index);
+            index++;
+        }
+    }
+
+    private void setMemberData(Set<OrganizationMemberdataRecord> memberData) {
         this.memberData = memberData;
         for (OrganizationMemberdataRecord memberdataRecord : memberData) {
             memberdataRecord.setOrganizationRecord(this);
         }
     }
 
+    public Set<OrganizationMemberdataRecord> getMemberData() {
+        return this.memberData;
+    }
+
+
+
     public void save(Session session) {
         session.save(this);
     }
-    /*public UUID generateUUID() {
-        String uuidInput = "participant:"+this.mainType+"/"+this.unitNumber;
-        return UUID.nameUUIDFromBytes(uuidInput.getBytes());
-    }*/
 
     @Override
     public boolean equals(Object o) {
@@ -117,13 +157,36 @@ public class OrganizationRecord extends DatabaseEntry {
         OrganizationRecord that = (OrganizationRecord) o;
         return unitNumber == that.unitNumber &&
                 Objects.equals(mainType, that.mainType) &&
-                Objects.equals(name, that.name) &&
+                Objects.equals(names, that.names) &&
                 Objects.equals(attributes, that.attributes) &&
                 Objects.equals(memberData, that.memberData);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(unitNumber, mainType, name, attributes, memberData);
+        return Objects.hash(unitNumber, mainType, names, attributes, memberData);
+    }
+
+    public void merge(OrganizationRecord other) {
+        for (OrganizationNameRecord name : other.getNames()) {
+            this.addName(name);
+        }
+        for (AttributeRecord attribute : other.getAttributes()) {
+            this.addAttribute(attribute);
+        }
+        for (OrganizationMemberdataRecord memberdata : other.getMemberData()) {
+            if (memberdata != null) {
+                if (this.memberData.isEmpty()) {
+                    this.setMemberData(memberData);
+                } else {
+                    int otherIndex = memberdata.getIndex();
+                    for (OrganizationMemberdataRecord ourMemberData : this.getMemberData()) {
+                        if (ourMemberData.getIndex() == otherIndex) {
+                            ourMemberData.merge(memberdata);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -293,24 +293,24 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
     @Override
     public boolean merge(MetadataRecord other) {
         if (other != null && !other.getId().equals(this.getId()) && other instanceof CompanyUnitMetadataRecord) {
-            CompanyUnitMetadataRecord existing = (CompanyUnitMetadataRecord) other;
-            for (NameRecord nameRecord : this.getNewestName()) {
-                existing.addNewestName(nameRecord);
+            CompanyUnitMetadataRecord otherRecord = (CompanyUnitMetadataRecord) other;
+            for (NameRecord nameRecord : otherRecord.getNewestName()) {
+                this.addNewestName(nameRecord);
             }
-            for (AddressRecord addressRecord : this.getNewestLocation()) {
-                existing.addNewestLocation(addressRecord);
+            for (AddressRecord addressRecord : otherRecord.getNewestLocation()) {
+                this.addNewestLocation(addressRecord);
             }
-            for (CompanyIndustryRecord industryRecord : this.getNewestPrimaryIndustry()) {
-                existing.addNewestPrimaryIndustry(industryRecord);
+            for (CompanyIndustryRecord industryRecord : otherRecord.getNewestPrimaryIndustry()) {
+                this.addNewestPrimaryIndustry(industryRecord);
             }
-            for (CompanyIndustryRecord industryRecord : this.getNewestSecondaryIndustry1()) {
-                existing.addNewestSecondaryIndustry1(industryRecord);
+            for (CompanyIndustryRecord industryRecord : otherRecord.getNewestSecondaryIndustry1()) {
+                this.addNewestSecondaryIndustry1(industryRecord);
             }
-            for (CompanyIndustryRecord industryRecord : this.getNewestSecondaryIndustry2()) {
-                existing.addNewestSecondaryIndustry2(industryRecord);
+            for (CompanyIndustryRecord industryRecord : otherRecord.getNewestSecondaryIndustry2()) {
+                this.addNewestSecondaryIndustry2(industryRecord);
             }
-            for (CompanyIndustryRecord industryRecord : this.getNewestSecondaryIndustry3()) {
-                existing.addNewestSecondaryIndustry3(industryRecord);
+            for (CompanyIndustryRecord industryRecord : otherRecord.getNewestSecondaryIndustry3()) {
+                this.addNewestSecondaryIndustry3(industryRecord);
             }
             return true;
         }
