@@ -573,7 +573,7 @@
                         "gyldigFra": "2000-02-21",
                         "gyldigTil": null
                       },
-                      "sidstOpdateret": "2000-02-29T11:44:42.000+01:00"
+                      "sidstOpdateret": "2018-02-28T11:44:42.000+01:00"
                     }
                   ],
                   "livsforloeb": [
@@ -593,7 +593,7 @@
                         "gyldigFra": "1999-11-15",
                         "gyldigTil": null
                       },
-                      "sidstOpdateret": "2015-02-10T00:00:00.000+01:00"
+                      "sidstOpdateret": "2018-02-10T00:00:00.000+01:00"
                     }
                   ],
                   "virksomhedsform": [
@@ -606,7 +606,7 @@
                         "gyldigFra": "1999-11-15",
                         "gyldigTil": null
                       },
-                      "sidstOpdateret": "1999-11-29T16:37:10.000+01:00"
+                      "sidstOpdateret": "2018-11-29T16:37:10.000+01:00"
                     }
                   ]
                 },

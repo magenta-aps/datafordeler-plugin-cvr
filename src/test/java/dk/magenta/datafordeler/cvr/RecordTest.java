@@ -590,6 +590,19 @@ public class RecordTest {
             Assert.assertEquals(5, participantRecord.getCompanyRelation().size());
             Assert.assertEquals(0, participantRecord.getAttributes().size());
             Assert.assertEquals(1, participantRecord.getMetadata().getMetadataContactData().size());
+
+            boolean foundCompanyData = false;
+            for (CompanyParticipantRelationRecord relationRecord : participantRecord.getCompanyRelation()) {
+                if (relationRecord.getCompanyUnitNumber() == 4001248508L) {
+                    foundCompanyData = true;
+                    Assert.assertEquals(3, relationRecord.getRelationCompanyRecord().getNames().size());
+                    Assert.assertEquals(0, relationRecord.getRelationCompanyRecord().getStatus().size());
+                    Assert.assertEquals(2, relationRecord.getRelationCompanyRecord().getCompanyStatus().size());
+                    Assert.assertEquals(2, relationRecord.getRelationCompanyRecord().getForm().size());
+                }
+            }
+            Assert.assertTrue(foundCompanyData);
+
         } finally {
             session.close();
         }

@@ -24,7 +24,11 @@ public class RelationCompanyRecord extends CvrBitemporalRecord {
 
     @Column(name = DB_FIELD_UNITNUMBER)
     @JsonProperty(value = IO_FIELD_UNITNUMBER)
-    public long unitNumber;
+    private long unitNumber;
+
+    public long getUnitNumber() {
+        return this.unitNumber;
+    }
 
 
 
@@ -33,7 +37,11 @@ public class RelationCompanyRecord extends CvrBitemporalRecord {
 
     @Column(name = DB_FIELD_UNITTYPE)
     @JsonProperty(value = IO_FIELD_UNITTYPE)
-    public String unitType;
+    private String unitType;
+
+    public String getUnitType() {
+        return this.unitType;
+    }
 
 
 
@@ -42,8 +50,11 @@ public class RelationCompanyRecord extends CvrBitemporalRecord {
 
     @Column(name = DB_FIELD_CVRNUMBER)
     @JsonProperty(value = IO_FIELD_CVRNUMBER)
-    public long cvrNumber;
+    private long cvrNumber;
 
+    public long getCvrNumber() {
+        return this.cvrNumber;
+    }
 
 
 
@@ -54,12 +65,16 @@ public class RelationCompanyRecord extends CvrBitemporalRecord {
     @JsonProperty(value = IO_FIELD_REGISTER_ERROR)
     private boolean registerError;
 
+    public boolean getRegisterError() {
+        return this.registerError;
+    }
+
 
 
     public static final String DB_FIELD_REG_NUMBER = "regNumber";
     public static final String IO_FIELD_REG_NUMBER = "regNummer";
 
-    @OneToMany(mappedBy = CompanyRegNumberRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION, targetEntity = CompanyRegNumberRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = CompanyRegNumberRecord.class, mappedBy = CompanyRegNumberRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_REG_NUMBER)
     private Set<CompanyRegNumberRecord> regNumber;
 
@@ -77,18 +92,18 @@ public class RelationCompanyRecord extends CvrBitemporalRecord {
         }
     }
 
+    public Set<CompanyRegNumberRecord> getRegNumber() {
+        return this.regNumber;
+    }
+
 
 
     public static final String DB_FIELD_NAMES = "names";
     public static final String IO_FIELD_NAMES = "navne";
 
-    @OneToMany(mappedBy = BaseNameRecord.DB_FIELD_COMPANY_RELATION, targetEntity = BaseNameRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = BaseNameRecord.class, mappedBy = BaseNameRecord.DB_FIELD_COMPANY_RELATION, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_NAMES)
     private Set<BaseNameRecord> names = new HashSet<>();
-
-    public Set<BaseNameRecord> getNames() {
-        return this.names;
-    }
 
     public void setNames(Set<BaseNameRecord> names) {
         this.names = names;
@@ -102,6 +117,10 @@ public class RelationCompanyRecord extends CvrBitemporalRecord {
             record.setRelationCompanyRecord(this);
             this.names.add(record);
         }
+    }
+
+    public Set<BaseNameRecord> getNames() {
+        return this.names;
     }
 
 
@@ -137,7 +156,7 @@ public class RelationCompanyRecord extends CvrBitemporalRecord {
     public static final String DB_FIELD_STATUS = "status";
     public static final String IO_FIELD_STATUS = "status";
 
-    @OneToMany(mappedBy = CompanyStatusRecord.DB_FIELD_COMPANY, targetEntity = StatusRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = StatusRecord.class, mappedBy = CompanyStatusRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_STATUS)
     private Set<StatusRecord> status = new HashSet<>();
 
@@ -164,7 +183,7 @@ public class RelationCompanyRecord extends CvrBitemporalRecord {
     public static final String DB_FIELD_COMPANYSTATUS = "companyStatus";
     public static final String IO_FIELD_COMPANYSTATUS = "virksomhedsstatus";
 
-    @OneToMany(mappedBy = CompanyStatusRecord.DB_FIELD_COMPANY, targetEntity = CompanyStatusRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = CompanyStatusRecord.class, mappedBy = CompanyStatusRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_COMPANYSTATUS)
     private Set<CompanyStatusRecord> companyStatus = new HashSet<>();
 
@@ -190,29 +209,29 @@ public class RelationCompanyRecord extends CvrBitemporalRecord {
 
 
 
-    public static final String DB_FIELD_FORM = "companyForm";
+    public static final String DB_FIELD_FORM = "form";
     public static final String IO_FIELD_FORM = "virksomhedsform";
 
-    @OneToMany(mappedBy = FormRecord.DB_FIELD_COMPANY, targetEntity = FormRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = FormRecord.class, mappedBy = FormRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_FORM)
-    private Set<FormRecord> companyForm = new HashSet<>();
+    private Set<FormRecord> form = new HashSet<>();
 
-    public void setCompanyForm(Set<FormRecord> companyForm) {
-        this.companyForm = companyForm;
-        for (FormRecord formRecord : companyForm) {
-            formRecord.setParticipantRelationCompanyRecord(this);
+    public void setForm(Set<FormRecord> form) {
+        this.form = form;
+        for (FormRecord formRecord : form) {
+            formRecord.setRelationCompanyRecord(this);
         }
     }
 
-    public void addCompanyForm(FormRecord record) {
-        if (!this.companyForm.contains(record)) {
-            record.setParticipantRelationCompanyRecord(this);
-            this.companyForm.add(record);
+    public void addForm(FormRecord record) {
+        if (!this.form.contains(record)) {
+            record.setRelationCompanyRecord(this);
+            this.form.add(record);
         }
     }
 
-    public Set<FormRecord> getCompanyForm() {
-        return this.companyForm;
+    public Set<FormRecord> getForm() {
+        return this.form;
     }
 
 
@@ -242,6 +261,30 @@ public class RelationCompanyRecord extends CvrBitemporalRecord {
         }
         return registrationFrom;
     }
+
+    public void merge(RelationCompanyRecord other) {
+        if (other != null) {
+            for (CompanyRegNumberRecord regNumber : other.getRegNumber()) {
+                this.addRegNumber(regNumber);
+            }
+            for (BaseNameRecord name : other.getNames()) {
+                this.addName(name);
+            }
+            for (LifecycleRecord lifecycle : other.getLifecycle()) {
+                this.addLifecycle(lifecycle);
+            }
+            for (StatusRecord status : other.getStatus()) {
+                this.addStatus(status);
+            }
+            for (CompanyStatusRecord status : other.getCompanyStatus()) {
+                this.addCompanyStatus(status);
+            }
+            for (FormRecord form : other.getForm()) {
+                this.addForm(form);
+            }
+        }
+    }
+
 
     @Override
     public boolean equals(Object o) {

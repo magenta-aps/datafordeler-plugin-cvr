@@ -104,7 +104,7 @@ public class FormRecord extends CvrBitemporalDataRecord {
     @JsonIgnore
     private RelationCompanyRecord relationCompanyRecord;
 
-    public void setParticipantRelationCompanyRecord(RelationCompanyRecord relationCompanyRecord) {
+    public void setRelationCompanyRecord(RelationCompanyRecord relationCompanyRecord) {
         this.relationCompanyRecord = relationCompanyRecord;
     }
 

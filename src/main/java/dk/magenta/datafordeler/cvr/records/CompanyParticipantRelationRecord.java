@@ -54,6 +54,7 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
 
 
 
+
     public static final String DB_FIELD_COMPANY_RELATION = "relationCompanyRecord";
     public static final String IO_FIELD_COMPANY_RELATION = "virksomhed";
 
@@ -66,6 +67,14 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
         relationCompanyRecord.setCompanyParticipantRelationRecord(this);
     }
 
+    public RelationCompanyRecord getRelationCompanyRecord() {
+        return this.relationCompanyRecord;
+    }
+
+    @JsonIgnore
+    public Long getCompanyUnitNumber() {
+        return this.relationCompanyRecord != null ? this.relationCompanyRecord.getUnitNumber() : null;
+    }
 
 
     public static final String DB_FIELD_OFFICES = "offices";
@@ -183,7 +192,21 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
 
     public void merge(CompanyParticipantRelationRecord other) {
 
-        this.getRelationParticipantRecord().merge(other.getRelationParticipantRecord());
+        if (other.getRelationParticipantRecord() != null) {
+            if (this.getRelationParticipantRecord() == null) {
+                this.setRelationParticipantRecord(other.getRelationParticipantRecord());
+            } else {
+                this.getRelationParticipantRecord().merge(other.getRelationParticipantRecord());
+            }
+        }
+
+        if (other.getRelationCompanyRecord() != null) {
+            if (this.getRelationCompanyRecord() == null) {
+                this.setRelationCompanyRecord(other.getRelationCompanyRecord());
+            } else {
+                this.getRelationCompanyRecord().merge(other.getRelationCompanyRecord());
+            }
+        }
 
         for (OfficeRelationRecord otherOffice : other.getOffices()) {
             Long otherUnitNumber = otherOffice.getOfficeUnitNumber();

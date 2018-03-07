@@ -396,6 +396,20 @@ public class ParticipantRecord extends CvrEntityRecord {
         }
     }
 
+    public void mergeCompanyRelation(CompanyParticipantRelationRecord otherRecord) {
+        Long otherCompanyId = otherRecord.getCompanyUnitNumber();
+        if (otherCompanyId != null) {
+            for (CompanyParticipantRelationRecord ourRecord : this.companyRelation) {
+                Long ourCompanyId = ourRecord.getCompanyUnitNumber();
+                if (otherCompanyId.equals(ourCompanyId)) {
+                    ourRecord.merge(otherRecord);
+                    return;
+                }
+            }
+        }
+        this.addCompanyRelation(otherRecord);
+    }
+
     public Set<CompanyParticipantRelationRecord> getCompanyRelation() {
         return this.companyRelation;
     }
@@ -501,7 +515,7 @@ public class ParticipantRecord extends CvrEntityRecord {
                 this.addAttributes(attributeRecord);
             }
             for (CompanyParticipantRelationRecord companyParticipantRelationRecord : otherRecord.getCompanyRelation()) {
-                this.addCompanyRelation(companyParticipantRelationRecord);
+                this.mergeCompanyRelation(companyParticipantRelationRecord);
             }
             this.metadata.merge(otherRecord.getMetadata());
             return true;
