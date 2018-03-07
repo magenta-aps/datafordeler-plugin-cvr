@@ -21,7 +21,7 @@ import java.util.*;
  * with this class at the base.
  */
 @Entity
-@Table(name = ParticipantRecord.TABLE_NAME)
+@Table(name= ParticipantRecord.TABLE_NAME)
 public class ParticipantRecord extends CvrEntityRecord {
 
     public static final String TABLE_NAME = "cvr_record_participant";
@@ -359,7 +359,7 @@ public class ParticipantRecord extends CvrEntityRecord {
     public static final String DB_FIELD_META = "metadata";
     public static final String IO_FIELD_META = "deltagerpersonMetadata";
 
-    @OneToOne(mappedBy = ParticipantMetadataRecord.DB_FIELD_PARTICIPANT, targetEntity = ParticipantMetadataRecord.class, cascade = CascadeType.ALL)
+    @OneToOne(targetEntity = ParticipantMetadataRecord.class, mappedBy = ParticipantMetadataRecord.DB_FIELD_PARTICIPANT, cascade = CascadeType.ALL)
     @JoinColumn(name = DB_FIELD_META + DatabaseEntry.REF)
     @JsonProperty(value = IO_FIELD_META)
     private ParticipantMetadataRecord metadata;
@@ -374,13 +374,13 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-    //CompanyParticipantRelationRecord
+
     public static final String DB_FIELD_COMPANY_RELATION = "companyRelation";
     public static final String IO_FIELD_COMPANY_RELATION = "virksomhedSummariskRelation";
 
-    @OneToMany(mappedBy = CompanyParticipantRelationRecord.DB_FIELD_PARTICIPANT, targetEntity = CompanyParticipantRelationRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = CompanyParticipantRelationRecord.class, mappedBy = CompanyParticipantRelationRecord.DB_FIELD_PARTICIPANT, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_COMPANY_RELATION)
-    private Set<CompanyParticipantRelationRecord> companyRelation;
+    private Set<CompanyParticipantRelationRecord> companyRelation = new HashSet<>();
 
     public void setCompanyRelation(Set<CompanyParticipantRelationRecord> companyRelation) {
         this.companyRelation = companyRelation;
@@ -455,6 +455,11 @@ public class ParticipantRecord extends CvrEntityRecord {
 
     @Override
     public void save(Session session) {
+        this.wire(session);
+        super.save(session);
+    }
+
+    public void wire(Session session) {
         for (AddressRecord address : this.locationAddress) {
             address.wire(session);
         }
@@ -465,7 +470,6 @@ public class ParticipantRecord extends CvrEntityRecord {
             address.wire(session);
         }
         this.metadata.wire(session);
-        super.save(session);
     }
 
     @Override

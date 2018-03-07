@@ -83,15 +83,15 @@ public class AddressRecord extends CvrBitemporalDataMetaRecord {
 
 
 
-    public static final String DB_FIELD_PARTICIPANT_RELATION = "participantRelationRecord";
+    public static final String DB_FIELD_PARTICIPANT_RELATION = "relationParticipantRecord";
 
-    @ManyToOne(targetEntity = ParticipantRelationRecord.class)
+    @ManyToOne(targetEntity = RelationParticipantRecord.class)
     @JoinColumn(name = DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF)
     @JsonIgnore
-    private ParticipantRelationRecord participantRelationRecord;
+    private RelationParticipantRecord relationParticipantRecord;
 
-    public void setParticipantRelationRecord(ParticipantRelationRecord participantRelationRecord) {
-        this.participantRelationRecord = participantRelationRecord;
+    public void setRelationParticipantRecord(RelationParticipantRecord relationParticipantRecord) {
+        this.relationParticipantRecord = relationParticipantRecord;
     }
 
 

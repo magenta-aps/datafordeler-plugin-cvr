@@ -15,8 +15,8 @@ import java.util.UUID;
  * Record for one participant on a Company or CompanyUnit
  */
 @Entity
-@Table(name = ParticipantRelationRecord.TABLE_NAME)
-public class ParticipantRelationRecord extends CvrBitemporalRecord {
+@Table(name = RelationParticipantRecord.TABLE_NAME)
+public class RelationParticipantRecord extends CvrBitemporalRecord {
 
     public static final String TABLE_NAME = CompanyParticipantRelationRecord.TABLE_NAME + "_participant";
 
@@ -84,13 +84,13 @@ public class ParticipantRelationRecord extends CvrBitemporalRecord {
     public void setNames(Set<BaseNameRecord> names) {
         this.names = names;
         for (BaseNameRecord name : names) {
-            name.setCompanyParticipantRelationRecord(this);
+            name.setRelationParticipantRecord(this);
         }
     }
 
     public void addName(BaseNameRecord record) {
         if (!this.names.contains(record)) {
-            record.setCompanyParticipantRelationRecord(this);
+            record.setRelationParticipantRecord(this);
             this.names.add(record);
         }
     }
@@ -111,13 +111,13 @@ public class ParticipantRelationRecord extends CvrBitemporalRecord {
     public void setLocationAddress(Set<AddressRecord> locationAddress) {
         this.locationAddress = locationAddress;
         for (AddressRecord name : locationAddress) {
-            name.setParticipantRelationRecord(this);
+            name.setRelationParticipantRecord(this);
         }
     }
 
     public void addLocationAddress(AddressRecord record) {
         if (!this.locationAddress.contains(record)) {
-            record.setParticipantRelationRecord(this);
+            record.setRelationParticipantRecord(this);
             this.locationAddress.add(record);
         }
     }
@@ -158,7 +158,7 @@ public class ParticipantRelationRecord extends CvrBitemporalRecord {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        ParticipantRelationRecord that = (ParticipantRelationRecord) o;
+        RelationParticipantRecord that = (RelationParticipantRecord) o;
         return unitNumber == that.unitNumber &&
                 Objects.equals(unitType, that.unitType);
     }
@@ -168,7 +168,7 @@ public class ParticipantRelationRecord extends CvrBitemporalRecord {
         return Objects.hash(super.hashCode(), unitNumber, unitType);
     }
 
-    public void merge(ParticipantRelationRecord other) {
+    public void merge(RelationParticipantRecord other) {
         if (other != null) {
             for (BaseNameRecord name : other.getNames()) {
                 this.addName(name);

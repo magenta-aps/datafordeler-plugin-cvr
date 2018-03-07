@@ -14,13 +14,13 @@ import java.util.Objects;
  * Record for Company form.
  */
 @Entity
-@Table(name = CompanyFormRecord.TABLE_NAME, indexes = {
-        @Index(name = CompanyFormRecord.TABLE_NAME + "__company", columnList = CompanyFormRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = CompanyFormRecord.TABLE_NAME + "__unit", columnList = CompanyFormRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        @Index(name = CompanyFormRecord.TABLE_NAME + "__companymeta", columnList = CompanyFormRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
-        @Index(name = CompanyFormRecord.TABLE_NAME + "__participant_company_relation", columnList = CompanyFormRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
+@Table(name = FormRecord.TABLE_NAME, indexes = {
+        @Index(name = FormRecord.TABLE_NAME + "__company", columnList = FormRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = FormRecord.TABLE_NAME + "__unit", columnList = FormRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = FormRecord.TABLE_NAME + "__companymeta", columnList = FormRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
+        @Index(name = FormRecord.TABLE_NAME + "__participant_company_relation", columnList = FormRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
 })
-public class CompanyFormRecord extends CvrBitemporalDataRecord {
+public class FormRecord extends CvrBitemporalDataRecord {
 
     public static final String TABLE_NAME = "cvr_record_form";
 
@@ -97,15 +97,15 @@ public class CompanyFormRecord extends CvrBitemporalDataRecord {
 
 
 
-    public static final String DB_FIELD_PARTICIPANT_COMPANY_RELATION = "participantCompanyRelationRecord";
+    public static final String DB_FIELD_PARTICIPANT_COMPANY_RELATION = "relationCompanyRecord";
 
-    @ManyToOne(targetEntity = CompanyRelationRecord.class)
+    @ManyToOne(targetEntity = RelationCompanyRecord.class)
     @JoinColumn(name = DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF)
     @JsonIgnore
-    private CompanyRelationRecord participantCompanyRelationRecord;
+    private RelationCompanyRecord relationCompanyRecord;
 
-    public void setParticipantCompanyRelationRecord(CompanyRelationRecord participantCompanyRelationRecord) {
-        this.participantCompanyRelationRecord = participantCompanyRelationRecord;
+    public void setParticipantRelationCompanyRecord(RelationCompanyRecord relationCompanyRecord) {
+        this.relationCompanyRecord = relationCompanyRecord;
     }
 
 
@@ -127,7 +127,7 @@ public class CompanyFormRecord extends CvrBitemporalDataRecord {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        CompanyFormRecord that = (CompanyFormRecord) o;
+        FormRecord that = (FormRecord) o;
         return Objects.equals(companyFormCode, that.companyFormCode) &&
                 Objects.equals(shortDescription, that.shortDescription) &&
                 Objects.equals(longDescription, that.longDescription) &&

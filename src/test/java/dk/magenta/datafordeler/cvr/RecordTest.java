@@ -22,7 +22,6 @@ import dk.magenta.datafordeler.cvr.data.participant.ParticipantRecordQuery;
 import dk.magenta.datafordeler.cvr.records.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,8 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.OffsetDateTime;
@@ -225,6 +222,9 @@ public class RecordTest {
             Assert.assertEquals(1, companyRecord.getSecondaryIndustry1().size());
             Assert.assertEquals(0, companyRecord.getSecondaryIndustry2().size());
             Assert.assertEquals(0, companyRecord.getSecondaryIndustry3().size());
+            for (StatusRecord s : companyRecord.getStatus()) {
+                System.out.println(s.getStatusText());
+            }
             Assert.assertEquals(0, companyRecord.getStatus().size());
             Assert.assertEquals(2, companyRecord.getCompanyStatus().size());
             Assert.assertEquals(16, companyRecord.getYearlyNumbers().size());
@@ -242,11 +242,11 @@ public class RecordTest {
 
             boolean foundParticipantData = false;
             for (CompanyParticipantRelationRecord participantRelationRecord : companyRecord.getParticipants()) {
-                if (participantRelationRecord.getParticipant().getUnitNumber() == 4000004988L) {
+                if (participantRelationRecord.getRelationParticipantRecord().getUnitNumber() == 4000004988L) {
                     foundParticipantData = true;
 
-                    Assert.assertEquals(2, participantRelationRecord.getParticipant().getNames().size());
-                    Assert.assertEquals(5, participantRelationRecord.getParticipant().getLocationAddress().size());
+                    Assert.assertEquals(2, participantRelationRecord.getRelationParticipantRecord().getNames().size());
+                    Assert.assertEquals(5, participantRelationRecord.getRelationParticipantRecord().getLocationAddress().size());
 
                     Assert.assertEquals(1, participantRelationRecord.getOffices().size());
                     OfficeRelationRecord officeRelationRecord = participantRelationRecord.getOffices().iterator().next();
@@ -286,12 +286,12 @@ public class RecordTest {
         }
     }
 
-
+/*
     @Test
     public void foo() throws IOException, DataFordelerException {
         loadCompany(new FileInputStream("/home/lars/Projekt/datafordeler/core/local/cvr/virksomhed_2018-03-05"), true);
     }
-
+*/
 
     private HashMap<Integer, JsonNode> loadUnit(String resource) throws IOException, DataFordelerException {
         ImportMetadata importMetadata = new ImportMetadata();
@@ -572,9 +572,7 @@ public class RecordTest {
     @Test
     public void testUpdateParticipant() throws IOException, DataFordelerException {
         loadParticipant("/person.json");
-        System.out.println("---------------");
         loadParticipant("/person2.json");
-        System.out.println("---------------");
         Session session = sessionManager.getSessionFactory().openSession();
         try {
             ParticipantRecordQuery query = new ParticipantRecordQuery();

@@ -16,8 +16,8 @@ import java.util.Objects;
 @Entity
 @Table(name = StatusRecord.TABLE_NAME, indexes = {
         @Index(name = StatusRecord.TABLE_NAME + "__company", columnList = StatusRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = StatusRecord.TABLE_NAME + "__companyunit", columnList = StatusRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        @Index(name = StatusRecord.TABLE_NAME + "__participant_company_relation", columnList = StatusRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
+        @Index(name = StatusRecord.TABLE_NAME + "__unit", columnList = StatusRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = StatusRecord.TABLE_NAME + "__relation", columnList = StatusRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
 })
 public class StatusRecord extends CvrBitemporalDataRecord {
 
@@ -90,15 +90,15 @@ public class StatusRecord extends CvrBitemporalDataRecord {
     }
 
 
-    public static final String DB_FIELD_PARTICIPANT_COMPANY_RELATION = "participantCompanyRelationRecord";
+    public static final String DB_FIELD_PARTICIPANT_COMPANY_RELATION = "relationCompanyRecord";
 
-    @ManyToOne(targetEntity = CompanyRelationRecord.class)
+    @ManyToOne(targetEntity = RelationCompanyRecord.class)
     @JoinColumn(name = DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF)
     @JsonIgnore
-    private CompanyRelationRecord participantCompanyRelationRecord;
+    private RelationCompanyRecord relationCompanyRecord;
 
-    public void setParticipantCompanyRelationRecord(CompanyRelationRecord participantCompanyRelationRecord) {
-        this.participantCompanyRelationRecord = participantCompanyRelationRecord;
+    public void setRelationCompanyRecord(RelationCompanyRecord relationCompanyRecord) {
+        this.relationCompanyRecord = relationCompanyRecord;
     }
 
 
@@ -114,8 +114,8 @@ public class StatusRecord extends CvrBitemporalDataRecord {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         StatusRecord that = (StatusRecord) o;
-        return statusCode == that.statusCode &&
-                creditDataCode == that.creditDataCode &&
+        return Objects.equals(statusCode, that.statusCode) &&
+                Objects.equals(creditDataCode, that.creditDataCode) &&
                 Objects.equals(statusText, that.statusText) &&
                 Objects.equals(creditDataText, that.creditDataText);
     }

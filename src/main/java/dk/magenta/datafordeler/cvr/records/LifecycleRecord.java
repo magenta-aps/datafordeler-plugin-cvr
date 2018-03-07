@@ -10,7 +10,6 @@ import javax.persistence.*;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.Objects;
 
 /**
  * Record for Company and CompanyUnit lifecycle data.
@@ -28,15 +27,15 @@ public class LifecycleRecord extends CvrBitemporalDataRecord {
 
 
 
-    public static final String DB_FIELD_PARTICIPANT_COMPANY_RELATION = "participantCompanyRelationRecord";
+    public static final String DB_FIELD_PARTICIPANT_COMPANY_RELATION = "relationCompanyRecord";
 
-    @ManyToOne(targetEntity = CompanyRelationRecord.class)
+    @ManyToOne(targetEntity = RelationCompanyRecord.class)
     @JoinColumn(name = DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF)
     @JsonIgnore
-    private CompanyRelationRecord participantCompanyRelationRecord;
+    private RelationCompanyRecord relationCompanyRecord;
 
-    public void setParticipantCompanyRelationRecord(CompanyRelationRecord participantCompanyRelationRecord) {
-        this.participantCompanyRelationRecord = participantCompanyRelationRecord;
+    public void setRelationCompanyRecord(RelationCompanyRecord relationCompanyRecord) {
+        this.relationCompanyRecord = relationCompanyRecord;
     }
 
 

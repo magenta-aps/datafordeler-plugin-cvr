@@ -23,15 +23,15 @@ public class CompanyMetadataRecord extends MetadataRecord {
     public static final String DB_FIELD_NEWEST_FORM = "newestForm";
     public static final String IO_FIELD_NEWEST_FORM = "nyesteVirksomhedsform";
 
-    @OneToMany(mappedBy = CompanyFormRecord.DB_FIELD_COMPANY_METADATA, targetEntity = CompanyFormRecord.class, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<CompanyFormRecord> newestForm = new HashSet<>();
+    @OneToMany(mappedBy = FormRecord.DB_FIELD_COMPANY_METADATA, targetEntity = FormRecord.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<FormRecord> newestForm = new HashSet<>();
 
-    public void setNewestForm(Set<CompanyFormRecord> newestForm) {
+    public void setNewestForm(Set<FormRecord> newestForm) {
         this.newestForm = newestForm;
     }
 
     @JsonSetter(IO_FIELD_NEWEST_FORM)
-    public void addNewestForm(CompanyFormRecord newestForm) {
+    public void addNewestForm(FormRecord newestForm) {
         if (newestForm != null && !this.newestForm.contains(newestForm)) {
             newestForm.setCompanyMetadataRecord(this);
             this.newestForm.add(newestForm);
@@ -39,16 +39,16 @@ public class CompanyMetadataRecord extends MetadataRecord {
     }
 
     @JsonIgnore
-    public Set<CompanyFormRecord> getNewestForm() {
+    public Set<FormRecord> getNewestForm() {
         return this.newestForm;
     }
 
     @JsonGetter(IO_FIELD_NEWEST_FORM)
-    public CompanyFormRecord getLatestNewestForm() {
-        CompanyFormRecord latest = null;
-        for (CompanyFormRecord companyFormRecord : this.newestForm) {
-            if (latest == null || companyFormRecord.getLastUpdated().isAfter(latest.getLastUpdated())) {
-                latest = companyFormRecord;
+    public FormRecord getLatestNewestForm() {
+        FormRecord latest = null;
+        for (FormRecord formRecord : this.newestForm) {
+            if (latest == null || formRecord.getLastUpdated().isAfter(latest.getLastUpdated())) {
+                latest = formRecord;
             }
         }
         return latest;
@@ -360,8 +360,8 @@ public class CompanyMetadataRecord extends MetadataRecord {
     @Override
     public void wire(Session session) {
         super.wire(session);
-        for (CompanyFormRecord companyFormRecord : this.newestForm) {
-            companyFormRecord.wire(session);
+        for (FormRecord formRecord : this.newestForm) {
+            formRecord.wire(session);
         }
         for (AddressRecord addressRecord : this.newestLocation) {
             addressRecord.wire(session);
@@ -375,7 +375,7 @@ public class CompanyMetadataRecord extends MetadataRecord {
             for (BaseNameRecord nameRecord : existing.getNewestName()) {
                 this.addNewestName(nameRecord);
             }
-            for (CompanyFormRecord formRecord : existing.getNewestForm()) {
+            for (FormRecord formRecord : existing.getNewestForm()) {
                 this.addNewestForm(formRecord);
             }
             for (AddressRecord addressRecord : existing.getNewestLocation()) {

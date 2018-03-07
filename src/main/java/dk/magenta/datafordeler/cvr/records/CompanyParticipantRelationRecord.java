@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Record for Company and CompanyUnit participant relations.
+ * Record for Company and CompanyUnit relationParticipantRecord relations.
  */
 
 @Entity
@@ -29,27 +29,41 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
 
     public static final String TABLE_NAME = "cvr_record_company_participant_relation";
 
-    public static final String DB_FIELD_PARTICIPANT_RELATION = "participant";
+    public static final String DB_FIELD_PARTICIPANT_RELATION = "relationParticipantRecord";
     public static final String IO_FIELD_PARTICIPANT_RELATION = "deltager";
 
-    @OneToOne(targetEntity = ParticipantRelationRecord.class, cascade = CascadeType.ALL)
+    @OneToOne(targetEntity = RelationParticipantRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_PARTICIPANT_RELATION)
-    private ParticipantRelationRecord participant;
+    private RelationParticipantRecord relationParticipantRecord;
 
-    public void setParticipant(ParticipantRelationRecord participant) {
-        this.participant = participant;
-        if (participant != null) {
-            participant.setCompanyParticipantRelationRecord(this);
+    public void setRelationParticipantRecord(RelationParticipantRecord relationParticipantRecord) {
+        this.relationParticipantRecord = relationParticipantRecord;
+        if (relationParticipantRecord != null) {
+            relationParticipantRecord.setCompanyParticipantRelationRecord(this);
         }
     }
 
-    public ParticipantRelationRecord getParticipant() {
-        return this.participant;
+    public RelationParticipantRecord getRelationParticipantRecord() {
+        return this.relationParticipantRecord;
     }
 
     @JsonIgnore
     public Long getParticipantUnitNumber() {
-        return this.participant != null ? this.participant.getUnitNumber() : null;
+        return this.relationParticipantRecord != null ? this.relationParticipantRecord.getUnitNumber() : null;
+    }
+
+
+
+    public static final String DB_FIELD_COMPANY_RELATION = "relationCompanyRecord";
+    public static final String IO_FIELD_COMPANY_RELATION = "virksomhed";
+
+    @OneToOne(targetEntity = RelationCompanyRecord.class, cascade = CascadeType.ALL)
+    @JsonProperty(value = IO_FIELD_COMPANY_RELATION)
+    private RelationCompanyRecord relationCompanyRecord;
+
+    public void setRelationCompanyRecord(RelationCompanyRecord relationCompanyRecord) {
+        this.relationCompanyRecord = relationCompanyRecord;
+        relationCompanyRecord.setCompanyParticipantRelationRecord(this);
     }
 
 
@@ -70,20 +84,6 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
 
     public Set<OfficeRelationRecord> getOffices() {
         return this.offices;
-    }
-
-
-
-    public static final String DB_FIELD_COMPANY_RELATION = "company";
-    public static final String IO_FIELD_COMPANY_RELATION = "virksomhed";
-
-    @OneToOne(targetEntity = CompanyRelationRecord.class, cascade = CascadeType.ALL)
-    @JsonProperty(value = IO_FIELD_COMPANY_RELATION)
-    private CompanyRelationRecord company;
-
-    public void setCompany(CompanyRelationRecord company) {
-        this.company = company;
-        company.setCompanyParticipantRelationRecord(this);
     }
 
 
@@ -118,8 +118,8 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
     // Our source omits temporality on this object, so we must gather it elsewhere
     public OffsetDateTime getRegistrationFrom() {
         OffsetDateTime registrationFrom = super.getRegistrationFrom();
-        if (registrationFrom == null && this.participant != null) {
-            registrationFrom = this.participant.getRegistrationFrom();
+        if (registrationFrom == null && this.relationParticipantRecord != null) {
+            registrationFrom = this.relationParticipantRecord.getRegistrationFrom();
         }
         if (registrationFrom == null) {
             registrationFrom = this.getLastUpdated();
@@ -128,8 +128,8 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
     }
 
     private Identification getParticipantIdentification(Session session) {
-        if (this.participant != null) {
-            UUID participantUUID = this.participant.generateUUID();
+        if (this.relationParticipantRecord != null) {
+            UUID participantUUID = this.relationParticipantRecord.generateUUID();
             Identification participantIdentification = QueryManager.getOrCreateIdentification(session, participantUUID, CvrPlugin.getDomain());
             return participantIdentification;
         } else {
@@ -139,8 +139,8 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
 
     public void save(Session session) {
         super.save(session);
-        if (this.participant != null) {
-            this.participant.save(session);
+        if (this.relationParticipantRecord != null) {
+            this.relationParticipantRecord.save(session);
         }
         /*for (OrganizationRecord organizationRecord : this.organizations) {
             organizationRecord.save(session);
@@ -148,7 +148,7 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
     }
 
     public void wire(Session session) {
-        this.participant.wire(session);
+        this.relationParticipantRecord.wire(session);
         for (OfficeRelationRecord officeRelationRecord : this.offices) {
             officeRelationRecord.wire(session);
         }
@@ -180,47 +180,10 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
         );
     }*/
 
-/*
-    public static void merge(Set<CompanyParticipantRelationRecord> origin, Set<CompanyParticipantRelationRecord> destination, CompanyRecord companyRecord) {
-        for (CompanyParticipantRelationRecord originParticipantRelation : origin) {
-            ParticipantRelationRecord originParticipant = originParticipantRelation.getParticipant();
-            if (originParticipant != null) {
-                long originUnitNumber = originParticipant.getUnitNumber();
-                for (CompanyParticipantRelationRecord destinationParticipantRelation : destination) {
-                    ParticipantRelationRecord destinationParticipant = destinationParticipantRelation.getParticipant();
-                    if (destinationParticipant != null) {
-                        if (destinationParticipant.getUnitNumber() == originUnitNumber) {
-
-                            // Merge participant
-                            destinationParticipant.merge(originParticipant);
-*/
-                            // Merge offices
-/*
-                            hvis samme enhedsnummer, merge objects
-                            ellers tilføj til liste
-
-                            // Merge organization
-
-                            hvis samme enhedsnummer, merge objects
-                            ellers tilføj til liste
-
-*/
-/*
-                            return;
-                        }
-                    }
-                }
-            }
-            originParticipantRelation.setCompanyRecord(companyRecord);
-            destination.add(originParticipantRelation);
-        }
-    }
-*/
-
 
     public void merge(CompanyParticipantRelationRecord other) {
 
-        this.getParticipant().merge(other.getParticipant());
+        this.getRelationParticipantRecord().merge(other.getRelationParticipantRecord());
 
         for (OfficeRelationRecord otherOffice : other.getOffices()) {
             Long otherUnitNumber = otherOffice.getOfficeUnitNumber();
@@ -262,11 +225,14 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         CompanyParticipantRelationRecord that = (CompanyParticipantRelationRecord) o;
-        return Objects.equals(participant, that.participant);
+        return Objects.equals(relationParticipantRecord, that.relationParticipantRecord) &&
+                Objects.equals(relationCompanyRecord, that.relationCompanyRecord) &&
+                Objects.equals(offices, that.offices) &&
+                Objects.equals(organizations, that.organizations);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), participant);
+        return Objects.hash(super.hashCode(), relationParticipantRecord, relationCompanyRecord, offices, organizations);
     }
 }

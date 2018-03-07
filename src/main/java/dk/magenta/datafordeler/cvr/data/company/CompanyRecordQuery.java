@@ -21,7 +21,7 @@ public class CompanyRecordQuery extends CompanyQuery {
             lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + CompanyRecord.DB_FIELD_CVR_NUMBER, this.getCvrNumre(), Integer.class);
         }
         if (this.getVirksomhedsform() != null && !this.getVirksomhedsform().isEmpty()) {
-            lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + CompanyRecord.DB_FIELD_FORM + LookupDefinition.separator + CompanyFormRecord.DB_FIELD_FORM + LookupDefinition.separator + CompanyForm.DB_FIELD_CODE, this.getVirksomhedsform(), String.class);
+            lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + CompanyRecord.DB_FIELD_FORM + LookupDefinition.separator + FormRecord.DB_FIELD_FORM + LookupDefinition.separator + CompanyForm.DB_FIELD_CODE, this.getVirksomhedsform(), String.class);
         }
         if (this.getReklamebeskyttelse() != null) {
             lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + CompanyRecord.DB_FIELD_ADVERTPROTECTION, this.getReklamebeskyttelse(), Boolean.class);

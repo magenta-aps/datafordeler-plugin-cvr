@@ -18,7 +18,7 @@ import java.util.Objects;
         @Index(name = BaseNameRecord.TABLE_NAME + "__organization", columnList = BaseNameRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF),
         @Index(name = BaseNameRecord.TABLE_NAME + "__office", columnList = BaseNameRecord.DB_FIELD_OFFICE_UNIT + DatabaseEntry.REF),
         @Index(name = BaseNameRecord.TABLE_NAME + "__fusion", columnList = BaseNameRecord.DB_FIELD_FUSION + DatabaseEntry.REF),
-        @Index(name = BaseNameRecord.TABLE_NAME + "__participant_company_relation", columnList = BaseNameRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
+        @Index(name = BaseNameRecord.TABLE_NAME + "__participant_company_relation", columnList = BaseNameRecord.DB_FIELD_COMPANY_RELATION + DatabaseEntry.REF),
         @Index(name = BaseNameRecord.TABLE_NAME + "__data", columnList = BaseNameRecord.DB_FIELD_NAME),
 })
 public class BaseNameRecord extends CvrBitemporalMetaRecord {
@@ -34,19 +34,6 @@ public class BaseNameRecord extends CvrBitemporalMetaRecord {
 
     public String getName() {
         return this.name;
-    }
-
-
-
-    public static final String DB_FIELD_PARTICIPANT_RELATION = "companyParticipantRelationRecord";
-
-    @ManyToOne(targetEntity = ParticipantRelationRecord.class)
-    @JoinColumn(name = DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF)
-    @JsonIgnore
-    private ParticipantRelationRecord companyParticipantRelationRecord;
-
-    public void setCompanyParticipantRelationRecord(ParticipantRelationRecord companyParticipantRelationRecord) {
-        this.companyParticipantRelationRecord = companyParticipantRelationRecord;
     }
 
 
@@ -90,15 +77,28 @@ public class BaseNameRecord extends CvrBitemporalMetaRecord {
 
 
 
-    public static final String DB_FIELD_PARTICIPANT_COMPANY_RELATION = "participantCompanyRelationRecord";
+    public static final String DB_FIELD_PARTICIPANT_RELATION = "relationParticipantRecord";
+
+    @ManyToOne(targetEntity = RelationParticipantRecord.class)
+    @JoinColumn(name = DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF)
+    @JsonIgnore
+    private RelationParticipantRecord relationParticipantRecord;
+
+    public void setRelationParticipantRecord(RelationParticipantRecord relationParticipantRecord) {
+        this.relationParticipantRecord = relationParticipantRecord;
+    }
+
+
+
+    public static final String DB_FIELD_COMPANY_RELATION = "relationCompanyRecord";
 
     @JsonIgnore
-    @ManyToOne(targetEntity = CompanyRelationRecord.class)
-    @JoinColumn(name = DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF)
-    private CompanyRelationRecord participantCompanyRelationRecord;
+    @ManyToOne(targetEntity = RelationCompanyRecord.class)
+    @JoinColumn(name = DB_FIELD_COMPANY_RELATION + DatabaseEntry.REF)
+    private RelationCompanyRecord relationCompanyRecord;
 
-    public void setParticipantCompanyRelationRecord(CompanyRelationRecord participantCompanyRelationRecord) {
-        this.participantCompanyRelationRecord = participantCompanyRelationRecord;
+    public void setRelationCompanyRecord(RelationCompanyRecord relationCompanyRecord) {
+        this.relationCompanyRecord = relationCompanyRecord;
     }
 
 
