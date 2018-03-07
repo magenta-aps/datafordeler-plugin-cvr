@@ -8,10 +8,7 @@ import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import org.hibernate.Session;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
@@ -24,6 +21,7 @@ import java.util.Objects;
         @Index(name = "cvr_record_name_participant", columnList = NameRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
         @Index(name = "cvr_record_name_companymetadata", columnList = NameRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
         @Index(name = "cvr_record_name_unitmetadata", columnList = NameRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
+        @Index(name = "cvr_record_name_participantrelation", columnList = NameRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF),
         @Index(name = "cvr_record_name_data", columnList = NameRecord.DB_FIELD_NAME),
 })
 public class NameRecord extends CvrBitemporalDataMetaRecord {
@@ -50,6 +48,19 @@ public class NameRecord extends CvrBitemporalDataMetaRecord {
 
     public void setSecondary(boolean secondary) {
         this.secondary = secondary;
+    }
+
+
+
+    public static final String DB_FIELD_PARTICIPANT_RELATION = "participantRelationRecord";
+
+    @ManyToOne(targetEntity = ParticipantRelationRecord.class)
+    @JoinColumn(name = DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF)
+    @JsonIgnore
+    private ParticipantRelationRecord participantRelationRecord;
+
+    public void setParticipantRelationRecord(ParticipantRelationRecord participantRelationRecord) {
+        this.participantRelationRecord = participantRelationRecord;
     }
 
 

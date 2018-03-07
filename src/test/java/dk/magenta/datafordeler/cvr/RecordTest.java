@@ -241,6 +241,10 @@ public class RecordTest {
             for (CompanyParticipantRelationRecord participantRelationRecord : companyRecord.getParticipants()) {
                 if (participantRelationRecord.getParticipant().getUnitNumber() == 4000004988L) {
                     foundParticipantData = true;
+
+                    Assert.assertEquals(2, participantRelationRecord.getParticipant().getNames().size());
+                    Assert.assertEquals(5, participantRelationRecord.getParticipant().getLocationAddress().size());
+
                     Assert.assertEquals(1, participantRelationRecord.getOffices().size());
                     OfficeRelationRecord officeRelationRecord = participantRelationRecord.getOffices().iterator().next();
                     Assert.assertEquals(2, officeRelationRecord.getAttributes().size());
@@ -284,7 +288,6 @@ public class RecordTest {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        System.out.println("resource: "+resource);
         InputStream input = RecordTest.class.getResourceAsStream(resource);
         if (input == null) {
             throw new MissingResourceException("Missing resource \""+resource+"\"", resource, "key");

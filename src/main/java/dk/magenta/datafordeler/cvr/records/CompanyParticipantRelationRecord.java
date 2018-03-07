@@ -145,6 +145,7 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
     }
 
     public void wire(Session session) {
+        this.participant.wire(session);
         for (OfficeRelationRecord officeRelationRecord : this.offices) {
             officeRelationRecord.wire(session);
         }

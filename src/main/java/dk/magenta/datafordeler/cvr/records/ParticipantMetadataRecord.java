@@ -74,12 +74,10 @@ public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
 
     @JsonProperty(IO_FIELD_NEWEST_CONTACT_DATA)
     public void setMetadataContactData(Set<String> contactData) {
-        System.out.println("setMetadataContactData "+contactData+" (on meta "+System.identityHashCode(this)+")");
         HashSet<String> contacts = new HashSet<>(contactData);
         HashSet<MetadataContactRecord> remove = new HashSet<>();
         for (MetadataContactRecord contactRecord : this.metadataContactRecords) {
             String data = contactRecord.getData();
-            System.out.println("Existing contactrecord: "+data);
             if (contacts.contains(data)) {
                 contacts.remove(data);
             } else {
@@ -97,7 +95,6 @@ public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
 
     public void addMetadataContactData(MetadataContactRecord contactRecord) {
         if (contactRecord != null && !this.metadataContactRecords.contains(contactRecord)) {
-            System.out.println("adding "+contactRecord.getData()+" (on meta "+System.identityHashCode(this)+")");
             contactRecord.setParticipantMetadataRecord(this);
             this.metadataContactRecords.add(contactRecord);
         }

@@ -27,6 +27,7 @@ import java.util.UUID;
         @Index(name = "cvr_record_address_companymetadata", columnList = AddressRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
         @Index(name = "cvr_record_address_unitmetadata", columnList = AddressRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
         @Index(name = "cvr_record_address_officeunit", columnList = AddressRecord.DB_FIELD_OFFICE_UNIT + DatabaseEntry.REF),
+        @Index(name = "cvr_record_address_participantrelation", columnList = AddressRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF),
         @Index(name = "cvr_record_address_type", columnList = AddressRecord.DB_FIELD_TYPE),
         @Index(name = "cvr_record_address_municipality", columnList = AddressRecord.DB_FIELD_MUNICIPALITY + DatabaseEntry.REF),
 })
@@ -75,6 +76,19 @@ public class AddressRecord extends CvrBitemporalDataMetaRecord {
 
     public void setOfficeUnitRecord(OfficeRelationUnitRecord officeUnitRecord) {
         this.officeUnitRecord = officeUnitRecord;
+    }
+
+
+
+    public static final String DB_FIELD_PARTICIPANT_RELATION = "participantRelationRecord";
+
+    @ManyToOne(targetEntity = ParticipantRelationRecord.class)
+    @JoinColumn(name = DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF)
+    @JsonIgnore
+    private ParticipantRelationRecord participantRelationRecord;
+
+    public void setParticipantRelationRecord(ParticipantRelationRecord participantRelationRecord) {
+        this.participantRelationRecord = participantRelationRecord;
     }
 
 

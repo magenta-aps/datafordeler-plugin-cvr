@@ -1541,14 +1541,14 @@
               {
                 "deltager": {
                   "enhedsNummer": 4000004988,
-                  "enhedstype": "PERSON MED FORSTYRRELSE",
+                  "enhedstype": "PERSON MED ÆNDRING",
                   "forretningsnoegle": null,
                   "organisationstype": null,
                   "sidstIndlaest": "2017-06-10T15:22:08.806+02:00",
                   "sidstOpdateret": "2012-05-30T17:31:08.000+02:00",
                   "navne": [
                     {
-                      "navn": "Morten Kjærsgaard",
+                      "navn": "Morten Mellemnavn Kjærsgaard",
                       "periode": {
                         "gyldigFra": null,
                         "gyldigTil": null
@@ -1687,7 +1687,7 @@
                         "gyldigFra": "2012-05-29",
                         "gyldigTil": null
                       },
-                      "sidstOpdateret": "2012-05-30T19:31:08.000+02:00"
+                      "sidstOpdateret": "2018-05-30T19:31:08.000+02:00"
                     }
                   ]
                 },
