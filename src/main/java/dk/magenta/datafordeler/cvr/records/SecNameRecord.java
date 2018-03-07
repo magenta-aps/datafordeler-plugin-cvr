@@ -15,16 +15,13 @@ import java.util.Objects;
  * Record for Company, CompanyUnit or Participant name.
  */
 @Entity
-@Table(name = "cvr_record_name", indexes = {
-        @Index(name = "cvr_record_name_company", columnList = NameRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = "cvr_record_name_companyunit", columnList = NameRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        @Index(name = "cvr_record_name_participant", columnList = NameRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
-        @Index(name = "cvr_record_name_companymetadata", columnList = NameRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
-        @Index(name = "cvr_record_name_unitmetadata", columnList = NameRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
-        @Index(name = "cvr_record_name_participantrelation", columnList = NameRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF),
-        @Index(name = "cvr_record_name_data", columnList = NameRecord.DB_FIELD_NAME),
+@Table(name = "cvr_record_name2", indexes = {
+        @Index(name = "cvr_record_name2_company", columnList = SecNameRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = "cvr_record_name2_companyunit", columnList = SecNameRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = "cvr_record_name2_participant", columnList = SecNameRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+        @Index(name = "cvr_record_name2_data", columnList = SecNameRecord.DB_FIELD_NAME),
 })
-public class NameRecord extends CvrBitemporalDataMetaRecord {
+public class SecNameRecord extends CvrBitemporalDataRecord {
 
     public static final String DB_FIELD_NAME = "name";
     public static final String IO_FIELD_NAME = "navn";
@@ -52,19 +49,6 @@ public class NameRecord extends CvrBitemporalDataMetaRecord {
 
 
 
-    public static final String DB_FIELD_PARTICIPANT_RELATION = "participantRelationRecord";
-
-    @ManyToOne(targetEntity = ParticipantRelationRecord.class)
-    @JoinColumn(name = DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF)
-    @JsonIgnore
-    private ParticipantRelationRecord participantRelationRecord;
-
-    public void setParticipantRelationRecord(ParticipantRelationRecord participantRelationRecord) {
-        this.participantRelationRecord = participantRelationRecord;
-    }
-
-
-
     @Override
     public void populateBaseData(CompanyBaseData baseData, Session session) {
         baseData.setCompanyName(this.name);
@@ -85,7 +69,7 @@ public class NameRecord extends CvrBitemporalDataMetaRecord {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        NameRecord that = (NameRecord) o;
+        SecNameRecord that = (SecNameRecord) o;
         return secondary == that.secondary &&
                 Objects.equals(name, that.name);
     }

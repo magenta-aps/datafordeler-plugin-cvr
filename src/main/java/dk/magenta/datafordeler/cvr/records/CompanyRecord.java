@@ -108,8 +108,8 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_NAMES = "names";
     public static final String IO_FIELD_NAMES = "navne";
 
-    @OneToMany(mappedBy = NameRecord.DB_FIELD_COMPANY, targetEntity = NameRecord.class, cascade = CascadeType.ALL)
-    @Where(clause = NameRecord.DB_FIELD_SECONDARY+"=false")
+    @OneToMany(mappedBy = SecNameRecord.DB_FIELD_COMPANY, targetEntity = SecNameRecord.class, cascade = CascadeType.ALL)
+    @Where(clause = SecNameRecord.DB_FIELD_SECONDARY+"=false")
     @Filters({
             //@Filter(names = Registration.FILTER_REGISTRATION_FROM, condition="(registrationTo >= :"+Registration.FILTERPARAM_REGISTRATION_FROM+" OR registrationTo is null)"),
             @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
@@ -117,21 +117,21 @@ public class CompanyRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_NAMES)
-    private Set<NameRecord> names = new HashSet<>();
+    private Set<SecNameRecord> names = new HashSet<>();
 
-    public Set<NameRecord> getNames() {
+    public Set<SecNameRecord> getNames() {
         return this.names;
     }
 
-    public void setNames(Set<NameRecord> names) {
+    public void setNames(Set<SecNameRecord> names) {
         this.names = names;
-        for (NameRecord record : names) {
+        for (SecNameRecord record : names) {
             record.setSecondary(false);
             record.setCompanyRecord(this);
         }
     }
 
-    public void addName(NameRecord record) {
+    public void addName(SecNameRecord record) {
         if (!this.names.contains(record)) {
             record.setSecondary(false);
             record.setCompanyRecord(this);
@@ -144,24 +144,24 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_SECONDARY_NAMES = "secondaryNames";
     public static final String IO_FIELD_SECONDARY_NAMES = "binavne";
 
-    @OneToMany(mappedBy = NameRecord.DB_FIELD_COMPANY, targetEntity = NameRecord.class, cascade = CascadeType.ALL)
-    @Where(clause = NameRecord.DB_FIELD_SECONDARY+"=true")
+    @OneToMany(mappedBy = SecNameRecord.DB_FIELD_COMPANY, targetEntity = SecNameRecord.class, cascade = CascadeType.ALL)
+    @Where(clause = SecNameRecord.DB_FIELD_SECONDARY+"=true")
     @JsonProperty(value = IO_FIELD_SECONDARY_NAMES)
-    private Set<NameRecord> secondaryNames = new HashSet<>();
+    private Set<SecNameRecord> secondaryNames = new HashSet<>();
 
-    public Set<NameRecord> getSecondaryNames() {
+    public Set<SecNameRecord> getSecondaryNames() {
         return this.secondaryNames;
     }
 
-    public void setSecondaryNames(Set<NameRecord> secondaryNames) {
+    public void setSecondaryNames(Set<SecNameRecord> secondaryNames) {
         this.secondaryNames = secondaryNames;
-        for (NameRecord record : secondaryNames) {
+        for (SecNameRecord record : secondaryNames) {
             record.setSecondary(true);
             record.setCompanyRecord(this);
         }
     }
 
-    public void addSecondaryName(NameRecord record) {
+    public void addSecondaryName(SecNameRecord record) {
         if (!this.secondaryNames.contains(record)) {
             record.setSecondary(true);
             record.setCompanyRecord(this);
@@ -1098,10 +1098,10 @@ public class CompanyRecord extends CvrEntityRecord {
     public boolean merge(CvrEntityRecord other) {
         if (other != null && !Objects.equals(this.getId(), other.getId()) && other instanceof CompanyRecord) {
             CompanyRecord otherRecord = (CompanyRecord) other;
-            for (NameRecord nameRecord : otherRecord.getNames()) {
+            for (SecNameRecord nameRecord : otherRecord.getNames()) {
                 this.addName(nameRecord);
             }
-            for (NameRecord nameRecord : otherRecord.getSecondaryNames()) {
+            for (SecNameRecord nameRecord : otherRecord.getSecondaryNames()) {
                 this.addSecondaryName(nameRecord);
             }
             for (AddressRecord addressRecord : otherRecord.getLocationAddress()) {

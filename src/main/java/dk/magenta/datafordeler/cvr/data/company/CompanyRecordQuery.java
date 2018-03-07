@@ -1,14 +1,7 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
 import dk.magenta.datafordeler.core.database.LookupDefinition;
-import dk.magenta.datafordeler.core.fapi.ParameterMap;
-import dk.magenta.datafordeler.core.fapi.QueryField;
 import dk.magenta.datafordeler.cvr.CvrRecordLookupDefinition;
-import dk.magenta.datafordeler.cvr.data.CvrQuery;
-import dk.magenta.datafordeler.cvr.data.shared.AddressData;
-import dk.magenta.datafordeler.cvr.data.shared.BooleanData;
-import dk.magenta.datafordeler.cvr.data.shared.ContactData;
-import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 import dk.magenta.datafordeler.cvr.records.*;
@@ -34,7 +27,7 @@ public class CompanyRecordQuery extends CompanyQuery {
             lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + CompanyRecord.DB_FIELD_ADVERTPROTECTION, this.getReklamebeskyttelse(), Boolean.class);
         }
         if (this.getVirksomhedsnavn() != null && !this.getVirksomhedsnavn().isEmpty()) {
-            lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + CompanyRecord.DB_FIELD_NAMES + LookupDefinition.separator + NameRecord.DB_FIELD_NAME, this.getVirksomhedsnavn(), String.class);
+            lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + CompanyRecord.DB_FIELD_NAMES + LookupDefinition.separator + SecNameRecord.DB_FIELD_NAME, this.getVirksomhedsnavn(), String.class);
         }
         if (this.getTelefonnummer() != null && !this.getTelefonnummer().isEmpty()) {
             lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + CompanyRecord.DB_FIELD_PHONE + LookupDefinition.separator + ContactRecord.DB_FIELD_DATA, this.getTelefonnummer(), String.class);

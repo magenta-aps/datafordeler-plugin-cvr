@@ -68,22 +68,22 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public static final String DB_FIELD_NAMES = "names";
     public static final String IO_FIELD_NAMES = "navne";
 
-    @OneToMany(mappedBy = NameRecord.DB_FIELD_COMPANYUNIT, targetEntity = NameRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = SecNameRecord.DB_FIELD_COMPANYUNIT, targetEntity = SecNameRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_NAMES)
-    private Set<NameRecord> names;
+    private Set<SecNameRecord> names;
 
-    public Set<NameRecord> getNames() {
+    public Set<SecNameRecord> getNames() {
         return this.names;
     }
 
-    public void setNames(Set<NameRecord> names) {
+    public void setNames(Set<SecNameRecord> names) {
         this.names = names;
-        for (NameRecord record : names) {
+        for (SecNameRecord record : names) {
             record.setCompanyUnitRecord(this);
         }
     }
 
-    public void addName(NameRecord record) {
+    public void addName(SecNameRecord record) {
         if (!this.names.contains(record)) {
             record.setSecondary(false);
             record.setCompanyUnitRecord(this);
@@ -734,7 +734,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public boolean merge(CvrEntityRecord other) {
         if (other != null && !other.getId().equals(this.getId()) && other instanceof CompanyUnitRecord) {
             CompanyUnitRecord otherRecord = (CompanyUnitRecord) other;
-            for (NameRecord nameRecord : otherRecord.getNames()) {
+            for (SecNameRecord nameRecord : otherRecord.getNames()) {
                 this.addName(nameRecord);
             }
 //            for (NameRecord nameRecord : this.getSecondaryNames()) {

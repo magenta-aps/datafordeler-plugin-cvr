@@ -52,16 +52,16 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
     public static final String DB_FIELD_NEWEST_NAME = "newestName";
     public static final String IO_FIELD_NEWEST_NAME = "nyesteNavn";
 
-    @OneToMany(targetEntity = NameRecord.class, mappedBy = NameRecord.DB_FIELD_UNIT_METADATA, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(targetEntity = BaseNameRecord.class, mappedBy = BaseNameRecord.DB_FIELD_UNIT_METADATA, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonProperty(value = IO_FIELD_NEWEST_NAME)
-    private Set<NameRecord> newestName = new HashSet<>();
+    private Set<BaseNameRecord> newestName = new HashSet<>();
 
-    public void setNewestName(Set<NameRecord> newestName) {
+    public void setNewestName(Set<BaseNameRecord> newestName) {
         this.newestName = newestName;
     }
 
     @JsonSetter(IO_FIELD_NEWEST_NAME)
-    public void addNewestName(NameRecord newestName) {
+    public void addNewestName(BaseNameRecord newestName) {
         if (newestName != null && !this.newestName.contains(newestName)) {
             newestName.setMetadataRecord(this);
             this.newestName.add(newestName);
@@ -69,14 +69,14 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
     }
 
     @JsonIgnore
-    public Set<NameRecord> getNewestName() {
+    public Set<BaseNameRecord> getNewestName() {
         return this.newestName;
     }
 
     @JsonGetter(IO_FIELD_NEWEST_NAME)
-    public NameRecord getLatestNewestName() {
-        NameRecord latest = null;
-        for (NameRecord nameRecord : this.newestName) {
+    public BaseNameRecord getLatestNewestName() {
+        BaseNameRecord latest = null;
+        for (BaseNameRecord nameRecord : this.newestName) {
             if (latest == null || nameRecord.getLastUpdated().isAfter(latest.getLastUpdated())) {
                 latest = nameRecord;
             }
@@ -294,7 +294,7 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
     public boolean merge(MetadataRecord other) {
         if (other != null && !other.getId().equals(this.getId()) && other instanceof CompanyUnitMetadataRecord) {
             CompanyUnitMetadataRecord otherRecord = (CompanyUnitMetadataRecord) other;
-            for (NameRecord nameRecord : otherRecord.getNewestName()) {
+            for (BaseNameRecord nameRecord : otherRecord.getNewestName()) {
                 this.addNewestName(nameRecord);
             }
             for (AddressRecord addressRecord : otherRecord.getNewestLocation()) {

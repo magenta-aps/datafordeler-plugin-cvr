@@ -49,27 +49,25 @@ public class ParticipantRelationRecord extends CvrBitemporalRecord {
     public static final String DB_FIELD_NAME = "names";
     public static final String IO_FIELD_NAME = "navne";
 
-    @OneToMany(targetEntity = NameRecord.class, mappedBy = NameRecord.DB_FIELD_PARTICIPANT_RELATION, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = BaseNameRecord.class, mappedBy = BaseNameRecord.DB_FIELD_PARTICIPANT_RELATION, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_NAME)
-    private Set<NameRecord> names = new HashSet<>();
+    private Set<BaseNameRecord> names = new HashSet<>();
 
-    public void setNames(Set<NameRecord> names) {
+    public void setNames(Set<BaseNameRecord> names) {
         this.names = names;
-        for (NameRecord name : names) {
-            name.setSecondary(false);
+        for (BaseNameRecord name : names) {
             name.setParticipantRelationRecord(this);
         }
     }
 
-    public void addName(NameRecord record) {
+    public void addName(BaseNameRecord record) {
         if (!this.names.contains(record)) {
-            record.setSecondary(false);
             record.setParticipantRelationRecord(this);
             this.names.add(record);
         }
     }
 
-    public Set<NameRecord> getNames() {
+    public Set<BaseNameRecord> getNames() {
         return this.names;
     }
 
@@ -144,7 +142,7 @@ public class ParticipantRelationRecord extends CvrBitemporalRecord {
 
     public void merge(ParticipantRelationRecord other) {
         if (other != null) {
-            for (NameRecord name : other.getNames()) {
+            for (BaseNameRecord name : other.getNames()) {
                 this.addName(name);
             }
             for (AddressRecord address : other.getLocationAddress()) {

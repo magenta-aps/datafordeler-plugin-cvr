@@ -52,17 +52,17 @@ public class FusionSplitRecord extends CvrNontemporalDataRecord {
     public static final String IO_FIELD_ORGANIZATION_NAME = "organisationsNavn";
 
 
-    @OneToMany(mappedBy = OrganizationNameRecord.DB_FIELD_FUSION, targetEntity = OrganizationNameRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = BaseNameRecord.DB_FIELD_FUSION, targetEntity = BaseNameRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_ORGANIZATION_NAME)
-    private Set<OrganizationNameRecord> name;
+    private Set<BaseNameRecord> name;
 
-    public Set<OrganizationNameRecord> getName() {
+    public Set<BaseNameRecord> getName() {
         return this.name;
     }
 
-    public void setName(Set<OrganizationNameRecord> name) {
+    public void setName(Set<BaseNameRecord> name) {
         this.name = name;
-        for (OrganizationNameRecord nameRecord : name) {
+        for (BaseNameRecord nameRecord : name) {
             nameRecord.setFusionSplitRecord(this);
         }
     }

@@ -1,18 +1,11 @@
 package dk.magenta.datafordeler.cvr.data.participant;
 
 import dk.magenta.datafordeler.core.database.LookupDefinition;
-import dk.magenta.datafordeler.core.fapi.ParameterMap;
-import dk.magenta.datafordeler.core.fapi.QueryField;
 import dk.magenta.datafordeler.cvr.CvrRecordLookupDefinition;
-import dk.magenta.datafordeler.cvr.data.CvrQuery;
-import dk.magenta.datafordeler.cvr.data.shared.AddressData;
-import dk.magenta.datafordeler.cvr.data.shared.IntegerData;
-import dk.magenta.datafordeler.cvr.data.shared.TextData;
-import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 import dk.magenta.datafordeler.cvr.records.AddressMunicipalityRecord;
 import dk.magenta.datafordeler.cvr.records.AddressRecord;
-import dk.magenta.datafordeler.cvr.records.NameRecord;
+import dk.magenta.datafordeler.cvr.records.SecNameRecord;
 import dk.magenta.datafordeler.cvr.records.ParticipantRecord;
 
 import java.util.*;
@@ -31,7 +24,7 @@ public class ParticipantRecordQuery extends ParticipantQuery {
         }
 
         if (this.getNavn() != null && !this.getNavn().isEmpty()) {
-            lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + ParticipantRecord.DB_FIELD_NAMES + LookupDefinition.separator + NameRecord.DB_FIELD_NAME, this.getNavn(), String.class);
+            lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + ParticipantRecord.DB_FIELD_NAMES + LookupDefinition.separator + SecNameRecord.DB_FIELD_NAME, this.getNavn(), String.class);
         }
 
         if (this.getKommuneKode() != null && !this.getKommuneKode().isEmpty()) {

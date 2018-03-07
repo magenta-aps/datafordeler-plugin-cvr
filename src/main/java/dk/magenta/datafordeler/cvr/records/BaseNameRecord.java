@@ -5,16 +5,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 /**
  * Record for Company, CompanyUnit or Participant name.
  */
 @Entity
-@Table(name = "cvr_record_organization_name", indexes = {
-        @Index(name = "cvr_record_organization_name_organization", columnList = OrganizationNameRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF),
-        @Index(name = "cvr_record_organization_name_fusion", columnList = OrganizationNameRecord.DB_FIELD_FUSION + DatabaseEntry.REF)
+@Table(name = "cvr_record_name1", indexes = {
+        @Index(name = "cvr_record_name1_companymetadata", columnList = BaseNameRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
+        @Index(name = "cvr_record_name1_unitmetadata", columnList = BaseNameRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
+        @Index(name = "cvr_record_name1_participantrelation", columnList = BaseNameRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF),
+        @Index(name = "cvr_record_name1_organization", columnList = BaseNameRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF),
+        @Index(name = "cvr_record_name1_fusion", columnList = BaseNameRecord.DB_FIELD_FUSION + DatabaseEntry.REF),
+        @Index(name = "cvr_record_name1_data", columnList = BaseNameRecord.DB_FIELD_NAME),
 })
-public class OrganizationNameRecord extends CvrBitemporalRecord {
+public class BaseNameRecord extends CvrBitemporalMetaRecord {
 
     public static final String DB_FIELD_NAME = "name";
     public static final String IO_FIELD_NAME = "navn";
@@ -26,6 +31,20 @@ public class OrganizationNameRecord extends CvrBitemporalRecord {
     public String getName() {
         return this.name;
     }
+
+
+
+    public static final String DB_FIELD_PARTICIPANT_RELATION = "participantRelationRecord";
+
+    @ManyToOne(targetEntity = ParticipantRelationRecord.class)
+    @JoinColumn(name = DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF)
+    @JsonIgnore
+    private ParticipantRelationRecord participantRelationRecord;
+
+    public void setParticipantRelationRecord(ParticipantRelationRecord participantRelationRecord) {
+        this.participantRelationRecord = participantRelationRecord;
+    }
+
 
 
     public static final String DB_FIELD_ORGANIZATION = "organizationRecord";
@@ -77,4 +96,18 @@ public class OrganizationNameRecord extends CvrBitemporalRecord {
         this.fusionSplitRecord = fusionSplitRecord;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        BaseNameRecord that = (BaseNameRecord) o;
+        return Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), name);
+    }
 }

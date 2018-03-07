@@ -58,23 +58,23 @@ public class ParticipantRecord extends CvrEntityRecord {
     public static final String DB_FIELD_NAMES = "names";
     public static final String IO_FIELD_NAMES = "navne";
 
-    @OneToMany(mappedBy = NameRecord.DB_FIELD_PARTICIPANT, targetEntity = NameRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = SecNameRecord.DB_FIELD_PARTICIPANT, targetEntity = SecNameRecord.class, cascade = CascadeType.ALL)
     @Filters({
             @Filter(name = Registration.FILTER_REGISTRATION_TO, condition = "(" + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " < :" + Registration.FILTERPARAM_REGISTRATION_TO + ")"),
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_TO + " >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR " + CvrRecordPeriod.DB_FIELD_VALID_TO + " is null)"),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Effect.FILTERPARAM_EFFECT_TO + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)")
     })
     @JsonProperty(value = IO_FIELD_NAMES)
-    public Set<NameRecord> names;
+    public Set<SecNameRecord> names;
 
-    public void setNames(Set<NameRecord> names) {
+    public void setNames(Set<SecNameRecord> names) {
         this.names = names;
-        for (NameRecord record : names) {
+        for (SecNameRecord record : names) {
             record.setParticipantRecord(this);
         }
     }
 
-    public void addName(NameRecord record) {
+    public void addName(SecNameRecord record) {
         if (record != null && !this.names.contains(record)) {
             record.setSecondary(false);
             record.setParticipantRecord(this);
@@ -82,7 +82,7 @@ public class ParticipantRecord extends CvrEntityRecord {
         }
     }
 
-    public Set<NameRecord> getNames() {
+    public Set<SecNameRecord> getNames() {
         return this.names;
     }
 
@@ -472,7 +472,7 @@ public class ParticipantRecord extends CvrEntityRecord {
     public boolean merge(CvrEntityRecord other) {
         if (other != null && !Objects.equals(this.getId(), other.getId()) && other instanceof ParticipantRecord) {
             ParticipantRecord otherRecord = (ParticipantRecord) other;
-            for (NameRecord nameRecord : otherRecord.getNames()) {
+            for (SecNameRecord nameRecord : otherRecord.getNames()) {
                 this.addName(nameRecord);
             }
             for (AddressRecord addressRecord : otherRecord.getLocationAddress()) {

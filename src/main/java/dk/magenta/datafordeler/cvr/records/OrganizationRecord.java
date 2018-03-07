@@ -63,22 +63,22 @@ public class OrganizationRecord extends DatabaseEntry {
     public static final String DB_FIELD_NAME = "names";
     public static final String IO_FIELD_NAME = "organisationsNavn";
 
-    @OneToMany(mappedBy = OrganizationNameRecord.DB_FIELD_ORGANIZATION, targetEntity = OrganizationNameRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = BaseNameRecord.DB_FIELD_ORGANIZATION, targetEntity = BaseNameRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_NAME)
-    public Set<OrganizationNameRecord> names;
+    public Set<BaseNameRecord> names;
 
-    public Set<OrganizationNameRecord> getNames() {
+    public Set<BaseNameRecord> getNames() {
         return this.names;
     }
 
-    public void setNames(Set<OrganizationNameRecord> names) {
+    public void setNames(Set<BaseNameRecord> names) {
         this.names = names;
-        for (OrganizationNameRecord nameRecord : names) {
+        for (BaseNameRecord nameRecord : names) {
             nameRecord.setOrganizationRecord(this);
         }
     }
 
-    public void addName(OrganizationNameRecord name) {
+    public void addName(BaseNameRecord name) {
         if (name != null && !this.names.contains(name)) {
             name.setOrganizationRecord(this);
             this.names.add(name);
@@ -168,7 +168,7 @@ public class OrganizationRecord extends DatabaseEntry {
     }
 
     public void merge(OrganizationRecord other) {
-        for (OrganizationNameRecord name : other.getNames()) {
+        for (BaseNameRecord name : other.getNames()) {
             this.addName(name);
         }
         for (AttributeRecord attribute : other.getAttributes()) {

@@ -2,12 +2,7 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dk.magenta.datafordeler.core.database.Effect;
-import dk.magenta.datafordeler.core.database.Registration;
 import org.hibernate.Session;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.Filters;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -62,22 +57,22 @@ public class OfficeRelationUnitRecord extends CvrBitemporalRecord {
 
     public static final String IO_FIELD_NAME = "navne";
 
-    @OneToMany(mappedBy = OrganizationNameRecord.DB_FIELD_OFFICE_UNIT, targetEntity = OrganizationNameRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = BaseNameRecord.DB_FIELD_OFFICE_UNIT, targetEntity = BaseNameRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_NAME)
-    private Set<OrganizationNameRecord> names = new HashSet<>();
+    private Set<BaseNameRecord> names = new HashSet<>();
 
-    public Set<OrganizationNameRecord> getNames() {
+    public Set<BaseNameRecord> getNames() {
         return this.names;
     }
 
-    public void setNames(Set<OrganizationNameRecord> names) {
+    public void setNames(Set<BaseNameRecord> names) {
         this.names = names;
-        for (OrganizationNameRecord nameRecord : names) {
+        for (BaseNameRecord nameRecord : names) {
             nameRecord.setOfficeUnitRecord(this);
         }
     }
 
-    public void addName(OrganizationNameRecord record) {
+    public void addName(BaseNameRecord record) {
         if (record != null && !this.names.contains(record)) {
             record.setOfficeUnitRecord(this);
             this.names.add(record);
@@ -121,7 +116,7 @@ public class OfficeRelationUnitRecord extends CvrBitemporalRecord {
 
     public void merge(OfficeRelationUnitRecord other) {
         if (other != null) {
-            for (OrganizationNameRecord name : other.getNames()) {
+            for (BaseNameRecord name : other.getNames()) {
                 this.addName(name);
             }
             for (AddressRecord address : other.getLocationAddress()) {
