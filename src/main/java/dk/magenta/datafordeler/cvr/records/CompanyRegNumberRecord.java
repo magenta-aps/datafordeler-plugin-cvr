@@ -13,11 +13,13 @@ import java.util.Objects;
  * Record for Company, CompanyUnit or Participant name.
  */
 @Entity
-@Table(name = "cvr_record_company_regnumber", indexes = {
-        @Index(name = "cvr_record_regnumber_company", columnList = CompanyRegNumberRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = "cvr_record_regnumber_data", columnList = CompanyRegNumberRecord.DB_FIELD_REGNUMBER),
+@Table(name = CompanyRegNumberRecord.TABLE_NAME, indexes = {
+        @Index(name = CompanyRegNumberRecord.TABLE_NAME + "__company", columnList = CompanyRegNumberRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = CompanyRegNumberRecord.TABLE_NAME + "__data", columnList = CompanyRegNumberRecord.DB_FIELD_REGNUMBER),
 })
 public class CompanyRegNumberRecord extends CvrBitemporalDataRecord {
+
+    public static final String TABLE_NAME = "cvr_record_company_regnumber";
 
     public static final String DB_FIELD_REGNUMBER = "regNumber";
     public static final String IO_FIELD_REGNUMBER = "regNummer";

@@ -14,13 +14,14 @@ import java.util.Objects;
  * Record for Company, CompanyUnit or Participant attribute values.
  */
 @Entity
-@Table(name = "cvr_record_attribute_value", indexes = {
-        @Index(name = "cvr_record_attribute_value_attribute", columnList = AttributeValueRecord.DB_FIELD_ATTRIBUTE + DatabaseEntry.REF)
+@Table(name = AttributeValueRecord.TABLE_NAME, indexes = {
+        @Index(name = AttributeValueRecord.TABLE_NAME + "__attribute", columnList = AttributeValueRecord.DB_FIELD_ATTRIBUTE + DatabaseEntry.REF)
 })
 public class AttributeValueRecord extends BaseAttributeValueRecord {
 
+    public static final String TABLE_NAME = "cvr_record_attribute_value";
+
     public static final String DB_FIELD_ATTRIBUTE = "attribute";
-    public static final String IO_FIELD_ATTRIBUTE = "attribut";
 
     @ManyToOne(targetEntity = AttributeRecord.class)
     @JoinColumn(name = DB_FIELD_ATTRIBUTE + DatabaseEntry.REF)

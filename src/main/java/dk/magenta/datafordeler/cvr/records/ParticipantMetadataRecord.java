@@ -13,10 +13,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "cvr_record_metadata_participant", indexes = {
-        @Index(name = "cvr_record_metadata_participant", columnList = ParticipantMetadataRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+@Table(name = ParticipantMetadataRecord.TABLE_NAME, indexes = {
+        @Index(name = ParticipantMetadataRecord.TABLE_NAME + "__participant", columnList = ParticipantMetadataRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
 })
 public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
+
+    public static final String TABLE_NAME = "cvr_record_participant_metadata";
 
     public static final String DB_FIELD_NEWEST_LOCATION = "newestLocation";
     public static final String IO_FIELD_NEWEST_LOCATION = "nyesteBeliggenhedsadresse";

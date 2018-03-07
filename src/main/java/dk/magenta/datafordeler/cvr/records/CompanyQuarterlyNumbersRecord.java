@@ -17,13 +17,15 @@ import java.util.Objects;
  * Record for Company and CompanyUnit quarterly employee numbers.
  */
 @Entity
-@Table(name = "cvr_record_quarterly_numbers", indexes = {
-        @Index(name = "cvr_record_quarterlynumbers_company", columnList = CompanyQuarterlyNumbersRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = "cvr_record_quarterlynumbers_companyunit", columnList = CompanyQuarterlyNumbersRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        @Index(name = "cvr_record_quarterlynumbers_year", columnList = CompanyQuarterlyNumbersRecord.DB_FIELD_YEAR),
-        @Index(name = "cvr_record_quarterlynumbers_quarter", columnList = CompanyQuarterlyNumbersRecord.DB_FIELD_QUARTER),
+@Table(name = CompanyQuarterlyNumbersRecord.TABLE_NAME, indexes = {
+        @Index(name = CompanyQuarterlyNumbersRecord.TABLE_NAME + "__company", columnList = CompanyQuarterlyNumbersRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = CompanyQuarterlyNumbersRecord.TABLE_NAME + "__unit", columnList = CompanyQuarterlyNumbersRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = CompanyQuarterlyNumbersRecord.TABLE_NAME + "__year", columnList = CompanyQuarterlyNumbersRecord.DB_FIELD_YEAR),
+        @Index(name = CompanyQuarterlyNumbersRecord.TABLE_NAME + "__quarter", columnList = CompanyQuarterlyNumbersRecord.DB_FIELD_QUARTER),
 })
 public class CompanyQuarterlyNumbersRecord extends CompanyNumbersRecord {
+
+    public static final String TABLE_NAME = "cvr_record_quarterly_numbers";
 
     public static final String DB_FIELD_YEAR = "year";
     public static final String IO_FIELD_YEAR = "aar";

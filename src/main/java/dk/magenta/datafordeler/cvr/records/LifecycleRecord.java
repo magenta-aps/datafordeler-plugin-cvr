@@ -17,12 +17,14 @@ import java.util.Objects;
  * Record for Company and CompanyUnit lifecycle data.
  */
 @Entity
-@Table(name = "cvr_record_lifecycle", indexes = {
-        @Index(name = "cvr_record_lifecycle_company", columnList = LifecycleRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = "cvr_record_lifecycle_companyunit", columnList = LifecycleRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        @Index(name = "cvr_record_lifecycle_participant", columnList = LifecycleRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+@Table(name = LifecycleRecord.TABLE_NAME, indexes = {
+        @Index(name = LifecycleRecord.TABLE_NAME + "__company", columnList = LifecycleRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = LifecycleRecord.TABLE_NAME + "__companyunit", columnList = LifecycleRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = LifecycleRecord.TABLE_NAME + "__participant", columnList = LifecycleRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
 })
 public class LifecycleRecord extends CvrBitemporalDataRecord {
+
+    public static final String TABLE_NAME = "cvr_record_lifecycle";
 
     @Override
     public void populateBaseData(CompanyBaseData baseData, Session session) {

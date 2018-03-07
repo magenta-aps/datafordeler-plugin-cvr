@@ -17,13 +17,15 @@ import java.util.Objects;
  * Record for Company and CompanyUnit monthly employee numbers.
  */
 @Entity
-@Table(name = "cvr_record_monthly_numbers", indexes = {
-        @Index(name = "cvr_record_monthlynumbers_company", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = "cvr_record_monthlynumbers_companyunit", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        @Index(name = "cvr_record_monthlynumbers_year", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_YEAR),
-        @Index(name = "cvr_record_monthlynumbers_month", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_MONTH),
+@Table(name = CompanyMonthlyNumbersRecord.TABLE_NAME, indexes = {
+        @Index(name = CompanyMonthlyNumbersRecord.TABLE_NAME + "__company", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = CompanyMonthlyNumbersRecord.TABLE_NAME + "__unit", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = CompanyMonthlyNumbersRecord.TABLE_NAME + "__year", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_YEAR),
+        @Index(name = CompanyMonthlyNumbersRecord.TABLE_NAME + "__month", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_MONTH),
 })
 public class CompanyMonthlyNumbersRecord extends CompanyNumbersRecord {
+
+    public static final String TABLE_NAME = "cvr_record_monthly_numbers";
 
     public static final String DB_FIELD_YEAR = "year";
     public static final String IO_FIELD_YEAR = "aar";

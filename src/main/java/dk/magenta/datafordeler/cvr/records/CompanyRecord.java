@@ -20,11 +20,13 @@ import java.util.*;
  * with this class at the base.
  */
 @Entity
-@Table(name="cvr_record_companyrecord", indexes = {
-        @Index(name = "cvr_record_company_cvrnumber", columnList = CompanyRecord.DB_FIELD_CVR_NUMBER),
-        @Index(name = "cvr_record_company_advertprotection", columnList = CompanyRecord.DB_FIELD_ADVERTPROTECTION)
+@Table(name = CompanyRecord.TABLE_NAME, indexes = {
+        @Index(name = CompanyRecord.TABLE_NAME + "__cvrnumber", columnList = CompanyRecord.DB_FIELD_CVR_NUMBER),
+        @Index(name = CompanyRecord.TABLE_NAME + "__advertprotection", columnList = CompanyRecord.DB_FIELD_ADVERTPROTECTION)
 })
 public class CompanyRecord extends CvrEntityRecord {
+
+    public static final String TABLE_NAME = "cvr_record_company";
 
     public static final String DB_FIELD_CVR_NUMBER = "cvrNumber";
     public static final String IO_FIELD_CVR_NUMBER = "cvrNummer";

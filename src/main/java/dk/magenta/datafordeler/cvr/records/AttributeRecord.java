@@ -20,16 +20,18 @@ import java.util.Set;
  * kept in {@link dk.magenta.datafordeler.cvr.records.AttributeValueRecord}
  */
 @Entity
-@Table(name = "cvr_record_attribute", indexes = {
-        @Index(name = "cvr_record_attribute_company", columnList = AttributeRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = "cvr_record_attribute_companyunit", columnList = AttributeRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        @Index(name = "cvr_record_attribute_participant", columnList = AttributeRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
-        @Index(name = "cvr_record_attribute_organization", columnList = AttributeRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF),
-        @Index(name = "cvr_record_attribute_organization_memberdata", columnList = AttributeRecord.DB_FIELD_ORGANIZATION_MEMBERDATA + DatabaseEntry.REF),
-        @Index(name = "cvr_record_attribute_fusion", columnList = AttributeRecord.DB_FIELD_FUSION + DatabaseEntry.REF),
-        @Index(name = "cvr_record_attribute_office", columnList = AttributeRecord.DB_FIELD_OFFICE + DatabaseEntry.REF)
+@Table(name = AttributeRecord.TABLE_NAME, indexes = {
+        @Index(name = AttributeRecord.TABLE_NAME + "__company", columnList = AttributeRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = AttributeRecord.TABLE_NAME + "__unit", columnList = AttributeRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = AttributeRecord.TABLE_NAME + "__participant", columnList = AttributeRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+        @Index(name = AttributeRecord.TABLE_NAME + "__organization", columnList = AttributeRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF),
+        @Index(name = AttributeRecord.TABLE_NAME + "__organization_memberdata", columnList = AttributeRecord.DB_FIELD_ORGANIZATION_MEMBERDATA + DatabaseEntry.REF),
+        @Index(name = AttributeRecord.TABLE_NAME + "__fusion", columnList = AttributeRecord.DB_FIELD_FUSION + DatabaseEntry.REF),
+        @Index(name = AttributeRecord.TABLE_NAME + "__office", columnList = AttributeRecord.DB_FIELD_OFFICE + DatabaseEntry.REF)
 })
 public class AttributeRecord extends CvrNontemporalDataRecord {
+
+    public static final String TABLE_NAME = "cvr_record_attribute";
 
     public static final String DB_FIELD_SEQUENCENUMBER = "sequenceNumber";
     public static final String IO_FIELD_SEQUENCENUMBER = "sekvensnr";

@@ -12,12 +12,13 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "cvr_record_metadata", indexes = {
-        @Index(name = "cvr_record_metadata_company", columnList = MetadataRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = "cvr_record_metadata_unit", columnList = MetadataRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+@Table(name = CompanyMetadataRecord.TABLE_NAME, indexes = {
+        @Index(name = CompanyMetadataRecord.TABLE_NAME + "__company", columnList = MetadataRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = CompanyMetadataRecord.TABLE_NAME + "__unit", columnList = MetadataRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
 })
 public class CompanyMetadataRecord extends MetadataRecord {
 
+    public static final String TABLE_NAME = "cvr_record_metadata";
 
     public static final String DB_FIELD_NEWEST_FORM = "newestForm";
     public static final String IO_FIELD_NEWEST_FORM = "nyesteVirksomhedsform";

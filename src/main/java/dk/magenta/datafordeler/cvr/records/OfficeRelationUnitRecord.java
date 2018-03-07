@@ -11,8 +11,12 @@ import java.util.Set;
  * Record for one participant on a Company or CompanyUnit
  */
 @Entity
-@Table(name = "cvr_record_participant_relation_office_unit")
+@Table(name = OfficeRelationUnitRecord.TABLE_NAME, indexes = {
+        @Index(name = OfficeRelationUnitRecord.TABLE_NAME + "__unit", columnList = OfficeRelationUnitRecord.DB_FIELD_UNITNUMBER)
+})
 public class OfficeRelationUnitRecord extends CvrBitemporalRecord {
+
+    public static final String TABLE_NAME = OfficeRelationRecord.TABLE_NAME + "_unit";
 
     public static final String DB_FIELD_UNITNUMBER = "unitNumber";
     public static final String IO_FIELD_UNITNUMBER = "enhedsNummer";
@@ -49,6 +53,19 @@ public class OfficeRelationUnitRecord extends CvrBitemporalRecord {
 
     public long getBusinessKey() {
         return this.businessKey;
+    }
+
+
+
+    //This field is null for every single input
+    public static final String IO_FIELD_ORGANIZATION_TYPE = "organisationstype";
+
+    @Transient
+    @JsonProperty(value = IO_FIELD_ORGANIZATION_TYPE)
+    public Integer organizationType;
+
+    public Integer getOrganizationType() {
+        return this.organizationType;
     }
 
 

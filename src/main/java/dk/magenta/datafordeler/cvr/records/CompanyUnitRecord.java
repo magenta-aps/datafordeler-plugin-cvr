@@ -21,11 +21,13 @@ import java.util.*;
  * with this class at the base.
  */
 @Entity
-@Table(name="cvr_record_companyunitrecord", indexes = {
-        @Index(name = "cvr_record_companyunit_pnumber", columnList = CompanyUnitRecord.DB_FIELD_P_NUMBER),
-        @Index(name = "cvr_record_companyunit_unitnumber", columnList = CompanyUnitRecord.DB_FIELD_UNITNUMBER),
+@Table(name = CompanyUnitRecord.TABLE_NAME, indexes = {
+        @Index(name = CompanyUnitRecord.TABLE_NAME + "__pnumber", columnList = CompanyUnitRecord.DB_FIELD_P_NUMBER),
+        @Index(name = CompanyUnitRecord.TABLE_NAME + "__unitnumber", columnList = CompanyUnitRecord.DB_FIELD_UNITNUMBER),
 })
 public class CompanyUnitRecord extends CvrEntityRecord {
+
+    public static final String TABLE_NAME = "cvr_record_unit";
 
     public static final String DB_FIELD_P_NUMBER = "pNumber";
     public static final String IO_FIELD_P_NUMBER = "pNummer";
@@ -496,7 +498,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     //public static final String IO_FIELD_MONTHLY_NUMBERS = "maanedsbeskaeftigelse";
 
     //@OneToMany(mappedBy = CompanyMonthlyNumbersRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
-    //@JsonProperty(value = "maanedsbeskaeftigelse")
+    //@JsonProperty(value = IO_FIELD_MONTHLY_NUMBERS)
     //private Set<CompanyMonthlyNumbersRecord> monthlyNumbers;
 
 
@@ -531,6 +533,8 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     }
 
 
+    public static final String DB_FIELD_PARTICIPANTS = "participants";
+    public static final String IO_FIELD_PARTICIPANTS = "deltagerRelation";
 
     @OneToMany(mappedBy = CompanyParticipantRelationRecord.DB_FIELD_COMPANYUNIT, targetEntity = CompanyParticipantRelationRecord.class, cascade = CascadeType.ALL)
     @Filters({
@@ -538,7 +542,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_TO+" >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR "+CvrRecordPeriod.DB_FIELD_VALID_TO+" is null)"),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
-    @JsonProperty(value = "deltagerRelation")
+    @JsonProperty(value = IO_FIELD_PARTICIPANTS)
     private Set<CompanyParticipantRelationRecord> participantRelations;
 
     public void setParticipantRelations(Set<CompanyParticipantRelationRecord> participantRelations) {
@@ -730,7 +734,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
 
     @Override
     public boolean merge(CvrEntityRecord other) {
-        if (other != null && !other.getId().equals(this.getId()) && other instanceof CompanyUnitRecord) {
+        if (other != null && !Objects.equals(this.getId(), other.getId()) && other instanceof CompanyUnitRecord) {
             CompanyUnitRecord otherRecord = (CompanyUnitRecord) other;
             for (SecNameRecord nameRecord : otherRecord.getNames()) {
                 this.addName(nameRecord);

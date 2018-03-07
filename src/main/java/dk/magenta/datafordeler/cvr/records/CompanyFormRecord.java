@@ -14,12 +14,14 @@ import java.util.Objects;
  * Record for Company form.
  */
 @Entity
-@Table(name = "cvr_record_company_form", indexes = {
-        @Index(name = "cvr_record_form_company", columnList = CompanyFormRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = "cvr_record_form_companyunit", columnList = CompanyFormRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        @Index(name = "cvr_record_form_companymeta", columnList = CompanyFormRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
+@Table(name = CompanyFormRecord.TABLE_NAME, indexes = {
+        @Index(name = CompanyFormRecord.TABLE_NAME + "__company", columnList = CompanyFormRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = CompanyFormRecord.TABLE_NAME + "__unit", columnList = CompanyFormRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = CompanyFormRecord.TABLE_NAME + "__companymeta", columnList = CompanyFormRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
 })
 public class CompanyFormRecord extends CvrBitemporalDataRecord {
+
+    public static final String TABLE_NAME = "cvr_record_form";
 
     public static final String DB_FIELD_COMPANY_METADATA = "companyMetadataRecord";
 

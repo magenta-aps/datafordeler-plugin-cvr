@@ -94,21 +94,8 @@ public class RecordTest {
                         String type = item.get("_type").asText();
                         CompanyEntityManager entityManager = (CompanyEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
                         JsonNode companyInputNode = item.get("_source").get("Vrvirksomhed");
-
-                        try {
-                            ArrayNode arrayNode = (ArrayNode) companyInputNode.get("deltagerRelation");
-                            for (JsonNode j : arrayNode) {
-                                JsonNode k = j.get("deltager").get("organisationstype");
-                                if (!k.isNull()) {
-                                    System.out.println("Not null");
-                                }
-                            }
-                        } catch (Exception e) {}
-
-                        //CompanyRecord companyRecord = objectMapper.treeToValue(companyInputNode, CompanyRecord.class);
-
-                        //entityManager.parseData(companyInputNode, importMetadata, session);
-                        //companies.put(companyInputNode.get("cvrNummer").asInt(), companyInputNode);
+                        entityManager.parseData(companyInputNode, importMetadata, session);
+                        companies.put(companyInputNode.get("cvrNummer").asInt(), companyInputNode);
                     }
                     lineNumber++;
                     if (lineNumber % 100 == 0) {

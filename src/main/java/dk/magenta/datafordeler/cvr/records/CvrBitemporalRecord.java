@@ -17,9 +17,10 @@ import java.util.Objects;
 public class CvrBitemporalRecord extends CvrRecord implements Comparable<CvrBitemporalRecord> {
 
     public static final String DB_FIELD_LAST_UPDATED = "lastUpdated";
+    public static final String IO_FIELD_LAST_UPDATED = "sidstOpdateret";
 
     @Column(name = DB_FIELD_LAST_UPDATED)
-    @JsonProperty(value = "sidstOpdateret")
+    @JsonProperty(value = IO_FIELD_LAST_UPDATED)
     private OffsetDateTime lastUpdated;
 
     @JsonIgnore
@@ -36,8 +37,10 @@ public class CvrBitemporalRecord extends CvrRecord implements Comparable<CvrBite
 
 
     public static final String DB_FIELD_LAST_LOADED = "lastLoaded";
+    public static final String IO_FIELD_LAST_LOADED = "sidstIndlaest";
 
-    @JsonProperty(value = "sidstIndlaest")
+    @Column(name = DB_FIELD_LAST_LOADED)
+    @JsonProperty(value = IO_FIELD_LAST_LOADED)
     private OffsetDateTime lastLoaded;
 
     @JsonIgnore
@@ -52,8 +55,10 @@ public class CvrBitemporalRecord extends CvrRecord implements Comparable<CvrBite
 
 
 
+    public static final String IO_FIELD_PERIOD = "periode";
+
     @Embedded
-    @JsonProperty(value = "periode")
+    @JsonProperty(value = IO_FIELD_PERIOD)
     private CvrRecordPeriod validity;
 
     public CvrRecordPeriod getValidity() {

@@ -15,8 +15,10 @@ import java.util.UUID;
  * Record for one participant on a Company or CompanyUnit
  */
 @Entity
-@Table(name = "cvr_record_participant_relation_participant")
+@Table(name = ParticipantRelationRecord.TABLE_NAME)
 public class ParticipantRelationRecord extends CvrBitemporalRecord {
+
+    public static final String TABLE_NAME = CompanyParticipantRelationRecord.TABLE_NAME + "_participant";
 
     public static final String DB_FIELD_UNITNUMBER = "unitNumber";
     public static final String IO_FIELD_UNITNUMBER = "enhedsNummer";

@@ -16,11 +16,13 @@ import java.util.Objects;
  * Record for Company status data.
  */
 @Entity
-@Table(name = "cvr_record_companystatus", indexes = {
-        @Index(name = "cvr_record_companystatus_company", columnList = CompanyStatusRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = "cvr_record_companystatus_companyunit", columnList = CompanyStatusRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+@Table(name = CompanyStatusRecord.TABLE_NAME, indexes = {
+        @Index(name = CompanyStatusRecord.TABLE_NAME + "__company", columnList = CompanyStatusRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = CompanyStatusRecord.TABLE_NAME + "__unit", columnList = CompanyStatusRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
 })
 public class CompanyStatusRecord extends CvrBitemporalDataRecord {
+
+    public static final String TABLE_NAME = "cvr_record_status";
 
     public static final String DB_FIELD_STATUS = "status";
     public static final String IO_FIELD_STATUS = "status";

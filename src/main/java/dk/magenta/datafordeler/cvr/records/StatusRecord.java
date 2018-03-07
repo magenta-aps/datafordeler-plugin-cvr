@@ -16,11 +16,13 @@ import java.util.Objects;
  * Record for Company statusText data.
  */
 @Entity
-@Table(name = "cvr_record_status", indexes = {
-        @Index(name = "cvr_record_status_company", columnList = StatusRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = "cvr_record_status_companyunit", columnList = StatusRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+@Table(name = StatusRecord.TABLE_NAME, indexes = {
+        @Index(name = StatusRecord.TABLE_NAME + "__company", columnList = StatusRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = StatusRecord.TABLE_NAME + "__companyunit", columnList = StatusRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
 })
 public class StatusRecord extends CvrBitemporalDataRecord {
+
+    public static final String TABLE_NAME = "cvr_record_status";
 
     public static final String DB_FIELD_STATUSTEXT = "statusText";
     public static final String IO_FIELD_STATUSTEXT = "statustekst";
@@ -44,13 +46,13 @@ public class StatusRecord extends CvrBitemporalDataRecord {
 
     @Column(name = DB_FIELD_STATUSCODE)
     @JsonProperty(value = IO_FIELD_STATUSCODE)
-    private int statusCode;
+    private Integer statusCode;
 
-    public int getStatusCode() {
+    public Integer getStatusCode() {
         return this.statusCode;
     }
 
-    public void setStatusCode(int statusCode) {
+    public void setStatusCode(Integer statusCode) {
         this.statusCode = statusCode;
     }
 
@@ -78,13 +80,13 @@ public class StatusRecord extends CvrBitemporalDataRecord {
 
     @Column(name = DB_FIELD_CREDITDATACODE)
     @JsonProperty(value = IO_FIELD_CREDITDATACODE)
-    private int creditDataCode;
+    private Integer creditDataCode;
 
-    public int getCreditDataCode() {
+    public Integer getCreditDataCode() {
         return this.creditDataCode;
     }
 
-    public void setCreditDataCode(int creditDataCode) {
+    public void setCreditDataCode(Integer creditDataCode) {
         this.creditDataCode = creditDataCode;
     }
 

@@ -20,12 +20,14 @@ import java.util.UUID;
  */
 
 @Entity
-@Table(name = "cvr_record_participant_relation", indexes = {
-        @Index(name = "cvr_record_participant_relation_company", columnList = CompanyParticipantRelationRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = "cvr_record_participant_relation_companyunit", columnList = CompanyParticipantRelationRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        @Index(name = "cvr_record_participant_relation_participant", columnList = CompanyParticipantRelationRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+@Table(name = CompanyParticipantRelationRecord.TABLE_NAME, indexes = {
+        @Index(name = CompanyParticipantRelationRecord.TABLE_NAME + "__company", columnList = CompanyParticipantRelationRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = CompanyParticipantRelationRecord.TABLE_NAME + "__unit", columnList = CompanyParticipantRelationRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = CompanyParticipantRelationRecord.TABLE_NAME + "__participant", columnList = CompanyParticipantRelationRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
 })
 public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
+
+    public static final String TABLE_NAME = "cvr_record_company_participant_relation";
 
     public static final String DB_FIELD_PARTICIPANT_RELATION = "participant";
     public static final String IO_FIELD_PARTICIPANT_RELATION = "deltager";
@@ -86,8 +88,11 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
 
 
 
+    public static final String DB_FIELD_ORGANIZATIONS = "organizations";
+    public static final String IO_FIELD_ORGANIZATIONS = "organisationer";
+
     @OneToMany(mappedBy = OrganizationRecord.DB_FIELD_PARTICIPANT_RELATION, targetEntity = OrganizationRecord.class, cascade = CascadeType.ALL)
-    @JsonProperty(value = "organisationer")
+    @JsonProperty(value = IO_FIELD_ORGANIZATIONS)
     private Set<OrganizationRecord> organizations;
 
     public void setOrganizations(Set<OrganizationRecord> organizations) {

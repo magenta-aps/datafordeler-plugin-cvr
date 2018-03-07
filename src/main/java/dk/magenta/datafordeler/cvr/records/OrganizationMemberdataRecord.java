@@ -10,10 +10,12 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "cvr_record_participant_relation_organization_memberdata", indexes = {
-        @Index(name = "cvr_record_participant_relation_organization_memberdata_organization", columnList = OrganizationMemberdataRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF)
+@Table(name = OrganizationMemberdataRecord.TABLE_NAME, indexes = {
+        @Index(name = OrganizationMemberdataRecord.TABLE_NAME + "__organization", columnList = OrganizationMemberdataRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF)
 })
 public class OrganizationMemberdataRecord extends CvrRecord {
+
+    public static final String TABLE_NAME = OrganizationRecord.TABLE_NAME + "_memberdata";
 
     public static final String DB_FIELD_ORGANIZATION = "organizationRecord";
 

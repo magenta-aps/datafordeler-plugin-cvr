@@ -15,13 +15,15 @@ import java.util.Objects;
  * Record for Company, CompanyUnit or Participant name.
  */
 @Entity
-@Table(name = "cvr_record_name2", indexes = {
-        @Index(name = "cvr_record_name2_company", columnList = SecNameRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = "cvr_record_name2_companyunit", columnList = SecNameRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        @Index(name = "cvr_record_name2_participant", columnList = SecNameRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
-        @Index(name = "cvr_record_name2_data", columnList = SecNameRecord.DB_FIELD_NAME),
+@Table(name = SecNameRecord.TABLE_NAME, indexes = {
+        @Index(name = SecNameRecord.TABLE_NAME + "__company", columnList = SecNameRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = SecNameRecord.TABLE_NAME + "__companyunit", columnList = SecNameRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = SecNameRecord.TABLE_NAME + "__participant", columnList = SecNameRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+        @Index(name = SecNameRecord.TABLE_NAME + "__data", columnList = SecNameRecord.DB_FIELD_NAME),
 })
 public class SecNameRecord extends CvrBitemporalDataRecord {
+
+    public static final String TABLE_NAME = "cvr_record_name2";
 
     public static final String DB_FIELD_NAME = "name";
     public static final String IO_FIELD_NAME = "navn";

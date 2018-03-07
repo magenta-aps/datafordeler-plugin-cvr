@@ -18,14 +18,16 @@ import java.util.Objects;
  * Record for Company and CompanyUnit industry.
  */
 @Entity
-@Table(name = "cvr_record_industry", indexes = {
-        @Index(name = "cvr_record_industry_company", columnList = CompanyIndustryRecord.DB_FIELD_COMPANY + DatabaseEntry.REF + "," + CompanyIndustryRecord.DB_FIELD_INDEX),
-        @Index(name = "cvr_record_industry_companyunit", columnList = CompanyIndustryRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF + "," + CompanyIndustryRecord.DB_FIELD_INDEX),
-        @Index(name = "cvr_record_industry_companymetadata", columnList = CompanyIndustryRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
-        @Index(name = "cvr_record_industry_unitmetadata", columnList = CompanyIndustryRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
-        @Index(name="cvr_record_industry_code", columnList = CompanyIndustryRecord.DB_FIELD_CODE)
+@Table(name = CompanyIndustryRecord.TABLE_NAME, indexes = {
+        @Index(name = CompanyIndustryRecord.TABLE_NAME + "__company", columnList = CompanyIndustryRecord.DB_FIELD_COMPANY + DatabaseEntry.REF + "," + CompanyIndustryRecord.DB_FIELD_INDEX),
+        @Index(name = CompanyIndustryRecord.TABLE_NAME + "__companyunit", columnList = CompanyIndustryRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF + "," + CompanyIndustryRecord.DB_FIELD_INDEX),
+        @Index(name = CompanyIndustryRecord.TABLE_NAME + "__companymetadata", columnList = CompanyIndustryRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
+        @Index(name = CompanyIndustryRecord.TABLE_NAME + "__unitmetadata", columnList = CompanyIndustryRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
+        @Index(name = CompanyIndustryRecord.TABLE_NAME + "__code", columnList = CompanyIndustryRecord.DB_FIELD_CODE)
 })
 public class CompanyIndustryRecord extends CvrBitemporalDataMetaRecord {
+
+    public static final String TABLE_NAME = "cvr_record_industry";
 
     public static final String DB_FIELD_INDEX = "index";
 

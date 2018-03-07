@@ -7,12 +7,14 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "cvr_record_metadata_contact", indexes = {
-        @Index(name = "cvr_record_metadata_contact_companymetadata", columnList = MetadataContactRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
-        @Index(name = "cvr_record_metadata_contact_unitmetadata", columnList = MetadataContactRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
-        @Index(name = "cvr_record_metadata_contact_participantmetadata", columnList = MetadataContactRecord.DB_FIELD_PARTICIPANT_METADATA + DatabaseEntry.REF)
+@Table(name = MetadataContactRecord.TABLE_NAME, indexes = {
+        @Index(name = MetadataContactRecord.TABLE_NAME + "__companymetadata", columnList = MetadataContactRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
+        @Index(name = MetadataContactRecord.TABLE_NAME + "__unitmetadata", columnList = MetadataContactRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
+        @Index(name = MetadataContactRecord.TABLE_NAME + "__participantmetadata", columnList = MetadataContactRecord.DB_FIELD_PARTICIPANT_METADATA + DatabaseEntry.REF)
 })
 public class MetadataContactRecord extends CvrNontemporalRecord {
+
+    public static final String TABLE_NAME = "cvr_record_metadata_contact";
 
     public static final String DB_FIELD_DATA = "data";
 

@@ -14,10 +14,13 @@ import javax.persistence.Table;
  * Record for CompanyUnit associated CVR number.
  */
 @Entity
-@Table(name = "cvr_record_companyunit_link_company", indexes = {
-        @Index(name = "cvr_record_companylink_companyunit", columnList = CompanyLinkRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF)
+@Table(name = CompanyLinkRecord.TABLE_NAME, indexes = {
+        @Index(name = CompanyLinkRecord.TABLE_NAME + "__companyunit", columnList = CompanyLinkRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = CompanyLinkRecord.TABLE_NAME + "__cvrnumber", columnList = CompanyLinkRecord.DB_FIELD_CVRNUMBER),
 })
 public class CompanyLinkRecord extends CvrBitemporalDataRecord {
+
+    public static final String TABLE_NAME = "cvr_record_unit_link_company";
 
     public static final String DB_FIELD_CVRNUMBER = "cvrNumber";
     public static final String IO_FIELD_CVRNUMBER = "cvrNummer";

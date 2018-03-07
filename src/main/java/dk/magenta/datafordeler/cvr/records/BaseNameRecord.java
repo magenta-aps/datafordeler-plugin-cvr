@@ -11,22 +11,24 @@ import java.util.Objects;
  * Record for Company, CompanyUnit or Participant name.
  */
 @Entity
-@Table(name = "cvr_record_name1", indexes = {
-        @Index(name = "cvr_record_name1_companymetadata", columnList = BaseNameRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
-        @Index(name = "cvr_record_name1_unitmetadata", columnList = BaseNameRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
-        @Index(name = "cvr_record_name1_participantrelation", columnList = BaseNameRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF),
-        @Index(name = "cvr_record_name1_organization", columnList = BaseNameRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF),
-        @Index(name = "cvr_record_name1_office", columnList = BaseNameRecord.DB_FIELD_OFFICE_UNIT + DatabaseEntry.REF),
-        @Index(name = "cvr_record_name1_fusion", columnList = BaseNameRecord.DB_FIELD_FUSION + DatabaseEntry.REF),
-        @Index(name = "cvr_record_name1_data", columnList = BaseNameRecord.DB_FIELD_NAME),
+@Table(name = BaseNameRecord.TABLE_NAME, indexes = {
+        @Index(name = BaseNameRecord.TABLE_NAME + "__companymetadata", columnList = BaseNameRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
+        @Index(name = BaseNameRecord.TABLE_NAME + "__unitmetadata", columnList = BaseNameRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
+        @Index(name = BaseNameRecord.TABLE_NAME + "__participantrelation", columnList = BaseNameRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF),
+        @Index(name = BaseNameRecord.TABLE_NAME + "__organization", columnList = BaseNameRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF),
+        @Index(name = BaseNameRecord.TABLE_NAME + "__office", columnList = BaseNameRecord.DB_FIELD_OFFICE_UNIT + DatabaseEntry.REF),
+        @Index(name = BaseNameRecord.TABLE_NAME + "__fusion", columnList = BaseNameRecord.DB_FIELD_FUSION + DatabaseEntry.REF),
+        @Index(name = BaseNameRecord.TABLE_NAME + "__data", columnList = BaseNameRecord.DB_FIELD_NAME),
 })
 public class BaseNameRecord extends CvrBitemporalMetaRecord {
+
+    public static final String TABLE_NAME = "cvr_record_name1";
 
     public static final String DB_FIELD_NAME = "name";
     public static final String IO_FIELD_NAME = "navn";
 
     @Column(name = DB_FIELD_NAME)
-    @JsonProperty(value = "navn")
+    @JsonProperty(value = IO_FIELD_NAME)
     private String name;
 
     public String getName() {

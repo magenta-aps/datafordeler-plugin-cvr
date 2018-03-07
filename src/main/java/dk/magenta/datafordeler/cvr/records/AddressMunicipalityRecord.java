@@ -12,10 +12,12 @@ import javax.persistence.*;
  * Record for Company form.
  */
 @Entity
-@Table(name = "cvr_record_address_municipality", indexes = {
-        @Index(name = "cvr_record_address_municipality_municipality", columnList = AddressMunicipalityRecord.DB_FIELD_MUNICIPALITY + DatabaseEntry.REF)
+@Table(name = AddressMunicipalityRecord.TABLE_NAME, indexes = {
+        @Index(name = AddressMunicipalityRecord.TABLE_NAME + "__municipality", columnList = AddressMunicipalityRecord.DB_FIELD_MUNICIPALITY + DatabaseEntry.REF)
 })
 public class AddressMunicipalityRecord extends CvrBitemporalRecord {
+
+    public static final String TABLE_NAME = "cvr_record_address_municipality";
 
     public static final String IO_FIELD_MUNICIPALITY_CODE = "kommuneKode";
 

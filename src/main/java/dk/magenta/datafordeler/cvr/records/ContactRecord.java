@@ -18,13 +18,15 @@ import java.util.Objects;
  * Record for Company, CompanyUnit and Participant contact information.
  */
 @Entity
-@Table(name = "cvr_record_contact", indexes = {
-        @Index(name = "cvr_record_contact_company", columnList = ContactRecord.DB_FIELD_COMPANY + DatabaseEntry.REF + "," + ContactRecord.DB_FIELD_TYPE),
-        @Index(name = "cvr_record_contact_companyunit", columnList = ContactRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF + "," + ContactRecord.DB_FIELD_TYPE),
-        @Index(name = "cvr_record_contact_participant", columnList = ContactRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF + "," + ContactRecord.DB_FIELD_TYPE),
-        @Index(name = "cvr_record_contact_data", columnList = ContactRecord.DB_FIELD_DATA),
+@Table(name = ContactRecord.TABLE_NAME, indexes = {
+        @Index(name = ContactRecord.TABLE_NAME + "__company", columnList = ContactRecord.DB_FIELD_COMPANY + DatabaseEntry.REF + "," + ContactRecord.DB_FIELD_TYPE),
+        @Index(name = ContactRecord.TABLE_NAME + "__companyunit", columnList = ContactRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF + "," + ContactRecord.DB_FIELD_TYPE),
+        @Index(name = ContactRecord.TABLE_NAME + "__participant", columnList = ContactRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF + "," + ContactRecord.DB_FIELD_TYPE),
+        @Index(name = ContactRecord.TABLE_NAME + "__data", columnList = ContactRecord.DB_FIELD_DATA),
 })
 public class ContactRecord extends CvrBitemporalDataRecord {
+
+    public static final String TABLE_NAME = "cvr_record_contact";
 
     public static final int TYPE_TELEFONNUMMER = 0;
     public static final int TYPE_TELEFAXNUMMER = 1;
@@ -37,7 +39,7 @@ public class ContactRecord extends CvrBitemporalDataRecord {
     public static final String IO_FIELD_DATA = "kontaktoplysning";
 
     @Column(name = DB_FIELD_DATA)
-    @JsonProperty(value = "kontaktoplysning")
+    @JsonProperty(value = IO_FIELD_DATA)
     protected String contactInformation;
 
 
@@ -46,7 +48,7 @@ public class ContactRecord extends CvrBitemporalDataRecord {
     public static final String IO_FIELD_SECRET = "hemmelig";
 
     @Column(name = DB_FIELD_SECRET)
-    @JsonProperty(value = "hemmelig")
+    @JsonProperty(value = IO_FIELD_SECRET)
     protected boolean secret;
 
 

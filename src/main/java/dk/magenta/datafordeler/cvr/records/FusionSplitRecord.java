@@ -14,10 +14,12 @@ import java.util.Set;
  * Record for Company status data.
  */
 @Entity
-@Table(name = "cvr_record_fusion", indexes = {
-        @Index(name = "cvr_record_fusion_company", columnList = FusionSplitRecord.DB_FIELD_COMPANY + DatabaseEntry.REF + "," + FusionSplitRecord.DB_FIELD_SPLIT),
+@Table(name = FusionSplitRecord.TABLE_NAME, indexes = {
+        @Index(name = FusionSplitRecord.TABLE_NAME + "__company", columnList = FusionSplitRecord.DB_FIELD_COMPANY + DatabaseEntry.REF + "," + FusionSplitRecord.DB_FIELD_SPLIT),
 })
 public class FusionSplitRecord extends CvrNontemporalDataRecord {
+
+    public static final String TABLE_NAME = "cvr_record_fusion";
 
     public static final String DB_FIELD_SPLIT = "split";
 

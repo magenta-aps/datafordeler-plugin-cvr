@@ -20,19 +20,21 @@ import java.util.UUID;
  * Record for Company, CompanyUnit and Participant address data.
  */
 @Entity
-@Table(name = "cvr_record_address", indexes = {
-        @Index(name = "cvr_record_address_company", columnList = AddressRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = "cvr_record_address_companyunit", columnList = AddressRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        @Index(name = "cvr_record_address_participant", columnList = AddressRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
-        @Index(name = "cvr_record_address_companymetadata", columnList = AddressRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
-        @Index(name = "cvr_record_address_unitmetadata", columnList = AddressRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
-        @Index(name = "cvr_record_address_officeunit", columnList = AddressRecord.DB_FIELD_OFFICE_UNIT + DatabaseEntry.REF),
-        @Index(name = "cvr_record_address_participantrelation", columnList = AddressRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF),
-        @Index(name = "cvr_record_address_type", columnList = AddressRecord.DB_FIELD_TYPE),
-        @Index(name = "cvr_record_address_municipality", columnList = AddressRecord.DB_FIELD_MUNICIPALITY + DatabaseEntry.REF),
-        @Index(name = "cvr_record_address_postcode", columnList = AddressRecord.DB_FIELD_POSTCODE_REF + DatabaseEntry.REF),
+@Table(name = AddressRecord.TABLE_NAME, indexes = {
+        @Index(name = AddressRecord.TABLE_NAME + "__company", columnList = AddressRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = AddressRecord.TABLE_NAME + "__unit", columnList = AddressRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = AddressRecord.TABLE_NAME + "__participant", columnList = AddressRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+        @Index(name = AddressRecord.TABLE_NAME + "__companymetadata", columnList = AddressRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
+        @Index(name = AddressRecord.TABLE_NAME + "__unitmetadata", columnList = AddressRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
+        @Index(name = AddressRecord.TABLE_NAME + "__officeunit", columnList = AddressRecord.DB_FIELD_OFFICE_UNIT + DatabaseEntry.REF),
+        @Index(name = AddressRecord.TABLE_NAME + "__participantrelation", columnList = AddressRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF),
+        @Index(name = AddressRecord.TABLE_NAME + "__type", columnList = AddressRecord.DB_FIELD_TYPE),
+        @Index(name = AddressRecord.TABLE_NAME + "__municipality", columnList = AddressRecord.DB_FIELD_MUNICIPALITY + DatabaseEntry.REF),
+        @Index(name = AddressRecord.TABLE_NAME + "__postcode", columnList = AddressRecord.DB_FIELD_POSTCODE_REF + DatabaseEntry.REF),
 })
 public class AddressRecord extends CvrBitemporalDataMetaRecord {
+
+    public static final String TABLE_NAME = "cvr_record_address";
 
     public static final int TYPE_LOCATION = 0;
     public static final int TYPE_POSTAL = 1;

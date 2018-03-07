@@ -16,11 +16,12 @@ import java.util.Set;
  * Record for one participating organization on a Company or CompanyUnit
  */
 @Entity
-@Table(name = "cvr_record_participant_relation_organization", indexes = {
-        @Index(name = "cvr_record_participant_relation_organization_company", columnList = OrganizationRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF)
+@Table(name = OrganizationRecord.TABLE_NAME, indexes = {
+        @Index(name = OrganizationRecord.TABLE_NAME + "__relation", columnList = OrganizationRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF)
 })
 public class OrganizationRecord extends DatabaseEntry {
 
+    public static final String TABLE_NAME = CompanyParticipantRelationRecord.TABLE_NAME + "_organization";
 
     public static final String DB_FIELD_PARTICIPANT_RELATION = "companyParticipantRelationRecord";
 

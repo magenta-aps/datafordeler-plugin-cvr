@@ -20,10 +20,12 @@ import java.util.UUID;
  * Record for Company Unit references.
  */
 @Entity
-@Table(name = "cvr_record_productionunit_link", indexes = {
-        @Index(name = "cvr_record_productionunit_company", columnList = CompanyLinkRecord.DB_FIELD_COMPANY + DatabaseEntry.REF)
+@Table(name = CompanyUnitLinkRecord.TABLE_NAME, indexes = {
+        @Index(name = CompanyUnitLinkRecord.TABLE_NAME + "__company", columnList = CompanyLinkRecord.DB_FIELD_COMPANY + DatabaseEntry.REF)
 })
 public class CompanyUnitLinkRecord extends CvrBitemporalDataRecord {
+
+    public static final String TABLE_NAME = "cvr_record_company_unit_relation";
 
     public static final String DB_FIELD_PNUMBER = "pNumber";
     public static final String IO_FIELD_PNUMBER = "pNummer";

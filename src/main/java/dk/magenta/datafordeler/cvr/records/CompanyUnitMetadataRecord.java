@@ -10,13 +10,16 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "cvr_record_unit_metadata", indexes = {
-        @Index(name = "cvr_record_metadata_unit", columnList = MetadataRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+@Table(name = CompanyUnitMetadataRecord.TABLE_NAME, indexes = {
+        @Index(name = CompanyUnitMetadataRecord.TABLE_NAME + "__unit", columnList = MetadataRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
 })
 public class CompanyUnitMetadataRecord extends MetadataRecord {
+
+    public static final String TABLE_NAME = "cvr_record_unit_metadata";
 
     public static final String DB_FIELD_NEWEST_CVR_RELATION = "newestCvrRelation";
     public static final String IO_FIELD_NEWEST_CVR_RELATION = "nyesteCvrNummerRelation";
@@ -292,7 +295,7 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
 
     @Override
     public boolean merge(MetadataRecord other) {
-        if (other != null && !other.getId().equals(this.getId()) && other instanceof CompanyUnitMetadataRecord) {
+        if (other != null && !Objects.equals(this.getId(), other.getId()) && other instanceof CompanyUnitMetadataRecord) {
             CompanyUnitMetadataRecord otherRecord = (CompanyUnitMetadataRecord) other;
             for (BaseNameRecord nameRecord : otherRecord.getNewestName()) {
                 this.addNewestName(nameRecord);

@@ -21,8 +21,10 @@ import java.util.*;
  * with this class at the base.
  */
 @Entity
-@Table(name="cvr_record_participantrecord")
+@Table(name = ParticipantRecord.TABLE_NAME)
 public class ParticipantRecord extends CvrEntityRecord {
+
+    public static final String TABLE_NAME = "cvr_record_participant";
 
     public static final String DB_FIELD_UNIT_NUMBER = "unitNumber";
     public static final String IO_FIELD_UNIT_NUMBER = "enhedsNummer";

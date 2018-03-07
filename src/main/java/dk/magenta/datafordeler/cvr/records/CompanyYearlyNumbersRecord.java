@@ -17,12 +17,14 @@ import java.util.Objects;
  * Record for Company and CompanyUnit yearly employee numbers.
  */
 @Entity
-@Table(name = "cvr_record_yearly_numbers", indexes = {
-        @Index(name = "cvr_record_yearlynumbers_company", columnList = CompanyYearlyNumbersRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = "cvr_record_yearlynumbers_companyunit", columnList = CompanyYearlyNumbersRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        @Index(name = "cvr_record_yearlynumbers_year", columnList = CompanyYearlyNumbersRecord.DB_FIELD_YEAR),
+@Table(name = CompanyYearlyNumbersRecord.TABLE_NAME, indexes = {
+        @Index(name = CompanyYearlyNumbersRecord.TABLE_NAME + "__company", columnList = CompanyYearlyNumbersRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = CompanyYearlyNumbersRecord.TABLE_NAME + "__unit", columnList = CompanyYearlyNumbersRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = CompanyYearlyNumbersRecord.TABLE_NAME + "__year", columnList = CompanyYearlyNumbersRecord.DB_FIELD_YEAR),
 })
 public class CompanyYearlyNumbersRecord extends CompanyNumbersRecord {
+
+    public static final String TABLE_NAME = "cvr_record_yearly_numbers";
 
     public static final String DB_FIELD_YEAR = "year";
     public static final String IO_FIELD_YEAR = "aar";
