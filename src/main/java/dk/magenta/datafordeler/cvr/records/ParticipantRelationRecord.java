@@ -84,13 +84,13 @@ public class ParticipantRelationRecord extends CvrBitemporalRecord {
     public void setNames(Set<BaseNameRecord> names) {
         this.names = names;
         for (BaseNameRecord name : names) {
-            name.setParticipantRelationRecord(this);
+            name.setCompanyParticipantRelationRecord(this);
         }
     }
 
     public void addName(BaseNameRecord record) {
         if (!this.names.contains(record)) {
-            record.setParticipantRelationRecord(this);
+            record.setCompanyParticipantRelationRecord(this);
             this.names.add(record);
         }
     }

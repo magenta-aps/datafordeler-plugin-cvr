@@ -18,6 +18,7 @@ import java.util.Objects;
         @Index(name = CompanyFormRecord.TABLE_NAME + "__company", columnList = CompanyFormRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
         @Index(name = CompanyFormRecord.TABLE_NAME + "__unit", columnList = CompanyFormRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
         @Index(name = CompanyFormRecord.TABLE_NAME + "__companymeta", columnList = CompanyFormRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
+        @Index(name = CompanyFormRecord.TABLE_NAME + "__participant_company_relation", columnList = CompanyFormRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
 })
 public class CompanyFormRecord extends CvrBitemporalDataRecord {
 
@@ -93,6 +94,21 @@ public class CompanyFormRecord extends CvrBitemporalDataRecord {
     @ManyToOne(targetEntity = CompanyForm.class)
     @JsonIgnore
     private CompanyForm companyForm;
+
+
+
+    public static final String DB_FIELD_PARTICIPANT_COMPANY_RELATION = "participantCompanyRelationRecord";
+
+    @ManyToOne(targetEntity = CompanyRelationRecord.class)
+    @JoinColumn(name = DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF)
+    @JsonIgnore
+    private CompanyRelationRecord participantCompanyRelationRecord;
+
+    public void setParticipantCompanyRelationRecord(CompanyRelationRecord participantCompanyRelationRecord) {
+        this.participantCompanyRelationRecord = participantCompanyRelationRecord;
+    }
+
+
 
     @Override
     public void populateBaseData(CompanyBaseData baseData, Session session) {

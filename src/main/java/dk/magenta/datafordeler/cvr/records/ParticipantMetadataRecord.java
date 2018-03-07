@@ -10,6 +10,7 @@ import org.hibernate.annotations.Filters;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -123,7 +124,7 @@ public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
     }
 
     public boolean merge(ParticipantMetadataRecord other) {
-        if (other != null && !other.getId().equals(this.getId())) {
+        if (other != null && !Objects.equals(this.getId(), other.getId())) {
             for (AddressRecord addressRecord : other.getNewestLocation()) {
                 this.addNewestLocation(addressRecord);
             }

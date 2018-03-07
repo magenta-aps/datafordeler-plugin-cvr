@@ -1,15 +1,13 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyStatus;
 import org.hibernate.Session;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
@@ -19,6 +17,7 @@ import java.util.Objects;
 @Table(name = CompanyStatusRecord.TABLE_NAME, indexes = {
         @Index(name = CompanyStatusRecord.TABLE_NAME + "__company", columnList = CompanyStatusRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
         @Index(name = CompanyStatusRecord.TABLE_NAME + "__unit", columnList = CompanyStatusRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = CompanyStatusRecord.TABLE_NAME + "__participant_company_relation", columnList = CompanyStatusRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
 })
 public class CompanyStatusRecord extends CvrBitemporalDataRecord {
 
@@ -38,6 +37,21 @@ public class CompanyStatusRecord extends CvrBitemporalDataRecord {
     public void setStatus(String status) {
         this.status = status;
     }
+
+
+
+    public static final String DB_FIELD_PARTICIPANT_COMPANY_RELATION = "participantCompanyRelationRecord";
+
+    @ManyToOne(targetEntity = CompanyRelationRecord.class)
+    @JoinColumn(name = DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF)
+    @JsonIgnore
+    private CompanyRelationRecord participantCompanyRelationRecord;
+
+    public void setParticipantCompanyRelationRecord(CompanyRelationRecord participantCompanyRelationRecord) {
+        this.participantCompanyRelationRecord = participantCompanyRelationRecord;
+    }
+
+
 
     @Override
     public void populateBaseData(CompanyBaseData baseData, Session session) {

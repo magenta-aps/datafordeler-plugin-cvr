@@ -1,13 +1,12 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import org.hibernate.Session;
 
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -21,10 +20,26 @@ import java.util.Objects;
         @Index(name = LifecycleRecord.TABLE_NAME + "__company", columnList = LifecycleRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
         @Index(name = LifecycleRecord.TABLE_NAME + "__companyunit", columnList = LifecycleRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
         @Index(name = LifecycleRecord.TABLE_NAME + "__participant", columnList = LifecycleRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+        @Index(name = LifecycleRecord.TABLE_NAME + "__participant_company_relation", columnList = LifecycleRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
 })
 public class LifecycleRecord extends CvrBitemporalDataRecord {
 
     public static final String TABLE_NAME = "cvr_record_lifecycle";
+
+
+
+    public static final String DB_FIELD_PARTICIPANT_COMPANY_RELATION = "participantCompanyRelationRecord";
+
+    @ManyToOne(targetEntity = CompanyRelationRecord.class)
+    @JoinColumn(name = DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF)
+    @JsonIgnore
+    private CompanyRelationRecord participantCompanyRelationRecord;
+
+    public void setParticipantCompanyRelationRecord(CompanyRelationRecord participantCompanyRelationRecord) {
+        this.participantCompanyRelationRecord = participantCompanyRelationRecord;
+    }
+
+
 
     @Override
     public void populateBaseData(CompanyBaseData baseData, Session session) {

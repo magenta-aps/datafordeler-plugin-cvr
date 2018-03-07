@@ -1,15 +1,13 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyStatus;
 import org.hibernate.Session;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
@@ -19,6 +17,7 @@ import java.util.Objects;
 @Table(name = StatusRecord.TABLE_NAME, indexes = {
         @Index(name = StatusRecord.TABLE_NAME + "__company", columnList = StatusRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
         @Index(name = StatusRecord.TABLE_NAME + "__companyunit", columnList = StatusRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = StatusRecord.TABLE_NAME + "__participant_company_relation", columnList = StatusRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
 })
 public class StatusRecord extends CvrBitemporalDataRecord {
 
@@ -88,6 +87,18 @@ public class StatusRecord extends CvrBitemporalDataRecord {
 
     public void setCreditDataCode(Integer creditDataCode) {
         this.creditDataCode = creditDataCode;
+    }
+
+
+    public static final String DB_FIELD_PARTICIPANT_COMPANY_RELATION = "participantCompanyRelationRecord";
+
+    @ManyToOne(targetEntity = CompanyRelationRecord.class)
+    @JoinColumn(name = DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF)
+    @JsonIgnore
+    private CompanyRelationRecord participantCompanyRelationRecord;
+
+    public void setParticipantCompanyRelationRecord(CompanyRelationRecord participantCompanyRelationRecord) {
+        this.participantCompanyRelationRecord = participantCompanyRelationRecord;
     }
 
 
