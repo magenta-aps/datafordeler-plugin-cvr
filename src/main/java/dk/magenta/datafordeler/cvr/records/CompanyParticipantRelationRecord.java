@@ -80,7 +80,7 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
     public static final String DB_FIELD_OFFICES = "offices";
     public static final String IO_FIELD_OFFICES = "kontorsteder";
 
-    @OneToMany(targetEntity = OfficeRelationRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = OfficeRelationRecord.class, mappedBy = OfficeRelationRecord.DB_FIELD_COMPANY_RELATION, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_OFFICES)
     private Set<OfficeRelationRecord> offices = new HashSet<>();
 
@@ -157,7 +157,12 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
     }
 
     public void wire(Session session) {
-        this.relationParticipantRecord.wire(session);
+        if (this.relationParticipantRecord != null) {
+            this.relationParticipantRecord.wire(session);
+        }
+//        if (this.relationCompanyRecord != null) {
+//            this.relationCompanyRecord.wire(session);
+//        }
         for (OfficeRelationRecord officeRelationRecord : this.offices) {
             officeRelationRecord.wire(session);
         }

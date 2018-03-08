@@ -13,7 +13,7 @@ import java.util.Objects;
 @Entity
 @Table(name = CompanyRegNumberRecord.TABLE_NAME, indexes = {
         @Index(name = CompanyRegNumberRecord.TABLE_NAME + "__company", columnList = CompanyRegNumberRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = RelationCompanyRecord.TABLE_NAME + "__participant_company_relation", columnList = CompanyRegNumberRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
+        @Index(name = CompanyRegNumberRecord.TABLE_NAME + "__participant_company_relation", columnList = CompanyRegNumberRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
         @Index(name = CompanyRegNumberRecord.TABLE_NAME + "__data", columnList = CompanyRegNumberRecord.DB_FIELD_REGNUMBER),
 })
 public class CompanyRegNumberRecord extends CvrBitemporalDataRecord {

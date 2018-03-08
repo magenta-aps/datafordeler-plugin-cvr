@@ -92,7 +92,7 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
     public static final String DB_FIELD_NEWEST_LOCATION = "newestLocation";
     public static final String IO_FIELD_NEWEST_LOCATION = "nyesteBeliggenhedsadresse";
 
-    @OneToMany(targetEntity = AddressRecord.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(targetEntity = AddressRecord.class, mappedBy = AddressRecord.DB_FIELD_UNIT_METADATA, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonProperty(value = IO_FIELD_NEWEST_LOCATION)
     private Set<AddressRecord> newestLocation = new HashSet<>();
 
