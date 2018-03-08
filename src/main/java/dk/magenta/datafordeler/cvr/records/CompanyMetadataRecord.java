@@ -16,6 +16,7 @@ import java.util.Set;
         @Index(name = CompanyMetadataRecord.TABLE_NAME + "__company", columnList = MetadataRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
         @Index(name = CompanyMetadataRecord.TABLE_NAME + "__unit", columnList = MetadataRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyMetadataRecord extends MetadataRecord {
 
     public static final String TABLE_NAME = "cvr_record_metadata";
@@ -300,6 +301,13 @@ public class CompanyMetadataRecord extends MetadataRecord {
 
 
 
+    // Apparently a recent addition to metadata, but it's an empty array in all entries
+    public static final String DB_FIELD_NEWEST_FAD_CPR = "newestFadCpr";
+    public static final String IO_FIELD_NEWEST_FAD_CPR = "nyesteFadCprnumre";
+
+    @Transient
+    @JsonProperty(value = IO_FIELD_NEWEST_FAD_CPR)
+    private Set<String> newestFadCpr = new HashSet<>();
 
 
 
