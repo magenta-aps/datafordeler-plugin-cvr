@@ -932,6 +932,18 @@ public class CompanyRecord extends CvrEntityRecord {
         }
     }
 
+    public void mergeFusion(FusionSplitRecord otherRecord) {
+        long otherOrganizationId = otherRecord.getOrganizationUnitNumber();
+        for (FusionSplitRecord ourRecord : this.fusions) {
+            Long ourOrganizationId = ourRecord.getOrganizationUnitNumber();
+            if (otherOrganizationId == ourOrganizationId) {
+                ourRecord.merge(otherRecord);
+                return;
+            }
+        }
+        this.addFusion(otherRecord);
+    }
+
 
 
 
@@ -961,6 +973,18 @@ public class CompanyRecord extends CvrEntityRecord {
             record.setSplit(true);
             this.fusions.add(record);
         }
+    }
+
+    public void mergeSplit(FusionSplitRecord otherRecord) {
+        long otherOrganizationId = otherRecord.getOrganizationUnitNumber();
+        for (FusionSplitRecord ourRecord : this.splits) {
+            Long ourOrganizationId = ourRecord.getOrganizationUnitNumber();
+            if (otherOrganizationId == ourOrganizationId) {
+                ourRecord.merge(otherRecord);
+                return;
+            }
+        }
+        this.addSplit(otherRecord);
     }
 
 
@@ -1182,10 +1206,12 @@ public class CompanyRecord extends CvrEntityRecord {
                 this.mergeParticipant(participantRelationRecord);
             }
             for (FusionSplitRecord fusionSplitRecord : otherRecord.getFusions()) {
-                this.addFusion(fusionSplitRecord);
+                //this.addFusion(fusionSplitRecord);
+                this.mergeFusion(fusionSplitRecord);
             }
             for (FusionSplitRecord fusionSplitRecord : otherRecord.getSplits()) {
-                this.addSplit(fusionSplitRecord);
+                //this.addSplit(fusionSplitRecord);
+                this.mergeSplit(fusionSplitRecord);
             }
             this.metadata.merge(otherRecord.getMetadata());
             return true;

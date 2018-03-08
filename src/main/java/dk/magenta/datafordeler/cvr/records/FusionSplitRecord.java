@@ -31,7 +31,9 @@ public class FusionSplitRecord extends CvrNontemporalDataRecord {
         this.split = split;
     }
 
-
+    public boolean isSplit() {
+        return this.split;
+    }
 
     public static final String DB_FIELD_ORGANIZATION_UNITNUMBER = "organizationUnitNumber";
     public static final String IO_FIELD_ORGANIZATION_UNITNUMBER = "enhedsNummerOrganisation";
@@ -53,7 +55,6 @@ public class FusionSplitRecord extends CvrNontemporalDataRecord {
     public static final String DB_FIELD_ORGANIZATION_NAME = "name";
     public static final String IO_FIELD_ORGANIZATION_NAME = "organisationsNavn";
 
-
     @OneToMany(mappedBy = BaseNameRecord.DB_FIELD_FUSION, targetEntity = BaseNameRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_ORGANIZATION_NAME)
     private Set<BaseNameRecord> name;
@@ -68,6 +69,15 @@ public class FusionSplitRecord extends CvrNontemporalDataRecord {
             nameRecord.setFusionSplitRecord(this);
         }
     }
+
+    public void addName(BaseNameRecord name) {
+        if (name != null && !this.name.contains(name)) {
+            name.setFusionSplitRecord(this);
+            this.name.add(name);
+        }
+    }
+
+
 
     public static final String DB_FIELD_INCOMING = "incoming";
     public static final String IO_FIELD_INCOMING = "indgaaende";
@@ -144,5 +154,21 @@ public class FusionSplitRecord extends CvrNontemporalDataRecord {
     @Override
     public int hashCode() {
         return Objects.hash(split, organizationUnitNumber, name, incoming, outgoing);
+    }
+
+    public boolean merge(FusionSplitRecord otherRecord) {
+        if (otherRecord != null && !Objects.equals(this.getId(), otherRecord.getId())) {
+            for (BaseNameRecord nameRecord : otherRecord.getName()) {
+                this.addName(nameRecord);
+            }
+            for (AttributeRecord attributeRecord : otherRecord.getIncoming()) {
+                this.addIncoming(attributeRecord);
+            }
+            for (AttributeRecord attributeRecord : otherRecord.getOutgoing()) {
+                this.addOutgoing(attributeRecord);
+            }
+            return true;
+        }
+        return false;
     }
 }

@@ -210,6 +210,9 @@ public class RecordTest {
             query.setCvrNumre("25052943");
             List<CompanyRecord> records = QueryManager.getAllEntities(session, query, CompanyRecord.class);
             CompanyRecord companyRecord = records.get(0);
+
+            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(companyRecord));
+
             Assert.assertEquals(3, companyRecord.getNames().size());
             Assert.assertEquals(1, companyRecord.getSecondaryNames().size());
             Assert.assertEquals(1, companyRecord.getPostalAddress().size());
@@ -222,9 +225,6 @@ public class RecordTest {
             Assert.assertEquals(1, companyRecord.getSecondaryIndustry1().size());
             Assert.assertEquals(0, companyRecord.getSecondaryIndustry2().size());
             Assert.assertEquals(0, companyRecord.getSecondaryIndustry3().size());
-            for (StatusRecord s : companyRecord.getStatus()) {
-                System.out.println(s.getStatusText());
-            }
             Assert.assertEquals(0, companyRecord.getStatus().size());
             Assert.assertEquals(2, companyRecord.getCompanyStatus().size());
             Assert.assertEquals(16, companyRecord.getYearlyNumbers().size());
