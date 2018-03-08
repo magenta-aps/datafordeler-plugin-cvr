@@ -103,6 +103,21 @@ public class FusionSplitRecord extends CvrNontemporalDataRecord {
         }
     }
 
+    public void mergeIncoming(AttributeRecord otherRecord) {
+        if (otherRecord != null) {
+            String otherType = otherRecord.getType();
+            String otherValueType = otherRecord.getValueType();
+            int otherSequenceNumber = otherRecord.getSequenceNumber();
+            for (AttributeRecord attributeRecord : this.incoming) {
+                if (Objects.equals(attributeRecord.getType(), otherType) && Objects.equals(attributeRecord.getValueType(), otherValueType) && attributeRecord.getSequenceNumber() == otherSequenceNumber) {
+                    attributeRecord.merge(otherRecord);
+                    return;
+                }
+            }
+            this.addIncoming(otherRecord);
+        }
+    }
+
     public Set<AttributeRecord> getIncoming() {
         return this.incoming;
     }
@@ -130,6 +145,21 @@ public class FusionSplitRecord extends CvrNontemporalDataRecord {
             attribute.setFusionSplitRecord(this);
             attribute.setFusionOutgoing(true);
             this.outgoing.add(attribute);
+        }
+    }
+
+    public void mergeOutgoing(AttributeRecord otherRecord) {
+        if (otherRecord != null) {
+            String otherType = otherRecord.getType();
+            String otherValueType = otherRecord.getValueType();
+            int otherSequenceNumber = otherRecord.getSequenceNumber();
+            for (AttributeRecord attributeRecord : this.outgoing) {
+                if (Objects.equals(attributeRecord.getType(), otherType) && Objects.equals(attributeRecord.getValueType(), otherValueType) && attributeRecord.getSequenceNumber() == otherSequenceNumber) {
+                    attributeRecord.merge(otherRecord);
+                    return;
+                }
+            }
+            this.addOutgoing(otherRecord);
         }
     }
 
@@ -162,10 +192,10 @@ public class FusionSplitRecord extends CvrNontemporalDataRecord {
                 this.addName(nameRecord);
             }
             for (AttributeRecord attributeRecord : otherRecord.getIncoming()) {
-                this.addIncoming(attributeRecord);
+                this.mergeIncoming(attributeRecord);
             }
             for (AttributeRecord attributeRecord : otherRecord.getOutgoing()) {
-                this.addOutgoing(attributeRecord);
+                this.mergeOutgoing(attributeRecord);
             }
             return true;
         }

@@ -83,6 +83,13 @@ public class AttributeRecord extends CvrNontemporalDataRecord {
         this.values = new HashSet<>(values);
     }
 
+    public void addValue(AttributeValueRecord attributeValueRecord) {
+        if (attributeValueRecord != null && !this.values.contains(attributeValueRecord)) {
+            attributeValueRecord.setAttribute(this);
+            this.values.add(attributeValueRecord);
+        }
+    }
+
     public Set<AttributeValueRecord> getValues() {
         return this.values;
     }
@@ -200,5 +207,18 @@ public class AttributeRecord extends CvrNontemporalDataRecord {
     @Override
     public int hashCode() {
         return Objects.hash(sequenceNumber, type, valueType, values, fusionOutgoing);
+    }
+
+    public void merge(AttributeRecord otherRecord) {
+        if (
+                otherRecord != null &&
+                this.sequenceNumber == otherRecord.getSequenceNumber() &&
+                Objects.equals(this.type, otherRecord.getType()) &&
+                Objects.equals(this.valueType, otherRecord.getValueType())
+            ) {
+            for (AttributeValueRecord attributeValueRecord : otherRecord.getValues()) {
+                this.addValue(attributeValueRecord);
+            }
+        }
     }
 }

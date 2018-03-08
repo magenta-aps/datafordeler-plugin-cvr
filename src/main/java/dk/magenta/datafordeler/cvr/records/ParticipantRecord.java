@@ -319,10 +319,25 @@ public class ParticipantRecord extends CvrEntityRecord {
         }
     }
 
-    public void addAttributes(AttributeRecord record) {
+    public void addAttribute(AttributeRecord record) {
         if (record != null && !this.attributes.contains(record)) {
             record.setParticipantRecord(this);
             this.attributes.add(record);
+        }
+    }
+
+    public void mergeAttribute(AttributeRecord otherRecord) {
+        if (otherRecord != null) {
+            String otherType = otherRecord.getType();
+            String otherValueType = otherRecord.getValueType();
+            int otherSequenceNumber = otherRecord.getSequenceNumber();
+            for (AttributeRecord attributeRecord : this.attributes) {
+                if (Objects.equals(attributeRecord.getType(), otherType) && Objects.equals(attributeRecord.getValueType(), otherValueType) && attributeRecord.getSequenceNumber() == otherSequenceNumber) {
+                    attributeRecord.merge(otherRecord);
+                    return;
+                }
+            }
+            this.addAttribute(otherRecord);
         }
     }
 
@@ -512,7 +527,7 @@ public class ParticipantRecord extends CvrEntityRecord {
                 this.addEmailAddress(contactRecord);
             }
             for (AttributeRecord attributeRecord : otherRecord.getAttributes()) {
-                this.addAttributes(attributeRecord);
+                this.mergeAttribute(attributeRecord);
             }
             for (CompanyParticipantRelationRecord companyParticipantRelationRecord : otherRecord.getCompanyRelation()) {
                 this.mergeCompanyRelation(companyParticipantRelationRecord);

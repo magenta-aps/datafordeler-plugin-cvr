@@ -521,10 +521,25 @@ public class CompanyUnitRecord extends CvrEntityRecord {
         }
     }
 
-    public void addAttributes(AttributeRecord record) {
+    public void addAttribute(AttributeRecord record) {
         if (!this.attributes.contains(record)) {
             record.setCompanyUnitRecord(this);
             this.attributes.add(record);
+        }
+    }
+
+    public void mergeAttribute(AttributeRecord otherRecord) {
+        if (otherRecord != null) {
+            String otherType = otherRecord.getType();
+            String otherValueType = otherRecord.getValueType();
+            int otherSequenceNumber = otherRecord.getSequenceNumber();
+            for (AttributeRecord attributeRecord : this.attributes) {
+                if (Objects.equals(attributeRecord.getType(), otherType) && Objects.equals(attributeRecord.getValueType(), otherValueType) && attributeRecord.getSequenceNumber() == otherSequenceNumber) {
+                    attributeRecord.merge(otherRecord);
+                    return;
+                }
+            }
+            this.addAttribute(otherRecord);
         }
     }
 
@@ -790,7 +805,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
                 this.addQuarterlyNumbers(quarterlyNumbersRecord);
             }
             for (AttributeRecord attributeRecord : otherRecord.getAttributes()) {
-                this.addAttributes(attributeRecord);
+                this.mergeAttribute(attributeRecord);
             }
             for (CompanyParticipantRelationRecord participantRelationRecord : otherRecord.getParticipants()) {
                 //this.addParticipant(participantRelationRecord);

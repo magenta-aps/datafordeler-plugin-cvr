@@ -35,7 +35,6 @@ public class BaseAttributeValueRecord extends CvrBitemporalRecord {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(super.hashCode(), value);
     }
 }

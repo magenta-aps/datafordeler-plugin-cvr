@@ -229,10 +229,17 @@ public class RecordTest {
             Assert.assertEquals(2, companyRecord.getCompanyStatus().size());
             Assert.assertEquals(16, companyRecord.getYearlyNumbers().size());
             Assert.assertEquals(64, companyRecord.getQuarterlyNumbers().size());
-            Assert.assertEquals(16, companyRecord.getAttributes().size());
+            Assert.assertEquals(14, companyRecord.getAttributes().size());
             Assert.assertEquals(3, companyRecord.getProductionUnits().size());
             Assert.assertEquals(12, companyRecord.getParticipants().size());
             Assert.assertEquals(1, companyRecord.getFusions().size());
+
+            Assert.assertEquals(2, companyRecord.getFusions().iterator().next().getName().size());
+            Assert.assertEquals(1, companyRecord.getFusions().iterator().next().getIncoming().size());
+            Assert.assertEquals(2, companyRecord.getFusions().iterator().next().getIncoming().iterator().next().getValues().size());
+
+
+
             Assert.assertEquals(1, companyRecord.getSplits().size());
             Assert.assertEquals(2, companyRecord.getMetadata().getNewestName().size());
             Assert.assertEquals(2, companyRecord.getMetadata().getNewestForm().size());
@@ -250,7 +257,8 @@ public class RecordTest {
 
                     Assert.assertEquals(1, participantRelationRecord.getOffices().size());
                     OfficeRelationRecord officeRelationRecord = participantRelationRecord.getOffices().iterator().next();
-                    Assert.assertEquals(2, officeRelationRecord.getAttributes().size());
+                    Assert.assertEquals(1, officeRelationRecord.getAttributes().size());
+                    Assert.assertEquals(2, officeRelationRecord.getAttributes().iterator().next().getValues().size());
                     Assert.assertEquals(2, officeRelationRecord.getOfficeRelationUnitRecord().getNames().size());
                     Assert.assertEquals(2, officeRelationRecord.getOfficeRelationUnitRecord().getLocationAddress().size());
 
@@ -260,7 +268,8 @@ public class RecordTest {
                         if (organizationRecord.getUnitNumber() == 4004733975L) {
                             foundOrganization1 = true;
                             Assert.assertEquals(2, organizationRecord.getNames().size());
-                            Assert.assertEquals(2, organizationRecord.getAttributes().size());
+                            Assert.assertEquals(1, organizationRecord.getAttributes().size());
+                            Assert.assertEquals(2, organizationRecord.getAttributes().iterator().next().getValues().size());
                         }
                         if (organizationRecord.getUnitNumber() == 4004733976L) {
                             foundOrganization2 = true;
@@ -270,7 +279,12 @@ public class RecordTest {
                                     Assert.assertEquals(1, organizationMemberdataRecord.getAttributes().size());
                                 }
                                 if (organizationMemberdataRecord.getIndex() == 1) {
-                                    Assert.assertEquals(4, organizationMemberdataRecord.getAttributes().size());
+                                    Assert.assertEquals(3, organizationMemberdataRecord.getAttributes().size());
+                                    for (AttributeRecord attributeRecord : organizationMemberdataRecord.getAttributes()) {
+                                        if (attributeRecord.getType().equals("FUNKTION")) {
+                                            Assert.assertEquals(2, attributeRecord.getValues().size());
+                                        }
+                                    }
                                 }
                             }
                         }

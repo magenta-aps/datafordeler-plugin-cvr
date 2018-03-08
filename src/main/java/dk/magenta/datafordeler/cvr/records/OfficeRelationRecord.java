@@ -7,6 +7,7 @@ import org.hibernate.Session;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -77,6 +78,20 @@ public class OfficeRelationRecord extends CvrNontemporalRecord {
             this.attributes.add(attribute);
         }
     }
+    public void mergeAttribute(AttributeRecord otherRecord) {
+        if (otherRecord != null) {
+            String otherType = otherRecord.getType();
+            String otherValueType = otherRecord.getValueType();
+            int otherSequenceNumber = otherRecord.getSequenceNumber();
+            for (AttributeRecord attributeRecord : this.attributes) {
+                if (Objects.equals(attributeRecord.getType(), otherType) && Objects.equals(attributeRecord.getValueType(), otherValueType) && attributeRecord.getSequenceNumber() == otherSequenceNumber) {
+                    attributeRecord.merge(otherRecord);
+                    return;
+                }
+            }
+            this.addAttribute(otherRecord);
+        }
+    }
 
     public Set<AttributeRecord> getAttributes() {
         return this.attributes;
@@ -97,7 +112,7 @@ public class OfficeRelationRecord extends CvrNontemporalRecord {
                 this.setOfficeRelationUnitRecord(other.getOfficeRelationUnitRecord());
             }
             for (AttributeRecord attribute : other.getAttributes()) {
-                this.addAttribute(attribute);
+                this.mergeAttribute(attribute);
             }
         }
     }

@@ -4017,7 +4017,39 @@
                 ]
               }
             ],
-            "fusioner": [],
+            "fusioner": [
+              {
+                "enhedsNummerOrganisation": 4007477649,
+                "organisationsNavn": [
+                  {
+                    "navn": "Fusion",
+                    "periode": {
+                      "gyldigFra": "2017-12-29",
+                      "gyldigTil": null
+                    },
+                    "sidstOpdateret": "2016-01-16T13:06:27.000+01:00"
+                  }
+                ],
+                "indgaaende": [
+                  {
+                    "sekvensnr": 0,
+                    "type": "FUNKTION",
+                    "vaerditype": "string",
+                    "vaerdier": [
+                      {
+                        "vaerdi": "Fusion",
+                        "periode": {
+                          "gyldigFra": "2017-12-29",
+                          "gyldigTil": "2017-12-29"
+                        },
+                        "sidstOpdateret": "2016-01-16T13:06:31.000+01:00"
+                      }
+                    ]
+                  }
+                ],
+                "udgaaende": []
+              }
+            ],
             "spaltninger": [],
             "virksomhedMetadata": {
               "nyesteNavn": {
