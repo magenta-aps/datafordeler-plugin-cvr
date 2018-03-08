@@ -300,13 +300,6 @@ public class RecordTest {
         }
     }
 
-/*
-    @Test
-    public void foo() throws IOException, DataFordelerException {
-        loadCompany(new FileInputStream("/home/lars/Projekt/datafordeler/core/local/cvr/virksomhed_2018-03-05"), true);
-    }
-*/
-
     private HashMap<Integer, JsonNode> loadUnit(String resource) throws IOException, DataFordelerException {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
