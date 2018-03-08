@@ -361,6 +361,13 @@ public class CompanyMetadataRecord extends MetadataRecord {
         }
     }
 
+    public void addMetadataContactRecord(MetadataContactRecord metadataContactRecord) {
+        if (metadataContactRecord != null && !this.metadataContactRecords.contains(metadataContactRecord)) {
+            metadataContactRecord.setCompanyMetadataRecord(this);
+            this.metadataContactRecords.add(metadataContactRecord);
+        }
+    }
+
 
 
 
@@ -379,27 +386,30 @@ public class CompanyMetadataRecord extends MetadataRecord {
     @Override
     public boolean merge(MetadataRecord other) {
         if (other != null && !Objects.equals(this.getId(), other.getId()) && other instanceof CompanyMetadataRecord) {
-            CompanyMetadataRecord existing = (CompanyMetadataRecord) other;
-            for (BaseNameRecord nameRecord : existing.getNewestName()) {
-                this.addNewestName(nameRecord);
-            }
-            for (FormRecord formRecord : existing.getNewestForm()) {
+            CompanyMetadataRecord otherRecord = (CompanyMetadataRecord) other;
+            for (FormRecord formRecord : otherRecord.getNewestForm()) {
                 this.addNewestForm(formRecord);
             }
-            for (AddressRecord addressRecord : existing.getNewestLocation()) {
+            for (BaseNameRecord nameRecord : otherRecord.getNewestName()) {
+                this.addNewestName(nameRecord);
+            }
+            for (AddressRecord addressRecord : otherRecord.getNewestLocation()) {
                 this.addNewestLocation(addressRecord);
             }
-            for (CompanyIndustryRecord industryRecord : existing.getNewestPrimaryIndustry()) {
+            for (CompanyIndustryRecord industryRecord : otherRecord.getNewestPrimaryIndustry()) {
                 this.addNewestPrimaryIndustry(industryRecord);
             }
-            for (CompanyIndustryRecord industryRecord : existing.getNewestSecondaryIndustry1()) {
+            for (CompanyIndustryRecord industryRecord : otherRecord.getNewestSecondaryIndustry1()) {
                 this.addNewestSecondaryIndustry1(industryRecord);
             }
-            for (CompanyIndustryRecord industryRecord : existing.getNewestSecondaryIndustry2()) {
+            for (CompanyIndustryRecord industryRecord : otherRecord.getNewestSecondaryIndustry2()) {
                 this.addNewestSecondaryIndustry2(industryRecord);
             }
-            for (CompanyIndustryRecord industryRecord : existing.getNewestSecondaryIndustry3()) {
+            for (CompanyIndustryRecord industryRecord : otherRecord.getNewestSecondaryIndustry3()) {
                 this.addNewestSecondaryIndustry3(industryRecord);
+            }
+            for (MetadataContactRecord metadataContactRecord : otherRecord.getMetadataContactRecords()) {
+                this.addMetadataContactRecord(metadataContactRecord);
             }
             return true;
         }

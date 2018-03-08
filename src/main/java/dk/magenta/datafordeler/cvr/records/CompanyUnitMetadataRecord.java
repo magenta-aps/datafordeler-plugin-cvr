@@ -51,6 +51,13 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
         }
     }
 
+    public void addMetadataContactRecord(MetadataContactRecord metadataContactRecord) {
+        if (metadataContactRecord != null && !this.metadataContactRecords.contains(metadataContactRecord)) {
+            metadataContactRecord.setUnitMetadataRecord(this);
+            this.metadataContactRecords.add(metadataContactRecord);
+        }
+    }
+
 
     public static final String DB_FIELD_NEWEST_NAME = "newestName";
     public static final String IO_FIELD_NEWEST_NAME = "nyesteNavn";
@@ -314,6 +321,9 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
             }
             for (CompanyIndustryRecord industryRecord : otherRecord.getNewestSecondaryIndustry3()) {
                 this.addNewestSecondaryIndustry3(industryRecord);
+            }
+            for (MetadataContactRecord metadataContactRecord : otherRecord.getMetadataContactRecords()) {
+                this.addMetadataContactRecord(metadataContactRecord);
             }
             return true;
         }

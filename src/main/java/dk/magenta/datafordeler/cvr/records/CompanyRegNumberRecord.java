@@ -58,7 +58,6 @@ public class CompanyRegNumberRecord extends CvrBitemporalDataRecord {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(super.hashCode(), regNumber);
     }
 }

@@ -67,6 +67,10 @@ public class CompanyRecord extends CvrEntityRecord {
         }
     }
 
+    public Set<CompanyRegNumberRecord> getRegNumber() {
+        return this.regNumber;
+    }
+
 
 
     public static final String DB_FIELD_ADVERTPROTECTION = "advertProtection";
@@ -1098,6 +1102,9 @@ public class CompanyRecord extends CvrEntityRecord {
     public boolean merge(CvrEntityRecord other) {
         if (other != null && !Objects.equals(this.getId(), other.getId()) && other instanceof CompanyRecord) {
             CompanyRecord otherRecord = (CompanyRecord) other;
+            for (CompanyRegNumberRecord regNumberRecord : otherRecord.getRegNumber()) {
+                this.addRegNumber(regNumberRecord);
+            }
             for (SecNameRecord nameRecord : otherRecord.getNames()) {
                 this.addName(nameRecord);
             }

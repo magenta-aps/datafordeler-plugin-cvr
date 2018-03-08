@@ -53,9 +53,9 @@ public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
     @JsonGetter(IO_FIELD_NEWEST_LOCATION)
     public AddressRecord getLatestNewestLocation() {
         AddressRecord latest = null;
-        for (AddressRecord nameRecord : this.newestLocation) {
-            if (latest == null || nameRecord.getLastUpdated().isAfter(latest.getLastUpdated())) {
-                latest = nameRecord;
+        for (AddressRecord locationRecord : this.newestLocation) {
+            if (latest == null || locationRecord.getLastUpdated().isAfter(latest.getLastUpdated())) {
+                latest = locationRecord;
             }
         }
         return latest;

@@ -559,6 +559,20 @@ public class CompanyUnitRecord extends CvrEntityRecord {
         }
     }
 
+    public void mergeParticipant(CompanyParticipantRelationRecord otherRecord) {
+        Long otherParticipantId = otherRecord.getParticipantUnitNumber();
+        if (otherParticipantId != null) {
+            for (CompanyParticipantRelationRecord ourRecord : this.participantRelations) {
+                Long ourParticipantId = ourRecord.getParticipantUnitNumber();
+                if (otherParticipantId.equals(ourParticipantId)) {
+                    ourRecord.merge(otherRecord);
+                    return;
+                }
+            }
+        }
+        this.addParticipant(otherRecord);
+    }
+
     public Set<CompanyParticipantRelationRecord> getParticipants() {
         return this.participantRelations;
     }
@@ -739,9 +753,6 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             for (SecNameRecord nameRecord : otherRecord.getNames()) {
                 this.addName(nameRecord);
             }
-//            for (NameRecord nameRecord : this.getSecondaryNames()) {
-//                this.addSecondaryName(nameRecord);
-//            }
             for (AddressRecord addressRecord : otherRecord.getLocationAddress()) {
                 this.addLocationAddress(addressRecord);
             }
@@ -751,15 +762,9 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             for (ContactRecord contactRecord : otherRecord.getPhoneNumber()) {
                 this.addPhoneNumber(contactRecord);
             }
-//            for (ContactRecord contactRecord : otherRecord.getSecondaryPhoneNumber()) {
-//                this.addSecondaryPhoneNumber(contactRecord);
-//            }
             for (ContactRecord contactRecord : otherRecord.getFaxNumber()) {
                 this.addFaxNumber(contactRecord);
             }
-//            for (ContactRecord contactRecord : otherRecord.getSecondaryFaxNumber()) {
-//                this.addSecondaryFaxNumber(contactRecord);
-//            }
             for (ContactRecord contactRecord : otherRecord.getEmailAddress()) {
                 this.addEmailAddress(contactRecord);
             }
@@ -788,7 +793,8 @@ public class CompanyUnitRecord extends CvrEntityRecord {
                 this.addAttributes(attributeRecord);
             }
             for (CompanyParticipantRelationRecord participantRelationRecord : otherRecord.getParticipants()) {
-                this.addParticipant(participantRelationRecord);
+                //this.addParticipant(participantRelationRecord);
+                this.mergeParticipant(participantRelationRecord);
             }
             this.metadata.merge(otherRecord.getMetadata());
             return true;
