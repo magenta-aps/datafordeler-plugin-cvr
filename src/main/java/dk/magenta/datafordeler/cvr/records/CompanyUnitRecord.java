@@ -70,7 +70,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
 
     @OneToMany(mappedBy = SecNameRecord.DB_FIELD_COMPANYUNIT, targetEntity = SecNameRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_NAMES)
-    private Set<SecNameRecord> names;
+    private Set<SecNameRecord> names = new HashSet<>();
 
     public Set<SecNameRecord> getNames() {
         return this.names;
@@ -104,7 +104,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_LOCATION_ADDRESS)
-    private Set<AddressRecord> locationAddress;
+    private Set<AddressRecord> locationAddress = new HashSet<>();
 
     public void setLocationAddress(Set<AddressRecord> locationAddress) {
         for (AddressRecord record : locationAddress) {
@@ -138,7 +138,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_TO+" >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR "+CvrRecordPeriod.DB_FIELD_VALID_TO+" is null)"),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })@JsonProperty(value = IO_FIELD_POSTAL_ADDRESS)
-    private Set<AddressRecord> postalAddress;
+    private Set<AddressRecord> postalAddress = new HashSet<>();
 
     public void setPostalAddress(Set<AddressRecord> postalAddress) {
         for (AddressRecord record : postalAddress) {
@@ -171,7 +171,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_TO+" >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR "+CvrRecordPeriod.DB_FIELD_VALID_TO+" is null)"),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })@JsonProperty(value = IO_FIELD_PHONE)
-    private Set<ContactRecord> phoneNumber;
+    private Set<ContactRecord> phoneNumber = new HashSet<>();
 
     public void setPhoneNumber(Set<ContactRecord> phoneNumber) {
         for (ContactRecord record : phoneNumber) {
@@ -206,7 +206,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_TO+" >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR "+CvrRecordPeriod.DB_FIELD_VALID_TO+" is null)"),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })@JsonProperty(value = IO_FIELD_FAX)
-    private Set<ContactRecord> faxNumber;
+    private Set<ContactRecord> faxNumber = new HashSet<>();
 
     public void setFaxNumber(Set<ContactRecord> faxNumber) {
         for (ContactRecord record : faxNumber) {
@@ -241,7 +241,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_TO+" >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR "+CvrRecordPeriod.DB_FIELD_VALID_TO+" is null)"),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })@JsonProperty(value = IO_FIELD_EMAIL)
-    private Set<ContactRecord> emailAddress;
+    private Set<ContactRecord> emailAddress = new HashSet<>();
 
     public void setEmailAddress(Set<ContactRecord> emailAddress) {
         for (ContactRecord record : emailAddress) {
@@ -270,7 +270,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
 
     @OneToMany(mappedBy = LifecycleRecord.DB_FIELD_COMPANYUNIT, targetEntity = LifecycleRecord.class, cascade = CascadeType.ALL)
     @JsonProperty(value = IO_FIELD_LIFECYCLE)
-    private Set<LifecycleRecord> lifecycle;
+    private Set<LifecycleRecord> lifecycle = new HashSet<>();
 
     public void setLifecycle(Set<LifecycleRecord> lifecycle) {
         this.lifecycle = lifecycle;
@@ -303,7 +303,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_PRIMARY_INDUSTRY)
-    private Set<CompanyIndustryRecord> primaryIndustry;
+    private Set<CompanyIndustryRecord> primaryIndustry = new HashSet<>();
 
     public void setPrimaryIndustry(Set<CompanyIndustryRecord> primaryIndustry) {
         for (CompanyIndustryRecord record : primaryIndustry) {
@@ -336,7 +336,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_TO+" >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR "+CvrRecordPeriod.DB_FIELD_VALID_TO+" is null)"),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })@JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY1)
-    private Set<CompanyIndustryRecord> secondaryIndustry1;
+    private Set<CompanyIndustryRecord> secondaryIndustry1 = new HashSet<>();
 
     public void setSecondaryIndustry1(Set<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
@@ -371,7 +371,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY2)
-    private Set<CompanyIndustryRecord> secondaryIndustry2;
+    private Set<CompanyIndustryRecord> secondaryIndustry2 = new HashSet<>();
 
     public void setSecondaryIndustry2(Set<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
@@ -406,7 +406,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY3)
-    private Set<CompanyIndustryRecord> secondaryIndustry3;
+    private Set<CompanyIndustryRecord> secondaryIndustry3 = new HashSet<>();
 
     public void setSecondaryIndustry3(Set<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
@@ -440,7 +440,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_YEARLY_NUMBERS)
-    private Set<CompanyYearlyNumbersRecord> yearlyNumbers;
+    private Set<CompanyYearlyNumbersRecord> yearlyNumbers = new HashSet<>();
 
     public void setYearlyNumbers(Set<CompanyYearlyNumbersRecord> yearlyNumbers) {
         this.yearlyNumbers = yearlyNumbers;
@@ -472,7 +472,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_QUARTERLY_NUMBERS)
-    private Set<CompanyQuarterlyNumbersRecord> quarterlyNumbers;
+    private Set<CompanyQuarterlyNumbersRecord> quarterlyNumbers = new HashSet<>();
 
     public void setQuarterlyNumbers(Set<CompanyQuarterlyNumbersRecord> quarterlyNumbers) {
         this.quarterlyNumbers = quarterlyNumbers;
@@ -512,7 +512,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_ATTRIBUTES)
-    private Set<AttributeRecord> attributes;
+    private Set<AttributeRecord> attributes = new HashSet<>();
 
     public void setAttributes(Set<AttributeRecord> attributes) {
         this.attributes = attributes;
@@ -558,7 +558,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_PARTICIPANTS)
-    private Set<CompanyParticipantRelationRecord> participantRelations;
+    private Set<CompanyParticipantRelationRecord> participantRelations = new HashSet<>();
 
     public void setParticipantRelations(Set<CompanyParticipantRelationRecord> participantRelations) {
         this.participantRelations = participantRelations;
@@ -604,7 +604,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
     })
     @JsonProperty(value = IO_FIELD_COMPANY_LINK)
-    private Set<CompanyLinkRecord> companyLinkRecords;
+    private Set<CompanyLinkRecord> companyLinkRecords = new HashSet<>();
 
     public void setCompanyLinkRecords(Set<CompanyLinkRecord> companyLinkRecords) {
         this.companyLinkRecords = companyLinkRecords;

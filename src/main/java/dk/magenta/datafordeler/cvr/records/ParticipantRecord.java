@@ -65,7 +65,7 @@ public class ParticipantRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Effect.FILTERPARAM_EFFECT_TO + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)")
     })
     @JsonProperty(value = IO_FIELD_NAMES)
-    public Set<SecNameRecord> names;
+    public Set<SecNameRecord> names = new HashSet<>();
 
     public void setNames(Set<SecNameRecord> names) {
         this.names = names;
@@ -99,7 +99,7 @@ public class ParticipantRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Effect.FILTERPARAM_EFFECT_TO + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)")
     })
     @JsonProperty(value = IO_FIELD_LOCATION_ADDRESS)
-    public Set<AddressRecord> locationAddress;
+    public Set<AddressRecord> locationAddress = new HashSet<>();
 
     public void setLocationAddress(Set<AddressRecord> locationAddress) {
         for (AddressRecord record : locationAddress) {
@@ -134,7 +134,7 @@ public class ParticipantRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Effect.FILTERPARAM_EFFECT_TO + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)")
     })
     @JsonProperty(value = IO_FIELD_POSTAL_ADDRESS)
-    public Set<AddressRecord> postalAddress;
+    public Set<AddressRecord> postalAddress = new HashSet<>();
 
     public void setPostalAddress(Set<AddressRecord> postalAddress) {
         for (AddressRecord record : postalAddress) {
@@ -169,7 +169,7 @@ public class ParticipantRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Effect.FILTERPARAM_EFFECT_TO + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)")
     })
     @JsonProperty(value = IO_FIELD_BUSINESS_ADDRESS)
-    public Set<AddressRecord> businessAddress;
+    public Set<AddressRecord> businessAddress = new HashSet<>();
 
     public void setBusinessAddress(Set<AddressRecord> businessAddress) {
         for (AddressRecord record : businessAddress) {
@@ -204,7 +204,7 @@ public class ParticipantRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Effect.FILTERPARAM_EFFECT_TO + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)")
     })
     @JsonProperty(value = IO_FIELD_PHONE)
-    public Set<ContactRecord> phoneNumber;
+    public Set<ContactRecord> phoneNumber = new HashSet<>();
 
     public void setPhoneNumber(Set<ContactRecord> phoneNumber) {
         for (ContactRecord record : phoneNumber) {
@@ -240,7 +240,7 @@ public class ParticipantRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Effect.FILTERPARAM_EFFECT_TO + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)")
     })
     @JsonProperty(value = IO_FIELD_FAX)
-    public Set<ContactRecord> faxNumber;
+    public Set<ContactRecord> faxNumber = new HashSet<>();
 
     public void setFaxNumber(Set<ContactRecord> faxNumber) {
         for (ContactRecord record : faxNumber) {
@@ -276,7 +276,7 @@ public class ParticipantRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Effect.FILTERPARAM_EFFECT_TO + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)")
     })
     @JsonProperty(value = IO_FIELD_EMAIL)
-    public Set<ContactRecord> emailAddress;
+    public Set<ContactRecord> emailAddress = new HashSet<>();
 
     public void setEmailAddress(Set<ContactRecord> emailAddress) {
         for (ContactRecord record : emailAddress) {
@@ -310,7 +310,7 @@ public class ParticipantRecord extends CvrEntityRecord {
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Effect.FILTERPARAM_EFFECT_TO + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)")
     })
     @JsonProperty(value = IO_FIELD_ATTRIBUTES)
-    public Set<AttributeRecord> attributes;
+    public Set<AttributeRecord> attributes = new HashSet<>();
 
     public void setAttributes(Set<AttributeRecord> attributes) {
         this.attributes = attributes;
@@ -498,7 +498,9 @@ public class ParticipantRecord extends CvrEntityRecord {
         for (AddressRecord address : this.businessAddress) {
             address.wire(session);
         }
-        this.metadata.wire(session);
+        if (this.metadata != null) {
+            this.metadata.wire(session);
+        }
     }
 
     @Override
