@@ -29,7 +29,7 @@ public class CompanyIndustryRecord extends CvrBitemporalDataMetaRecord {
 
     public static final String TABLE_NAME = "cvr_record_industry";
 
-    public static final String DB_FIELD_INDEX = "index";
+    public static final String DB_FIELD_INDEX = "industryIndex";
 
     @Column(name = DB_FIELD_INDEX)
     @JsonIgnore
