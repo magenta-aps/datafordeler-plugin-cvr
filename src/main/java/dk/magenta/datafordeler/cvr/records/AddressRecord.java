@@ -486,7 +486,7 @@ public class AddressRecord extends CvrBitemporalDataMetaRecord {
 
     //----------------------------------------------------
 
-    public static final String DB_FIELD_FREETEXT = "freeText";
+    public static final String DB_FIELD_FREETEXT = "addressFreeText";
     public static final String IO_FIELD_FREETEXT = "fritekst";
 
     @JsonProperty(value = IO_FIELD_FREETEXT)
