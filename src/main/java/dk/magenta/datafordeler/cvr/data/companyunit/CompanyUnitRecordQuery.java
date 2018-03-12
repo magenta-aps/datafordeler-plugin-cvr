@@ -13,6 +13,7 @@ import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 import dk.magenta.datafordeler.cvr.records.*;
 
+import java.time.OffsetDateTime;
 import java.util.*;
 
 /**

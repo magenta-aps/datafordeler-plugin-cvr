@@ -58,10 +58,6 @@ public class CompanyRecordQuery extends CompanyQuery {
             sj.add(Municipality.DB_FIELD_CODE);
             lookupDefinition.put(sj.toString(), this.getKommunekodeRestriction(), Integer.class);
         }
-        if (this.recordAfter != null) {
-            lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED, this.recordAfter, OffsetDateTime.class, LookupDefinition.Operator.GT);
-        }
-
         return lookupDefinition;
     }
 }
