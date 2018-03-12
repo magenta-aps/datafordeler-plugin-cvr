@@ -1,11 +1,13 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
+import dk.magenta.datafordeler.core.database.DataItem;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.cvr.CvrRecordLookupDefinition;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 import dk.magenta.datafordeler.cvr.records.*;
 
+import java.time.OffsetDateTime;
 import java.util.*;
 
 /**
@@ -47,7 +49,6 @@ public class CompanyRecordQuery extends CompanyQuery {
             sj.add(Municipality.DB_FIELD_CODE);
             lookupDefinition.put(sj.toString(), this.getKommuneKode(), Integer.class);
         }
-
         if (this.getKommunekodeRestriction() != null && !this.getKommunekodeRestriction().isEmpty()) {
             StringJoiner sj = new StringJoiner(LookupDefinition.separator);
             sj.add(LookupDefinition.entityref);
@@ -57,6 +58,10 @@ public class CompanyRecordQuery extends CompanyQuery {
             sj.add(Municipality.DB_FIELD_CODE);
             lookupDefinition.put(sj.toString(), this.getKommunekodeRestriction(), Integer.class);
         }
+        if (this.recordAfter != null) {
+            lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED, this.recordAfter, OffsetDateTime.class, LookupDefinition.Operator.GT);
+        }
+
         return lookupDefinition;
     }
 }
