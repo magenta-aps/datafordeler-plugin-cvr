@@ -28,7 +28,7 @@ public class SecNameRecord extends CvrBitemporalDataRecord {
     public static final String DB_FIELD_NAME = "name";
     public static final String IO_FIELD_NAME = "navn";
 
-    @Column(name = DB_FIELD_NAME, length = 8000)
+    @Column(name = DB_FIELD_NAME, length = 900)
     @JsonProperty(value = IO_FIELD_NAME)
     private String name;
 
@@ -37,8 +37,8 @@ public class SecNameRecord extends CvrBitemporalDataRecord {
     }
 
     public void setName(String name) {
-        if (name != null && name.length() > 8000) {
-            name = name.substring(0, 8000);
+        if (name != null && name.length() > 900) {
+            name = name.substring(0, 900);
         }
         this.name = name;
     }
