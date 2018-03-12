@@ -19,7 +19,7 @@ public class BaseAttributeValueRecord extends CvrBitemporalRecord {
     @JsonProperty(value = IO_FIELD_VALUE)
     public void setValue(String value) {
         if (value != null && value.length() > 8000) {
-            value = value.substring(0, 7999);
+            value = value.substring(0, 8000);
         }
         this.value = value;
     }

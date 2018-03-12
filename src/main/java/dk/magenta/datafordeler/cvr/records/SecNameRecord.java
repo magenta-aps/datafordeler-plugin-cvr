@@ -36,8 +36,12 @@ public class SecNameRecord extends CvrBitemporalDataRecord {
         return this.name;
     }
 
-
-
+    public void setName(String name) {
+        if (name != null && name.length() > 8000) {
+            name = name.substring(0, 8000);
+        }
+        this.name = name;
+    }
 
     public static final String DB_FIELD_SECONDARY = "secondary";
 

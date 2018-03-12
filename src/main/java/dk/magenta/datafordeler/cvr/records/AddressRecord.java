@@ -499,6 +499,9 @@ public class AddressRecord extends CvrBitemporalDataMetaRecord {
     }
 
     public void setFreeText(String freeText) {
+        if (freeText != null && freeText.length() > 8000) {
+            freeText = freeText.substring(0, 8000);
+        }
         this.freeText = freeText;
     }
 
