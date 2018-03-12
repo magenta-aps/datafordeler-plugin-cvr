@@ -1,55 +1,66 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import dk.magenta.datafordeler.cvr.data.Bitemporality;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import org.hibernate.Session;
 
+import javax.persistence.*;
+
 /**
  * Record for Company, CompanyUnit or Participant attribute values.
  */
-public class AttributeValueRecord extends CvrBaseRecord {
+@Entity
+@Table(name = AttributeValueRecord.TABLE_NAME, indexes = {
+        @Index(name = AttributeValueRecord.TABLE_NAME + "__attribute", columnList = AttributeValueRecord.DB_FIELD_ATTRIBUTE + DatabaseEntry.REF)
+})
+public class AttributeValueRecord extends BaseAttributeValueRecord {
 
-    @JsonProperty(value = "vaerdi")
-    private String value;
+    public static final String TABLE_NAME = "cvr_record_attribute_value";
 
+    public static final String DB_FIELD_ATTRIBUTE = "attribute";
+
+    @ManyToOne(targetEntity = AttributeRecord.class)
+    @JoinColumn(name = DB_FIELD_ATTRIBUTE + DatabaseEntry.REF)
     @JsonIgnore
-    private AttributeRecord parent;
+    private AttributeRecord attribute;
 
-    public void setParent(AttributeRecord parent) {
-        this.parent = parent;
+    public void setAttribute(AttributeRecord attribute) {
+        this.attribute = attribute;
     }
 
+
+
     @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session, Bitemporality bitemporality) {
+    public void populateBaseData(CompanyBaseData baseData, Session session) {
         baseData.addAttribute(
-                this.parent.getType(),
-                this.parent.getValueType(),
+                this.attribute.getType(),
+                this.attribute.getValueType(),
                 this.value,
-                this.parent.getSequenceNumber()
+                this.attribute.getSequenceNumber()
         );
     }
 
     @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, Session session, Bitemporality bitemporality) {
+    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
         baseData.addAttribute(
-                this.parent.getType(),
-                this.parent.getValueType(),
+                this.attribute.getType(),
+                this.attribute.getValueType(),
                 this.value,
-                this.parent.getSequenceNumber()
+                this.attribute.getSequenceNumber()
         );
     }
 
     @Override
-    public void populateBaseData(ParticipantBaseData baseData, Session session, Bitemporality bitemporality) {
+    public void populateBaseData(ParticipantBaseData baseData, Session session) {
         baseData.addAttribute(
-                this.parent.getType(),
-                this.parent.getValueType(),
+                this.attribute.getType(),
+                this.attribute.getValueType(),
                 this.value,
-                this.parent.getSequenceNumber()
+                this.attribute.getSequenceNumber()
         );
     }
+
 }

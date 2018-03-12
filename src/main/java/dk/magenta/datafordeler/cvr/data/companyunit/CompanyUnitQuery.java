@@ -18,7 +18,7 @@ import java.util.*;
  */
 public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
 
-    public static final String P_NUMBER = CompanyUnitBaseData.IO_FIELD_PNUMBER;
+    public static final String P_NUMBER = CompanyUnitEntity.IO_FIELD_PNUMBER;
     public static final String ASSOCIATED_COMPANY_CVR = CompanyUnitBaseData.IO_FIELD_CVR_NUMBER;
     public static final String PRIMARYINDUSTRY = CompanyUnitBaseData.IO_FIELD_PRIMARY_INDUSTRY;
     public static final String KOMMUNEKODE = Municipality.IO_FIELD_CODE;
@@ -160,6 +160,7 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
     public void clearKommuneKode() {
         this.kommunekode.clear();
     }
+
 
 
     @Override

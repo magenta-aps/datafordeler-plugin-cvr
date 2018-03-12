@@ -1,6 +1,5 @@
 package dk.magenta.datafordeler.cvr.data.unversioned;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import org.apache.logging.log4j.LogManager;
@@ -25,13 +24,12 @@ import static dk.magenta.datafordeler.cvr.data.unversioned.Municipality.DB_FIELD
 @Table(name = "cvr_municipality", indexes = {
         @Index(name = "cvr_municipality_code", columnList = DB_FIELD_CODE)
 })
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Municipality extends UnversionedEntity {
 
     private static Logger log = LogManager.getLogger(Municipality.class.getSimpleName());
 
     public static final String DB_FIELD_CODE = "code";
-    public static final String IO_FIELD_CODE = "kommunekode";
+    public static final String IO_FIELD_CODE = "kommuneKode";
 
     @JsonProperty(value = IO_FIELD_CODE)
     @XmlElement(name = IO_FIELD_CODE)
@@ -49,7 +47,7 @@ public class Municipality extends UnversionedEntity {
     //----------------------------------------------------
 
     public static final String DB_FIELD_NAME = "name";
-    public static final String IO_FIELD_NAME = "kommunenavn";
+    public static final String IO_FIELD_NAME = "kommuneNavn";
 
     @JsonProperty(value = IO_FIELD_NAME)
     @XmlElement(name = IO_FIELD_NAME)
@@ -63,6 +61,12 @@ public class Municipality extends UnversionedEntity {
     public void setName(String name) {
         this.name = name;
     }
+
+    @JsonProperty
+    public Long getId() {
+        return super.getId();
+    }
+
 
     //----------------------------------------------------
 

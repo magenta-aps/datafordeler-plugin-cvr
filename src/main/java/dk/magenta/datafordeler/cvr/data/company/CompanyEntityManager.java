@@ -113,9 +113,15 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
         return new CompanyBaseData();
     }
 
-
     @Autowired
     private CvrConfigurationManager configurationManager;
+
+    @Override
+    public boolean pullEnabled() {
+        CvrConfiguration configuration = configurationManager.getConfiguration();
+        return (configuration.getCompanyRegisterType() != CvrConfiguration.RegisterType.DISABLED);
+    }
+
 
     public HashSet<CompanyRecord> directLookup(HashSet<String> cvrNumbers, OffsetDateTime since) {
         HashSet<CompanyRecord> records = new HashSet<>();

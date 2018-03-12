@@ -20,9 +20,9 @@ import dk.magenta.datafordeler.cvr.CvrPlugin;
 import dk.magenta.datafordeler.cvr.CvrRegisterManager;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfiguration;
 import dk.magenta.datafordeler.cvr.data.unversioned.*;
-import dk.magenta.datafordeler.cvr.records.CompanyParticipantRelationRecord;
-import dk.magenta.datafordeler.cvr.records.CvrBaseRecord;
+import dk.magenta.datafordeler.cvr.records.CvrBitemporalRecord;
 import dk.magenta.datafordeler.cvr.records.CvrEntityRecord;
+import dk.magenta.datafordeler.cvr.records.CvrRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
@@ -65,6 +65,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
     private static boolean IMPORT_ONLY_CURRENT = false;
     private static boolean DONT_IMPORT_CURRENT = false;
     private static boolean SAVE_RECORD_DATA = false;
+    private static boolean SAVE_ONLY_RECORDS = false;
 
     private ScanScrollCommunicator commonFetcher;
 
@@ -203,7 +204,6 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
      */
     @Override
     public List<? extends Registration> parseData(InputStream registrationData, ImportMetadata importMetadata) throws DataFordelerException {
-
         Session session = importMetadata.getSession();
         if (session != null) {
             Industry.initializeCache(session);
@@ -361,114 +361,113 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         }
         timer.measure(TASK_PARSE);
 
+        
+        
+        toplevelRecord.save(session);
 
-        timer.start(TASK_FIND_ENTITY);
-        this.checkInterrupt(importMetadata);
-        UUID uuid = this.generateUUID(toplevelRecord);
-        E entity = null;
-        String domain = CvrPlugin.getDomain();
-        Identification identification = QueryManager.getIdentification(session, uuid, domain);
-        if (identification != null) {
-            entity = QueryManager.getEntity(session, identification, this.getEntityClass());
-        }
-        if (entity == null) {
-            log.debug("Creating new Entity");
-            entity = this.createBasicEntity(toplevelRecord);
-            entity.setIdentifikation(
-                    QueryManager.getOrCreateIdentification(session, uuid, domain)
-            );
-        } else {
-            log.debug("Using existing entity");
-        }
-        timer.measure(TASK_FIND_ENTITY);
+        if (!SAVE_ONLY_RECORDS) {
+
+            timer.start(TASK_FIND_ENTITY);
+            this.checkInterrupt(importMetadata);
+            UUID uuid = this.generateUUID(toplevelRecord);
+            E entity = null;
+            String domain = CvrPlugin.getDomain();
+            Identification identification = QueryManager.getIdentification(session, uuid, domain);
+            if (identification != null) {
+                entity = QueryManager.getEntity(session, identification, this.getEntityClass());
+            }
+            if (entity == null) {
+                log.debug("Creating new Entity");
+                entity = this.createBasicEntity(toplevelRecord);
+                entity.setIdentifikation(
+                        QueryManager.getOrCreateIdentification(session, uuid, domain)
+                );
+            } else {
+                log.debug("Using existing entity");
+            }
+            timer.measure(TASK_FIND_ENTITY);
+
+            this.checkInterrupt(importMetadata);
+            HashSet<R> entityRegistrations = new HashSet<>();
+            OffsetDateTime lastUpdate = this.getLastUpdated(session);
+            List<CvrRecord> recentlyUpdated = toplevelRecord.getSince(lastUpdate);
 
 
-        this.checkInterrupt(importMetadata);
-        HashSet<R> entityRegistrations = new HashSet<>();
-        OffsetDateTime lastUpdate = this.getLastUpdated(session);
-        //List<CvrBaseRecord> recentlyUpdated = toplevelRecord.getSince(lastUpdate);
-        List<CvrBaseRecord> recentlyUpdated = toplevelRecord.getAll();
+            ListHashMap<Bitemporality, CvrRecord> groups = this.sortIntoGroups(recentlyUpdated);
 
+            for (Bitemporality bitemporality : groups.keySet()) {
 
-        for (CvrBaseRecord rec : recentlyUpdated) {
-            /*if (rec.getLastUpdated() == null) {
-                rec.setLastUpdated(lastUpdate);
-            }*/
-        }
-
-        ListHashMap<Bitemporality, CvrBaseRecord> groups = this.sortIntoGroups(recentlyUpdated);
-
-        for (Bitemporality bitemporality : groups.keySet()) {
-
-            timer.start(TASK_FIND_REGISTRATIONS);
-            List<CvrBaseRecord> group = groups.get(bitemporality);
-            List<R> entityRegistrationList = entity.findRegistrations(bitemporality.registrationFrom, bitemporality.registrationTo);
-            ArrayList<V> effects = new ArrayList<>();
-            for (R registration : entityRegistrationList) {
-                V effect = registration.getEffect(bitemporality);
-                if (effect == null) {
-                    effect = registration.createEffect(bitemporality);
+                timer.start(TASK_FIND_REGISTRATIONS);
+                List<CvrRecord> group = groups.get(bitemporality);
+                List<R> entityRegistrationList = entity.findRegistrations(bitemporality.registrationFrom, bitemporality.registrationTo);
+                ArrayList<V> effects = new ArrayList<>();
+                for (R registration : entityRegistrationList) {
+                    V effect = registration.getEffect(bitemporality);
+                    if (effect == null) {
+                        effect = registration.createEffect(bitemporality);
+                    }
+                    effects.add(effect);
                 }
-                effects.add(effect);
-            }
-            entityRegistrations.addAll(entityRegistrationList);
-            timer.measure(TASK_FIND_REGISTRATIONS);
+                entityRegistrations.addAll(entityRegistrationList);
+                timer.measure(TASK_FIND_REGISTRATIONS);
 
 
-            timer.start(TASK_FIND_ITEMS);
-            // R-V-D scenario
-            // Every DataItem that we locate for population must match the given effects exactly,
-            // or we risk assigning data to an item that shouldn't be assigned to
-            D baseData = null;
-            HashSet<D> searchPool = new HashSet<>();
-            for (V effect : effects) {
-                searchPool.addAll(effect.getDataItems());
-            }
-            for (D data : searchPool) {
-                if (data.getEffects().containsAll(effects) && effects.containsAll(data.getEffects())) {
-                    baseData = data;
-                    log.debug("Reuse existing basedata");
-                    break;
-                }
-            }
-            if (baseData == null) {
-                log.debug("Creating new basedata");
-                baseData = this.createDataItem();
+                timer.start(TASK_FIND_ITEMS);
+                // R-V-D scenario
+                // Every DataItem that we locate for population must match the given effects exactly,
+                // or we risk assigning data to an item that shouldn't be assigned to
+                D baseData = null;
+                HashSet<D> searchPool = new HashSet<>();
                 for (V effect : effects) {
-                    log.debug("Wire basedata to effect " + effect.getRegistration().getRegistrationFrom() + "|" + effect.getRegistration().getRegistrationTo() + "|" + effect.getEffectFrom() + "|" + effect.getEffectTo());
-                    baseData.addEffect(effect);
+                    searchPool.addAll(effect.getDataItems());
+                }
+
+                for (D data : searchPool) {
+                    if (data.getEffects().containsAll(effects) && effects.containsAll(data.getEffects())) {
+                        baseData = data;
+                        log.debug("Reuse existing basedata");
+                        break;
+                    }
+                }
+                if (baseData == null) {
+                    log.debug("Creating new basedata");
+                    baseData = this.createDataItem();
+                    for (V effect : effects) {
+                        log.debug("Wire basedata to effect " + effect.getRegistration().getRegistrationFrom() + "|" + effect.getRegistration().getRegistrationTo() + "|" + effect.getEffectFrom() + "|" + effect.getEffectTo());
+                        baseData.addEffect(effect);
+                    }
+                }
+                timer.measure(TASK_FIND_ITEMS);
+
+                OffsetDateTime timestamp = importMetadata.getImportTime();
+                for (CvrRecord record : group) {
+                    timer.start(TASK_POPULATE_DATA + " " + record.getClass().getSimpleName());
+                    record.populateBaseData(baseData, session, timestamp);
+                    baseData.setUpdated(timestamp);
+                    if (SAVE_RECORD_DATA) {
+                        RecordData recordData = new RecordData(timestamp);
+                        recordData.setSourceData(objectMapper.valueToTree(record).toString());
+                        baseData.addRecordData(recordData);
+                    }
+                    timer.measure(TASK_POPULATE_DATA + " " + record.getClass().getSimpleName());
                 }
             }
-            timer.measure(TASK_FIND_ITEMS);
 
-            OffsetDateTime timestamp = importMetadata.getImportTime();
-            for (CvrBaseRecord record : group) {
-                timer.start(TASK_POPULATE_DATA+" "+record.getClass().getSimpleName());
-                record.populateBaseData(baseData, session, timestamp, bitemporality);
-                baseData.setUpdated(timestamp);
-                if (SAVE_RECORD_DATA) {
-                    RecordData recordData = new RecordData(timestamp);
-                    recordData.setSourceData(objectMapper.valueToTree(record).toString());
-                    baseData.addRecordData(recordData);
-                }
-                timer.measure(TASK_POPULATE_DATA+" "+record.getClass().getSimpleName());
+
+            timer.start(TASK_SAVE);
+            for (R registration : entityRegistrations) {
+                registration.setLastImportTime(importMetadata.getImportTime());
+                session.saveOrUpdate(registration);
             }
+            session.saveOrUpdate(entity);
+            timer.measure(TASK_SAVE);
+
+
+            registrations.addAll(entityRegistrations);
+
+            this.checkInterrupt(importMetadata);
+
         }
-
-
-        timer.start(TASK_SAVE);
-        for (R registration : entityRegistrations) {
-            registration.setLastImportTime(importMetadata.getImportTime());
-            session.saveOrUpdate(registration);
-        }
-        session.saveOrUpdate(entity);
-        timer.measure(TASK_SAVE);
-
-
-        registrations.addAll(entityRegistrations);
-
-        this.checkInterrupt(importMetadata);
-
         return registrations;
     }
 
@@ -477,21 +476,24 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
      * @param records
      * @return
      */
-    public ListHashMap<Bitemporality, CvrBaseRecord> sortIntoGroups(Collection<CvrBaseRecord> records) {
+    public ListHashMap<Bitemporality, CvrRecord> sortIntoGroups(Collection<CvrRecord> records) {
         // Sort the records into groups that share bitemporality
-        ListHashMap<Bitemporality, CvrBaseRecord> recordGroups = new ListHashMap<>();
-        for (CvrBaseRecord record : records) {
-            // Find the appropriate registration object
-            if (IMPORT_ONLY_CURRENT) {
-                if (record.getRegistrationTo() == null && record.getValidTo() == null) {
-                    recordGroups.add(new Bitemporality(roundTime(record.getRegistrationFrom()), roundTime(record.getRegistrationTo()), record.getValidFrom(), record.getValidTo()), record);
+        ListHashMap<Bitemporality, CvrRecord> recordGroups = new ListHashMap<>();
+        for (CvrRecord record : records) {
+            if (record instanceof CvrBitemporalRecord) {
+                CvrBitemporalRecord bitemporalRecord = (CvrBitemporalRecord) record;
+                // Find the appropriate registration object
+                if (IMPORT_ONLY_CURRENT) {
+                    if (bitemporalRecord.getRegistrationTo() == null && bitemporalRecord.getValidTo() == null) {
+                        recordGroups.add(new Bitemporality(roundTime(bitemporalRecord.getRegistrationFrom()), roundTime(bitemporalRecord.getRegistrationTo()), bitemporalRecord.getValidFrom(), bitemporalRecord.getValidTo()), bitemporalRecord);
+                    }
+                } else if (DONT_IMPORT_CURRENT) {
+                    if (bitemporalRecord.getRegistrationTo() != null || bitemporalRecord.getValidTo() != null) {
+                        recordGroups.add(new Bitemporality(roundTime(bitemporalRecord.getRegistrationFrom()), roundTime(bitemporalRecord.getRegistrationTo()), bitemporalRecord.getValidFrom(), bitemporalRecord.getValidTo()), bitemporalRecord);
+                    }
+                } else {
+                    recordGroups.add(new Bitemporality(roundTime(bitemporalRecord.getRegistrationFrom()), roundTime(bitemporalRecord.getRegistrationTo()), bitemporalRecord.getValidFrom(), bitemporalRecord.getValidTo()), bitemporalRecord);
                 }
-            } else if (DONT_IMPORT_CURRENT) {
-                if (record.getRegistrationTo() != null || record.getValidTo() != null) {
-                    recordGroups.add(new Bitemporality(roundTime(record.getRegistrationFrom()), roundTime(record.getRegistrationTo()), record.getValidFrom(), record.getValidTo()), record);
-                }
-            } else {
-                recordGroups.add(new Bitemporality(roundTime(record.getRegistrationFrom()), roundTime(record.getRegistrationTo()), record.getValidFrom(), record.getValidTo()), record);
             }
         }
         return recordGroups;

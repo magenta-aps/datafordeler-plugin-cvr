@@ -724,6 +724,7 @@ public class QueryTest {
             Assert.assertEquals(1, wrapped.size());
             Assert.assertTrue(wrapped.get(0) instanceof ObjectNode);
             ObjectNode objectNode = (ObjectNode) wrapped.get(0);
+            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectNode));
             Assert.assertEquals(4, objectNode.get("registreringer").size());
 
             String firstImport = objectMapper.writeValueAsString(wrapped);

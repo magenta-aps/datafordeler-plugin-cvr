@@ -62,6 +62,10 @@ public class PostCode extends UnversionedEntity {
         this.postDistrict = postDistrict;
     }
 
+    @JsonProperty
+    public Long getId() {
+        return super.getId();
+    }
     //----------------------------------------------------
 
     /**
