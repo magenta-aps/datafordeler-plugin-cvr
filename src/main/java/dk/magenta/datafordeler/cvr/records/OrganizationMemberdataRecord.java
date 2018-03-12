@@ -30,7 +30,7 @@ public class OrganizationMemberdataRecord extends CvrRecord {
 
 
 
-    public static final String DB_FIELD_INDEX = "index";
+    public static final String DB_FIELD_INDEX = "recordIndex";
 
     @Column(name = DB_FIELD_INDEX)
     @JsonIgnore
