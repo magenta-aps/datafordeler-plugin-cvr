@@ -72,7 +72,7 @@ public class OfficeRelationUnitRecord extends CvrBitemporalRecord {
 
     public static final String IO_FIELD_NAME = "navne";
 
-    @OneToMany(mappedBy = BaseNameRecord.DB_FIELD_OFFICE_UNIT, targetEntity = BaseNameRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = BaseNameRecord.DB_FIELD_OFFICE_UNIT, targetEntity = BaseNameRecord.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonProperty(value = IO_FIELD_NAME)
     private Set<BaseNameRecord> names = new HashSet<>();
 
@@ -88,7 +88,7 @@ public class OfficeRelationUnitRecord extends CvrBitemporalRecord {
     }
 
     public void addName(BaseNameRecord record) {
-        if (record != null && !this.names.contains(record)) {
+        if (record != null) {
             record.setOfficeUnitRecord(this);
             this.names.add(record);
         }
@@ -99,7 +99,7 @@ public class OfficeRelationUnitRecord extends CvrBitemporalRecord {
     public static final String DB_FIELD_LOCATION_ADDRESS = "locationAddress";
     public static final String IO_FIELD_LOCATION_ADDRESS = "beliggenhedsadresse";
 
-    @OneToMany(mappedBy = AddressRecord.DB_FIELD_OFFICE_UNIT, targetEntity = AddressRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = AddressRecord.DB_FIELD_OFFICE_UNIT, targetEntity = AddressRecord.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonProperty(value = IO_FIELD_LOCATION_ADDRESS)
     private Set<AddressRecord> locationAddress = new HashSet<>();
 
@@ -112,7 +112,7 @@ public class OfficeRelationUnitRecord extends CvrBitemporalRecord {
     }
 
     public void addLocationAddress(AddressRecord record) {
-        if (record != null && !this.locationAddress.contains(record)) {
+        if (record != null) {
             record.setType(AddressRecord.TYPE_LOCATION);
             record.setOfficeUnitRecord(this);
             this.locationAddress.add(record);

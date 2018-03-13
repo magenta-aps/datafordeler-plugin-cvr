@@ -13,6 +13,8 @@ import org.hibernate.annotations.Filters;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.*;
 
 /**
@@ -49,7 +51,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_REG_NUMBER = "regNumber";
     public static final String IO_FIELD_REG_NUMBER = "regNummer";
 
-    @OneToMany(targetEntity = CompanyRegNumberRecord.class, mappedBy = CompanyRegNumberRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = CompanyRegNumberRecord.class, mappedBy = CompanyRegNumberRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonProperty(value = IO_FIELD_REG_NUMBER)
     private Set<CompanyRegNumberRecord> regNumber;
 
@@ -61,7 +63,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addRegNumber(CompanyRegNumberRecord record) {
-        if (!this.regNumber.contains(record)) {
+        if (record != null) {
             record.setCompanyRecord(this);
             this.regNumber.add(record);
         }
@@ -112,7 +114,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_NAMES = "names";
     public static final String IO_FIELD_NAMES = "navne";
 
-    @OneToMany(targetEntity = SecNameRecord.class, mappedBy = SecNameRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = SecNameRecord.class, mappedBy = SecNameRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Where(clause = SecNameRecord.DB_FIELD_SECONDARY+"=false")
     @Filters({
             //@Filter(names = Registration.FILTER_REGISTRATION_FROM, condition="(registrationTo >= :"+Registration.FILTERPARAM_REGISTRATION_FROM+" OR registrationTo is null)"),
@@ -136,7 +138,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addName(SecNameRecord record) {
-        if (!this.names.contains(record)) {
+        if (record != null) {
             record.setSecondary(false);
             record.setCompanyRecord(this);
             this.names.add(record);
@@ -148,7 +150,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_SECONDARY_NAMES = "secondaryNames";
     public static final String IO_FIELD_SECONDARY_NAMES = "binavne";
 
-    @OneToMany(targetEntity = SecNameRecord.class, mappedBy = SecNameRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = SecNameRecord.class, mappedBy = SecNameRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Where(clause = SecNameRecord.DB_FIELD_SECONDARY+"=true")
     @JsonProperty(value = IO_FIELD_SECONDARY_NAMES)
     private Set<SecNameRecord> secondaryNames = new HashSet<>();
@@ -166,7 +168,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addSecondaryName(SecNameRecord record) {
-        if (!this.secondaryNames.contains(record)) {
+        if (record != null) {
             record.setSecondary(true);
             record.setCompanyRecord(this);
             this.secondaryNames.add(record);
@@ -178,7 +180,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_LOCATION_ADDRESS = "locationAddress";
     public static final String IO_FIELD_LOCATION_ADDRESS = "beliggenhedsadresse";
 
-    @OneToMany(targetEntity = AddressRecord.class, mappedBy = AddressRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = AddressRecord.class, mappedBy = AddressRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Where(clause = AddressRecord.DB_FIELD_TYPE+"="+AddressRecord.TYPE_LOCATION)
     @Filters({
             @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
@@ -197,7 +199,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addLocationAddress(AddressRecord record) {
-        if (!this.locationAddress.contains(record)) {
+        if (record != null) {
             record.setType(AddressRecord.TYPE_LOCATION);
             record.setCompanyRecord(this);
             this.locationAddress.add(record);
@@ -214,7 +216,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_POSTAL_ADDRESS = "postalAddress";
     public static final String IO_FIELD_POSTAL_ADDRESS = "postadresse";
 
-    @OneToMany(targetEntity = AddressRecord.class, mappedBy = AddressRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = AddressRecord.class, mappedBy = AddressRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Where(clause = AddressRecord.DB_FIELD_TYPE+"="+AddressRecord.TYPE_POSTAL)
     @Filters({
             @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
@@ -233,7 +235,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addPostalAddress(AddressRecord record) {
-        if (!this.postalAddress.contains(record)) {
+        if (record != null) {
             record.setType(AddressRecord.TYPE_POSTAL);
             record.setCompanyRecord(this);
             this.postalAddress.add(record);
@@ -249,7 +251,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_PHONE = "phoneNumber";
     public static final String IO_FIELD_PHONE = "telefonNummer";
 
-    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_TELEFONNUMMER+" AND "+ContactRecord.DB_FIELD_SECONDARY+"=false")
     @Filters({
             @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
@@ -269,7 +271,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addPhoneNumber(ContactRecord record) {
-        if (!this.phoneNumber.contains(record)) {
+        if (record != null) {
             record.setType(ContactRecord.TYPE_TELEFONNUMMER);
             record.setCompanyRecord(this);
             record.setSecondary(false);
@@ -286,7 +288,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_PHONE_SECONDARY = "secondaryPhoneNumber";
     public static final String IO_FIELD_PHONE_SECONDARY = "sekundaertTelefonNummer";
 
-    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_TELEFONNUMMER+" AND "+ContactRecord.DB_FIELD_SECONDARY+"=true")
     @Filters({
             @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
@@ -306,7 +308,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addSecondaryPhoneNumber(ContactRecord record) {
-        if (!this.phoneNumber.contains(record)) {
+        if (record != null) {
             record.setType(ContactRecord.TYPE_TELEFONNUMMER);
             record.setCompanyRecord(this);
             record.setSecondary(true);
@@ -323,7 +325,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_FAX = "faxNumber";
     public static final String IO_FIELD_FAX = "telefaxNummer";
 
-    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_TELEFAXNUMMER)
     @Filters({
             @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
@@ -343,7 +345,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addFaxNumber(ContactRecord record) {
-        if (!this.faxNumber.contains(record)) {
+        if (record != null) {
             record.setType(ContactRecord.TYPE_TELEFAXNUMMER);
             record.setCompanyRecord(this);
             record.setSecondary(false);
@@ -360,7 +362,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_FAX_SECONDARY = "secondaryFaxNumber";
     public static final String IO_FIELD_FAX_SECONDARY = "sekundaertTelefaxNummer";
 
-    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_TELEFAXNUMMER+" AND "+ContactRecord.DB_FIELD_SECONDARY+"=true")
     @Filters({
             @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
@@ -380,7 +382,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addSecondaryFaxNumber(ContactRecord record) {
-        if (!this.faxNumber.contains(record)) {
+        if (record != null) {
             record.setType(ContactRecord.TYPE_TELEFAXNUMMER);
             record.setCompanyRecord(this);
             record.setSecondary(true);
@@ -397,7 +399,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_EMAIL = "emailAddress";
     public static final String IO_FIELD_EMAIL = "elektroniskPost";
 
-    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_EMAILADRESSE)
     @Filters({
             @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
@@ -416,7 +418,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addEmailAddress(ContactRecord record) {
-        if (!this.emailAddress.contains(record)) {
+        if (record != null) {
             record.setType(ContactRecord.TYPE_EMAILADRESSE);
             record.setCompanyRecord(this);
             this.emailAddress.add(record);
@@ -432,7 +434,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_HOMEPAGE = "homepage";
     public static final String IO_FIELD_HOMEPAGE = "hjemmeside";
 
-    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_HJEMMESIDE)
     @Filters({
             @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
@@ -451,7 +453,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addHomepage(ContactRecord record) {
-        if (!this.homepage.contains(record)) {
+        if (record != null) {
             record.setType(ContactRecord.TYPE_HJEMMESIDE);
             record.setCompanyRecord(this);
             this.homepage.add(record);
@@ -467,7 +469,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_MANDATORY_EMAIL = "mandatoryEmailAddress";
     public static final String IO_FIELD_MANDATORY_EMAIL = "obligatoriskEmail";
 
-    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_OBLIGATORISK_EMAILADRESSE)
     @Filters({
             @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
@@ -486,7 +488,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addMandatoryEmailAddress(ContactRecord record) {
-        if (!this.mandatoryEmailAddress.contains(record)) {
+        if (record != null) {
             record.setType(ContactRecord.TYPE_OBLIGATORISK_EMAILADRESSE);
             record.setCompanyRecord(this);
             this.mandatoryEmailAddress.add(record);
@@ -502,7 +504,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_LIFECYCLE = "lifecycle";
     public static final String IO_FIELD_LIFECYCLE = "livsforloeb";
 
-    @OneToMany(targetEntity = LifecycleRecord.class, mappedBy = LifecycleRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = LifecycleRecord.class, mappedBy = LifecycleRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonProperty(value = IO_FIELD_LIFECYCLE)
     private Set<LifecycleRecord> lifecycle = new HashSet<>();
 
@@ -514,7 +516,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addLifecycle(LifecycleRecord record) {
-        if (!this.lifecycle.contains(record)) {
+        if (record != null) {
             record.setCompanyRecord(this);
             this.lifecycle.add(record);
         }
@@ -529,7 +531,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_PRIMARY_INDUSTRY = "primaryIndustry";
     public static final String IO_FIELD_PRIMARY_INDUSTRY = "hovedbranche";
 
-    @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=0")
     @JsonProperty(value = IO_FIELD_PRIMARY_INDUSTRY)
     private Set<CompanyIndustryRecord> primaryIndustry = new HashSet<>();
@@ -543,7 +545,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addPrimaryIndustry(CompanyIndustryRecord record) {
-        if (!this.primaryIndustry.contains(record)) {
+        if (record != null) {
             record.setIndex(0);
             record.setCompanyRecord(this);
             this.primaryIndustry.add(record);
@@ -559,7 +561,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_SECONDARY_INDUSTRY1 = "secondaryIndustry1";
     public static final String IO_FIELD_SECONDARY_INDUSTRY1 = "bibranche1";
 
-    @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=1")
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY1)
     private Set<CompanyIndustryRecord> secondaryIndustry1 = new HashSet<>();
@@ -573,7 +575,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addSecondaryIndustry1(CompanyIndustryRecord record) {
-        if (!this.secondaryIndustry1.contains(record)) {
+        if (record != null) {
             record.setIndex(1);
             record.setCompanyRecord(this);
             this.secondaryIndustry1.add(record);
@@ -589,7 +591,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_SECONDARY_INDUSTRY2 = "secondaryIndustry2";
     public static final String IO_FIELD_SECONDARY_INDUSTRY2 = "bibranche2";
 
-    @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=2")
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY2)
     private Set<CompanyIndustryRecord> secondaryIndustry2 = new HashSet<>();
@@ -603,7 +605,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addSecondaryIndustry2(CompanyIndustryRecord record) {
-        if (!this.secondaryIndustry2.contains(record)) {
+        if (record != null) {
             record.setIndex(2);
             record.setCompanyRecord(this);
             this.secondaryIndustry2.add(record);
@@ -619,7 +621,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_SECONDARY_INDUSTRY3 = "secondaryIndustry3";
     public static final String IO_FIELD_SECONDARY_INDUSTRY3 = "bibranche3";
 
-    @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=3")
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY3)
     private Set<CompanyIndustryRecord> secondaryIndustry3 = new HashSet<>();
@@ -633,7 +635,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addSecondaryIndustry3(CompanyIndustryRecord record) {
-        if (!this.secondaryIndustry3.contains(record)) {
+        if (record != null) {
             record.setIndex(3);
             record.setCompanyRecord(this);
             this.secondaryIndustry3.add(record);
@@ -649,7 +651,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_STATUS = "status";
     public static final String IO_FIELD_STATUS = "status";
 
-    @OneToMany(targetEntity = StatusRecord.class, mappedBy = CompanyStatusRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = StatusRecord.class, mappedBy = CompanyStatusRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonProperty(value = IO_FIELD_STATUS)
     private Set<StatusRecord> status = new HashSet<>();
 
@@ -661,7 +663,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addStatus(StatusRecord record) {
-        if (record != null && !this.status.contains(record)) {
+        if (record != null) {
             record.setCompanyRecord(this);
             this.status.add(record);
         }
@@ -676,7 +678,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_COMPANYSTATUS = "companyStatus";
     public static final String IO_FIELD_COMPANYSTATUS = "virksomhedsstatus";
 
-    @OneToMany(targetEntity = CompanyStatusRecord.class, mappedBy = CompanyStatusRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = CompanyStatusRecord.class, mappedBy = CompanyStatusRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonProperty(value = IO_FIELD_COMPANYSTATUS)
     private Set<CompanyStatusRecord> companyStatus = new HashSet<>();
 
@@ -689,7 +691,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addCompanyStatus(CompanyStatusRecord record) {
-        if (!this.companyStatus.contains(record)) {
+        if (record != null) {
             record.setCompanyRecord(this);
             this.companyStatus.add(record);
         }
@@ -704,7 +706,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_FORM = "companyForm";
     public static final String IO_FIELD_FORM = "virksomhedsform";
 
-    @OneToMany(targetEntity = FormRecord.class, mappedBy = FormRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = FormRecord.class, mappedBy = FormRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonProperty(value = IO_FIELD_FORM)
     private Set<FormRecord> companyForm = new HashSet<>();
 
@@ -716,7 +718,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addCompanyForm(FormRecord record) {
-        if (!this.companyForm.contains(record)) {
+        if (record != null) {
             record.setCompanyRecord(this);
             this.companyForm.add(record);
         }
@@ -731,7 +733,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_YEARLY_NUMBERS = "yearlyNumbers";
     public static final String IO_FIELD_YEARLY_NUMBERS = "aarsbeskaeftigelse";
 
-    @OneToMany(targetEntity = CompanyYearlyNumbersRecord.class, mappedBy = CompanyYearlyNumbersRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = CompanyYearlyNumbersRecord.class, mappedBy = CompanyYearlyNumbersRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonProperty(value = IO_FIELD_YEARLY_NUMBERS)
     private Set<CompanyYearlyNumbersRecord> yearlyNumbers = new HashSet<>();
 
@@ -743,7 +745,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addYearlyNumbers(CompanyYearlyNumbersRecord record) {
-        if (!this.yearlyNumbers.contains(record)) {
+        if (record != null) {
             record.setCompanyRecord(this);
             this.yearlyNumbers.add(record);
         }
@@ -758,7 +760,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_QUARTERLY_NUMBERS = "quarterlyNumbers";
     public static final String IO_FIELD_QUARTERLY_NUMBERS = "kvartalsbeskaeftigelse";
 
-    @OneToMany(targetEntity = CompanyQuarterlyNumbersRecord.class, mappedBy = CompanyQuarterlyNumbersRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = CompanyQuarterlyNumbersRecord.class, mappedBy = CompanyQuarterlyNumbersRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonProperty(value = IO_FIELD_QUARTERLY_NUMBERS)
     private Set<CompanyQuarterlyNumbersRecord> quarterlyNumbers = new HashSet<>();
 
@@ -770,7 +772,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addQuarterlyNumbers(CompanyQuarterlyNumbersRecord record) {
-        if (!this.quarterlyNumbers.contains(record)) {
+        if (record != null) {
             record.setCompanyRecord(this);
             this.quarterlyNumbers.add(record);
         }
@@ -785,7 +787,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_MONTHLY_NUMBERS = "monthlyNumbers";
     public static final String IO_FIELD_MONTHLY_NUMBERS = "maanedsbeskaeftigelse";
 
-    @OneToMany(targetEntity = CompanyMonthlyNumbersRecord.class, mappedBy = CompanyMonthlyNumbersRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = CompanyMonthlyNumbersRecord.class, mappedBy = CompanyMonthlyNumbersRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonProperty(value = IO_FIELD_MONTHLY_NUMBERS)
     private Set<CompanyMonthlyNumbersRecord> monthlyNumbers = new HashSet<>();
 
@@ -797,7 +799,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addMonthlyNumbers(CompanyMonthlyNumbersRecord record) {
-        if (!this.monthlyNumbers.contains(record)) {
+        if (record != null) {
             record.setCompanyRecord(this);
             this.monthlyNumbers.add(record);
         }
@@ -812,7 +814,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_ATTRIBUTES = "attributes";
     public static final String IO_FIELD_ATTRIBUTES = "attributter";
 
-    @OneToMany(targetEntity = AttributeRecord.class, mappedBy = AttributeRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = AttributeRecord.class, mappedBy = AttributeRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonProperty(value = IO_FIELD_ATTRIBUTES)
     private Set<AttributeRecord> attributes = new HashSet<>();
 
@@ -824,7 +826,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addAttribute(AttributeRecord record) {
-        if (!this.attributes.contains(record)) {
+        if (record != null) {
             record.setCompanyRecord(this);
             this.attributes.add(record);
         }
@@ -854,7 +856,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_P_UNITS = "productionUnits";
     public static final String IO_FIELD_P_UNITS = "penheder";
 
-    @OneToMany(targetEntity = CompanyUnitLinkRecord.class, mappedBy = CompanyUnitLinkRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = CompanyUnitLinkRecord.class, mappedBy = CompanyUnitLinkRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonProperty(value = IO_FIELD_P_UNITS)
     private Set<CompanyUnitLinkRecord> productionUnits = new HashSet<>();
 
@@ -866,7 +868,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addProductionUnit(CompanyUnitLinkRecord record) {
-        if (!this.productionUnits.contains(record)) {
+        if (record != null) {
             record.setCompanyRecord(this);
             this.productionUnits.add(record);
         }
@@ -881,7 +883,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_PARTICIPANTS = "participants";
     public static final String IO_FIELD_PARTICIPANTS = "deltagerRelation";
 
-    @OneToMany(targetEntity = CompanyParticipantRelationRecord.class, mappedBy = CompanyParticipantRelationRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = CompanyParticipantRelationRecord.class, mappedBy = CompanyParticipantRelationRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonProperty(value = IO_FIELD_PARTICIPANTS)
     private Set<CompanyParticipantRelationRecord> participants = new HashSet<>();
 
@@ -893,7 +895,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addParticipant(CompanyParticipantRelationRecord record) {
-        if (!this.participants.contains(record)) {
+        if (record != null) {
             record.setCompanyRecord(this);
             this.participants.add(record);
         }
@@ -922,7 +924,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_FUSIONS = "fusions";
     public static final String IO_FIELD_FUSIONS = "fusioner";
 
-    @OneToMany(targetEntity = FusionSplitRecord.class, mappedBy = FusionSplitRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = FusionSplitRecord.class, mappedBy = FusionSplitRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Where(clause = FusionSplitRecord.DB_FIELD_SPLIT+"=false")
     @JsonProperty(value = IO_FIELD_FUSIONS)
     private Set<FusionSplitRecord> fusions = new HashSet<>();
@@ -940,7 +942,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addFusion(FusionSplitRecord record) {
-        if (!this.fusions.contains(record)) {
+        if (record != null) {
             record.setCompanyRecord(this);
             record.setSplit(false);
             this.fusions.add(record);
@@ -965,7 +967,7 @@ public class CompanyRecord extends CvrEntityRecord {
     public static final String DB_FIELD_SPLITS = "splits";
     public static final String IO_FIELD_SPLITS = "spaltninger";
 
-    @OneToMany(targetEntity = FusionSplitRecord.class, mappedBy = FusionSplitRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = FusionSplitRecord.class, mappedBy = FusionSplitRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Where(clause = FusionSplitRecord.DB_FIELD_SPLIT+"=true")
     @JsonProperty(value = IO_FIELD_SPLITS)
     private Set<FusionSplitRecord> splits = new HashSet<>();
@@ -983,7 +985,7 @@ public class CompanyRecord extends CvrEntityRecord {
     }
 
     public void addSplit(FusionSplitRecord record) {
-        if (!this.fusions.contains(record)) {
+        if (record != null) {
             record.setCompanyRecord(this);
             record.setSplit(true);
             this.fusions.add(record);
