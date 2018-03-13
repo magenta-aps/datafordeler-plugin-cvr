@@ -33,8 +33,7 @@ public class CompanyRegNumberRecord extends CvrBitemporalDataRecord {
 
 
 
-    public static final String DB_FIELD_PARTICIPANT_COMPANY_RELATION = "regNumber";
-    public static final String IO_FIELD_PARTICIPANT_COMPANY_RELATION = "regNummer";
+    public static final String DB_FIELD_PARTICIPANT_COMPANY_RELATION = "participantRelationCompanyRecord";
 
     @ManyToOne(targetEntity = RelationCompanyRecord.class)
     @JoinColumn(name = DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF)
