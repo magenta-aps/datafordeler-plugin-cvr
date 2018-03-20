@@ -23,7 +23,7 @@ public class AttributeValueRecord extends BaseAttributeValueRecord {
 
     public static final String DB_FIELD_ATTRIBUTE = "attribute";
 
-    @ManyToOne(targetEntity = AttributeRecord.class)
+    @ManyToOne(targetEntity = AttributeRecord.class, fetch = FetchType.LAZY)
     @JoinColumn(name = DB_FIELD_ATTRIBUTE + DatabaseEntry.REF)
     @JsonIgnore
     private AttributeRecord attribute;

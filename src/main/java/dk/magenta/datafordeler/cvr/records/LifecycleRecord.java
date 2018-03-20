@@ -29,7 +29,7 @@ public class LifecycleRecord extends CvrBitemporalDataRecord {
 
     public static final String DB_FIELD_PARTICIPANT_COMPANY_RELATION = "relationCompanyRecord";
 
-    @ManyToOne(targetEntity = RelationCompanyRecord.class)
+    @ManyToOne(targetEntity = RelationCompanyRecord.class, fetch = FetchType.LAZY)
     @JoinColumn(name = DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF)
     @JsonIgnore
     private RelationCompanyRecord relationCompanyRecord;

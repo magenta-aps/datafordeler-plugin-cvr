@@ -26,7 +26,7 @@ public class FormRecord extends CvrBitemporalDataRecord {
 
     public static final String DB_FIELD_COMPANY_METADATA = "companyMetadataRecord";
 
-    @ManyToOne(targetEntity = CompanyMetadataRecord.class)
+    @ManyToOne(targetEntity = CompanyMetadataRecord.class, fetch = FetchType.LAZY)
     @JoinColumn(name = DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF)
     @JsonIgnore
     private CompanyMetadataRecord companyMetadataRecord;
@@ -99,7 +99,7 @@ public class FormRecord extends CvrBitemporalDataRecord {
 
     public static final String DB_FIELD_PARTICIPANT_COMPANY_RELATION = "relationCompanyRecord";
 
-    @ManyToOne(targetEntity = RelationCompanyRecord.class)
+    @ManyToOne(targetEntity = RelationCompanyRecord.class, fetch = FetchType.LAZY)
     @JoinColumn(name = DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF)
     @JsonIgnore
     private RelationCompanyRecord relationCompanyRecord;

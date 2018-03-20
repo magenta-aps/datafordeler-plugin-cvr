@@ -103,7 +103,7 @@ public class AttributeRecord extends CvrNontemporalDataRecord {
 
     @JsonIgnore
     @JoinColumn(name = DB_FIELD_ORGANIZATION + DatabaseEntry.REF)
-    @ManyToOne(targetEntity = OrganizationRecord.class)
+    @ManyToOne(targetEntity = OrganizationRecord.class, fetch = FetchType.LAZY)
     private OrganizationRecord organizationRecord;
 
     public OrganizationRecord getOrganizationRecord() {
@@ -119,7 +119,7 @@ public class AttributeRecord extends CvrNontemporalDataRecord {
     public static final String DB_FIELD_ORGANIZATION_MEMBERDATA = "organizationMemberdataRecord";
 
     @JsonIgnore
-    @ManyToOne(targetEntity = OrganizationMemberdataRecord.class)
+    @ManyToOne(targetEntity = OrganizationMemberdataRecord.class, fetch = FetchType.LAZY)
     @JoinColumn(name = DB_FIELD_ORGANIZATION_MEMBERDATA + DatabaseEntry.REF)
     private OrganizationMemberdataRecord organizationMemberdataRecord;
 
@@ -132,7 +132,7 @@ public class AttributeRecord extends CvrNontemporalDataRecord {
     public static final String DB_FIELD_FUSION = "fusionSplitRecord";
 
     @JsonIgnore
-    @ManyToOne(targetEntity = FusionSplitRecord.class)
+    @ManyToOne(targetEntity = FusionSplitRecord.class, fetch = FetchType.LAZY)
     @JoinColumn(name = DB_FIELD_FUSION + DatabaseEntry.REF)
     private FusionSplitRecord fusionSplitRecord;
 
@@ -157,7 +157,7 @@ public class AttributeRecord extends CvrNontemporalDataRecord {
     public static final String DB_FIELD_OFFICE = "officeRelationRecord";
 
     @JsonIgnore
-    @ManyToOne(targetEntity = OfficeRelationRecord.class)
+    @ManyToOne(targetEntity = OfficeRelationRecord.class, fetch = FetchType.LAZY)
     @JoinColumn(name = DB_FIELD_OFFICE + DatabaseEntry.REF)
     private OfficeRelationRecord officeRelationRecord;
 

@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
@@ -22,7 +23,7 @@ public class CvrBitemporalMetaRecord extends CvrBitemporalRecord {
 
     public static final String DB_FIELD_COMPANY_METADATA = "companyMetadataRecord";
 
-    @ManyToOne(targetEntity = CompanyMetadataRecord.class)
+    @ManyToOne(targetEntity = CompanyMetadataRecord.class, fetch = FetchType.LAZY)
     @JoinColumn(name = DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF)
     @JsonIgnore
     private MetadataRecord companyMetadataRecord;
@@ -35,7 +36,7 @@ public class CvrBitemporalMetaRecord extends CvrBitemporalRecord {
 
     public static final String DB_FIELD_UNIT_METADATA = "unitMetadataRecord";
 
-    @ManyToOne(targetEntity = CompanyUnitMetadataRecord.class)
+    @ManyToOne(targetEntity = CompanyUnitMetadataRecord.class, fetch = FetchType.LAZY)
     @JoinColumn(name = DB_FIELD_UNIT_METADATA + DatabaseEntry.REF)
     @JsonIgnore
     private MetadataRecord unitMetadataRecord;
@@ -48,7 +49,7 @@ public class CvrBitemporalMetaRecord extends CvrBitemporalRecord {
 
     public static final String DB_FIELD_PARTICIPANT_METADATA = "participantMetadataRecord";
 
-    @ManyToOne(targetEntity = ParticipantMetadataRecord.class)
+    @ManyToOne(targetEntity = ParticipantMetadataRecord.class, fetch = FetchType.LAZY)
     @JoinColumn(name = DB_FIELD_PARTICIPANT_METADATA + DatabaseEntry.REF)
     @JsonIgnore
     private ParticipantMetadataRecord participantMetadataRecord;

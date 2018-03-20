@@ -72,7 +72,7 @@ public class AddressRecord extends CvrBitemporalDataMetaRecord {
 
     public static final String DB_FIELD_OFFICE_UNIT = "officeUnitRecord";
 
-    @ManyToOne(targetEntity = OfficeRelationUnitRecord.class)
+    @ManyToOne(targetEntity = OfficeRelationUnitRecord.class, fetch = FetchType.LAZY)
     @JoinColumn(name = DB_FIELD_OFFICE_UNIT + DatabaseEntry.REF)
     @JsonIgnore
     private OfficeRelationUnitRecord officeUnitRecord;
@@ -85,7 +85,7 @@ public class AddressRecord extends CvrBitemporalDataMetaRecord {
 
     public static final String DB_FIELD_PARTICIPANT_RELATION = "relationParticipantRecord";
 
-    @ManyToOne(targetEntity = RelationParticipantRecord.class)
+    @ManyToOne(targetEntity = RelationParticipantRecord.class, fetch = FetchType.LAZY)
     @JoinColumn(name = DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF)
     @JsonIgnore
     private RelationParticipantRecord relationParticipantRecord;

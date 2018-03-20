@@ -7,6 +7,7 @@ import dk.magenta.datafordeler.cvr.CvrPlugin;
 import org.hibernate.Session;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -40,7 +41,9 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord {
 
     @Override
     public void save(Session session) {
+        long a = Instant.now().toEpochMilli();
         CvrEntityRecord existing = QueryManager.getItem(session, this.getClass(), this.getIdentifyingFilter());
+        System.out.println(Instant.now().toEpochMilli() - a);
         if (this.identification == null) {
             this.identification = QueryManager.getOrCreateIdentification(session, this.generateUUID(), CvrPlugin.getDomain());
         }
