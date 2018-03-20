@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.magenta.datafordeler.core.configuration.ConfigurationManager;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.*;
 import dk.magenta.datafordeler.core.io.ImportInputStream;
@@ -117,6 +118,9 @@ public class CvrRegisterManager extends RegisterManager {
         return null;
     }
 
+    public ConfigurationManager<CvrConfiguration> getConfigurationManager() {
+        return this.configurationManager;
+    }
 
     /**
      * Pull data from the data source denoted by eventInterface, using the

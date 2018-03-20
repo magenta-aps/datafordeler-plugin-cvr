@@ -19,16 +19,13 @@ import dk.magenta.datafordeler.core.util.Stopwatch;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
 import dk.magenta.datafordeler.cvr.CvrRegisterManager;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfiguration;
-import dk.magenta.datafordeler.cvr.configuration.CvrConfigurationManager;
 import dk.magenta.datafordeler.cvr.data.unversioned.*;
-import dk.magenta.datafordeler.cvr.records.CvrBaseRecord;
 import dk.magenta.datafordeler.cvr.records.CvrBitemporalRecord;
 import dk.magenta.datafordeler.cvr.records.CvrEntityRecord;
 import dk.magenta.datafordeler.cvr.records.CvrRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
-import org.opensaml.xml.signature.Q;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -54,6 +51,8 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
     @Autowired
     private Stopwatch timer;
 
+    @Autowired
+    private ConfigurationSessionManager configurationSessionManager;
     private static final String TASK_PARSE = "CvrParse";
     private static final String TASK_FIND_ENTITY = "CvrFindEntity";
     private static final String TASK_FIND_REGISTRATIONS = "CvrFindRegistrations";
@@ -65,7 +64,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
     private static boolean IMPORT_ONLY_CURRENT = false;
     private static boolean DONT_IMPORT_CURRENT = false;
     private static boolean SAVE_RECORD_DATA = false;
-    private static boolean SAVE_ONLY_RECORDS = true;
+    private static boolean SAVE_ONLY_RECORDS = false;
 
     private ScanScrollCommunicator commonFetcher;
 
@@ -97,6 +96,10 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         //this.handledURISubstrings.add(expandBaseURI(this.getBaseEndpoint(), "/get/" + this.getBaseName(), null, null).toString());
     }
 
+    @Override
+    public CvrRegisterManager getRegisterManager() {
+        return (CvrRegisterManager) super.getRegisterManager();
+    }
     /**
      * Return the URI substrings that are listened on in the service
      */
@@ -216,11 +219,25 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         boolean wrappedInTransaction = importMetadata.isTransactionInProgress();
         long chunkCount = 0;
         long startChunk = importMetadata.getStartChunk();
+        InterruptedPull progress = new InterruptedPull();
         try {
             while (scanner.hasNext()) {
                 try {
                     String data = scanner.next();
                     if (chunkCount >= startChunk) {
+                        // Save progress
+                        progress.setChunk(chunkCount);
+                        progress.setFiles(cacheFiles);
+                        progress.setStartTime(importMetadata.getImportTime());
+                        progress.setInterruptTime(OffsetDateTime.now());
+                        progress.setSchemaName(this.getSchema());
+                        progress.setPlugin(this.getRegisterManager().getPlugin());
+
+                        Session progressSession = this.configurationSessionManager.getSessionFactory().openSession();
+                        progressSession.beginTransaction();
+                        progressSession.saveOrUpdate(progress);
+                        progressSession.getTransaction().commit();
+                        progressSession.close();
 
                         if (session == null) {
                             session = this.getSessionManager().getSessionFactory().openSession();
@@ -513,5 +530,12 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         if (importMetadata.getStop()) {
             throw new ImportInterruptedException(new InterruptedException());
         }
+    }
+
+    @Override
+    public boolean pullEnabled() {
+        CvrConfiguration configuration = this.getRegisterManager().getConfigurationManager().getConfiguration();
+        CvrConfiguration.RegisterType registerType = configuration.getRegisterType(this.getSchema());
+        return (registerType != null && registerType != CvrConfiguration.RegisterType.DISABLED);
     }
 }
