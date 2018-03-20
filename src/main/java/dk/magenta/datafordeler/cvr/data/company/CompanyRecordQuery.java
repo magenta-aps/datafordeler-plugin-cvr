@@ -1,14 +1,12 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
-import dk.magenta.datafordeler.core.database.DataItem;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.cvr.CvrRecordLookupDefinition;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 import dk.magenta.datafordeler.cvr.records.*;
 
-import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.StringJoiner;
 
 /**
  * Container for a query for Companies, defining fields and database lookup

@@ -1,21 +1,15 @@
 package dk.magenta.datafordeler.cvr.data.companyunit;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import dk.magenta.datafordeler.core.database.Effect;
-import dk.magenta.datafordeler.core.fapi.OutputWrapper;
 import dk.magenta.datafordeler.cvr.data.CvrOutputWrapper;
 import dk.magenta.datafordeler.cvr.data.shared.LifecycleData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
-import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Set;
 
 public class CompanyUnitOutputWrapper extends CvrOutputWrapper<CompanyUnitEntity> {
 

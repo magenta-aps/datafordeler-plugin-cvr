@@ -5,10 +5,10 @@ import dk.magenta.datafordeler.cvr.CvrRecordLookupDefinition;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 import dk.magenta.datafordeler.cvr.records.AddressMunicipalityRecord;
 import dk.magenta.datafordeler.cvr.records.AddressRecord;
-import dk.magenta.datafordeler.cvr.records.SecNameRecord;
 import dk.magenta.datafordeler.cvr.records.ParticipantRecord;
+import dk.magenta.datafordeler.cvr.records.SecNameRecord;
 
-import java.util.*;
+import java.util.StringJoiner;
 
 /**
  * Container for a query for Participants, defining fields and database lookup
