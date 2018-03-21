@@ -48,7 +48,7 @@ public class BaseNameRecord extends CvrBitemporalMetaRecord {
     public static final String DB_FIELD_ORGANIZATION = "organizationRecord";
 
     @JsonIgnore
-    @ManyToOne(targetEntity = OrganizationRecord.class)
+    @ManyToOne(targetEntity = OrganizationRecord.class, fetch = FetchType.LAZY)
     @JoinColumn(name = DB_FIELD_ORGANIZATION + DatabaseEntry.REF)
     private OrganizationRecord organizationRecord;
 
@@ -61,7 +61,7 @@ public class BaseNameRecord extends CvrBitemporalMetaRecord {
     public static final String DB_FIELD_OFFICE_UNIT = "officeUnitRecord";
 
     @JsonIgnore
-    @ManyToOne(targetEntity = OfficeRelationUnitRecord.class)
+    @ManyToOne(targetEntity = OfficeRelationUnitRecord.class, fetch = FetchType.LAZY)
     @JoinColumn(name = DB_FIELD_OFFICE_UNIT + DatabaseEntry.REF)
     private OfficeRelationUnitRecord officeUnitRecord;
 
@@ -74,7 +74,7 @@ public class BaseNameRecord extends CvrBitemporalMetaRecord {
     public static final String DB_FIELD_FUSION = "fusionSplitRecord";
 
     @JsonIgnore
-    @ManyToOne(targetEntity = FusionSplitRecord.class)
+    @ManyToOne(targetEntity = FusionSplitRecord.class, fetch = FetchType.LAZY)
     @JoinColumn(name = DB_FIELD_FUSION + DatabaseEntry.REF)
     private FusionSplitRecord fusionSplitRecord;
 
@@ -86,7 +86,7 @@ public class BaseNameRecord extends CvrBitemporalMetaRecord {
 
     public static final String DB_FIELD_PARTICIPANT_RELATION = "relationParticipantRecord";
 
-    @ManyToOne(targetEntity = RelationParticipantRecord.class)
+    @ManyToOne(targetEntity = RelationParticipantRecord.class, fetch = FetchType.LAZY)
     @JoinColumn(name = DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF)
     @JsonIgnore
     private RelationParticipantRecord relationParticipantRecord;
@@ -100,7 +100,7 @@ public class BaseNameRecord extends CvrBitemporalMetaRecord {
     public static final String DB_FIELD_COMPANY_RELATION = "relationCompanyRecord";
 
     @JsonIgnore
-    @ManyToOne(targetEntity = RelationCompanyRecord.class)
+    @ManyToOne(targetEntity = RelationCompanyRecord.class, fetch = FetchType.LAZY)
     @JoinColumn(name = DB_FIELD_COMPANY_RELATION + DatabaseEntry.REF)
     private RelationCompanyRecord relationCompanyRecord;
 

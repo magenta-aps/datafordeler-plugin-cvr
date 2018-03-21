@@ -20,7 +20,7 @@ public class OrganizationMemberdataRecord extends CvrRecord {
 
     public static final String DB_FIELD_ORGANIZATION = "organizationRecord";
 
-    @ManyToOne(targetEntity = OrganizationRecord.class)
+    @ManyToOne(targetEntity = OrganizationRecord.class, fetch = FetchType.LAZY)
     @JoinColumn(name = DB_FIELD_ORGANIZATION + DatabaseEntry.REF)
     @JsonIgnore
     private OrganizationRecord organizationRecord;

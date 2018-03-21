@@ -5,9 +5,6 @@ import dk.magenta.datafordeler.cvr.data.shared.SingleData;
 
 import javax.persistence.*;
 
-import static dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitCvrNumber.DB_FIELD_BASEDATA;
-import static dk.magenta.datafordeler.cvr.data.shared.SingleData.DB_FIELD_VALUE;
-
 @Entity
 @Table(name = "cvr_companyunit_cvr", indexes = {
         @Index(name = "cvr_companyunit_cvr_data", columnList = CompanyUnitCvrNumber.DB_FIELD_VALUE),

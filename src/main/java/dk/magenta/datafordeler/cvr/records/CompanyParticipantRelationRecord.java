@@ -5,15 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.database.QueryManager;
+import dk.magenta.datafordeler.core.util.Stopwatch;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
 import org.hibernate.Session;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Record for Company and CompanyUnit relationParticipantRecord relations.
@@ -32,7 +30,7 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
     public static final String DB_FIELD_PARTICIPANT_RELATION = "relationParticipantRecord";
     public static final String IO_FIELD_PARTICIPANT_RELATION = "deltager";
 
-    @OneToOne(targetEntity = RelationParticipantRecord.class, cascade = CascadeType.ALL)
+    @OneToOne(targetEntity = RelationParticipantRecord.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonProperty(value = IO_FIELD_PARTICIPANT_RELATION)
     private RelationParticipantRecord relationParticipantRecord;
 
@@ -58,7 +56,7 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
     public static final String DB_FIELD_COMPANY_RELATION = "relationCompanyRecord";
     public static final String IO_FIELD_COMPANY_RELATION = "virksomhed";
 
-    @OneToOne(targetEntity = RelationCompanyRecord.class, cascade = CascadeType.ALL)
+    @OneToOne(targetEntity = RelationCompanyRecord.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonProperty(value = IO_FIELD_COMPANY_RELATION)
     private RelationCompanyRecord relationCompanyRecord;
 
@@ -80,7 +78,7 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
     public static final String DB_FIELD_OFFICES = "offices";
     public static final String IO_FIELD_OFFICES = "kontorsteder";
 
-    @OneToMany(targetEntity = OfficeRelationRecord.class, mappedBy = OfficeRelationRecord.DB_FIELD_COMPANY_RELATION, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = OfficeRelationRecord.class, mappedBy = OfficeRelationRecord.DB_FIELD_COMPANY_RELATION, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonProperty(value = IO_FIELD_OFFICES)
     private Set<OfficeRelationRecord> offices = new HashSet<>();
 
@@ -100,7 +98,7 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
     public static final String DB_FIELD_ORGANIZATIONS = "organizations";
     public static final String IO_FIELD_ORGANIZATIONS = "organisationer";
 
-    @OneToMany(mappedBy = OrganizationRecord.DB_FIELD_PARTICIPANT_RELATION, targetEntity = OrganizationRecord.class, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = OrganizationRecord.DB_FIELD_PARTICIPANT_RELATION, targetEntity = OrganizationRecord.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonProperty(value = IO_FIELD_ORGANIZATIONS)
     private Set<OrganizationRecord> organizations;
 
@@ -112,7 +110,7 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
     }
 
     public void addOrganization(OrganizationRecord organization) {
-        if (!this.organizations.contains(organization)) {
+        if (organization != null) {
             organization.setCompanyParticipantRelationRecord(this);
             this.organizations.add(organization);
         }
@@ -201,7 +199,7 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
             if (this.getRelationParticipantRecord() == null) {
                 this.setRelationParticipantRecord(other.getRelationParticipantRecord());
             } else {
-                this.getRelationParticipantRecord().merge(other.getRelationParticipantRecord());
+                this.relationParticipantRecord.merge(other.getRelationParticipantRecord());
             }
         }
 
@@ -213,16 +211,20 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
             }
         }
 
+        HashMap<Long, OfficeRelationRecord> ourOffices = new HashMap<>();
+        for (OfficeRelationRecord ourOffice : this.offices) {
+            ourOffices.put(ourOffice.getOfficeUnitNumber(), ourOffice);
+        }
+
         for (OfficeRelationRecord otherOffice : other.getOffices()) {
             Long otherUnitNumber = otherOffice.getOfficeUnitNumber();
+
             boolean found = false;
             if (otherUnitNumber != null) {
-                for (OfficeRelationRecord ourOffice : this.offices) {
-                    if (otherUnitNumber.equals(ourOffice.getOfficeUnitNumber())) {
-                        ourOffice.merge(otherOffice);
-                        found = true;
-                        break;
-                    }
+                OfficeRelationRecord ourOffice = ourOffices.get(otherUnitNumber);
+                if (ourOffice != null) {
+                    ourOffice.merge(otherOffice);
+                    found = true;
                 }
             }
             if (!found) {

@@ -229,7 +229,6 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                 try {
                     String data = scanner.next();
                     if (chunkCount >= startChunk) {
-
                         // Save progress
                         progress.setChunk(chunkCount);
                         progress.setFiles(cacheFiles);

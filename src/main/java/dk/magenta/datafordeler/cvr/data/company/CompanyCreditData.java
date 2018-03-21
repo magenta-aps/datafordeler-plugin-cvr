@@ -3,7 +3,10 @@ package dk.magenta.datafordeler.cvr.data.company;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import dk.magenta.datafordeler.cvr.data.shared.SingleData;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;

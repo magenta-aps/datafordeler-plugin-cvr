@@ -4,15 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dk.magenta.datafordeler.core.database.Effect;
-import dk.magenta.datafordeler.core.util.DoubleHashMap;
 import dk.magenta.datafordeler.cvr.data.CvrOutputWrapper;
 import dk.magenta.datafordeler.cvr.data.shared.AttributeData;
-import dk.magenta.datafordeler.cvr.data.shared.ParticipantRelationData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
-import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 
 import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.Set;
 
 public class ParticipantOutputWrapper extends CvrOutputWrapper<ParticipantEntity> {
 

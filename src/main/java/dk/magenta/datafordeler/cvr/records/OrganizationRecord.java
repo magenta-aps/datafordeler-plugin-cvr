@@ -26,7 +26,7 @@ public class OrganizationRecord extends DatabaseEntry {
     public static final String DB_FIELD_PARTICIPANT_RELATION = "companyParticipantRelationRecord";
 
 
-    @ManyToOne(targetEntity = CompanyParticipantRelationRecord.class)
+    @ManyToOne(targetEntity = CompanyParticipantRelationRecord.class, fetch = FetchType.LAZY)
     @JoinColumn(name = DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF)
     @JsonIgnore
     private CompanyParticipantRelationRecord companyParticipantRelationRecord;

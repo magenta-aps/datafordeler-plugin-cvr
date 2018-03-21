@@ -24,7 +24,7 @@ public class OfficeRelationRecord extends CvrNontemporalRecord {
 
     public static final String DB_FIELD_COMPANY_RELATION = "companyParticipantRelationRecord";
 
-    @ManyToOne(targetEntity = CompanyParticipantRelationRecord.class)
+    @ManyToOne(targetEntity = CompanyParticipantRelationRecord.class, fetch = FetchType.LAZY)
     @JoinColumn(name = DB_FIELD_COMPANY_RELATION + DatabaseEntry.REF)
     @JsonIgnore
     private CompanyParticipantRelationRecord companyParticipantRelationRecord;
@@ -38,7 +38,7 @@ public class OfficeRelationRecord extends CvrNontemporalRecord {
     public static final String DB_FIELD_UNIT = "officeRelationUnitRecord";
     public static final String IO_FIELD_UNIT = "penhed";
 
-    @OneToOne(targetEntity = OfficeRelationUnitRecord.class, cascade = CascadeType.ALL)
+    @OneToOne(targetEntity = OfficeRelationUnitRecord.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = DB_FIELD_UNIT + DatabaseEntry.REF)
     @JsonProperty(value = IO_FIELD_UNIT)
     private OfficeRelationUnitRecord officeRelationUnitRecord;
@@ -61,7 +61,7 @@ public class OfficeRelationRecord extends CvrNontemporalRecord {
     public static final String DB_FIELD_ATTRIBUTES = "attributes";
     public static final String IO_FIELD_ATTRIBUTES = "attributter";
 
-    @OneToMany(targetEntity = AttributeRecord.class, mappedBy = AttributeRecord.DB_FIELD_OFFICE, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(targetEntity = AttributeRecord.class, mappedBy = AttributeRecord.DB_FIELD_OFFICE, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonProperty(value = IO_FIELD_ATTRIBUTES)
     private Set<AttributeRecord> attributes = new HashSet<>();
 
@@ -73,7 +73,7 @@ public class OfficeRelationRecord extends CvrNontemporalRecord {
     }
 
     public void addAttribute(AttributeRecord attribute) {
-        if (attribute != null && !this.attributes.contains(attribute)) {
+        if (attribute != null) {
             attribute.setOfficeRelationRecord(this);
             this.attributes.add(attribute);
         }

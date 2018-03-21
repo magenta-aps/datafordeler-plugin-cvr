@@ -1,20 +1,11 @@
 package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import dk.magenta.datafordeler.core.database.LookupDefinition;
-import dk.magenta.datafordeler.core.fapi.ParameterMap;
-import dk.magenta.datafordeler.core.fapi.QueryField;
 import dk.magenta.datafordeler.cvr.CvrRecordLookupDefinition;
-import dk.magenta.datafordeler.cvr.data.CvrQuery;
-import dk.magenta.datafordeler.cvr.data.shared.AddressData;
-import dk.magenta.datafordeler.cvr.data.shared.IndustryData;
-import dk.magenta.datafordeler.cvr.data.shared.IntegerData;
-import dk.magenta.datafordeler.cvr.data.unversioned.Address;
-import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 import dk.magenta.datafordeler.cvr.records.*;
 
-import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.StringJoiner;
 
 /**
  * Container for a query for Company units, defining fields and database lookup
