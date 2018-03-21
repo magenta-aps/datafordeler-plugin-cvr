@@ -160,9 +160,12 @@ public class CvrRegisterManager extends RegisterManager {
                 File cacheFile = new File("local/cvr/" + entityManager.getSchema() + "_" + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
                 try {
                     if (!cacheFile.exists()) {
-
+                        log.info("Cache file "+cacheFile.getAbsolutePath()+" doesn't exist. Creating new and filling from source");
                         if (lastUpdateTime == null) {
                             lastUpdateTime = OffsetDateTime.parse("0000-01-01T00:00:00Z");
+                            log.info("Last update time not found");
+                        } else {
+                            log.info("Last update time: "+lastUpdateTime.format(DateTimeFormatter.ISO_LOCAL_DATE));
                         }
                         requestBody = String.format(
                                 configuration.getQuery(schema),
