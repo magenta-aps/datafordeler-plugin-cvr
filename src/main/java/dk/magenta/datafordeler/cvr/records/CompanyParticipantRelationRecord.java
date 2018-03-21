@@ -78,7 +78,7 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
     public static final String DB_FIELD_OFFICES = "offices";
     public static final String IO_FIELD_OFFICES = "kontorsteder";
 
-    @OneToMany(targetEntity = OfficeRelationRecord.class, mappedBy = OfficeRelationRecord.DB_FIELD_COMPANY_RELATION, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = OfficeRelationRecord.class, mappedBy = OfficeRelationRecord.DB_FIELD_COMPANY_RELATION, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonProperty(value = IO_FIELD_OFFICES)
     private Set<OfficeRelationRecord> offices = new HashSet<>();
 
@@ -98,7 +98,7 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
     public static final String DB_FIELD_ORGANIZATIONS = "organizations";
     public static final String IO_FIELD_ORGANIZATIONS = "organisationer";
 
-    @OneToMany(mappedBy = OrganizationRecord.DB_FIELD_PARTICIPANT_RELATION, targetEntity = OrganizationRecord.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = OrganizationRecord.DB_FIELD_PARTICIPANT_RELATION, targetEntity = OrganizationRecord.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonProperty(value = IO_FIELD_ORGANIZATIONS)
     private Set<OrganizationRecord> organizations;
 

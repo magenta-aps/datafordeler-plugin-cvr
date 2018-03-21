@@ -24,7 +24,7 @@ public class CompanyMetadataRecord extends MetadataRecord {
     public static final String DB_FIELD_NEWEST_FORM = "newestForm";
     public static final String IO_FIELD_NEWEST_FORM = "nyesteVirksomhedsform";
 
-    @OneToMany(mappedBy = FormRecord.DB_FIELD_COMPANY_METADATA, targetEntity = FormRecord.class, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = FormRecord.DB_FIELD_COMPANY_METADATA, targetEntity = FormRecord.class, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<FormRecord> newestForm = new HashSet<>();
 
     public void setNewestForm(Set<FormRecord> newestForm) {
@@ -62,7 +62,7 @@ public class CompanyMetadataRecord extends MetadataRecord {
     public static final String DB_FIELD_NEWEST_NAME = "newestName";
     public static final String IO_FIELD_NEWEST_NAME = "nyesteNavn";
 
-    @OneToMany(targetEntity = BaseNameRecord.class, mappedBy = BaseNameRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = BaseNameRecord.class, mappedBy = BaseNameRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonProperty(value = IO_FIELD_NEWEST_NAME)
     private Set<BaseNameRecord> newestName = new HashSet<>();
 
@@ -101,7 +101,7 @@ public class CompanyMetadataRecord extends MetadataRecord {
     public static final String DB_FIELD_NEWEST_LOCATION = "newestLocation";
     public static final String IO_FIELD_NEWEST_LOCATION = "nyesteBeliggenhedsadresse";
 
-    @OneToMany(targetEntity = AddressRecord.class, mappedBy = AddressRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = AddressRecord.class, mappedBy = AddressRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonProperty(value = IO_FIELD_NEWEST_LOCATION)
     private Set<AddressRecord> newestLocation = new HashSet<>();
 
@@ -138,7 +138,7 @@ public class CompanyMetadataRecord extends MetadataRecord {
     public static final String DB_FIELD_NEWEST_PRIMARY_INDUSTRY = "newestPrimaryIndustry";
     public static final String IO_FIELD_NEWEST_PRIMARY_INDUSTRY = "nyesteHovedbranche";
 
-    @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=0")
     @JsonProperty(value = IO_FIELD_NEWEST_PRIMARY_INDUSTRY)
     private Set<CompanyIndustryRecord> newestPrimaryIndustry = new HashSet<>();
@@ -180,7 +180,7 @@ public class CompanyMetadataRecord extends MetadataRecord {
     public static final String DB_FIELD_NEWEST_SECONDARY_INDUSTRY1 = "newestSecondaryIndustry1";
     public static final String IO_FIELD_NEWEST_SECONDARY_INDUSTRY1 = "nyesteBibranche1";
 
-    @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=1")
     @JsonProperty(value = IO_FIELD_NEWEST_SECONDARY_INDUSTRY1)
     private Set<CompanyIndustryRecord> newestSecondaryIndustry1 = new HashSet<>();
@@ -223,7 +223,7 @@ public class CompanyMetadataRecord extends MetadataRecord {
     public static final String DB_FIELD_NEWEST_SECONDARY_INDUSTRY2 = "newestSecondaryIndustry2";
     public static final String IO_FIELD_NEWEST_SECONDARY_INDUSTRY2 = "nyesteBibranche2";
 
-    @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=2")
     @JsonProperty(value = IO_FIELD_NEWEST_SECONDARY_INDUSTRY2)
     private Set<CompanyIndustryRecord> newestSecondaryIndustry2 = new HashSet<>();
@@ -265,7 +265,7 @@ public class CompanyMetadataRecord extends MetadataRecord {
     public static final String DB_FIELD_NEWEST_SECONDARY_INDUSTRY3 = "newestSecondaryIndustry3";
     public static final String IO_FIELD_NEWEST_SECONDARY_INDUSTRY3 = "nyesteBibranche3";
 
-    @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=3")
     @JsonProperty(value = IO_FIELD_NEWEST_SECONDARY_INDUSTRY3)
     private Set<CompanyIndustryRecord> newestSecondaryIndustry3 = new HashSet<>();
@@ -347,7 +347,7 @@ public class CompanyMetadataRecord extends MetadataRecord {
 
 
 
-    @OneToMany(targetEntity = MetadataContactRecord.class, mappedBy = MetadataContactRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = MetadataContactRecord.class, mappedBy = MetadataContactRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<MetadataContactRecord> metadataContactRecords = new HashSet<>();
 
     public Set<MetadataContactRecord> getMetadataContactRecords() {

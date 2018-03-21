@@ -61,7 +61,7 @@ public class OfficeRelationRecord extends CvrNontemporalRecord {
     public static final String DB_FIELD_ATTRIBUTES = "attributes";
     public static final String IO_FIELD_ATTRIBUTES = "attributter";
 
-    @OneToMany(targetEntity = AttributeRecord.class, mappedBy = AttributeRecord.DB_FIELD_OFFICE, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = AttributeRecord.class, mappedBy = AttributeRecord.DB_FIELD_OFFICE, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonProperty(value = IO_FIELD_ATTRIBUTES)
     private Set<AttributeRecord> attributes = new HashSet<>();
 

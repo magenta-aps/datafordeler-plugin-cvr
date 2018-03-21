@@ -77,7 +77,7 @@ public class RelationParticipantRecord extends CvrBitemporalRecord {
     public static final String DB_FIELD_NAME = "names";
     public static final String IO_FIELD_NAME = "navne";
 
-    @OneToMany(targetEntity = BaseNameRecord.class, mappedBy = BaseNameRecord.DB_FIELD_PARTICIPANT_RELATION, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = BaseNameRecord.class, mappedBy = BaseNameRecord.DB_FIELD_PARTICIPANT_RELATION, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonProperty(value = IO_FIELD_NAME)
     private Set<BaseNameRecord> names = new HashSet<>();
 
@@ -104,7 +104,7 @@ public class RelationParticipantRecord extends CvrBitemporalRecord {
     public static final String DB_FIELD_LOCATION_ADDRESS = "locationAddress";
     public static final String IO_FIELD_LOCATION_ADDRESS = "beliggenhedsadresse";
 
-    @OneToMany(targetEntity = AddressRecord.class, mappedBy = AddressRecord.DB_FIELD_PARTICIPANT_RELATION, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = AddressRecord.class, mappedBy = AddressRecord.DB_FIELD_PARTICIPANT_RELATION, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonProperty(value = IO_FIELD_LOCATION_ADDRESS)
     private Set<AddressRecord> locationAddress = new HashSet<>();
 
