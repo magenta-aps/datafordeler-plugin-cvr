@@ -317,7 +317,6 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     @Override
     public void setFromParameters(ParameterMap parameters) {
-        System.out.println("setFromParameters");
         this.setCvrNumre(parameters.get(CVRNUMMER));
         this.setReklamebeskyttelse(parameters.getFirst(REKLAMEBESKYTTELSE));
         this.setVirksomhedsnavn(parameters.getI(NAVN));
