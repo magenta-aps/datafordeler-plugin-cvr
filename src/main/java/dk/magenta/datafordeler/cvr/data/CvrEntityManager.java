@@ -197,8 +197,11 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             PostCode.initializeCache(session);
         }
         List<File> cacheFiles = null;
+        int lines = 0;
         if (registrationData instanceof ImportInputStream) {
-            cacheFiles = ((ImportInputStream) registrationData).getCacheFiles();
+            ImportInputStream importStream = (ImportInputStream) registrationData;
+            cacheFiles = importStream.getCacheFiles();
+            lines = importStream.getLineCount();
         }
 
         Scanner scanner = new Scanner(registrationData, "UTF-8").useDelimiter(String.valueOf(this.commonFetcher.delimiter));
@@ -213,7 +216,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                 try {
                     String data = scanner.next();
                     if (chunkCount >= startChunk) {
-
+                        log.info("Handling chunk " + chunkCount + (lines > 0 ? ("/" + lines) : "") + " (" + data.length() + " chars)");
                         // Save progress
                         progress.setChunk(chunkCount);
                         progress.setFiles(cacheFiles);
@@ -262,6 +265,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                     throw new DataStreamException(e);
                 }
             }
+            log.info("Removing progress indicator");
             Session progressSession = this.configurationSessionManager.getSessionFactory().openSession();
             progressSession.beginTransaction();
             progressSession.delete(progress);
