@@ -214,7 +214,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
         Scanner scanner = new Scanner(registrationData, "UTF-8").useDelimiter(String.valueOf(this.commonFetcher.delimiter));
         boolean wrappedInTransaction = importMetadata.isTransactionInProgress();
-        long chunkCount = 0;
+        long chunkCount = 1;
         long startChunk = importMetadata.getStartChunk();
 
         InterruptedPull progress = new InterruptedPull();
