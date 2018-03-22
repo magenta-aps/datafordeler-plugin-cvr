@@ -46,7 +46,9 @@ public class AddressRecord extends CvrBitemporalDataMetaRecord {
         Address address = new Address();
         address.setRoadName(this.roadName);
         address.setRoadCode(this.roadCode);
-        address.setMunicipality(this.municipality.getMunicipality());
+        if (this.municipality != null) {
+            address.setMunicipality(this.municipality.getMunicipality());
+        }
         address.setHouseNumberFrom(this.houseNumberFrom);
         address.setHouseNumberTo(this.houseNumberTo);
         address.setPost(this.post);
