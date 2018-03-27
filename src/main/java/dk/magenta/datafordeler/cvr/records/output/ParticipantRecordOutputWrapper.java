@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.records.output;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import dk.magenta.datafordeler.cvr.records.ParticipantMetadataRecord;
 import dk.magenta.datafordeler.cvr.records.ParticipantRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -57,15 +58,10 @@ public class ParticipantRecordOutputWrapper extends RecordOutputWrapper<Particip
     }
 
     protected ObjectNode asRVD(ParticipantRecord record) {
-        ObjectNode root = this.createNode(record);
+        ObjectNode root = this.getNode(record);
 
         //root.put(CompanyEntity.IO_FIELD_UUID, ParticipantRecord.getIdentification().getUuid().toString());
         root.putPOJO("id", record.getIdentification());
-        root.put(ParticipantRecord.IO_FIELD_UNIT_NUMBER, record.getUnitNumber());
-        root.put(ParticipantRecord.IO_FIELD_UNIT_TYPE, record.getUnitType());
-        root.put(ParticipantRecord.IO_FIELD_POSITION, record.getPosition());
-        root.put(ParticipantRecord.IO_FIELD_BUSINESS_KEY, record.getBusinessKey());
-        root.put(ParticipantRecord.IO_FIELD_STATUS_CODE, record.getStatusCode());
 
         return root;
     }
@@ -73,18 +69,40 @@ public class ParticipantRecordOutputWrapper extends RecordOutputWrapper<Particip
 
     @Override
     protected void fillContainer(OutputContainer container, ParticipantRecord record) {
-        container.addMember("navn", record.getNames(), true);
-        container.addMember(ParticipantRecord.IO_FIELD_LOCATION_ADDRESS, record.getLocationAddress());
-        container.addMember(ParticipantRecord.IO_FIELD_POSTAL_ADDRESS, record.getPostalAddress(), this::createAddressNode);
-        container.addMember(ParticipantRecord.IO_FIELD_BUSINESS_ADDRESS, record.getBusinessAddress(), this::createAddressNode);
-        container.addMember(ParticipantRecord.IO_FIELD_PHONE, record.getPhoneNumber(), true);
-        container.addMember(ParticipantRecord.IO_FIELD_FAX, record.getFaxNumber(), true);
-        container.addMember(ParticipantRecord.IO_FIELD_EMAIL, record.getEmailAddress(), true);
-        container.addAttributeMember(ParticipantRecord.IO_FIELD_ATTRIBUTES, record.getAttributes());
+
+        container.addNontemporal(ParticipantRecord.IO_FIELD_UNIT_NUMBER, record.getUnitNumber());
+        container.addNontemporal(ParticipantRecord.IO_FIELD_UNIT_TYPE, record.getUnitType());
+        container.addNontemporal(ParticipantRecord.IO_FIELD_POSITION, record.getPosition());
+        container.addNontemporal(ParticipantRecord.IO_FIELD_BUSINESS_KEY, record.getBusinessKey());
+        container.addNontemporal(ParticipantRecord.IO_FIELD_STATUS_CODE, record.getStatusCode());
+
+        container.addBitemporal("navn", record.getNames(), true);
+        container.addBitemporal(ParticipantRecord.IO_FIELD_LOCATION_ADDRESS, record.getLocationAddress(), this::createAddressNode);
+        container.addBitemporal(ParticipantRecord.IO_FIELD_POSTAL_ADDRESS, record.getPostalAddress(), this::createAddressNode);
+        container.addBitemporal(ParticipantRecord.IO_FIELD_BUSINESS_ADDRESS, record.getBusinessAddress(), this::createAddressNode);
+        container.addBitemporal(ParticipantRecord.IO_FIELD_PHONE, record.getPhoneNumber(), true);
+        container.addBitemporal(ParticipantRecord.IO_FIELD_FAX, record.getFaxNumber(), true);
+        container.addBitemporal(ParticipantRecord.IO_FIELD_EMAIL, record.getEmailAddress(), true);
+        container.addAttribute(ParticipantRecord.IO_FIELD_ATTRIBUTES, record.getAttributes());
+        container.addNontemporal(ParticipantRecord.IO_FIELD_SAMT_ID, record.getSamtId());
+        container.addNontemporal(ParticipantRecord.IO_FIELD_REGISTER_ERROR, record.getRegisterError());
+        container.addNontemporal(ParticipantRecord.IO_FIELD_DATA_ACCESS, record.getDataAccess());
+        container.addNontemporal(ParticipantRecord.IO_FIELD_LAST_LOADED, record.getLastLoaded());
+        container.addNontemporal(ParticipantRecord.IO_FIELD_LAST_UPDATED, record.getLastUpdated());
+        container.addNontemporal(ParticipantRecord.IO_FIELD_LOADING_ERROR, record.getLoadingError());
+        container.addNontemporal(ParticipantRecord.IO_FIELD_NEAREST_FUTURE_DATE, record.getNearestFutureDate());
+        container.addNontemporal(ParticipantRecord.IO_FIELD_ERRORDESCRIPTION, record.getErrorDescription());
+        container.addNontemporal(ParticipantRecord.IO_FIELD_EFFECT_AGENT, record.getEffectAgent());
         /*
-        metadata
         companyrelation
         */
+    }
+
+    @Override
+    protected void fillMetadataContainer(OutputContainer container, ParticipantRecord record) {
+        ParticipantMetadataRecord meta = record.getMetadata();
+        container.addBitemporal(ParticipantMetadataRecord.IO_FIELD_NEWEST_LOCATION, meta.getNewestLocation(), this::createAddressNode);
+        container.addNontemporal(ParticipantMetadataRecord.IO_FIELD_NEWEST_CONTACT_DATA, meta.getMetadataContactRecords(), null, true, true);
     }
 
 }

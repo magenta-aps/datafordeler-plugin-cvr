@@ -48,7 +48,6 @@ public class CompanyIndustryRecord extends CvrBitemporalDataMetaRecord {
     @JsonProperty(value = IO_FIELD_CODE)
     private String industryCode;
 
-    @JsonProperty(value = "branchetekst")
     public String getIndustryCode() {
         return this.industryCode;
     }

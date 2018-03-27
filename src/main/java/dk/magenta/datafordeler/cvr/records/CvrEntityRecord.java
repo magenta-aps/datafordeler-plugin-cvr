@@ -60,6 +60,10 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord implements Ide
     @JsonProperty(value = IO_FIELD_SAMT_ID)
     private long samtId;
 
+    public long getSamtId() {
+        return this.samtId;
+    }
+
 
 
     public static final String DB_FIELD_REGISTER_ERROR = "registerError";
@@ -68,6 +72,10 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord implements Ide
     @Column(name = DB_FIELD_REGISTER_ERROR)
     @JsonProperty(value = IO_FIELD_REGISTER_ERROR)
     private boolean registerError;
+
+    public boolean getRegisterError() {
+        return this.registerError;
+    }
 
 
 
@@ -78,6 +86,10 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord implements Ide
     @JsonProperty(value = IO_FIELD_DATA_ACCESS)
     private long dataAccess;
 
+    public long getDataAccess() {
+        return this.dataAccess;
+    }
+
 
 
     public static final String DB_FIELD_LOADING_ERROR = "loadingError";
@@ -86,6 +98,10 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord implements Ide
     @Column(name = DB_FIELD_LOADING_ERROR)
     @JsonProperty(value = IO_FIELD_LOADING_ERROR)
     private boolean loadingError;
+
+    public boolean getLoadingError() {
+        return this.loadingError;
+    }
 
 
 
@@ -113,6 +129,10 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord implements Ide
     @JsonProperty(value = IO_FIELD_ERRORDESCRIPTION)
     private String errorDescription;
 
+    public String getErrorDescription() {
+        return this.errorDescription;
+    }
+
 
 
     public static final String DB_FIELD_EFFECT_AGENT = "effectAgent";
@@ -121,6 +141,11 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord implements Ide
     @Column(name = DB_FIELD_EFFECT_AGENT)
     @JsonProperty(value = IO_FIELD_EFFECT_AGENT)
     private String effectAgent;
+
+    public String getEffectAgent() {
+        return this.effectAgent;
+    }
+
 
 
     @Override

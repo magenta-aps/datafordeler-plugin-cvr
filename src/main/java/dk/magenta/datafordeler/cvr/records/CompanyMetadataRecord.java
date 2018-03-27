@@ -309,6 +309,10 @@ public class CompanyMetadataRecord extends MetadataRecord {
     @JsonProperty(value = IO_FIELD_NEWEST_FAD_CPR)
     private Set<String> newestFadCpr = new HashSet<>();
 
+    public Set<String> getNewestFadCpr() {
+        return this.newestFadCpr;
+    }
+
 
 
     public static final String DB_FIELD_NEWEST_STATUS = "newestStatus";
@@ -317,6 +321,11 @@ public class CompanyMetadataRecord extends MetadataRecord {
     @OneToOne(targetEntity = StatusRecord.class, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonProperty(value = IO_FIELD_NEWEST_STATUS)
     private StatusRecord newestStatus;
+
+    @Override
+    public StatusRecord getNewestStatus() {
+        return this.newestStatus;
+    }
 
 
 
@@ -327,6 +336,11 @@ public class CompanyMetadataRecord extends MetadataRecord {
     @JsonProperty(value = IO_FIELD_UNIT_COUNT)
     private int unitCount;
 
+    @Override
+    public int getUnitCount() {
+        return this.unitCount;
+    }
+
 
 
     public static final String DB_FIELD_FOUNDING_DATE = "foundingDate";
@@ -336,6 +350,11 @@ public class CompanyMetadataRecord extends MetadataRecord {
     @JsonProperty(value = IO_FIELD_FOUNDING_DATE)
     private LocalDate foundingDate;
 
+    @Override
+    public LocalDate getFoundingDate() {
+        return this.foundingDate;
+    }
+
 
 
     public static final String DB_FIELD_EFFECT_DATE = "effectDate";
@@ -344,6 +363,11 @@ public class CompanyMetadataRecord extends MetadataRecord {
     @Column(name = DB_FIELD_EFFECT_DATE)
     @JsonProperty(value = IO_FIELD_EFFECT_DATE)
     private LocalDate effectDate;
+
+    @Override
+    public LocalDate getEffectDate() {
+        return this.effectDate;
+    }
 
 
 
