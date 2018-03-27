@@ -1,9 +1,8 @@
 package dk.magenta.datafordeler.cvr.records.output;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.*;
-import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
-import dk.magenta.datafordeler.cvr.records.*;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import dk.magenta.datafordeler.cvr.records.CompanyRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -48,53 +47,53 @@ public class CompanyRecordOutputWrapper extends RecordOutputWrapper<CompanyRecor
     }
 
     @Override
-    public Object wrapResult(CompanyRecord companyRecord) {
-        return this.asRVD(companyRecord);
-        //return this.asRecord(companyRecord);
+    public Object wrapResult(CompanyRecord record) {
+        return this.asRVD(record);
+        //return this.asRecord(record);
     }
 
     private ObjectNode asRecord(CompanyRecord record) {
         return objectMapper.valueToTree(record);
     }
 
-    protected ObjectNode asRVD(CompanyRecord companyRecord) {
-        ObjectNode root = this.createNode(companyRecord);
+    protected ObjectNode asRVD(CompanyRecord record) {
+        ObjectNode root = this.createNode(record);
 
-        //root.put(CompanyEntity.IO_FIELD_UUID, companyRecord.getIdentification().getUuid().toString());
-        root.putPOJO("id", companyRecord.getIdentification());
-        root.put(CompanyEntity.IO_FIELD_CVR, companyRecord.getCvrNumber());
+        //root.put(CompanyEntity.IO_FIELD_UUID, record.getIdentification().getUuid().toString());
+        root.putPOJO("id", record.getIdentification());
+        root.put(CompanyRecord.IO_FIELD_CVR_NUMBER, record.getCvrNumber());
 
         return root;
     }
 
 
     @Override
-    protected void fillContainer(OutputContainer container, CompanyRecord item) {
-        container.addCompanyMember("navn", item.getNames(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_SECONDARY_NAMES, item.getSecondaryNames());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_REG_NUMBER, item.getRegNumber(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_LOCATION_ADDRESS, item.getLocationAddress());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_POSTAL_ADDRESS, item.getPostalAddress(), this::createAddressNode);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_PHONE, item.getPhoneNumber(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_PHONE_SECONDARY, item.getSecondaryPhoneNumber(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_FAX, item.getFaxNumber(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_FAX_SECONDARY, item.getSecondaryFaxNumber(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_EMAIL, item.getEmailAddress(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_MANDATORY_EMAIL, item.getMandatoryEmailAddress(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_HOMEPAGE, item.getHomepage(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_PRIMARY_INDUSTRY, item.getPrimaryIndustry());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_SECONDARY_INDUSTRY1, item.getSecondaryIndustry1());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_SECONDARY_INDUSTRY2, item.getSecondaryIndustry2());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_SECONDARY_INDUSTRY3, item.getSecondaryIndustry3());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_FORM, item.getCompanyForm());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_STATUS, item.getStatus());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_COMPANYSTATUS, item.getCompanyStatus(), true);
-        container.addCompanyMember("livscyklusAktiv", item.getLifecycle(), this::createLifecycleNode);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_YEARLY_NUMBERS, item.getYearlyNumbers());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_QUARTERLY_NUMBERS, item.getQuarterlyNumbers());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_MONTHLY_NUMBERS, item.getMonthlyNumbers());
-        container.addAttributeMember(CompanyRecord.IO_FIELD_ATTRIBUTES, item.getAttributes());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_P_UNITS, item.getProductionUnits(), null, true, true);
+    protected void fillContainer(OutputContainer container, CompanyRecord record) {
+        container.addMember("navn", record.getNames(), true);
+        container.addMember(CompanyRecord.IO_FIELD_SECONDARY_NAMES, record.getSecondaryNames());
+        container.addMember(CompanyRecord.IO_FIELD_REG_NUMBER, record.getRegNumber(), true);
+        container.addMember(CompanyRecord.IO_FIELD_LOCATION_ADDRESS, record.getLocationAddress());
+        container.addMember(CompanyRecord.IO_FIELD_POSTAL_ADDRESS, record.getPostalAddress(), this::createAddressNode);
+        container.addMember(CompanyRecord.IO_FIELD_PHONE, record.getPhoneNumber(), true);
+        container.addMember(CompanyRecord.IO_FIELD_PHONE_SECONDARY, record.getSecondaryPhoneNumber(), true);
+        container.addMember(CompanyRecord.IO_FIELD_FAX, record.getFaxNumber(), true);
+        container.addMember(CompanyRecord.IO_FIELD_FAX_SECONDARY, record.getSecondaryFaxNumber(), true);
+        container.addMember(CompanyRecord.IO_FIELD_EMAIL, record.getEmailAddress(), true);
+        container.addMember(CompanyRecord.IO_FIELD_MANDATORY_EMAIL, record.getMandatoryEmailAddress(), true);
+        container.addMember(CompanyRecord.IO_FIELD_HOMEPAGE, record.getHomepage(), true);
+        container.addMember(CompanyRecord.IO_FIELD_PRIMARY_INDUSTRY, record.getPrimaryIndustry());
+        container.addMember(CompanyRecord.IO_FIELD_SECONDARY_INDUSTRY1, record.getSecondaryIndustry1());
+        container.addMember(CompanyRecord.IO_FIELD_SECONDARY_INDUSTRY2, record.getSecondaryIndustry2());
+        container.addMember(CompanyRecord.IO_FIELD_SECONDARY_INDUSTRY3, record.getSecondaryIndustry3());
+        container.addMember(CompanyRecord.IO_FIELD_FORM, record.getCompanyForm());
+        container.addMember(CompanyRecord.IO_FIELD_STATUS, record.getStatus());
+        container.addMember(CompanyRecord.IO_FIELD_COMPANYSTATUS, record.getCompanyStatus(), true);
+        container.addMember("livscyklusAktiv", record.getLifecycle(), this::createLifecycleNode);
+        container.addMember(CompanyRecord.IO_FIELD_YEARLY_NUMBERS, record.getYearlyNumbers());
+        container.addMember(CompanyRecord.IO_FIELD_QUARTERLY_NUMBERS, record.getQuarterlyNumbers());
+        container.addMember(CompanyRecord.IO_FIELD_MONTHLY_NUMBERS, record.getMonthlyNumbers());
+        container.addAttributeMember(CompanyRecord.IO_FIELD_ATTRIBUTES, record.getAttributes());
+        container.addMember(CompanyRecord.IO_FIELD_P_UNITS, record.getProductionUnits(), null, true, true);
         /*
         participants
         fusions

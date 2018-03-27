@@ -61,19 +61,19 @@ public abstract class RecordOutputWrapper<T extends CvrEntityRecord> extends Out
             return this.forcedArrayKeys.contains(key);
         }
 
-        public <T extends CvrBitemporalRecord> void addCompanyMember(String key, Set<T> items) {
-            this.addCompanyMember(key, items, null, false, false);
+        public <T extends CvrBitemporalRecord> void addMember(String key, Set<T> items) {
+            this.addMember(key, items, null, false, false);
         }
 
-        public <T extends CvrBitemporalRecord> void addCompanyMember(String key, Set<T> items, boolean unwrapSingle) {
-            this.addCompanyMember(key, items, null, unwrapSingle, false);
+        public <T extends CvrBitemporalRecord> void addMember(String key, Set<T> items, boolean unwrapSingle) {
+            this.addMember(key, items, null, unwrapSingle, false);
         }
 
-        public <T extends CvrBitemporalRecord> void addCompanyMember(String key, Set<T> items, Function<T, JsonNode> converter) {
-            this.addCompanyMember(key, items, converter, false, false);
+        public <T extends CvrBitemporalRecord> void addMember(String key, Set<T> items, Function<T, JsonNode> converter) {
+            this.addMember(key, items, converter, false, false);
         }
 
-        public <T extends CvrBitemporalRecord> void addCompanyMember(String key, Set<T> items, Function<T, JsonNode> converter, boolean unwrapSingle, boolean forceArray) {
+        public <T extends CvrBitemporalRecord> void addMember(String key, Set<T> items, Function<T, JsonNode> converter, boolean unwrapSingle, boolean forceArray) {
             ObjectMapper objectMapper = RecordOutputWrapper.this.getObjectMapper();
             for (T item : items) {
                 JsonNode value = (converter != null) ? converter.apply(item) : objectMapper.valueToTree(item);

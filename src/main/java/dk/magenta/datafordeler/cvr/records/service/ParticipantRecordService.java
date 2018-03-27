@@ -1,4 +1,4 @@
-package dk.magenta.datafordeler.cvr.data.company;
+package dk.magenta.datafordeler.cvr.records.service;
 
 import dk.magenta.datafordeler.core.arearestriction.AreaRestriction;
 import dk.magenta.datafordeler.core.arearestriction.AreaRestrictionType;
@@ -15,8 +15,10 @@ import dk.magenta.datafordeler.cvr.CvrAccessChecker;
 import dk.magenta.datafordeler.cvr.CvrAreaRestrictionDefinition;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
 import dk.magenta.datafordeler.cvr.CvrRolesDefinition;
-import dk.magenta.datafordeler.cvr.records.CompanyRecord;
-import dk.magenta.datafordeler.cvr.records.output.CompanyRecordOutputWrapper;
+import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
+import dk.magenta.datafordeler.cvr.data.participant.ParticipantRecordQuery;
+import dk.magenta.datafordeler.cvr.records.ParticipantRecord;
+import dk.magenta.datafordeler.cvr.records.output.ParticipantRecordOutputWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,26 +27,26 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
 import java.util.stream.Stream;
 
 @RestController
-@RequestMapping("/cvr/company/2/rest")
-public class CompanyRecordService extends FapiBaseService<CompanyRecord, CompanyRecordQuery> {
+@RequestMapping("/cvr/participant/2/rest")
+public class ParticipantRecordService extends FapiBaseService<ParticipantRecord, ParticipantRecordQuery> {
 
     @Autowired
     private CvrPlugin cvrPlugin;
 
     @Autowired
-    private CompanyRecordOutputWrapper companyRecordOutputWrapper;
+    private ParticipantRecordOutputWrapper participantRecordOutputWrapper;
 
-    public CompanyRecordService() {
+    public ParticipantRecordService() {
         super();
     }
 
     @PostConstruct
     public void init() {
-        this.setOutputWrapper(this.companyRecordOutputWrapper);
+        this.setOutputWrapper(this.participantRecordOutputWrapper);
     }
 
     @Override
@@ -54,12 +56,12 @@ public class CompanyRecordService extends FapiBaseService<CompanyRecord, Company
 
     @Override
     public String getServiceName() {
-        return "company";
+        return "unit";
     }
 
     @Override
-    protected Class<CompanyRecord> getEntityClass() {
-        return CompanyRecord.class;
+    protected Class<ParticipantRecord> getEntityClass() {
+        return ParticipantRecord.class;
     }
 
     @Override
@@ -78,7 +80,7 @@ public class CompanyRecordService extends FapiBaseService<CompanyRecord, Company
     }
 
     @Override
-    protected void sendAsCSV(Stream<CompanyRecord> entities, HttpServletRequest request, HttpServletResponse response) throws IOException, HttpNotFoundException {
+    protected void sendAsCSV(Stream<ParticipantRecord> entities, HttpServletRequest request, HttpServletResponse response) throws IOException, HttpNotFoundException {
         /*List<MediaType> acceptedTypes = MediaType.parseMediaTypes
                 (request.getHeader("Accept"));
 
@@ -150,11 +152,11 @@ public class CompanyRecordService extends FapiBaseService<CompanyRecord, Company
     }
 
     @Override
-    protected CompanyRecordQuery getEmptyQuery() {
-        return new CompanyRecordQuery();
+    protected ParticipantRecordQuery getEmptyQuery() {
+        return new ParticipantRecordQuery();
     }
 
-    protected void applyAreaRestrictionsToQuery(CompanyRecordQuery query, DafoUserDetails user) throws InvalidClientInputException {
+    protected void applyAreaRestrictionsToQuery(ParticipantRecordQuery query, DafoUserDetails user) throws InvalidClientInputException {
         Collection<AreaRestriction> restrictions = user.getAreaRestrictionsForRole(CvrRolesDefinition.READ_CVR_ROLE);
         AreaRestrictionDefinition areaRestrictionDefinition = this.cvrPlugin.getAreaRestrictionDefinition();
         AreaRestrictionType municipalityType = areaRestrictionDefinition.getAreaRestrictionTypeByName(CvrAreaRestrictionDefinition.RESTRICTIONTYPE_KOMMUNEKODER);
