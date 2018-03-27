@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/cvr/participant/1/rest")
+@RequestMapping("/cvr/participant/0/rest")
 public class ParticipantEntityService extends FapiService<ParticipantEntity, ParticipantQuery> {
 
     @Autowired
