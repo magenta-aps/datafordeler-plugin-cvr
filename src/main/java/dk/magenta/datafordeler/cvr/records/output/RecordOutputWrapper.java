@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 import dk.magenta.datafordeler.core.fapi.OutputWrapper;
 import dk.magenta.datafordeler.core.util.DoubleListHashMap;
 import dk.magenta.datafordeler.core.util.ListHashMap;
@@ -116,18 +115,11 @@ public abstract class RecordOutputWrapper<T extends CvrEntityRecord> extends Out
                 }
             }
         }
-    }
 
-    protected final ObjectNode createNode(T companyRecord) {
-        ObjectMapper objectMapper = this.getObjectMapper();
-        ObjectNode root = objectMapper.createObjectNode();
-        try {
-            //root.put(CompanyEntity.IO_FIELD_UUID, companyRecord.getIdentification().getUuid().toString());
-
-            OutputContainer recordOutput = new OutputContainer();
-            this.fillContainer(recordOutput, companyRecord);
-
-            ArrayList<Bitemporality> bitemporalities = new ArrayList<>(recordOutput.keySet());
+        public ArrayNode toJson() {
+            ObjectMapper objectMapper = RecordOutputWrapper.this.getObjectMapper();
+            ArrayNode registrationsNode = objectMapper.createArrayNode();
+            ArrayList<Bitemporality> bitemporalities = new ArrayList<>(this.keySet());
             //bitemporalities.sort(Comparator.nullsFirst(new BitemporalityRegistrationFromComparator()));
 
             ListHashMap<OffsetDateTime, Bitemporality> startTerminators = new ListHashMap<>();
@@ -147,6 +139,7 @@ public abstract class RecordOutputWrapper<T extends CvrEntityRecord> extends Out
             terminators.add(null);
 
             HashSet<Bitemporality> presentBitemporalities = new HashSet<>();
+
             for (int i=0; i<terminators.size(); i++) {
                 OffsetDateTime t = terminators.get(i);
                 List<Bitemporality> startingHere = startTerminators.get(t);
@@ -161,9 +154,9 @@ public abstract class RecordOutputWrapper<T extends CvrEntityRecord> extends Out
                     OffsetDateTime next = terminators.get(i + 1);
                     if (!presentBitemporalities.isEmpty()) {
                         ObjectNode registrationNode = objectMapper.createObjectNode();
+                        registrationsNode.add(registrationNode);
                         registrationNode.put("registreringFra", formatTime(t));
                         registrationNode.put("registreringTil", formatTime(next));
-                        root.set("registreringer", registrationNode);
                         ArrayNode effectsNode = objectMapper.createArrayNode();
                         registrationNode.set("virkninger", effectsNode);
                         ArrayList<Bitemporality> sortedEffects = new ArrayList<>(presentBitemporalities);
@@ -177,10 +170,10 @@ public abstract class RecordOutputWrapper<T extends CvrEntityRecord> extends Out
                             }
                             effectNode.put("virkningFra", formatTime(bitemporality.effectFrom, true));
                             effectNode.put("virkningTil", formatTime(bitemporality.effectTo, true));
-                            HashMap<String, ArrayList<JsonNode>> records = recordOutput.get(bitemporality);
+                            HashMap<String, ArrayList<JsonNode>> records = this.get(bitemporality);
                             for (String key : records.keySet()) {
                                 ArrayList<JsonNode> r = records.get(key);
-                                if (r.size() == 1 && !recordOutput.isArrayForced(key)) {
+                                if (r.size() == 1 && !this.isArrayForced(key)) {
                                     effectNode.set(key, r.get(0));
                                 } else {
                                     ArrayNode a = objectMapper.createArrayNode();
@@ -195,6 +188,20 @@ public abstract class RecordOutputWrapper<T extends CvrEntityRecord> extends Out
                     }
                 }
             }
+            return registrationsNode;
+        }
+    }
+
+    protected final ObjectNode createNode(T companyRecord) {
+        ObjectMapper objectMapper = this.getObjectMapper();
+        ObjectNode root = objectMapper.createObjectNode();
+        try {
+            //root.put(CompanyEntity.IO_FIELD_UUID, companyRecord.getIdentification().getUuid().toString());
+
+            OutputContainer recordOutput = new OutputContainer();
+            this.fillContainer(recordOutput, companyRecord);
+            root.set("registrations", recordOutput.toJson());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
