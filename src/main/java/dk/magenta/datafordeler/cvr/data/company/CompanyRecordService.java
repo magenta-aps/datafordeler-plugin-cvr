@@ -1,19 +1,13 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
-import com.fasterxml.jackson.databind.SequenceWriter;
-import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import dk.magenta.datafordeler.core.arearestriction.AreaRestriction;
 import dk.magenta.datafordeler.core.arearestriction.AreaRestrictionType;
 import dk.magenta.datafordeler.core.database.DataItem;
-import dk.magenta.datafordeler.core.database.Effect;
-import dk.magenta.datafordeler.core.database.Entity;
-import dk.magenta.datafordeler.core.database.Registration;
 import dk.magenta.datafordeler.core.exception.AccessDeniedException;
 import dk.magenta.datafordeler.core.exception.AccessRequiredException;
 import dk.magenta.datafordeler.core.exception.HttpNotFoundException;
 import dk.magenta.datafordeler.core.exception.InvalidClientInputException;
 import dk.magenta.datafordeler.core.fapi.FapiBaseService;
-import dk.magenta.datafordeler.core.fapi.FapiService;
 import dk.magenta.datafordeler.core.plugin.AreaRestrictionDefinition;
 import dk.magenta.datafordeler.core.plugin.Plugin;
 import dk.magenta.datafordeler.core.user.DafoUserDetails;
@@ -22,9 +16,8 @@ import dk.magenta.datafordeler.cvr.CvrAreaRestrictionDefinition;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
 import dk.magenta.datafordeler.cvr.CvrRolesDefinition;
 import dk.magenta.datafordeler.cvr.records.CompanyRecord;
+import dk.magenta.datafordeler.cvr.records.output.CompanyRecordOutputWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

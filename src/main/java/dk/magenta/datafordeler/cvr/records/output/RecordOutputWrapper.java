@@ -1,20 +1,17 @@
-package dk.magenta.datafordeler.cvr.data.company;
+package dk.magenta.datafordeler.cvr.records.output;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.*;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.BooleanNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import dk.magenta.datafordeler.core.fapi.OutputWrapper;
 import dk.magenta.datafordeler.core.util.DoubleListHashMap;
 import dk.magenta.datafordeler.core.util.ListHashMap;
 import dk.magenta.datafordeler.cvr.data.Bitemporality;
 import dk.magenta.datafordeler.cvr.data.BitemporalityComparator;
-import dk.magenta.datafordeler.cvr.data.shared.LifecycleData;
-import dk.magenta.datafordeler.cvr.data.unversioned.Address;
-import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 import dk.magenta.datafordeler.cvr.records.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -52,10 +49,9 @@ import java.util.function.Function;
  *     ]
  * }
  */
-@Component
-public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
+public abstract class RecordOutputWrapper<T extends CvrEntityRecord> extends OutputWrapper<T> {
 
-    private class OutputContainer extends DoubleListHashMap<Bitemporality, String, JsonNode> {
+    protected class OutputContainer extends DoubleListHashMap<Bitemporality, String, JsonNode> {
 
         private final List<String> removeFieldNames = Arrays.asList(new String[]{"periode", "sidstOpdateret", "sidstIndlaest"});
 
@@ -78,8 +74,9 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
         }
 
         public <T extends CvrBitemporalRecord> void addCompanyMember(String key, Set<T> items, Function<T, JsonNode> converter, boolean unwrapSingle, boolean forceArray) {
+            ObjectMapper objectMapper = RecordOutputWrapper.this.getObjectMapper();
             for (T item : items) {
-                JsonNode value = (converter != null) ? converter.apply(item) : CompanyRecordOutputWrapper.this.objectMapper.valueToTree(item);
+                JsonNode value = (converter != null) ? converter.apply(item) : objectMapper.valueToTree(item);
                 if (value instanceof ObjectNode) {
                     ((ObjectNode) value).remove(removeFieldNames);
                 }
@@ -95,6 +92,7 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
         }
 
         public void addAttributeMember(String key, Set<AttributeRecord> attributes) {
+            ObjectMapper objectMapper = RecordOutputWrapper.this.getObjectMapper();
             for (AttributeRecord attribute : attributes) {
                 ObjectNode attributeNode = objectMapper.createObjectNode();
                 attributeNode.put(AttributeRecord.IO_FIELD_TYPE, attribute.getType());
@@ -117,38 +115,16 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
                 }
             }
         }
-
     }
 
-
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Override
-    public Object wrapResult(CompanyRecord companyRecord) {
-        return this.asRVD(companyRecord);
-        //return this.asRecord(companyRecord);
-    }
-
-    private ObjectNode asRecord(CompanyRecord record) {
-        return objectMapper.valueToTree(record);
-    }
-
-    private static final Comparator<Bitemporality> effectComparator =
-            Comparator.nullsFirst(new BitemporalityComparator(BitemporalityComparator.Type.EFFECT_FROM))
-            .thenComparing(Comparator.nullsLast(new BitemporalityComparator(BitemporalityComparator.Type.EFFECT_TO)));
-
-    private ObjectNode asRVD(CompanyRecord companyRecord) {
+    protected final ObjectNode createNode(T companyRecord) {
+        ObjectMapper objectMapper = this.getObjectMapper();
         ObjectNode root = objectMapper.createObjectNode();
         try {
             //root.put(CompanyEntity.IO_FIELD_UUID, companyRecord.getIdentification().getUuid().toString());
-            root.putPOJO("id", companyRecord.getIdentification());
-            root.put(CompanyEntity.IO_FIELD_CVR, companyRecord.getCvrNumber());
 
             OutputContainer recordOutput = new OutputContainer();
-            createCompanyNode(recordOutput, companyRecord);
-
+            this.fillContainer(recordOutput, companyRecord);
 
             ArrayList<Bitemporality> bitemporalities = new ArrayList<>(recordOutput.keySet());
             //bitemporalities.sort(Comparator.nullsFirst(new BitemporalityRegistrationFromComparator()));
@@ -224,6 +200,14 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
         return root;
     }
 
+    protected abstract void fillContainer(OutputContainer container, T item);
+
+    protected abstract ObjectMapper getObjectMapper();
+
+    protected static final Comparator<Bitemporality> effectComparator =
+            Comparator.nullsFirst(new BitemporalityComparator(BitemporalityComparator.Type.EFFECT_FROM))
+            .thenComparing(Comparator.nullsLast(new BitemporalityComparator(BitemporalityComparator.Type.EFFECT_TO)));
+
     protected static String formatTime(OffsetDateTime time) {
         return formatTime(time, false);
     }
@@ -236,49 +220,6 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
     protected static String formatTime(LocalDate time) {
         if (time == null) return null;
         return time.format(DateTimeFormatter.ISO_LOCAL_DATE);
-    }
-
-    private void createCompanyNode(OutputContainer container, CompanyRecord item) {
-        container.addCompanyMember("navn", item.getNames(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_SECONDARY_NAMES, item.getSecondaryNames());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_REG_NUMBER, item.getRegNumber(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_LOCATION_ADDRESS, item.getLocationAddress());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_POSTAL_ADDRESS, item.getPostalAddress(), this::createAddressNode);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_PHONE, item.getPhoneNumber(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_PHONE_SECONDARY, item.getSecondaryPhoneNumber(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_FAX, item.getFaxNumber(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_FAX_SECONDARY, item.getSecondaryFaxNumber(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_EMAIL, item.getEmailAddress(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_MANDATORY_EMAIL, item.getMandatoryEmailAddress(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_HOMEPAGE, item.getHomepage(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_PRIMARY_INDUSTRY, item.getPrimaryIndustry());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_SECONDARY_INDUSTRY1, item.getSecondaryIndustry1());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_SECONDARY_INDUSTRY2, item.getSecondaryIndustry2());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_SECONDARY_INDUSTRY3, item.getSecondaryIndustry3());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_FORM, item.getCompanyForm());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_STATUS, item.getStatus());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_COMPANYSTATUS, item.getCompanyStatus(), true);
-        container.addCompanyMember("livscyklusAktiv", item.getLifecycle(), this::createLifecycleNode);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_YEARLY_NUMBERS, item.getYearlyNumbers());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_QUARTERLY_NUMBERS, item.getQuarterlyNumbers());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_MONTHLY_NUMBERS, item.getMonthlyNumbers());
-        container.addAttributeMember(CompanyRecord.IO_FIELD_ATTRIBUTES, item.getAttributes());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_P_UNITS, item.getProductionUnits(), null, true, true);
-
-
-/*
-        for (CompanyParticipantRelationRecord participantRelationRecord : otherRecord.getParticipants()) {
-            //this.addParticipant(participantRelationRecord);
-            this.mergeParticipant(participantRelationRecord);
-        }
-        for (FusionSplitRecord fusionSplitRecord : otherRecord.getFusions()) {
-            //this.addFusion(fusionSplitRecord);
-            this.mergeFusion(fusionSplitRecord);
-        }
-        for (FusionSplitRecord fusionSplitRecord : otherRecord.getSplits()) {
-            //this.addSplit(fusionSplitRecord);
-            this.mergeSplit(fusionSplitRecord);
-        }*/
     }
 
     protected JsonNode createAddressNode(AddressRecord record) {
@@ -311,8 +252,7 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
     }
 
     private ObjectNode createItemNode(CvrRecord record) {
-        return objectMapper.createObjectNode();
+        return this.getObjectMapper().createObjectNode();
     }
-
 
 }
