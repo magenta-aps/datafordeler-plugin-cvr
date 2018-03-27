@@ -62,6 +62,10 @@ public class CompanyRecordOutputWrapper extends RecordOutputWrapper<CompanyRecor
         //root.put(CompanyEntity.IO_FIELD_UUID, record.getIdentification().getUuid().toString());
         root.putPOJO("id", record.getIdentification());
         root.put(CompanyRecord.IO_FIELD_CVR_NUMBER, record.getCvrNumber());
+        root.put(CompanyRecord.IO_FIELD_ADVERTPROTECTION, record.getAdvertProtection());
+        root.put(CompanyRecord.IO_FIELD_UNITNUMBER, record.getUnitNumber());
+        root.put(CompanyRecord.IO_FIELD_UNITTYPE, record.getUnitType());
+        root.put(CompanyRecord.IO_FIELD_INDUSTRY_RESPONSIBILITY_CODE, record.getIndustryResponsibilityCode());
 
         return root;
     }
@@ -98,6 +102,7 @@ public class CompanyRecordOutputWrapper extends RecordOutputWrapper<CompanyRecor
         participants
         fusions
         splits
+        metadata
         */
     }
 

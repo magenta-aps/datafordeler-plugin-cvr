@@ -80,6 +80,10 @@ public class CompanyRecord extends CvrEntityRecord {
     @JsonProperty(value = IO_FIELD_ADVERTPROTECTION)
     private boolean advertProtection;
 
+    public boolean getAdvertProtection() {
+        return this.advertProtection;
+    }
+
 
 
     public static final String DB_FIELD_UNITNUMBER = "unitNumber";
@@ -88,6 +92,10 @@ public class CompanyRecord extends CvrEntityRecord {
     @Column(name = DB_FIELD_UNITNUMBER)
     @JsonProperty(value = IO_FIELD_UNITNUMBER)
     private long unitNumber;
+
+    public long getUnitNumber() {
+        return this.unitNumber;
+    }
 
 
 
@@ -98,6 +106,10 @@ public class CompanyRecord extends CvrEntityRecord {
     @JsonProperty(value = IO_FIELD_UNITTYPE)
     private String unitType;
 
+    public String getUnitType() {
+        return this.unitType;
+    }
+
 
 
     public static final String DB_FIELD_INDUSTRY_RESPONSIBILITY_CODE = "industryResponsibilityCode";
@@ -106,6 +118,10 @@ public class CompanyRecord extends CvrEntityRecord {
     @Column(name = DB_FIELD_INDUSTRY_RESPONSIBILITY_CODE, nullable = true)
     @JsonProperty(value = IO_FIELD_INDUSTRY_RESPONSIBILITY_CODE)
     private Integer industryResponsibilityCode;
+
+    public Integer getIndustryResponsibilityCode() {
+        return this.industryResponsibilityCode;
+    }
 
 
 

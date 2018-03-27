@@ -62,6 +62,10 @@ public class ParticipantRecordOutputWrapper extends RecordOutputWrapper<Particip
         //root.put(CompanyEntity.IO_FIELD_UUID, ParticipantRecord.getIdentification().getUuid().toString());
         root.putPOJO("id", record.getIdentification());
         root.put(ParticipantRecord.IO_FIELD_UNIT_NUMBER, record.getUnitNumber());
+        root.put(ParticipantRecord.IO_FIELD_UNIT_TYPE, record.getUnitType());
+        root.put(ParticipantRecord.IO_FIELD_POSITION, record.getPosition());
+        root.put(ParticipantRecord.IO_FIELD_BUSINESS_KEY, record.getBusinessKey());
+        root.put(ParticipantRecord.IO_FIELD_STATUS_CODE, record.getStatusCode());
 
         return root;
     }
@@ -78,7 +82,7 @@ public class ParticipantRecordOutputWrapper extends RecordOutputWrapper<Particip
         container.addMember(ParticipantRecord.IO_FIELD_EMAIL, record.getEmailAddress(), true);
         container.addAttributeMember(ParticipantRecord.IO_FIELD_ATTRIBUTES, record.getAttributes());
         /*
-        position
+        metadata
         companyrelation
         */
     }
