@@ -21,8 +21,8 @@ import java.util.*;
 import java.util.function.Function;
 
 /**
- * A class for formatting a CompanyEntity to JSON, for FAPI output. The data hierarchy
- * under a Company is sorted into this format:
+ * A class for formatting a CompanyRecord to JSON, for FAPI output. The data hierarchy
+ * in the output should ook like this:
  * {
  *     "UUID": <company uuid>
  *     "cvrnummer": <company cvr number>
@@ -33,7 +33,7 @@ import java.util.function.Function;
  *          {
  *              "registreringFra": <registrationFrom>,
  *              "registreringTil": <registrationTo>,
- *              "navn": [
+ *              "virkninger": [
  *              {
  *                  "navn": <companyName1>
  *                  "virkningFra": <effectFrom1>
