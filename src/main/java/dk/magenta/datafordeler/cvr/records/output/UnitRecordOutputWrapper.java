@@ -67,7 +67,6 @@ public class UnitRecordOutputWrapper extends RecordOutputWrapper<CompanyUnitReco
         root.put(CompanyUnitRecord.IO_FIELD_UNITTYPE, record.getUnitType());
         root.put(CompanyUnitRecord.IO_FIELD_INDUSTRY_RESPONSIBILITY_CODE, record.getIndustryResponsibilityCode());
 
-
         return root;
     }
 

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import dk.magenta.datafordeler.core.fapi.OutputWrapper;
 import dk.magenta.datafordeler.core.util.DoubleListHashMap;
 import dk.magenta.datafordeler.core.util.ListHashMap;
@@ -107,7 +108,7 @@ public abstract class RecordOutputWrapper<T extends CvrEntityRecord> extends Out
 
                 for (Bitemporality bitemporality : valueBuckets.keySet()) {
                     ObjectNode instance = attributeNode.deepCopy();
-                    this.add(bitemporality, CompanyRecord.IO_FIELD_ATTRIBUTES, instance);
+                    this.add(bitemporality, key, instance);
                     ArrayNode valueList = (ArrayNode) instance.get(AttributeRecord.IO_FIELD_VALUES);
                     for (AttributeValueRecord valueRecord : valueBuckets.get(bitemporality)) {
                         valueList.add(valueRecord.getValue());
