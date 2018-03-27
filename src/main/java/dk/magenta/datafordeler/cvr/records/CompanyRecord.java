@@ -1234,4 +1234,12 @@ public class CompanyRecord extends CvrEntityRecord {
         return false;
     }
 
+    public Set<CvrRecord> subs() {
+        HashSet<CvrRecord> subs = new HashSet<>();
+        subs.addAll(this.getNames());
+        subs.addAll(this.getLocationAddress());
+        subs.addAll(this.getPostalAddress());
+        return subs;
+    }
+
 }

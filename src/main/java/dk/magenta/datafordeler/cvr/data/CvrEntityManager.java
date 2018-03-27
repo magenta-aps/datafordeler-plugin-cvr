@@ -233,6 +233,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                     String data = scanner.next();
                     if (chunkCount >= startChunk) {
                         log.info("Handling chunk " + chunkCount + (lines > 0 ? ("/" + lines) : "") + " (" + data.length() + " chars)");
+
                         // Save progress
                         progress.setChunk(chunkCount);
                         progress.setFiles(cacheFiles);

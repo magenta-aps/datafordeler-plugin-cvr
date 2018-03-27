@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.util.Equality;
 import dk.magenta.datafordeler.core.util.ListHashMap;
+import dk.magenta.datafordeler.cvr.data.Bitemporality;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -154,5 +155,10 @@ public class CvrBitemporalRecord extends CvrRecord implements Comparable<CvrBite
     @Override
     public int hashCode() {
         return Objects.hash(lastUpdated, lastLoaded, validity, registrationTo);
+    }
+
+    @JsonIgnore
+    public Bitemporality getBitemporality() {
+        return new Bitemporality(this.getRegistrationFrom(), this.getRegistrationTo(), this.getValidFrom(), this.getValidTo());
     }
 }

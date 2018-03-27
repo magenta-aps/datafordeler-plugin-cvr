@@ -10,6 +10,7 @@ import org.hibernate.Session;
 
 import java.time.OffsetDateTime;
 
+
 /**
  * A CVR record is the object representation of a node in our input data,
  * holding at least some bitemporality, and (in subclasses) some data that take effect within this bitemporality
@@ -52,4 +53,5 @@ public abstract class CvrRecord extends DatabaseEntry {
         }
         return null;
     }
+
 }
