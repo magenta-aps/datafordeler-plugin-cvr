@@ -59,19 +59,25 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
 
         private final List<String> removeFieldNames = Arrays.asList(new String[]{"periode", "sidstOpdateret", "sidstIndlaest"});
 
+        private HashSet<String> forcedArrayKeys = new HashSet<>();
+
+        public boolean isArrayForced(String key) {
+            return this.forcedArrayKeys.contains(key);
+        }
+
         public <T extends CvrBitemporalRecord> void addCompanyMember(String key, Set<T> items) {
-            this.addCompanyMember(key, items, null, false);
+            this.addCompanyMember(key, items, null, false, false);
         }
 
         public <T extends CvrBitemporalRecord> void addCompanyMember(String key, Set<T> items, boolean unwrapSingle) {
-            this.addCompanyMember(key, items, null, unwrapSingle);
+            this.addCompanyMember(key, items, null, unwrapSingle, false);
         }
 
         public <T extends CvrBitemporalRecord> void addCompanyMember(String key, Set<T> items, Function<T, JsonNode> converter) {
-            this.addCompanyMember(key, items, converter, false);
+            this.addCompanyMember(key, items, converter, false, false);
         }
 
-        public <T extends CvrBitemporalRecord> void addCompanyMember(String key, Set<T> items, Function<T, JsonNode> converter, boolean unwrapSingle) {
+        public <T extends CvrBitemporalRecord> void addCompanyMember(String key, Set<T> items, Function<T, JsonNode> converter, boolean unwrapSingle, boolean forceArray) {
             for (T item : items) {
                 JsonNode value = (converter != null) ? converter.apply(item) : CompanyRecordOutputWrapper.this.objectMapper.valueToTree(item);
                 if (value instanceof ObjectNode) {
@@ -82,6 +88,9 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
                 } else {
                     this.add(item.getBitemporality(), key, value);
                 }
+            }
+            if (forceArray) {
+                this.forcedArrayKeys.add(key);
             }
         }
 
@@ -137,7 +146,6 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
             root.putPOJO("id", companyRecord.getIdentification());
             root.put(CompanyEntity.IO_FIELD_CVR, companyRecord.getCvrNumber());
 
-            //root.put()
             OutputContainer recordOutput = new OutputContainer();
             createCompanyNode(recordOutput, companyRecord);
 
@@ -153,10 +161,11 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
                 endTerminators.add(bitemporality.registrationTo, bitemporality);
             }
 
+            HashSet<OffsetDateTime> allTerminators = new HashSet<>();
+            allTerminators.addAll(startTerminators.keySet());
+            allTerminators.addAll(endTerminators.keySet());
             // Create a sorted list of all timestamps where Bitemporalities either begin or end
-            ArrayList<OffsetDateTime> terminators = new ArrayList<>();
-            terminators.addAll(startTerminators.keySet());
-            terminators.addAll(endTerminators.keySet());
+            ArrayList<OffsetDateTime> terminators = new ArrayList<>(allTerminators);
             terminators.sort(Comparator.nullsFirst(OffsetDateTime::compareTo));
             terminators.add(null);
 
@@ -175,8 +184,8 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
                     OffsetDateTime next = terminators.get(i + 1);
                     if (!presentBitemporalities.isEmpty()) {
                         ObjectNode registrationNode = objectMapper.createObjectNode();
-                        registrationNode.put("registrationFrom", formatTime(t));
-                        registrationNode.put("registrationTo", formatTime(next));
+                        registrationNode.put("registreringFra", formatTime(t));
+                        registrationNode.put("registreringTil", formatTime(next));
                         root.set("registreringer", registrationNode);
                         ArrayNode effectsNode = objectMapper.createArrayNode();
                         registrationNode.set("virkninger", effectsNode);
@@ -194,7 +203,7 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
                             HashMap<String, ArrayList<JsonNode>> records = recordOutput.get(bitemporality);
                             for (String key : records.keySet()) {
                                 ArrayList<JsonNode> r = records.get(key);
-                                if (r.size() == 1) {
+                                if (r.size() == 1 && !recordOutput.isArrayForced(key)) {
                                     effectNode.set(key, r.get(0));
                                 } else {
                                     ArrayNode a = objectMapper.createArrayNode();
@@ -254,13 +263,10 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
         container.addCompanyMember(CompanyRecord.IO_FIELD_QUARTERLY_NUMBERS, item.getQuarterlyNumbers());
         container.addCompanyMember(CompanyRecord.IO_FIELD_MONTHLY_NUMBERS, item.getMonthlyNumbers());
         container.addAttributeMember(CompanyRecord.IO_FIELD_ATTRIBUTES, item.getAttributes());
-
+        container.addCompanyMember(CompanyRecord.IO_FIELD_P_UNITS, item.getProductionUnits(), null, true, true);
 
 
 /*
-        for (CompanyUnitLinkRecord companyUnitLinkRecord : otherRecord.getProductionUnits()) {
-            this.addProductionUnit(companyUnitLinkRecord);
-        }
         for (CompanyParticipantRelationRecord participantRelationRecord : otherRecord.getParticipants()) {
             //this.addParticipant(participantRelationRecord);
             this.mergeParticipant(participantRelationRecord);
@@ -274,33 +280,6 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
             this.mergeSplit(fusionSplitRecord);
         }*/
     }
-
-
-
-
-
-/*
-
-    private ObjectNode createFormNode(Effect virkning, OffsetDateTime lastUpdated, CompanyForm form) {
-        ObjectNode formNode = createVirkning(virkning, lastUpdated);
-        formNode.put(CompanyForm.IO_FIELD_CODE, form.getCompanyFormCode());
-        formNode.put(CompanyForm.IO_FIELD_SOURCE, form.getResponsibleDataSource());
-        return formNode;
-    }
-
-    private ObjectNode createCompanyParticipantNode(Effect virkning, OffsetDateTime lastUpdated, ParticipantRelationData participantRelation) {
-        ObjectNode participantRelationNode = createVirkning(virkning, lastUpdated);
-        participantRelationNode.set(ParticipantRelationData.IO_FIELD_PARTICIPANT, this.createIdentificationNode(participantRelation.getParticipant()));
-        return participantRelationNode;
-    }
-
-    private ObjectNode createCompanyUnitLinkNode(Effect virkning, OffsetDateTime lastUpdated, CompanyUnitLink unitLink) {
-        ObjectNode unitLinkNode = createVirkning(virkning, lastUpdated);
-        unitLinkNode.put(CompanyUnitLink.IO_FIELD_PNUMBER, unitLink.getpNumber());
-        unitLinkNode.set(CompanyUnitLink.IO_FIELD_IDENTIFICATION, this.createIdentificationNode(unitLink.getIdentification()));
-        return unitLinkNode;
-    }
-*/
 
     protected JsonNode createAddressNode(AddressRecord record) {
         ObjectNode adresseNode = this.createItemNode(record);
