@@ -31,7 +31,7 @@ import java.util.Collection;
 import java.util.stream.Stream;
 
 @RestController
-@RequestMapping("/cvr/unit/2/rest")
+@RequestMapping("/cvr/unit/1/rest")
 public class CompanyUnitRecordService extends FapiBaseService<CompanyUnitRecord, CompanyUnitRecordQuery> {
 
     @Autowired

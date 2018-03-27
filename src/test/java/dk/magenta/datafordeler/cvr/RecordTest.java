@@ -323,13 +323,13 @@ public class RecordTest {
         loadCompany("/company_in.json");
         TestUserDetails testUserDetails = new TestUserDetails();
         HttpEntity<String> httpEntity = new HttpEntity<String>("", new HttpHeaders());
-        ResponseEntity<String> resp = restTemplate.exchange("/cvr/company/2/rest/search?cvrnummer=25052943", HttpMethod.GET, httpEntity, String.class);
+        ResponseEntity<String> resp = restTemplate.exchange("/cvr/company/1/rest/search?cvrnummer=25052943", HttpMethod.GET, httpEntity, String.class);
         Assert.assertEquals(403, resp.getStatusCodeValue());
 
         testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
         this.applyAccess(testUserDetails);
 
-        resp = restTemplate.exchange("/cvr/company/2/rest/search?cvrnummer=25052943", HttpMethod.GET, httpEntity, String.class);
+        resp = restTemplate.exchange("/cvr/company/1/rest/search?cvrnummer=25052943", HttpMethod.GET, httpEntity, String.class);
         String body = resp.getBody();
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectMapper.readTree(body)));
     }
@@ -496,13 +496,13 @@ public class RecordTest {
         loadUnit("/unit.json");
         TestUserDetails testUserDetails = new TestUserDetails();
         HttpEntity<String> httpEntity = new HttpEntity<String>("", new HttpHeaders());
-        ResponseEntity<String> resp = restTemplate.exchange("/cvr/unit/2/rest/search?pnummer=1020895337", HttpMethod.GET, httpEntity, String.class);
+        ResponseEntity<String> resp = restTemplate.exchange("/cvr/unit/1/rest/search?pnummer=1020895337", HttpMethod.GET, httpEntity, String.class);
         Assert.assertEquals(403, resp.getStatusCodeValue());
 
         testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
         this.applyAccess(testUserDetails);
 
-        resp = restTemplate.exchange("/cvr/unit/2/rest/search?pnummer=1020895337", HttpMethod.GET, httpEntity, String.class);
+        resp = restTemplate.exchange("/cvr/unit/1/rest/search?pnummer=1020895337", HttpMethod.GET, httpEntity, String.class);
         String body = resp.getBody();
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectMapper.readTree(body)));
     }
@@ -670,13 +670,13 @@ public class RecordTest {
         loadParticipant("/person.json");
         TestUserDetails testUserDetails = new TestUserDetails();
         HttpEntity<String> httpEntity = new HttpEntity<String>("", new HttpHeaders());
-        ResponseEntity<String> resp = restTemplate.exchange("/cvr/participant/2/rest/search?deltagernummer=4000004988", HttpMethod.GET, httpEntity, String.class);
+        ResponseEntity<String> resp = restTemplate.exchange("/cvr/participant/1/rest/search?deltagernummer=4000004988", HttpMethod.GET, httpEntity, String.class);
         Assert.assertEquals(403, resp.getStatusCodeValue());
 
         testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
         this.applyAccess(testUserDetails);
 
-        resp = restTemplate.exchange("/cvr/participant/2/rest/search?deltagernummer=4000004988", HttpMethod.GET, httpEntity, String.class);
+        resp = restTemplate.exchange("/cvr/participant/1/rest/search?deltagernummer=4000004988", HttpMethod.GET, httpEntity, String.class);
         String body = resp.getBody();
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectMapper.readTree(body)));
     }
