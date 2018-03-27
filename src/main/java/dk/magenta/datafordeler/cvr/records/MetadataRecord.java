@@ -42,6 +42,9 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     @JsonProperty(value = IO_FIELD_NEWEST_STATUS)
     private StatusRecord newestStatus;
 
+    public StatusRecord getNewestStatus() {
+        return this.newestStatus;
+    }
 
 
 
@@ -76,7 +79,7 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     }
 
     @JsonProperty(IO_FIELD_NEWEST_CONTACT_DATA)
-    private Set<String> getMetadataContactData() {
+    public Set<String> getMetadataContactData() {
         HashSet<String> contacts = new HashSet<>();
         for (MetadataContactRecord metadataContactRecord : this.getMetadataContactRecords()) {
             contacts.add(metadataContactRecord.getData());
@@ -93,6 +96,10 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     @JsonProperty(value = IO_FIELD_UNIT_COUNT)
     private int unitCount;
 
+    public int getUnitCount() {
+        return this.unitCount;
+    }
+
 
 
     public static final String DB_FIELD_NEWEST_YEARLY_NUMBERS = "newestYearlyNumbers";
@@ -101,6 +108,10 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     @OneToOne(cascade = CascadeType.ALL, targetEntity = CompanyYearlyNumbersRecord.class)
     @JsonProperty(value = IO_FIELD_NEWEST_YEARLY_NUMBERS)
     private CompanyYearlyNumbersRecord newestYearlyNumbers;
+
+    public CompanyYearlyNumbersRecord getNewestYearlyNumbers() {
+        return this.newestYearlyNumbers;
+    }
 
 
 
@@ -111,6 +122,10 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     @JsonProperty(value = IO_FIELD_NEWEST_QUARTERLY_NUMBERS)
     private CompanyQuarterlyNumbersRecord newestQuarterlyNumbers;
 
+    public CompanyQuarterlyNumbersRecord getNewestQuarterlyNumbers() {
+        return this.newestQuarterlyNumbers;
+    }
+
 
 
     public static final String DB_FIELD_NEWEST_MONTHLY_NUMBERS = "newestMonthlyNumbers";
@@ -119,6 +134,10 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     @OneToOne(cascade = CascadeType.ALL, targetEntity = CompanyMonthlyNumbersRecord.class)
     @JsonProperty(value = IO_FIELD_NEWEST_MONTHLY_NUMBERS)
     private CompanyMonthlyNumbersRecord newestMonthlyNumbers;
+
+    public CompanyMonthlyNumbersRecord getNewestMonthlyNumbers() {
+        return this.newestMonthlyNumbers;
+    }
 
 
 
@@ -129,6 +148,10 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     @JsonProperty(value = IO_FIELD_FOUNDING_DATE)
     private LocalDate foundingDate;
 
+    public LocalDate getFoundingDate() {
+        return this.foundingDate;
+    }
+
 
 
     public static final String DB_FIELD_EFFECT_DATE = "effectDate";
@@ -137,6 +160,10 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     @Column(name = DB_FIELD_EFFECT_DATE)
     @JsonProperty(value = IO_FIELD_EFFECT_DATE)
     private LocalDate effectDate;
+
+    public LocalDate getEffectDate() {
+        return this.effectDate;
+    }
 
 
 

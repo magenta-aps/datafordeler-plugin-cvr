@@ -491,6 +491,21 @@ public class RecordTest {
         }
     }
 
+    @Test
+    public void testRestCompanyUnit() throws IOException, DataFordelerException {
+        loadUnit("/unit.json");
+        TestUserDetails testUserDetails = new TestUserDetails();
+        HttpEntity<String> httpEntity = new HttpEntity<String>("", new HttpHeaders());
+        ResponseEntity<String> resp = restTemplate.exchange("/cvr/unit/2/rest/search?pnummer=1020895337", HttpMethod.GET, httpEntity, String.class);
+        Assert.assertEquals(403, resp.getStatusCodeValue());
+
+        testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
+        this.applyAccess(testUserDetails);
+
+        resp = restTemplate.exchange("/cvr/unit/2/rest/search?pnummer=1020895337", HttpMethod.GET, httpEntity, String.class);
+        String body = resp.getBody();
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectMapper.readTree(body)));
+    }
 
     private HashMap<Long, JsonNode> loadParticipant(String resource) throws IOException, DataFordelerException {
         ImportMetadata importMetadata = new ImportMetadata();
@@ -649,6 +664,22 @@ public class RecordTest {
         }
     }
 
+
+    @Test
+    public void testRestParticipant() throws IOException, DataFordelerException {
+        loadParticipant("/person.json");
+        TestUserDetails testUserDetails = new TestUserDetails();
+        HttpEntity<String> httpEntity = new HttpEntity<String>("", new HttpHeaders());
+        ResponseEntity<String> resp = restTemplate.exchange("/cvr/participant/2/rest/search?deltagernummer=4000004988", HttpMethod.GET, httpEntity, String.class);
+        Assert.assertEquals(403, resp.getStatusCodeValue());
+
+        testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
+        this.applyAccess(testUserDetails);
+
+        resp = restTemplate.exchange("/cvr/participant/2/rest/search?deltagernummer=4000004988", HttpMethod.GET, httpEntity, String.class);
+        String body = resp.getBody();
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectMapper.readTree(body)));
+    }
 
     /**
      * Checks that all items in n1 are also present in n2

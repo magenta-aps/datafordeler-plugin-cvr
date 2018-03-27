@@ -55,6 +55,46 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
+
+    public static final String DB_FIELD_POSITION = "position";
+    public static final String IO_FIELD_POSITION = "stilling";
+
+    @Column(name = DB_FIELD_POSITION)
+    @JsonProperty(value = IO_FIELD_POSITION)
+    private String position;
+
+    public String getPosition() {
+        return this.position;
+    }
+
+
+
+    public static final String DB_FIELD_BUSINESS_KEY = "businessKey";
+    public static final String IO_FIELD_BUSINESS_KEY = "forretningsnoegle";
+
+    @Column(name = DB_FIELD_BUSINESS_KEY)
+    @JsonProperty(value = IO_FIELD_BUSINESS_KEY)
+    private Long businessKey;
+
+    public Long getBusinessKey() {
+        return this.businessKey;
+    }
+
+
+
+    public static final String DB_FIELD_STATUS_CODE = "statusCode";
+    public static final String IO_FIELD_STATUS_CODE = "statusKode";
+
+    @Column(name = DB_FIELD_STATUS_CODE)
+    @JsonProperty(value = IO_FIELD_STATUS_CODE)
+    private Long statusCode;
+
+    public Long getStatusCode() {
+        return this.statusCode;
+    }
+
+
+
     public static final String DB_FIELD_NAMES = "names";
     public static final String IO_FIELD_NAMES = "navne";
 
@@ -345,30 +385,6 @@ public class ParticipantRecord extends CvrEntityRecord {
         return this.attributes;
     }
 
-
-
-    public static final String DB_FIELD_POSITION = "position";
-    public static final String IO_FIELD_POSITION = "stilling";
-
-    @Column(name = DB_FIELD_POSITION)
-    @JsonProperty(value = IO_FIELD_POSITION)
-    public String position;
-
-
-    public static final String DB_FIELD_BUSINESS_KEY = "businessKey";
-    public static final String IO_FIELD_BUSINESS_KEY = "forretningsnoegle";
-
-    @Column(name = DB_FIELD_BUSINESS_KEY)
-    @JsonProperty(value = IO_FIELD_BUSINESS_KEY)
-    public Long businessKey;
-
-
-    public static final String DB_FIELD_STATUS_CODE = "statusCode";
-    public static final String IO_FIELD_STATUS_CODE = "statusKode";
-
-    @Column(name = DB_FIELD_STATUS_CODE)
-    @JsonProperty(value = IO_FIELD_STATUS_CODE)
-    public Long statusCode;
 
 
     public static final String DB_FIELD_META = "metadata";

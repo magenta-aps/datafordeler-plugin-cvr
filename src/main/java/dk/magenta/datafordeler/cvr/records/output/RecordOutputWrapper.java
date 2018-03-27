@@ -1,4 +1,4 @@
-package dk.magenta.datafordeler.cvr.data.company;
+package dk.magenta.datafordeler.cvr.records.output;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,13 +8,8 @@ import dk.magenta.datafordeler.core.util.DoubleListHashMap;
 import dk.magenta.datafordeler.core.util.ListHashMap;
 import dk.magenta.datafordeler.cvr.data.Bitemporality;
 import dk.magenta.datafordeler.cvr.data.BitemporalityComparator;
-import dk.magenta.datafordeler.cvr.data.shared.LifecycleData;
-import dk.magenta.datafordeler.cvr.data.unversioned.Address;
-import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 import dk.magenta.datafordeler.cvr.records.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -24,8 +19,8 @@ import java.util.*;
 import java.util.function.Function;
 
 /**
- * A class for formatting a CompanyEntity to JSON, for FAPI output. The data hierarchy
- * under a Company is sorted into this format:
+ * A class for formatting a CompanyRecord to JSON, for FAPI output. The data hierarchy
+ * in the output should ook like this:
  * {
  *     "UUID": <company uuid>
  *     "cvrnummer": <company cvr number>
@@ -36,7 +31,7 @@ import java.util.function.Function;
  *          {
  *              "registreringFra": <registrationFrom>,
  *              "registreringTil": <registrationTo>,
- *              "navn": [
+ *              "virkninger": [
  *              {
  *                  "navn": <companyName1>
  *                  "virkningFra": <effectFrom1>
@@ -52,12 +47,15 @@ import java.util.function.Function;
  *     ]
  * }
  */
-@Component
-public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
+public abstract class RecordOutputWrapper<E extends CvrEntityRecord> extends OutputWrapper<E> {
 
-    private class OutputContainer extends DoubleListHashMap<Bitemporality, String, JsonNode> {
+    protected class OutputContainer {
 
         private final List<String> removeFieldNames = Arrays.asList(new String[]{"periode", "sidstOpdateret", "sidstIndlaest"});
+
+        private DoubleListHashMap<Bitemporality, String, JsonNode> bitemporalData = new DoubleListHashMap<>();
+
+        private ListHashMap<String, JsonNode> nontemporalData = new ListHashMap<>();
 
         private HashSet<String> forcedArrayKeys = new HashSet<>();
 
@@ -65,28 +63,32 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
             return this.forcedArrayKeys.contains(key);
         }
 
-        public <T extends CvrBitemporalRecord> void addCompanyMember(String key, Set<T> items) {
-            this.addCompanyMember(key, items, null, false, false);
+        public <T extends CvrBitemporalRecord> void addBitemporal(String key, Set<T> records) {
+            this.addBitemporal(key, records, null, false, false);
         }
 
-        public <T extends CvrBitemporalRecord> void addCompanyMember(String key, Set<T> items, boolean unwrapSingle) {
-            this.addCompanyMember(key, items, null, unwrapSingle, false);
+        public <T extends CvrBitemporalRecord> void addBitemporal(String key, Set<T> records, boolean unwrapSingle) {
+            this.addBitemporal(key, records, null, unwrapSingle, false);
         }
 
-        public <T extends CvrBitemporalRecord> void addCompanyMember(String key, Set<T> items, Function<T, JsonNode> converter) {
-            this.addCompanyMember(key, items, converter, false, false);
+        public <T extends CvrBitemporalRecord> void addBitemporal(String key, Set<T> records, Function<T, JsonNode> converter) {
+            this.addBitemporal(key, records, converter, false, false);
         }
 
-        public <T extends CvrBitemporalRecord> void addCompanyMember(String key, Set<T> items, Function<T, JsonNode> converter, boolean unwrapSingle, boolean forceArray) {
-            for (T item : items) {
-                JsonNode value = (converter != null) ? converter.apply(item) : CompanyRecordOutputWrapper.this.objectMapper.valueToTree(item);
-                if (value instanceof ObjectNode) {
-                    ((ObjectNode) value).remove(removeFieldNames);
-                }
-                if (unwrapSingle && value.size() == 1) {
-                    this.add(item.getBitemporality(), key, value.get(value.fieldNames().next()));
-                } else {
-                    this.add(item.getBitemporality(), key, value);
+        public <T extends CvrBitemporalRecord> void addBitemporal(String key, Set<T> records, Function<T, JsonNode> converter, boolean unwrapSingle, boolean forceArray) {
+            ObjectMapper objectMapper = RecordOutputWrapper.this.getObjectMapper();
+            for (T record : records) {
+                if (record != null) {
+                    JsonNode value = (converter != null) ? converter.apply(record) : objectMapper.valueToTree(record);
+                    if (value instanceof ObjectNode) {
+                        ObjectNode oValue = (ObjectNode) value;
+                        oValue.remove(removeFieldNames);
+                        if (unwrapSingle && value.size() == 1) {
+                            this.bitemporalData.add(record.getBitemporality(), key, oValue.get(oValue.fieldNames().next()));
+                            continue;
+                        }
+                    }
+                    this.bitemporalData.add(record.getBitemporality(), key, value);
                 }
             }
             if (forceArray) {
@@ -94,7 +96,8 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
             }
         }
 
-        public void addAttributeMember(String key, Set<AttributeRecord> attributes) {
+        public void addAttribute(String key, Set<AttributeRecord> attributes) {
+            ObjectMapper objectMapper = RecordOutputWrapper.this.getObjectMapper();
             for (AttributeRecord attribute : attributes) {
                 ObjectNode attributeNode = objectMapper.createObjectNode();
                 attributeNode.put(AttributeRecord.IO_FIELD_TYPE, attribute.getType());
@@ -109,7 +112,7 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
 
                 for (Bitemporality bitemporality : valueBuckets.keySet()) {
                     ObjectNode instance = attributeNode.deepCopy();
-                    this.add(bitemporality, CompanyRecord.IO_FIELD_ATTRIBUTES, instance);
+                    this.bitemporalData.add(bitemporality, key, instance);
                     ArrayNode valueList = (ArrayNode) instance.get(AttributeRecord.IO_FIELD_VALUES);
                     for (AttributeValueRecord valueRecord : valueBuckets.get(bitemporality)) {
                         valueList.add(valueRecord.getValue());
@@ -117,40 +120,65 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
                 }
             }
         }
+        public <T extends CvrNontemporalRecord> void addNontemporal(String key, T record) {
+            this.addNontemporal(key, Collections.singleton(record), null, false, false);
+        }
 
-    }
+        public <T extends CvrNontemporalRecord> void addNontemporal(String key, Function<T, JsonNode> converter, T record) {
+            this.addNontemporal(key, Collections.singleton(record), converter, false, false);
+        }
+
+        public <T extends CvrNontemporalRecord> void addNontemporal(String key, Set<T> records) {
+            this.addNontemporal(key, records, null, false, false);
+        }
+
+        public <T extends CvrNontemporalRecord> void addNontemporal(String key, Set<T> records, Function<T, JsonNode> converter, boolean unwrapSingle, boolean forceArray) {
+            ObjectMapper objectMapper = RecordOutputWrapper.this.getObjectMapper();
+            for (T record : records) {
+                JsonNode value = (converter != null) ? converter.apply(record) : objectMapper.valueToTree(record);
+                if (value instanceof ObjectNode) {
+                    ObjectNode oValue = (ObjectNode) value;
+                    if (unwrapSingle && value.size() == 1) {
+                        this.nontemporalData.add(key, oValue.get(oValue.fieldNames().next()));
+                        continue;
+                    }
+                }
+                this.nontemporalData.add(key, value);
+            }
+            if (forceArray) {
+                this.forcedArrayKeys.add(key);
+            }
+        }
+
+        public void addNontemporal(String key, Boolean data) {
+            this.nontemporalData.add(key, data != null ? (data ? BooleanNode.getTrue() : BooleanNode.getFalse()) : null);
+        }
+
+        public void addNontemporal(String key, Integer data) {
+            this.nontemporalData.add(key, data != null ? new IntNode(data) : null);
+        }
+
+        public void addNontemporal(String key, Long data) {
+            this.nontemporalData.add(key, data != null ? new LongNode(data) : null);
+        }
+
+        public void addNontemporal(String key, String data) {
+            this.nontemporalData.add(key, data != null ? new TextNode(data) : null);
+        }
+
+        public void addNontemporal(String key, LocalDate data) {
+            this.nontemporalData.add(key, data != null ? new TextNode(data.format(DateTimeFormatter.ISO_LOCAL_DATE)) : null);
+        }
+
+        public void addNontemporal(String key, OffsetDateTime data) {
+            this.nontemporalData.add(key, data != null ? new TextNode(data.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)) : null);
+        }
 
 
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Override
-    public Object wrapResult(CompanyRecord companyRecord) {
-        return this.asRVD(companyRecord);
-        //return this.asRecord(companyRecord);
-    }
-
-    private ObjectNode asRecord(CompanyRecord record) {
-        return objectMapper.valueToTree(record);
-    }
-
-    private static final Comparator<Bitemporality> effectComparator =
-            Comparator.nullsFirst(new BitemporalityComparator(BitemporalityComparator.Type.EFFECT_FROM))
-            .thenComparing(Comparator.nullsLast(new BitemporalityComparator(BitemporalityComparator.Type.EFFECT_TO)));
-
-    private ObjectNode asRVD(CompanyRecord companyRecord) {
-        ObjectNode root = objectMapper.createObjectNode();
-        try {
-            //root.put(CompanyEntity.IO_FIELD_UUID, companyRecord.getIdentification().getUuid().toString());
-            root.putPOJO("id", companyRecord.getIdentification());
-            root.put(CompanyEntity.IO_FIELD_CVR, companyRecord.getCvrNumber());
-
-            OutputContainer recordOutput = new OutputContainer();
-            createCompanyNode(recordOutput, companyRecord);
-
-
-            ArrayList<Bitemporality> bitemporalities = new ArrayList<>(recordOutput.keySet());
+        public ArrayNode getRegistrations() {
+            ObjectMapper objectMapper = RecordOutputWrapper.this.getObjectMapper();
+            ArrayNode registrationsNode = objectMapper.createArrayNode();
+            ArrayList<Bitemporality> bitemporalities = new ArrayList<>(this.bitemporalData.keySet());
             //bitemporalities.sort(Comparator.nullsFirst(new BitemporalityRegistrationFromComparator()));
 
             ListHashMap<OffsetDateTime, Bitemporality> startTerminators = new ListHashMap<>();
@@ -170,6 +198,7 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
             terminators.add(null);
 
             HashSet<Bitemporality> presentBitemporalities = new HashSet<>();
+
             for (int i=0; i<terminators.size(); i++) {
                 OffsetDateTime t = terminators.get(i);
                 List<Bitemporality> startingHere = startTerminators.get(t);
@@ -184,9 +213,9 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
                     OffsetDateTime next = terminators.get(i + 1);
                     if (!presentBitemporalities.isEmpty()) {
                         ObjectNode registrationNode = objectMapper.createObjectNode();
+                        registrationsNode.add(registrationNode);
                         registrationNode.put("registreringFra", formatTime(t));
                         registrationNode.put("registreringTil", formatTime(next));
-                        root.set("registreringer", registrationNode);
                         ArrayNode effectsNode = objectMapper.createArrayNode();
                         registrationNode.set("virkninger", effectsNode);
                         ArrayList<Bitemporality> sortedEffects = new ArrayList<>(presentBitemporalities);
@@ -200,29 +229,74 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
                             }
                             effectNode.put("virkningFra", formatTime(bitemporality.effectFrom, true));
                             effectNode.put("virkningTil", formatTime(bitemporality.effectTo, true));
-                            HashMap<String, ArrayList<JsonNode>> records = recordOutput.get(bitemporality);
+                            HashMap<String, ArrayList<JsonNode>> records = this.bitemporalData.get(bitemporality);
                             for (String key : records.keySet()) {
-                                ArrayList<JsonNode> r = records.get(key);
-                                if (r.size() == 1 && !recordOutput.isArrayForced(key)) {
-                                    effectNode.set(key, r.get(0));
-                                } else {
-                                    ArrayNode a = objectMapper.createArrayNode();
-                                    effectNode.set(key, a);
-                                    for (JsonNode q : r) {
-                                        a.add(q);
-                                    }
-                                }
+                                this.setValue(objectMapper, effectNode, key, records.get(key));
                             }
                             lastEffect = bitemporality;
                         }
                     }
                 }
             }
+            return registrationsNode;
+        }
+
+        public ObjectNode getBase() {
+            ObjectMapper objectMapper = RecordOutputWrapper.this.getObjectMapper();
+            ObjectNode objectNode = objectMapper.createObjectNode();
+            for (String key : this.nontemporalData.keySet()) {
+                this.setValue(objectMapper, objectNode, key, this.nontemporalData.get(key));
+            }
+            return objectNode;
+        }
+
+        private void setValue(ObjectMapper objectMapper, ObjectNode objectNode, String key, List<JsonNode> values) {
+            if (values.size() == 1 && !this.isArrayForced(key)) {
+                objectNode.set(key, values.get(0));
+            } else {
+                ArrayNode array = objectMapper.createArrayNode();
+                objectNode.set(key, array);
+                for (JsonNode value : values) {
+                    array.add(value);
+                }
+            }
+        }
+    }
+
+    protected final ObjectNode getNode(E record) {
+        ObjectMapper objectMapper = this.getObjectMapper();
+        ObjectNode root = objectMapper.createObjectNode();
+        try {
+            //root.put(CompanyEntity.IO_FIELD_UUID, record.getIdentification().getUuid().toString());
+
+            OutputContainer recordOutput = new OutputContainer();
+            this.fillContainer(recordOutput, record);
+
+            root.setAll(recordOutput.getBase());
+            root.set("registreringer", recordOutput.getRegistrations());
+
+            OutputContainer metadataRecordOutput = new OutputContainer();
+            this.fillMetadataContainer(metadataRecordOutput, record);
+            ObjectNode metaNode = objectMapper.createObjectNode();
+            root.set("metadata", metaNode);
+            metaNode.setAll(metadataRecordOutput.getBase());
+            metaNode.set("registreringer", metadataRecordOutput.getRegistrations());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         return root;
     }
+
+    protected abstract void fillContainer(OutputContainer container, E item);
+
+    protected abstract void fillMetadataContainer(OutputContainer container, E item);
+
+    protected abstract ObjectMapper getObjectMapper();
+
+    protected static final Comparator<Bitemporality> effectComparator =
+            Comparator.nullsFirst(new BitemporalityComparator(BitemporalityComparator.Type.EFFECT_FROM))
+            .thenComparing(Comparator.nullsLast(new BitemporalityComparator(BitemporalityComparator.Type.EFFECT_TO)));
 
     protected static String formatTime(OffsetDateTime time) {
         return formatTime(time, false);
@@ -236,49 +310,6 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
     protected static String formatTime(LocalDate time) {
         if (time == null) return null;
         return time.format(DateTimeFormatter.ISO_LOCAL_DATE);
-    }
-
-    private void createCompanyNode(OutputContainer container, CompanyRecord item) {
-        container.addCompanyMember("navn", item.getNames(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_SECONDARY_NAMES, item.getSecondaryNames());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_REG_NUMBER, item.getRegNumber(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_LOCATION_ADDRESS, item.getLocationAddress());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_POSTAL_ADDRESS, item.getPostalAddress(), this::createAddressNode);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_PHONE, item.getPhoneNumber(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_PHONE_SECONDARY, item.getSecondaryPhoneNumber(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_FAX, item.getFaxNumber(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_FAX_SECONDARY, item.getSecondaryFaxNumber(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_EMAIL, item.getEmailAddress(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_MANDATORY_EMAIL, item.getMandatoryEmailAddress(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_HOMEPAGE, item.getHomepage(), true);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_PRIMARY_INDUSTRY, item.getPrimaryIndustry());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_SECONDARY_INDUSTRY1, item.getSecondaryIndustry1());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_SECONDARY_INDUSTRY2, item.getSecondaryIndustry2());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_SECONDARY_INDUSTRY3, item.getSecondaryIndustry3());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_FORM, item.getCompanyForm());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_STATUS, item.getStatus());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_COMPANYSTATUS, item.getCompanyStatus(), true);
-        container.addCompanyMember("livscyklusAktiv", item.getLifecycle(), this::createLifecycleNode);
-        container.addCompanyMember(CompanyRecord.IO_FIELD_YEARLY_NUMBERS, item.getYearlyNumbers());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_QUARTERLY_NUMBERS, item.getQuarterlyNumbers());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_MONTHLY_NUMBERS, item.getMonthlyNumbers());
-        container.addAttributeMember(CompanyRecord.IO_FIELD_ATTRIBUTES, item.getAttributes());
-        container.addCompanyMember(CompanyRecord.IO_FIELD_P_UNITS, item.getProductionUnits(), null, true, true);
-
-
-/*
-        for (CompanyParticipantRelationRecord participantRelationRecord : otherRecord.getParticipants()) {
-            //this.addParticipant(participantRelationRecord);
-            this.mergeParticipant(participantRelationRecord);
-        }
-        for (FusionSplitRecord fusionSplitRecord : otherRecord.getFusions()) {
-            //this.addFusion(fusionSplitRecord);
-            this.mergeFusion(fusionSplitRecord);
-        }
-        for (FusionSplitRecord fusionSplitRecord : otherRecord.getSplits()) {
-            //this.addSplit(fusionSplitRecord);
-            this.mergeSplit(fusionSplitRecord);
-        }*/
     }
 
     protected JsonNode createAddressNode(AddressRecord record) {
@@ -311,8 +342,7 @@ public class CompanyRecordOutputWrapper extends OutputWrapper<CompanyRecord> {
     }
 
     private ObjectNode createItemNode(CvrRecord record) {
-        return objectMapper.createObjectNode();
+        return this.getObjectMapper().createObjectNode();
     }
-
 
 }
