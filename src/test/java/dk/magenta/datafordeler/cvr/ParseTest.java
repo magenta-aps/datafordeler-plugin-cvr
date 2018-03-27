@@ -8,6 +8,8 @@ import dk.magenta.datafordeler.core.database.Registration;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.io.ImportMetadata;
+import dk.magenta.datafordeler.core.plugin.EntityManager;
+import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntityManager;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
@@ -17,6 +19,8 @@ import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntityManager;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +29,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashMap;
@@ -125,7 +131,7 @@ public class ParseTest {
                 List<? extends Registration> registrations = entityManager.parseData(item.get("_source").get("Vrdeltagerperson"), importMetadata, session);
                 System.out.println("registrations.size: " + registrations.size());
                 System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations));
-                Assert.assertEquals(4, registrations.size());
+                Assert.assertEquals(5, registrations.size());
             }
         } finally {
             transaction.rollback();

@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
@@ -8,14 +9,29 @@ import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
 import org.hibernate.Session;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
  * Record for Company Unit references.
  */
-public class CompanyUnitLinkRecord extends CvrBaseRecord {
+@Entity
+@Table(name = CompanyUnitLinkRecord.TABLE_NAME, indexes = {
+        @Index(name = CompanyUnitLinkRecord.TABLE_NAME + "__company", columnList = CompanyLinkRecord.DB_FIELD_COMPANY + DatabaseEntry.REF)
+})
+public class CompanyUnitLinkRecord extends CvrBitemporalDataRecord {
 
-    @JsonProperty(value = "pNummer")
+    public static final String TABLE_NAME = "cvr_record_company_unit_relation";
+
+    public static final String DB_FIELD_PNUMBER = "pNumber";
+    public static final String IO_FIELD_PNUMBER = "pNummer";
+
+    @Column(name = DB_FIELD_PNUMBER)
+    @JsonProperty(value = IO_FIELD_PNUMBER)
     private int pNumber;
 
     @Override
@@ -29,4 +45,17 @@ public class CompanyUnitLinkRecord extends CvrBaseRecord {
         return unitIdentification;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        CompanyUnitLinkRecord that = (CompanyUnitLinkRecord) o;
+        return pNumber == that.pNumber;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), pNumber);
+    }
 }

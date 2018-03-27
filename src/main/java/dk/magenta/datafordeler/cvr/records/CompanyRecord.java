@@ -1,219 +1,1040 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.core.database.Effect;
+import dk.magenta.datafordeler.core.database.Registration;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
 import org.hibernate.Session;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.Filters;
+import org.hibernate.annotations.Where;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import javax.persistence.*;
+import java.util.*;
 
 /**
  * Base record for Company data, parsed from JSON into a tree of objects
  * with this class at the base.
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Entity
+@Table(name = CompanyRecord.TABLE_NAME, indexes = {
+        @Index(name = CompanyRecord.TABLE_NAME + "__cvrnumber", columnList = CompanyRecord.DB_FIELD_CVR_NUMBER),
+        @Index(name = CompanyRecord.TABLE_NAME + "__advertprotection", columnList = CompanyRecord.DB_FIELD_ADVERTPROTECTION)
+})
 public class CompanyRecord extends CvrEntityRecord {
 
-    @JsonProperty(value = "cvrNummer")
+    public static final String TABLE_NAME = "cvr_record_company";
+
+    public static final String DB_FIELD_CVR_NUMBER = "cvrNumber";
+    public static final String IO_FIELD_CVR_NUMBER = "cvrNummer";
+
+    @Column(name = DB_FIELD_CVR_NUMBER)
+    @JsonProperty(value = IO_FIELD_CVR_NUMBER)
     private int cvrNumber;
 
     public int getCvrNumber() {
         return this.cvrNumber;
     }
 
-    @JsonProperty(value = "reklamebeskyttet")
+    @JsonIgnore
+    public Map<String, Object> getIdentifyingFilter() {
+        return Collections.singletonMap(DB_FIELD_CVR_NUMBER, this.cvrNumber);
+    }
+
+
+
+    public static final String DB_FIELD_REG_NUMBER = "regNumber";
+    public static final String IO_FIELD_REG_NUMBER = "regNummer";
+
+    @OneToMany(targetEntity = CompanyRegNumberRecord.class, mappedBy = CompanyRegNumberRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonProperty(value = IO_FIELD_REG_NUMBER)
+    private Set<CompanyRegNumberRecord> regNumber;
+
+    public void setRegNumber(Set<CompanyRegNumberRecord> regNumber) {
+        this.regNumber = regNumber;
+        for (CompanyRegNumberRecord regNumberRecord : regNumber) {
+            regNumberRecord.setCompanyRecord(this);
+        }
+    }
+
+    public void addRegNumber(CompanyRegNumberRecord record) {
+        if (record != null) {
+            record.setCompanyRecord(this);
+            this.regNumber.add(record);
+        }
+    }
+
+    public Set<CompanyRegNumberRecord> getRegNumber() {
+        return this.regNumber;
+    }
+
+
+
+    public static final String DB_FIELD_ADVERTPROTECTION = "advertProtection";
+    public static final String IO_FIELD_ADVERTPROTECTION = "reklamebeskyttet";
+
+    @Column(name = DB_FIELD_ADVERTPROTECTION)
+    @JsonProperty(value = IO_FIELD_ADVERTPROTECTION)
     private boolean advertProtection;
 
-    @JsonProperty(value = "enhedsNummer")
-    private int unitNumber;
 
-    @JsonProperty(value = "enhedstype")
+
+    public static final String DB_FIELD_UNITNUMBER = "unitNumber";
+    public static final String IO_FIELD_UNITNUMBER = "enhedsNummer";
+
+    @Column(name = DB_FIELD_UNITNUMBER)
+    @JsonProperty(value = IO_FIELD_UNITNUMBER)
+    private long unitNumber;
+
+
+
+    public static final String DB_FIELD_UNITTYPE = "unitType";
+    public static final String IO_FIELD_UNITTYPE = "enhedstype";
+
+    @Column(name = DB_FIELD_UNITTYPE)
+    @JsonProperty(value = IO_FIELD_UNITTYPE)
     private String unitType;
 
-    @JsonProperty(value = "navne")
-    private List<NameRecord> names;
 
-    public List<NameRecord> getNames() {
+
+    public static final String DB_FIELD_INDUSTRY_RESPONSIBILITY_CODE = "industryResponsibilityCode";
+    public static final String IO_FIELD_INDUSTRY_RESPONSIBILITY_CODE = "brancheAnsvarskode";
+
+    @Column(name = DB_FIELD_INDUSTRY_RESPONSIBILITY_CODE, nullable = true)
+    @JsonProperty(value = IO_FIELD_INDUSTRY_RESPONSIBILITY_CODE)
+    private Integer industryResponsibilityCode;
+
+
+
+    public static final String DB_FIELD_NAMES = "names";
+    public static final String IO_FIELD_NAMES = "navne";
+
+    @OneToMany(targetEntity = SecNameRecord.class, mappedBy = SecNameRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Where(clause = SecNameRecord.DB_FIELD_SECONDARY+"=false")
+    @Filters({
+            //@Filter(names = Registration.FILTER_REGISTRATION_FROM, condition="(registrationTo >= :"+Registration.FILTERPARAM_REGISTRATION_FROM+" OR registrationTo is null)"),
+            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_TO+" >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR "+CvrRecordPeriod.DB_FIELD_VALID_TO+" is null)"),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
+    })
+    @JsonProperty(value = IO_FIELD_NAMES)
+    private Set<SecNameRecord> names = new HashSet<>();
+
+    public Set<SecNameRecord> getNames() {
         return this.names;
     }
 
-    @JsonProperty(value = "beliggenhedsadresse")
-    private List<AddressRecord> locationAddress;
+    public void setNames(Set<SecNameRecord> names) {
+        this.names = names;
+        for (SecNameRecord record : names) {
+            record.setSecondary(false);
+            record.setCompanyRecord(this);
+        }
+    }
 
-    public void setLocationAddress(List<AddressRecord> locationAddress) {
+    public void addName(SecNameRecord record) {
+        if (record != null) {
+            record.setSecondary(false);
+            record.setCompanyRecord(this);
+            this.names.add(record);
+        }
+    }
+
+
+
+    public static final String DB_FIELD_SECONDARY_NAMES = "secondaryNames";
+    public static final String IO_FIELD_SECONDARY_NAMES = "binavne";
+
+    @OneToMany(targetEntity = SecNameRecord.class, mappedBy = SecNameRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Where(clause = SecNameRecord.DB_FIELD_SECONDARY+"=true")
+    @JsonProperty(value = IO_FIELD_SECONDARY_NAMES)
+    private Set<SecNameRecord> secondaryNames = new HashSet<>();
+
+    public Set<SecNameRecord> getSecondaryNames() {
+        return this.secondaryNames;
+    }
+
+    public void setSecondaryNames(Set<SecNameRecord> secondaryNames) {
+        this.secondaryNames = secondaryNames;
+        for (SecNameRecord record : secondaryNames) {
+            record.setSecondary(true);
+            record.setCompanyRecord(this);
+        }
+    }
+
+    public void addSecondaryName(SecNameRecord record) {
+        if (record != null) {
+            record.setSecondary(true);
+            record.setCompanyRecord(this);
+            this.secondaryNames.add(record);
+        }
+    }
+
+
+
+    public static final String DB_FIELD_LOCATION_ADDRESS = "locationAddress";
+    public static final String IO_FIELD_LOCATION_ADDRESS = "beliggenhedsadresse";
+
+    @OneToMany(targetEntity = AddressRecord.class, mappedBy = AddressRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Where(clause = AddressRecord.DB_FIELD_TYPE+"="+AddressRecord.TYPE_LOCATION)
+    @Filters({
+            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_TO+" >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR "+CvrRecordPeriod.DB_FIELD_VALID_TO+" is null)"),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
+    })
+    @JsonProperty(value = IO_FIELD_LOCATION_ADDRESS)
+    private Set<AddressRecord> locationAddress = new HashSet<>();
+
+    public void setLocationAddress(Set<AddressRecord> locationAddress) {
         for (AddressRecord record : locationAddress) {
-            record.setType(AddressRecord.Type.LOCATION);
+            record.setType(AddressRecord.TYPE_LOCATION);
+            record.setCompanyRecord(this);
         }
         this.locationAddress = locationAddress;
     }
 
-    public List<AddressRecord> getLocationAddress() {
+    public void addLocationAddress(AddressRecord record) {
+        if (record != null) {
+            record.setType(AddressRecord.TYPE_LOCATION);
+            record.setCompanyRecord(this);
+            this.locationAddress.add(record);
+        }
+    }
+
+    public Set<AddressRecord> getLocationAddress() {
         return this.locationAddress;
     }
 
-    @JsonProperty(value = "postadresse")
-    private List<AddressRecord> postalAddress;
 
-    public void setPostalAddress(List<AddressRecord> postalAddress) {
+
+
+    public static final String DB_FIELD_POSTAL_ADDRESS = "postalAddress";
+    public static final String IO_FIELD_POSTAL_ADDRESS = "postadresse";
+
+    @OneToMany(targetEntity = AddressRecord.class, mappedBy = AddressRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Where(clause = AddressRecord.DB_FIELD_TYPE+"="+AddressRecord.TYPE_POSTAL)
+    @Filters({
+            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_TO+" >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR "+CvrRecordPeriod.DB_FIELD_VALID_TO+" is null)"),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
+    })
+    @JsonProperty(value = IO_FIELD_POSTAL_ADDRESS)
+    private Set<AddressRecord> postalAddress = new HashSet<>();
+
+    public void setPostalAddress(Set<AddressRecord> postalAddress) {
         for (AddressRecord record : postalAddress) {
-            record.setType(AddressRecord.Type.POSTAL);
+            record.setType(AddressRecord.TYPE_POSTAL);
+            record.setCompanyRecord(this);
         }
         this.postalAddress = postalAddress;
     }
 
-    public List<AddressRecord> getPostalAddress() {
+    public void addPostalAddress(AddressRecord record) {
+        if (record != null) {
+            record.setType(AddressRecord.TYPE_POSTAL);
+            record.setCompanyRecord(this);
+            this.postalAddress.add(record);
+        }
+    }
+
+    public Set<AddressRecord> getPostalAddress() {
         return this.postalAddress;
     }
 
-    @JsonProperty(value = "telefonNummer")
-    private List<ContactRecord> phoneNumber;
 
-    public void setPhoneNumber(List<ContactRecord> phoneNumber) {
+
+    public static final String DB_FIELD_PHONE = "phoneNumber";
+    public static final String IO_FIELD_PHONE = "telefonNummer";
+
+    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_TELEFONNUMMER+" AND "+ContactRecord.DB_FIELD_SECONDARY+"=false")
+    @Filters({
+            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_TO+" >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR "+CvrRecordPeriod.DB_FIELD_VALID_TO+" is null)"),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
+    })
+    @JsonProperty(value = IO_FIELD_PHONE)
+    private Set<ContactRecord> phoneNumber = new HashSet<>();
+
+    public void setPhoneNumber(Set<ContactRecord> phoneNumber) {
         for (ContactRecord record : phoneNumber) {
-            record.setType(ContactRecord.Type.TELEFONNUMMER);
+            record.setType(ContactRecord.TYPE_TELEFONNUMMER);
+            record.setSecondary(false);
+            record.setCompanyRecord(this);
         }
         this.phoneNumber = phoneNumber;
     }
 
-    @JsonProperty(value = "telefaxNummer")
-    private List<ContactRecord> faxNumber;
+    public void addPhoneNumber(ContactRecord record) {
+        if (record != null) {
+            record.setType(ContactRecord.TYPE_TELEFONNUMMER);
+            record.setCompanyRecord(this);
+            record.setSecondary(false);
+            this.phoneNumber.add(record);
+        }
+    }
 
-    public void setFaxNumber(List<ContactRecord> faxNumber) {
+    public Set<ContactRecord> getPhoneNumber() {
+        return this.phoneNumber;
+    }
+
+
+
+    public static final String DB_FIELD_PHONE_SECONDARY = "secondaryPhoneNumber";
+    public static final String IO_FIELD_PHONE_SECONDARY = "sekundaertTelefonNummer";
+
+    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_TELEFONNUMMER+" AND "+ContactRecord.DB_FIELD_SECONDARY+"=true")
+    @Filters({
+            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_TO+" >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR "+CvrRecordPeriod.DB_FIELD_VALID_TO+" is null)"),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
+    })
+    @JsonProperty(value = IO_FIELD_PHONE_SECONDARY)
+    private Set<ContactRecord> secondaryPhoneNumber = new HashSet<>();
+
+    public void setSecondaryPhoneNumber(Set<ContactRecord> secondaryPhoneNumber) {
+        for (ContactRecord record : secondaryPhoneNumber) {
+            record.setType(ContactRecord.TYPE_TELEFONNUMMER);
+            record.setSecondary(true);
+            record.setCompanyRecord(this);
+        }
+        this.secondaryPhoneNumber = secondaryPhoneNumber;
+    }
+
+    public void addSecondaryPhoneNumber(ContactRecord record) {
+        if (record != null) {
+            record.setType(ContactRecord.TYPE_TELEFONNUMMER);
+            record.setCompanyRecord(this);
+            record.setSecondary(true);
+            this.phoneNumber.add(record);
+        }
+    }
+
+    public Set<ContactRecord> getSecondaryPhoneNumber() {
+        return this.secondaryPhoneNumber;
+    }
+
+
+
+    public static final String DB_FIELD_FAX = "faxNumber";
+    public static final String IO_FIELD_FAX = "telefaxNummer";
+
+    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_TELEFAXNUMMER)
+    @Filters({
+            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_TO+" >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR "+CvrRecordPeriod.DB_FIELD_VALID_TO+" is null)"),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
+    })
+    @JsonProperty(value = IO_FIELD_FAX)
+    private Set<ContactRecord> faxNumber = new HashSet<>();
+
+    public void setFaxNumber(Set<ContactRecord> faxNumber) {
         for (ContactRecord record : faxNumber) {
-            record.setType(ContactRecord.Type.TELEFAXNUMMER);
+            record.setType(ContactRecord.TYPE_TELEFAXNUMMER);
+            record.setSecondary(false);
+            record.setCompanyRecord(this);
         }
         this.faxNumber = faxNumber;
     }
 
-    @JsonProperty(value = "elektroniskPost")
-    private List<ContactRecord> emailAddress;
+    public void addFaxNumber(ContactRecord record) {
+        if (record != null) {
+            record.setType(ContactRecord.TYPE_TELEFAXNUMMER);
+            record.setCompanyRecord(this);
+            record.setSecondary(false);
+            this.faxNumber.add(record);
+        }
+    }
 
-    public void setEmailAddress(List<ContactRecord> emailAddress) {
+    public Set<ContactRecord> getFaxNumber() {
+        return this.faxNumber;
+    }
+
+
+
+    public static final String DB_FIELD_FAX_SECONDARY = "secondaryFaxNumber";
+    public static final String IO_FIELD_FAX_SECONDARY = "sekundaertTelefaxNummer";
+
+    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_TELEFAXNUMMER+" AND "+ContactRecord.DB_FIELD_SECONDARY+"=true")
+    @Filters({
+            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_TO+" >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR "+CvrRecordPeriod.DB_FIELD_VALID_TO+" is null)"),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
+    })
+    @JsonProperty(value = IO_FIELD_FAX_SECONDARY)
+    private Set<ContactRecord> secondaryFaxNumber = new HashSet<>();
+
+    public void setSecondaryFaxNumber(Set<ContactRecord> secondaryFaxNumber) {
+        for (ContactRecord record : secondaryFaxNumber) {
+            record.setType(ContactRecord.TYPE_TELEFAXNUMMER);
+            record.setSecondary(true);
+            record.setCompanyRecord(this);
+        }
+        this.secondaryFaxNumber = secondaryFaxNumber;
+    }
+
+    public void addSecondaryFaxNumber(ContactRecord record) {
+        if (record != null) {
+            record.setType(ContactRecord.TYPE_TELEFAXNUMMER);
+            record.setCompanyRecord(this);
+            record.setSecondary(true);
+            this.faxNumber.add(record);
+        }
+    }
+
+    public Set<ContactRecord> getSecondaryFaxNumber() {
+        return this.secondaryFaxNumber;
+    }
+
+
+
+    public static final String DB_FIELD_EMAIL = "emailAddress";
+    public static final String IO_FIELD_EMAIL = "elektroniskPost";
+
+    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_EMAILADRESSE)
+    @Filters({
+            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_TO+" >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR "+CvrRecordPeriod.DB_FIELD_VALID_TO+" is null)"),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
+    })
+    @JsonProperty(value = IO_FIELD_EMAIL)
+    private Set<ContactRecord> emailAddress = new HashSet<>();
+
+    public void setEmailAddress(Set<ContactRecord> emailAddress) {
         for (ContactRecord record : emailAddress) {
-            record.setType(ContactRecord.Type.EMAILADRESSE);
+            record.setType(ContactRecord.TYPE_EMAILADRESSE);
+            record.setCompanyRecord(this);
         }
         this.emailAddress = emailAddress;
     }
 
-    @JsonProperty(value = "hjemmeside")
-    private List<ContactRecord> homepage;
+    public void addEmailAddress(ContactRecord record) {
+        if (record != null) {
+            record.setType(ContactRecord.TYPE_EMAILADRESSE);
+            record.setCompanyRecord(this);
+            this.emailAddress.add(record);
+        }
+    }
 
-    public void setHomepage(List<ContactRecord> homepage) {
+    public Set<ContactRecord> getEmailAddress() {
+        return this.emailAddress;
+    }
+
+
+
+    public static final String DB_FIELD_HOMEPAGE = "homepage";
+    public static final String IO_FIELD_HOMEPAGE = "hjemmeside";
+
+    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_HJEMMESIDE)
+    @Filters({
+            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_TO+" >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR "+CvrRecordPeriod.DB_FIELD_VALID_TO+" is null)"),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
+    })
+    @JsonProperty(value = IO_FIELD_HOMEPAGE)
+    private Set<ContactRecord> homepage = new HashSet<>();
+
+    public void setHomepage(Set<ContactRecord> homepage) {
         for (ContactRecord record : homepage) {
-            record.setType(ContactRecord.Type.HJEMMESIDE);
+            record.setType(ContactRecord.TYPE_HJEMMESIDE);
+            record.setCompanyRecord(this);
         }
         this.homepage = homepage;
     }
 
-    @JsonProperty(value = "obligatoriskEmail")
-    private List<ContactRecord> mandatoryEmailAddress;
+    public void addHomepage(ContactRecord record) {
+        if (record != null) {
+            record.setType(ContactRecord.TYPE_HJEMMESIDE);
+            record.setCompanyRecord(this);
+            this.homepage.add(record);
+        }
+    }
 
-    public void setMandatoryEmailAddress(List<ContactRecord> mandatoryEmailAddress) {
+    public Set<ContactRecord> getHomepage() {
+        return this.homepage;
+    }
+
+
+
+    public static final String DB_FIELD_MANDATORY_EMAIL = "mandatoryEmailAddress";
+    public static final String IO_FIELD_MANDATORY_EMAIL = "obligatoriskEmail";
+
+    @OneToMany(targetEntity = ContactRecord.class, mappedBy = ContactRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_OBLIGATORISK_EMAILADRESSE)
+    @Filters({
+            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition="("+CvrBitemporalRecord.DB_FIELD_LAST_UPDATED+" < :"+Registration.FILTERPARAM_REGISTRATION_TO+")"),
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_TO+" >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR "+CvrRecordPeriod.DB_FIELD_VALID_TO+" is null)"),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = "("+CvrRecordPeriod.DB_FIELD_VALID_FROM+" < :" + Effect.FILTERPARAM_EFFECT_TO + " OR "+CvrRecordPeriod.DB_FIELD_VALID_FROM+" is null)")
+    })
+    @JsonProperty(value = IO_FIELD_MANDATORY_EMAIL)
+    private Set<ContactRecord> mandatoryEmailAddress = new HashSet<>();
+
+    public void setMandatoryEmailAddress(Set<ContactRecord> mandatoryEmailAddress) {
         for (ContactRecord record : mandatoryEmailAddress) {
-            record.setType(ContactRecord.Type.OBLIGATORISK_EMAILADRESSE);
+            record.setType(ContactRecord.TYPE_OBLIGATORISK_EMAILADRESSE);
+            record.setCompanyRecord(this);
         }
         this.mandatoryEmailAddress = mandatoryEmailAddress;
     }
 
-    @JsonProperty(value = "livsforloeb")
-    private List<LifecycleRecord> lifecycle;
+    public void addMandatoryEmailAddress(ContactRecord record) {
+        if (record != null) {
+            record.setType(ContactRecord.TYPE_OBLIGATORISK_EMAILADRESSE);
+            record.setCompanyRecord(this);
+            this.mandatoryEmailAddress.add(record);
+        }
+    }
 
-    public List<LifecycleRecord> getLifecycle() {
+    public Set<ContactRecord> getMandatoryEmailAddress() {
+        return this.mandatoryEmailAddress;
+    }
+
+
+
+    public static final String DB_FIELD_LIFECYCLE = "lifecycle";
+    public static final String IO_FIELD_LIFECYCLE = "livsforloeb";
+
+    @OneToMany(targetEntity = LifecycleRecord.class, mappedBy = LifecycleRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonProperty(value = IO_FIELD_LIFECYCLE)
+    private Set<LifecycleRecord> lifecycle = new HashSet<>();
+
+    public void setLifecycle(Set<LifecycleRecord> lifecycle) {
+        this.lifecycle = lifecycle;
+        for (LifecycleRecord lifecycleRecord : lifecycle) {
+            lifecycleRecord.setCompanyRecord(this);
+        }
+    }
+
+    public void addLifecycle(LifecycleRecord record) {
+        if (record != null) {
+            record.setCompanyRecord(this);
+            this.lifecycle.add(record);
+        }
+    }
+
+    public Set<LifecycleRecord> getLifecycle() {
         return this.lifecycle;
     }
 
-    @JsonProperty(value = "hovedbranche")
-    private List<CompanyIndustryRecord> primaryIndustry;
 
-    public void setPrimaryIndustry(List<CompanyIndustryRecord> primaryIndustry) {
+
+    public static final String DB_FIELD_PRIMARY_INDUSTRY = "primaryIndustry";
+    public static final String IO_FIELD_PRIMARY_INDUSTRY = "hovedbranche";
+
+    @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=0")
+    @JsonProperty(value = IO_FIELD_PRIMARY_INDUSTRY)
+    private Set<CompanyIndustryRecord> primaryIndustry = new HashSet<>();
+
+    public void setPrimaryIndustry(Set<CompanyIndustryRecord> primaryIndustry) {
         for (CompanyIndustryRecord record : primaryIndustry) {
             record.setIndex(0);
+            record.setCompanyRecord(this);
         }
         this.primaryIndustry = primaryIndustry;
     }
 
-    public List<CompanyIndustryRecord> getPrimaryIndustry() {
+    public void addPrimaryIndustry(CompanyIndustryRecord record) {
+        if (record != null) {
+            record.setIndex(0);
+            record.setCompanyRecord(this);
+            this.primaryIndustry.add(record);
+        }
+    }
+
+    public Set<CompanyIndustryRecord> getPrimaryIndustry() {
         return this.primaryIndustry;
     }
 
-    @JsonProperty(value = "bibranche1")
-    private List<CompanyIndustryRecord> secondaryIndustry1;
 
-    public void setSecondaryIndustry1(List<CompanyIndustryRecord> secondaryIndustryRecords) {
+
+    public static final String DB_FIELD_SECONDARY_INDUSTRY1 = "secondaryIndustry1";
+    public static final String IO_FIELD_SECONDARY_INDUSTRY1 = "bibranche1";
+
+    @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=1")
+    @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY1)
+    private Set<CompanyIndustryRecord> secondaryIndustry1 = new HashSet<>();
+
+    public void setSecondaryIndustry1(Set<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
             record.setIndex(1);
+            record.setCompanyRecord(this);
         }
         this.secondaryIndustry1 = secondaryIndustryRecords;
     }
 
-    @JsonProperty(value = "bibranche2")
-    private List<CompanyIndustryRecord> secondaryIndustry2;
+    public void addSecondaryIndustry1(CompanyIndustryRecord record) {
+        if (record != null) {
+            record.setIndex(1);
+            record.setCompanyRecord(this);
+            this.secondaryIndustry1.add(record);
+        }
+    }
 
-    public void setSecondaryIndustry2(List<CompanyIndustryRecord> secondaryIndustryRecords) {
+    public Set<CompanyIndustryRecord> getSecondaryIndustry1() {
+        return this.secondaryIndustry1;
+    }
+
+
+
+    public static final String DB_FIELD_SECONDARY_INDUSTRY2 = "secondaryIndustry2";
+    public static final String IO_FIELD_SECONDARY_INDUSTRY2 = "bibranche2";
+
+    @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=2")
+    @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY2)
+    private Set<CompanyIndustryRecord> secondaryIndustry2 = new HashSet<>();
+
+    public void setSecondaryIndustry2(Set<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
             record.setIndex(2);
+            record.setCompanyRecord(this);
         }
         this.secondaryIndustry2 = secondaryIndustryRecords;
     }
 
-    @JsonProperty(value = "bibranche3")
-    private List<CompanyIndustryRecord> secondaryIndustry3;
+    public void addSecondaryIndustry2(CompanyIndustryRecord record) {
+        if (record != null) {
+            record.setIndex(2);
+            record.setCompanyRecord(this);
+            this.secondaryIndustry2.add(record);
+        }
+    }
 
-    public void setSecondaryIndustry3(List<CompanyIndustryRecord> secondaryIndustryRecords) {
+    public Set<CompanyIndustryRecord> getSecondaryIndustry2() {
+        return this.secondaryIndustry2;
+    }
+
+
+
+    public static final String DB_FIELD_SECONDARY_INDUSTRY3 = "secondaryIndustry3";
+    public static final String IO_FIELD_SECONDARY_INDUSTRY3 = "bibranche3";
+
+    @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=3")
+    @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY3)
+    private Set<CompanyIndustryRecord> secondaryIndustry3 = new HashSet<>();
+
+    public void setSecondaryIndustry3(Set<CompanyIndustryRecord> secondaryIndustryRecords) {
         for (CompanyIndustryRecord record : secondaryIndustryRecords) {
             record.setIndex(3);
+            record.setCompanyRecord(this);
         }
         this.secondaryIndustry3 = secondaryIndustryRecords;
     }
 
-    @JsonProperty(value = "virksomhedsstatus")
-    private List<CompanyStatusRecord> companyStatus;
+    public void addSecondaryIndustry3(CompanyIndustryRecord record) {
+        if (record != null) {
+            record.setIndex(3);
+            record.setCompanyRecord(this);
+            this.secondaryIndustry3.add(record);
+        }
+    }
 
-    public List<CompanyStatusRecord> getCompanyStatus() {
+    public Set<CompanyIndustryRecord> getSecondaryIndustry3() {
+        return this.secondaryIndustry3;
+    }
+
+
+
+    public static final String DB_FIELD_STATUS = "status";
+    public static final String IO_FIELD_STATUS = "status";
+
+    @OneToMany(targetEntity = StatusRecord.class, mappedBy = CompanyStatusRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonProperty(value = IO_FIELD_STATUS)
+    private Set<StatusRecord> status = new HashSet<>();
+
+    public void setStatus(Set<StatusRecord> status) {
+        this.status = status;
+        for (StatusRecord statusRecord : status) {
+            statusRecord.setCompanyRecord(this);
+        }
+    }
+
+    public void addStatus(StatusRecord record) {
+        if (record != null) {
+            record.setCompanyRecord(this);
+            this.status.add(record);
+        }
+    }
+
+    public Set<StatusRecord> getStatus() {
+        return this.status;
+    }
+
+
+
+    public static final String DB_FIELD_COMPANYSTATUS = "companyStatus";
+    public static final String IO_FIELD_COMPANYSTATUS = "virksomhedsstatus";
+
+    @OneToMany(targetEntity = CompanyStatusRecord.class, mappedBy = CompanyStatusRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonProperty(value = IO_FIELD_COMPANYSTATUS)
+    private Set<CompanyStatusRecord> companyStatus = new HashSet<>();
+
+
+    public void setCompanyStatus(Set<CompanyStatusRecord> companyStatus) {
+        this.companyStatus = companyStatus;
+        for (CompanyStatusRecord statusRecord : companyStatus) {
+            statusRecord.setCompanyRecord(this);
+        }
+    }
+
+    public void addCompanyStatus(CompanyStatusRecord record) {
+        if (record != null) {
+            record.setCompanyRecord(this);
+            this.companyStatus.add(record);
+        }
+    }
+
+    public Set<CompanyStatusRecord> getCompanyStatus() {
         return this.companyStatus;
     }
 
-    @JsonProperty(value = "virksomhedsform")
-    private List<CompanyFormRecord> companyForm;
 
-    @JsonProperty(value = "aarsbeskaeftigelse")
-    private List<CompanyYearlyNumbersRecord> yearlyNumbers;
 
-    @JsonProperty(value = "kvartalsbeskaeftigelse")
-    private List<CompanyQuarterlyNumbersRecord> quarterlyNumbers;
+    public static final String DB_FIELD_FORM = "companyForm";
+    public static final String IO_FIELD_FORM = "virksomhedsform";
 
-    @JsonProperty(value = "maanedsbeskaeftigelse")
-    private List<CompanyMonthlyNumbersRecord> monthlyNumbers;
+    @OneToMany(targetEntity = FormRecord.class, mappedBy = FormRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonProperty(value = IO_FIELD_FORM)
+    private Set<FormRecord> companyForm = new HashSet<>();
 
-    @JsonProperty(value = "attributter")
-    private List<AttributeRecord> attributes;
+    public void setCompanyForm(Set<FormRecord> companyForm) {
+        this.companyForm = companyForm;
+        for (FormRecord formRecord : companyForm) {
+            formRecord.setCompanyRecord(this);
+        }
+    }
 
-    @JsonProperty(value = "penheder")
-    private List<CompanyUnitLinkRecord> productionUnits;
+    public void addCompanyForm(FormRecord record) {
+        if (record != null) {
+            record.setCompanyRecord(this);
+            this.companyForm.add(record);
+        }
+    }
 
-    @JsonProperty(value = "deltagerRelation")
-    private List<CompanyParticipantRelationRecord> participants;
+    public Set<FormRecord> getCompanyForm() {
+        return this.companyForm;
+    }
 
-    @JsonProperty(value = "virksomhedMetadata")
-    private MetadataRecord metadata;
 
-    public MetadataRecord getMetadata() {
+
+    public static final String DB_FIELD_YEARLY_NUMBERS = "yearlyNumbers";
+    public static final String IO_FIELD_YEARLY_NUMBERS = "aarsbeskaeftigelse";
+
+    @OneToMany(targetEntity = CompanyYearlyNumbersRecord.class, mappedBy = CompanyYearlyNumbersRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonProperty(value = IO_FIELD_YEARLY_NUMBERS)
+    private Set<CompanyYearlyNumbersRecord> yearlyNumbers = new HashSet<>();
+
+    public void setYearlyNumbers(Set<CompanyYearlyNumbersRecord> yearlyNumbers) {
+        this.yearlyNumbers = yearlyNumbers;
+        for (CompanyYearlyNumbersRecord yearlyNumbersRecord : yearlyNumbers) {
+            yearlyNumbersRecord.setCompanyRecord(this);
+        }
+    }
+
+    public void addYearlyNumbers(CompanyYearlyNumbersRecord record) {
+        if (record != null) {
+            record.setCompanyRecord(this);
+            this.yearlyNumbers.add(record);
+        }
+    }
+
+    public Set<CompanyYearlyNumbersRecord> getYearlyNumbers() {
+        return this.yearlyNumbers;
+    }
+
+
+
+    public static final String DB_FIELD_QUARTERLY_NUMBERS = "quarterlyNumbers";
+    public static final String IO_FIELD_QUARTERLY_NUMBERS = "kvartalsbeskaeftigelse";
+
+    @OneToMany(targetEntity = CompanyQuarterlyNumbersRecord.class, mappedBy = CompanyQuarterlyNumbersRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonProperty(value = IO_FIELD_QUARTERLY_NUMBERS)
+    private Set<CompanyQuarterlyNumbersRecord> quarterlyNumbers = new HashSet<>();
+
+    public void setQuarterlyNumbers(Set<CompanyQuarterlyNumbersRecord> quarterlyNumbers) {
+        this.quarterlyNumbers = quarterlyNumbers;
+        for (CompanyQuarterlyNumbersRecord quarterlyNumbersRecord : quarterlyNumbers) {
+            quarterlyNumbersRecord.setCompanyRecord(this);
+        }
+    }
+
+    public void addQuarterlyNumbers(CompanyQuarterlyNumbersRecord record) {
+        if (record != null) {
+            record.setCompanyRecord(this);
+            this.quarterlyNumbers.add(record);
+        }
+    }
+
+    public Set<CompanyQuarterlyNumbersRecord> getQuarterlyNumbers() {
+        return this.quarterlyNumbers;
+    }
+
+
+
+    public static final String DB_FIELD_MONTHLY_NUMBERS = "monthlyNumbers";
+    public static final String IO_FIELD_MONTHLY_NUMBERS = "maanedsbeskaeftigelse";
+
+    @OneToMany(targetEntity = CompanyMonthlyNumbersRecord.class, mappedBy = CompanyMonthlyNumbersRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonProperty(value = IO_FIELD_MONTHLY_NUMBERS)
+    private Set<CompanyMonthlyNumbersRecord> monthlyNumbers = new HashSet<>();
+
+    public void setMonthlyNumbers(Set<CompanyMonthlyNumbersRecord> monthlyNumbers) {
+        this.monthlyNumbers = monthlyNumbers;
+        for (CompanyMonthlyNumbersRecord monthlyNumbersRecord : monthlyNumbers) {
+            monthlyNumbersRecord.setCompanyRecord(this);
+        }
+    }
+
+    public void addMonthlyNumbers(CompanyMonthlyNumbersRecord record) {
+        if (record != null) {
+            record.setCompanyRecord(this);
+            this.monthlyNumbers.add(record);
+        }
+    }
+
+    public Set<CompanyMonthlyNumbersRecord> getMonthlyNumbers() {
+        return this.monthlyNumbers;
+    }
+
+
+
+    public static final String DB_FIELD_ATTRIBUTES = "attributes";
+    public static final String IO_FIELD_ATTRIBUTES = "attributter";
+
+    @OneToMany(targetEntity = AttributeRecord.class, mappedBy = AttributeRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonProperty(value = IO_FIELD_ATTRIBUTES)
+    private Set<AttributeRecord> attributes = new HashSet<>();
+
+    public void setAttributes(Set<AttributeRecord> attributes) {
+        this.attributes = attributes;
+        for (AttributeRecord attributeRecord : attributes) {
+            attributeRecord.setCompanyRecord(this);
+        }
+    }
+
+    public void addAttribute(AttributeRecord record) {
+        if (record != null) {
+            record.setCompanyRecord(this);
+            this.attributes.add(record);
+        }
+    }
+
+    public void mergeAttribute(AttributeRecord otherRecord) {
+        if (otherRecord != null) {
+            String otherType = otherRecord.getType();
+            String otherValueType = otherRecord.getValueType();
+            int otherSequenceNumber = otherRecord.getSequenceNumber();
+            for (AttributeRecord attributeRecord : this.attributes) {
+                if (Objects.equals(attributeRecord.getType(), otherType) && Objects.equals(attributeRecord.getValueType(), otherValueType) && attributeRecord.getSequenceNumber() == otherSequenceNumber) {
+                    attributeRecord.merge(otherRecord);
+                    return;
+                }
+            }
+            this.addAttribute(otherRecord);
+        }
+    }
+
+    public Set<AttributeRecord> getAttributes() {
+        return this.attributes;
+    }
+
+
+
+    public static final String DB_FIELD_P_UNITS = "productionUnits";
+    public static final String IO_FIELD_P_UNITS = "penheder";
+
+    @OneToMany(targetEntity = CompanyUnitLinkRecord.class, mappedBy = CompanyUnitLinkRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonProperty(value = IO_FIELD_P_UNITS)
+    private Set<CompanyUnitLinkRecord> productionUnits = new HashSet<>();
+
+    public void setProductionUnits(Set<CompanyUnitLinkRecord> productionUnits) {
+        this.productionUnits = productionUnits;
+        for (CompanyUnitLinkRecord unitLinkRecord : productionUnits) {
+            unitLinkRecord.setCompanyRecord(this);
+        }
+    }
+
+    public void addProductionUnit(CompanyUnitLinkRecord record) {
+        if (record != null) {
+            record.setCompanyRecord(this);
+            this.productionUnits.add(record);
+        }
+    }
+
+    public Set<CompanyUnitLinkRecord> getProductionUnits() {
+        return this.productionUnits;
+    }
+
+
+
+    public static final String DB_FIELD_PARTICIPANTS = "participants";
+    public static final String IO_FIELD_PARTICIPANTS = "deltagerRelation";
+
+    @OneToMany(targetEntity = CompanyParticipantRelationRecord.class, mappedBy = CompanyParticipantRelationRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonProperty(value = IO_FIELD_PARTICIPANTS)
+    private Set<CompanyParticipantRelationRecord> participants = new HashSet<>();
+
+    public void setParticipants(Set<CompanyParticipantRelationRecord> participants) {
+        this.participants = participants;
+        for (CompanyParticipantRelationRecord participantRelationRecord : participants) {
+            participantRelationRecord.setCompanyRecord(this);
+        }
+    }
+
+    public void addParticipant(CompanyParticipantRelationRecord record) {
+        if (record != null) {
+            record.setCompanyRecord(this);
+            this.participants.add(record);
+        }
+    }
+
+    public void mergeParticipant(CompanyParticipantRelationRecord otherRecord) {
+        Long otherParticipantId = otherRecord.getParticipantUnitNumber();
+        if (otherParticipantId != null) {
+            for (CompanyParticipantRelationRecord ourRecord : this.participants) {
+                Long ourParticipantId = ourRecord.getParticipantUnitNumber();
+                if (otherParticipantId.equals(ourParticipantId)) {
+                    ourRecord.merge(otherRecord);
+                    return;
+                }
+            }
+        }
+        this.addParticipant(otherRecord);
+    }
+
+    public Set<CompanyParticipantRelationRecord> getParticipants() {
+        return this.participants;
+    }
+
+
+
+    public static final String DB_FIELD_FUSIONS = "fusions";
+    public static final String IO_FIELD_FUSIONS = "fusioner";
+
+    @OneToMany(targetEntity = FusionSplitRecord.class, mappedBy = FusionSplitRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Where(clause = FusionSplitRecord.DB_FIELD_SPLIT+"=false")
+    @JsonProperty(value = IO_FIELD_FUSIONS)
+    private Set<FusionSplitRecord> fusions = new HashSet<>();
+
+    public Set<FusionSplitRecord> getFusions() {
+        return this.fusions;
+    }
+
+    public void setFusions(Set<FusionSplitRecord> fusions) {
+        this.fusions = fusions;
+        for (FusionSplitRecord fusionSplitRecord : fusions) {
+            fusionSplitRecord.setCompanyRecord(this);
+            fusionSplitRecord.setSplit(false);
+        }
+    }
+
+    public void addFusion(FusionSplitRecord record) {
+        if (record != null) {
+            record.setCompanyRecord(this);
+            record.setSplit(false);
+            this.fusions.add(record);
+        }
+    }
+
+    public void mergeFusion(FusionSplitRecord otherRecord) {
+        long otherOrganizationId = otherRecord.getOrganizationUnitNumber();
+        for (FusionSplitRecord ourRecord : this.fusions) {
+            Long ourOrganizationId = ourRecord.getOrganizationUnitNumber();
+            if (otherOrganizationId == ourOrganizationId) {
+                ourRecord.merge(otherRecord);
+                return;
+            }
+        }
+        this.addFusion(otherRecord);
+    }
+
+
+
+
+    public static final String DB_FIELD_SPLITS = "splits";
+    public static final String IO_FIELD_SPLITS = "spaltninger";
+
+    @OneToMany(targetEntity = FusionSplitRecord.class, mappedBy = FusionSplitRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Where(clause = FusionSplitRecord.DB_FIELD_SPLIT+"=true")
+    @JsonProperty(value = IO_FIELD_SPLITS)
+    private Set<FusionSplitRecord> splits = new HashSet<>();
+
+    public Set<FusionSplitRecord> getSplits() {
+        return this.splits;
+    }
+
+    public void setSplits(Set<FusionSplitRecord> splits) {
+        this.splits = splits;
+        for (FusionSplitRecord fusionSplitRecord : splits) {
+            fusionSplitRecord.setCompanyRecord(this);
+            fusionSplitRecord.setSplit(true);
+        }
+    }
+
+    public void addSplit(FusionSplitRecord record) {
+        if (record != null) {
+            record.setCompanyRecord(this);
+            record.setSplit(true);
+            this.fusions.add(record);
+        }
+    }
+
+    public void mergeSplit(FusionSplitRecord otherRecord) {
+        long otherOrganizationId = otherRecord.getOrganizationUnitNumber();
+        for (FusionSplitRecord ourRecord : this.splits) {
+            Long ourOrganizationId = ourRecord.getOrganizationUnitNumber();
+            if (otherOrganizationId == ourOrganizationId) {
+                ourRecord.merge(otherRecord);
+                return;
+            }
+        }
+        this.addSplit(otherRecord);
+    }
+
+
+
+    public static final String DB_FIELD_META = "metadata";
+    public static final String IO_FIELD_META = "virksomhedMetadata";
+
+    @OneToOne(targetEntity = CompanyMetadataRecord.class, mappedBy = CompanyMetadataRecord.DB_FIELD_COMPANY, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_META + DatabaseEntry.REF)
+    @JsonProperty(value = IO_FIELD_META)
+    private CompanyMetadataRecord metadata;
+
+    public void setMetadata(CompanyMetadataRecord metadata) {
+        this.metadata = metadata;
+        this.metadata.setCompanyRecord(this);
+    }
+
+    public CompanyMetadataRecord getMetadata() {
         return this.metadata;
     }
 
+
+
+
+
+
+
+
     @JsonIgnore
     @Override
-    public List<CvrBaseRecord> getAll() {
-        ArrayList<CvrBaseRecord> list = new ArrayList<>();
-        list.add(this);
+    public List<CvrRecord> getAll() {
+        ArrayList<CvrRecord> list = new ArrayList<>();
+        if (this.regNumber != null) {
+            list.addAll(this.regNumber);
+        }
         if (this.names != null) {
             list.addAll(this.names);
         }
@@ -279,14 +1100,13 @@ public class CompanyRecord extends CvrEntityRecord {
         if (this.participants != null) {
             list.addAll(this.participants);
         }
-
         if (this.metadata != null) {
             list.addAll(this.metadata.extractRecords(this, true));
         }
-
         return list;
     }
 
+    @Override
     public UUID generateUUID() {
         return CompanyEntity.generateUUID(this.cvrNumber);
     }
@@ -295,6 +1115,123 @@ public class CompanyRecord extends CvrEntityRecord {
     public void populateBaseData(CompanyBaseData baseData, Session session) {
         baseData.setAdvertProtection(this.advertProtection);
         baseData.setCvrNumber(this.cvrNumber);
+    }
+
+    @Override
+    public void save(Session session) {
+        for (AddressRecord address : this.locationAddress) {
+            address.wire(session);
+        }
+        for (AddressRecord address : this.postalAddress) {
+            address.wire(session);
+        }
+        for (FormRecord form : this.companyForm) {
+            form.wire(session);
+        }
+        for (CompanyParticipantRelationRecord participant : this.participants) {
+            participant.wire(session);
+        }
+        if (this.metadata != null) {
+            this.metadata.wire(session);
+        }
+        super.save(session);
+    }
+
+    @Override
+    public boolean merge(CvrEntityRecord other) {
+        if (other != null && !Objects.equals(this.getId(), other.getId()) && other instanceof CompanyRecord) {
+            CompanyRecord otherRecord = (CompanyRecord) other;
+            for (CompanyRegNumberRecord regNumberRecord : otherRecord.getRegNumber()) {
+                this.addRegNumber(regNumberRecord);
+            }
+            for (SecNameRecord nameRecord : otherRecord.getNames()) {
+                this.addName(nameRecord);
+            }
+            for (SecNameRecord nameRecord : otherRecord.getSecondaryNames()) {
+                this.addSecondaryName(nameRecord);
+            }
+            for (AddressRecord addressRecord : otherRecord.getLocationAddress()) {
+                this.addLocationAddress(addressRecord);
+            }
+            for (AddressRecord addressRecord : otherRecord.getPostalAddress()) {
+                this.addPostalAddress(addressRecord);
+            }
+            for (ContactRecord contactRecord : otherRecord.getPhoneNumber()) {
+                this.addPhoneNumber(contactRecord);
+            }
+            for (ContactRecord contactRecord : otherRecord.getSecondaryPhoneNumber()) {
+                this.addSecondaryPhoneNumber(contactRecord);
+            }
+            for (ContactRecord contactRecord : otherRecord.getFaxNumber()) {
+                this.addFaxNumber(contactRecord);
+            }
+            for (ContactRecord contactRecord : otherRecord.getSecondaryFaxNumber()) {
+                this.addSecondaryFaxNumber(contactRecord);
+            }
+            for (ContactRecord contactRecord : otherRecord.getEmailAddress()) {
+                this.addEmailAddress(contactRecord);
+            }
+            for (ContactRecord contactRecord : otherRecord.getHomepage()) {
+                this.addHomepage(contactRecord);
+            }
+            for (ContactRecord contactRecord : otherRecord.getMandatoryEmailAddress()) {
+                this.addMandatoryEmailAddress(contactRecord);
+            }
+            for (LifecycleRecord lifecycleRecord : otherRecord.getLifecycle()) {
+                this.addLifecycle(lifecycleRecord);
+            }
+            for (CompanyIndustryRecord companyIndustryRecord : otherRecord.getPrimaryIndustry()) {
+                this.addPrimaryIndustry(companyIndustryRecord);
+            }
+            for (CompanyIndustryRecord companyIndustryRecord : otherRecord.getSecondaryIndustry1()) {
+                this.addSecondaryIndustry1(companyIndustryRecord);
+            }
+            for (CompanyIndustryRecord companyIndustryRecord : otherRecord.getSecondaryIndustry2()) {
+                this.addSecondaryIndustry2(companyIndustryRecord);
+            }
+            for (CompanyIndustryRecord companyIndustryRecord : otherRecord.getSecondaryIndustry3()) {
+                this.addSecondaryIndustry3(companyIndustryRecord);
+            }
+            for (StatusRecord statusRecord : otherRecord.getStatus()) {
+                this.addStatus(statusRecord);
+            }
+            for (CompanyStatusRecord statusRecord : otherRecord.getCompanyStatus()) {
+                this.addCompanyStatus(statusRecord);
+            }
+            for (FormRecord formRecord : otherRecord.getCompanyForm()) {
+                this.addCompanyForm(formRecord);
+            }
+            for (CompanyYearlyNumbersRecord yearlyNumbersRecord : otherRecord.getYearlyNumbers()) {
+                this.addYearlyNumbers(yearlyNumbersRecord);
+            }
+            for (CompanyQuarterlyNumbersRecord quarterlyNumbersRecord : otherRecord.getQuarterlyNumbers()) {
+                this.addQuarterlyNumbers(quarterlyNumbersRecord);
+            }
+            for (CompanyMonthlyNumbersRecord monthlyNumbersRecord : otherRecord.getMonthlyNumbers()) {
+                this.addMonthlyNumbers(monthlyNumbersRecord);
+            }
+            for (AttributeRecord attributeRecord : otherRecord.getAttributes()) {
+                this.mergeAttribute(attributeRecord);
+            }
+            for (CompanyUnitLinkRecord companyUnitLinkRecord : otherRecord.getProductionUnits()) {
+                this.addProductionUnit(companyUnitLinkRecord);
+            }
+            for (CompanyParticipantRelationRecord participantRelationRecord : otherRecord.getParticipants()) {
+                //this.addParticipant(participantRelationRecord);
+                this.mergeParticipant(participantRelationRecord);
+            }
+            for (FusionSplitRecord fusionSplitRecord : otherRecord.getFusions()) {
+                //this.addFusion(fusionSplitRecord);
+                this.mergeFusion(fusionSplitRecord);
+            }
+            for (FusionSplitRecord fusionSplitRecord : otherRecord.getSplits()) {
+                //this.addSplit(fusionSplitRecord);
+                this.mergeSplit(fusionSplitRecord);
+            }
+            this.metadata.merge(otherRecord.getMetadata());
+            return true;
+        }
+        return false;
     }
 
 }
