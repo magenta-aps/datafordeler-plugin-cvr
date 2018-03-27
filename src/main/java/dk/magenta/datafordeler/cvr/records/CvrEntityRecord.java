@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.Identification;
+import dk.magenta.datafordeler.core.database.IdentifiedEntity;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
 import org.hibernate.Session;
@@ -9,13 +10,10 @@ import org.hibernate.Session;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @MappedSuperclass
-public abstract class CvrEntityRecord extends CvrBitemporalRecord {
+public abstract class CvrEntityRecord extends CvrBitemporalRecord implements IdentifiedEntity {
 
     public abstract List<CvrRecord> getAll();
 
@@ -124,4 +122,19 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord {
     @JsonProperty(value = IO_FIELD_EFFECT_AGENT)
     private String effectAgent;
 
+
+    @Override
+    public Identification getIdentification() {
+        return null;
+    }
+
+    @Override
+    public void forceLoad(Session session) {
+
+    }
+
+    @Override
+    public IdentifiedEntity getNewest(Collection<IdentifiedEntity> collection) {
+        return null;
+    }
 }
