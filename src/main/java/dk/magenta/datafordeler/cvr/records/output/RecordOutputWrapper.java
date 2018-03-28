@@ -175,11 +175,11 @@ public abstract class RecordOutputWrapper<E extends CvrEntityRecord> extends Out
         }
 
 
-        public ArrayNode getRegistrations() {
+        public ArrayNode getRegistrations(Bitemporality mustOverlap) {
+
             ObjectMapper objectMapper = RecordOutputWrapper.this.getObjectMapper();
             ArrayNode registrationsNode = objectMapper.createArrayNode();
             ArrayList<Bitemporality> bitemporalities = new ArrayList<>(this.bitemporalData.keySet());
-            //bitemporalities.sort(Comparator.nullsFirst(new BitemporalityRegistrationFromComparator()));
 
             ListHashMap<OffsetDateTime, Bitemporality> startTerminators = new ListHashMap<>();
             ListHashMap<OffsetDateTime, Bitemporality> endTerminators = new ListHashMap<>();
@@ -212,28 +212,36 @@ public abstract class RecordOutputWrapper<E extends CvrEntityRecord> extends Out
                 if (i < terminators.size() - 1) {
                     OffsetDateTime next = terminators.get(i + 1);
                     if (!presentBitemporalities.isEmpty()) {
-                        ObjectNode registrationNode = objectMapper.createObjectNode();
-                        registrationsNode.add(registrationNode);
-                        registrationNode.put("registreringFra", formatTime(t));
-                        registrationNode.put("registreringTil", formatTime(next));
-                        ArrayNode effectsNode = objectMapper.createArrayNode();
-                        registrationNode.set("virkninger", effectsNode);
-                        ArrayList<Bitemporality> sortedEffects = new ArrayList<>(presentBitemporalities);
-                        sortedEffects.sort(effectComparator);
-                        Bitemporality lastEffect = null;
-                        ObjectNode effectNode = null;
-                        for (Bitemporality bitemporality : sortedEffects) {
-                            if (lastEffect == null || effectNode == null || !lastEffect.equalEffect(bitemporality)) {
-                                effectNode = objectMapper.createObjectNode();
-                                effectsNode.add(effectNode);
+
+                        if (mustOverlap == null || mustOverlap.overlapsRegistration(t, next)) {
+                            ObjectNode registrationNode = objectMapper.createObjectNode();
+                            registrationsNode.add(registrationNode);
+                            registrationNode.put("registreringFra", formatTime(t));
+                            registrationNode.put("registreringTil", formatTime(next));
+                            ArrayNode effectsNode = objectMapper.createArrayNode();
+                            registrationNode.set("virkninger", effectsNode);
+                            ArrayList<Bitemporality> sortedEffects = new ArrayList<>(presentBitemporalities);
+                            sortedEffects.sort(effectComparator);
+                            Bitemporality lastEffect = null;
+                            ObjectNode effectNode = null;
+                            for (Bitemporality bitemporality : sortedEffects) {
+                                // Implemented in Hibernate filters instead. Each stored effect can be tested against the query filter
+                                // on the database level, but registrations are split here and thus cannot be tested in the database
+                                // Also, they lack the range end due to the way the incoming data is formatted
+                                //if (mustOverlap == null || mustOverlap.overlapsEffect(bitemporality.effectFrom, bitemporality.effectTo)) {
+                                    if (lastEffect == null || effectNode == null || !lastEffect.equalEffect(bitemporality)) {
+                                        effectNode = objectMapper.createObjectNode();
+                                        effectsNode.add(effectNode);
+                                    }
+                                    effectNode.put("virkningFra", formatTime(bitemporality.effectFrom, true));
+                                    effectNode.put("virkningTil", formatTime(bitemporality.effectTo, true));
+                                    HashMap<String, ArrayList<JsonNode>> records = this.bitemporalData.get(bitemporality);
+                                    for (String key : records.keySet()) {
+                                        this.setValue(objectMapper, effectNode, key, records.get(key));
+                                    }
+                                    lastEffect = bitemporality;
+                                //}
                             }
-                            effectNode.put("virkningFra", formatTime(bitemporality.effectFrom, true));
-                            effectNode.put("virkningTil", formatTime(bitemporality.effectTo, true));
-                            HashMap<String, ArrayList<JsonNode>> records = this.bitemporalData.get(bitemporality);
-                            for (String key : records.keySet()) {
-                                this.setValue(objectMapper, effectNode, key, records.get(key));
-                            }
-                            lastEffect = bitemporality;
                         }
                     }
                 }
@@ -263,7 +271,7 @@ public abstract class RecordOutputWrapper<E extends CvrEntityRecord> extends Out
         }
     }
 
-    protected final ObjectNode getNode(E record) {
+    protected final ObjectNode getNode(E record, Bitemporality mustContain) {
         ObjectMapper objectMapper = this.getObjectMapper();
         ObjectNode root = objectMapper.createObjectNode();
         try {
@@ -273,14 +281,14 @@ public abstract class RecordOutputWrapper<E extends CvrEntityRecord> extends Out
             this.fillContainer(recordOutput, record);
 
             root.setAll(recordOutput.getBase());
-            root.set("registreringer", recordOutput.getRegistrations());
+            root.set("registreringer", recordOutput.getRegistrations(mustContain));
 
             OutputContainer metadataRecordOutput = new OutputContainer();
             this.fillMetadataContainer(metadataRecordOutput, record);
             ObjectNode metaNode = objectMapper.createObjectNode();
             root.set("metadata", metaNode);
             metaNode.setAll(metadataRecordOutput.getBase());
-            metaNode.set("registreringer", metadataRecordOutput.getRegistrations());
+            metaNode.set("registreringer", metadataRecordOutput.getRegistrations(mustContain));
 
         } catch (Exception e) {
             e.printStackTrace();

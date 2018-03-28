@@ -2,6 +2,8 @@ package dk.magenta.datafordeler.cvr.records.output;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import dk.magenta.datafordeler.core.fapi.Query;
+import dk.magenta.datafordeler.cvr.data.Bitemporality;
 import dk.magenta.datafordeler.cvr.records.ParticipantMetadataRecord;
 import dk.magenta.datafordeler.cvr.records.ParticipantRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +50,9 @@ public class ParticipantRecordOutputWrapper extends RecordOutputWrapper<Particip
     }
 
     @Override
-    public Object wrapResult(ParticipantRecord record) {
-        return this.asRVD(record);
+    public Object wrapResult(ParticipantRecord record, Query query) {
+        Bitemporality mustContain = new Bitemporality(query.getRegistrationFrom(), query.getRegistrationTo(), query.getEffectFrom(), query.getEffectTo());
+        return this.asRVD(record, mustContain);
         //return this.asRecord(unitRecord);
     }
 
@@ -57,8 +60,8 @@ public class ParticipantRecordOutputWrapper extends RecordOutputWrapper<Particip
         return objectMapper.valueToTree(record);
     }
 
-    protected ObjectNode asRVD(ParticipantRecord record) {
-        ObjectNode root = this.getNode(record);
+    protected ObjectNode asRVD(ParticipantRecord record, Bitemporality mustContain) {
+        ObjectNode root = this.getNode(record, mustContain);
 
         //root.put(CompanyEntity.IO_FIELD_UUID, ParticipantRecord.getIdentification().getUuid().toString());
         root.putPOJO("id", record.getIdentification());

@@ -329,7 +329,7 @@ public class RecordTest {
         testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
         this.applyAccess(testUserDetails);
 
-        resp = restTemplate.exchange("/cvr/company/1/rest/search?cvrnummer=25052943", HttpMethod.GET, httpEntity, String.class);
+        resp = restTemplate.exchange("/cvr/company/1/rest/search?cvrnummer=25052943&virkningFra=2000-01-01&virkningTil=2000-01-01", HttpMethod.GET, httpEntity, String.class);
         String body = resp.getBody();
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectMapper.readTree(body)));
     }
@@ -502,7 +502,7 @@ public class RecordTest {
         testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
         this.applyAccess(testUserDetails);
 
-        resp = restTemplate.exchange("/cvr/unit/1/rest/search?pnummer=1020895337", HttpMethod.GET, httpEntity, String.class);
+        resp = restTemplate.exchange("/cvr/unit/1/rest/search?pnummer=1020895337&virkningFra=2016-01-01&virkningTil=2016-01-01", HttpMethod.GET, httpEntity, String.class);
         String body = resp.getBody();
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectMapper.readTree(body)));
     }
@@ -676,7 +676,7 @@ public class RecordTest {
         testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
         this.applyAccess(testUserDetails);
 
-        resp = restTemplate.exchange("/cvr/participant/1/rest/search?deltagernummer=4000004988", HttpMethod.GET, httpEntity, String.class);
+        resp = restTemplate.exchange("/cvr/participant/1/rest/search?deltagernummer=4000004988&virkningFra=2001-01-01&virkningTil=2001-01-01", HttpMethod.GET, httpEntity, String.class);
         String body = resp.getBody();
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectMapper.readTree(body)));
     }

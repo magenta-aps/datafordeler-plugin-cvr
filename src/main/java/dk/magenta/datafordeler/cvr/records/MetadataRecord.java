@@ -3,7 +3,11 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.Effect;
+import dk.magenta.datafordeler.core.database.Registration;
 import org.hibernate.Session;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.Filters;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -41,6 +45,11 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     public static final String IO_FIELD_NEWEST_STATUS = "nyesteStatus";
 
     @OneToOne(targetEntity = StatusRecord.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Filters({
+            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition=CvrBitemporalRecord.FILTER_LAST_UPDATED),
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+    })
     @JsonProperty(value = IO_FIELD_NEWEST_STATUS)
     private StatusRecord newestStatus;
 
@@ -108,6 +117,11 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     public static final String IO_FIELD_NEWEST_YEARLY_NUMBERS = "nyesteAarsbeskaeftigelse";
 
     @OneToOne(cascade = CascadeType.ALL, targetEntity = CompanyYearlyNumbersRecord.class)
+    @Filters({
+            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition=CvrBitemporalRecord.FILTER_LAST_UPDATED),
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+    })
     @JsonProperty(value = IO_FIELD_NEWEST_YEARLY_NUMBERS)
     private CompanyYearlyNumbersRecord newestYearlyNumbers;
 
@@ -121,6 +135,11 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     public static final String IO_FIELD_NEWEST_QUARTERLY_NUMBERS = "nyesteKvartalsbeskaeftigelse";
 
     @OneToOne(cascade = CascadeType.ALL, targetEntity = CompanyQuarterlyNumbersRecord.class)
+    @Filters({
+            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition=CvrBitemporalRecord.FILTER_LAST_UPDATED),
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+    })
     @JsonProperty(value = IO_FIELD_NEWEST_QUARTERLY_NUMBERS)
     private CompanyQuarterlyNumbersRecord newestQuarterlyNumbers;
 
@@ -134,6 +153,11 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     public static final String IO_FIELD_NEWEST_MONTHLY_NUMBERS = "nyesteMaanedsbeskaeftigelse";
 
     @OneToOne(cascade = CascadeType.ALL, targetEntity = CompanyMonthlyNumbersRecord.class)
+    @Filters({
+            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition=CvrBitemporalRecord.FILTER_LAST_UPDATED),
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+    })
     @JsonProperty(value = IO_FIELD_NEWEST_MONTHLY_NUMBERS)
     private CompanyMonthlyNumbersRecord newestMonthlyNumbers;
 

@@ -2,6 +2,8 @@ package dk.magenta.datafordeler.cvr.records.output;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import dk.magenta.datafordeler.core.fapi.Query;
+import dk.magenta.datafordeler.cvr.data.Bitemporality;
 import dk.magenta.datafordeler.cvr.records.CompanyUnitMetadataRecord;
 import dk.magenta.datafordeler.cvr.records.CompanyUnitRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,8 +52,9 @@ public class UnitRecordOutputWrapper extends RecordOutputWrapper<CompanyUnitReco
     }
 
     @Override
-    public Object wrapResult(CompanyUnitRecord record) {
-        return this.asRVD(record);
+    public Object wrapResult(CompanyUnitRecord record, Query query) {
+        Bitemporality mustContain = new Bitemporality(query.getRegistrationFrom(), query.getRegistrationTo(), query.getEffectFrom(), query.getEffectTo());
+        return this.asRVD(record, mustContain);
         //return this.asRecord(unitRecord);
     }
 
@@ -59,8 +62,8 @@ public class UnitRecordOutputWrapper extends RecordOutputWrapper<CompanyUnitReco
         return objectMapper.valueToTree(record);
     }
 
-    protected ObjectNode asRVD(CompanyUnitRecord record) {
-        ObjectNode root = this.getNode(record);
+    protected ObjectNode asRVD(CompanyUnitRecord record, Bitemporality mustContain) {
+        ObjectNode root = this.getNode(record, mustContain);
 
         //root.put(CompanyEntity.IO_FIELD_UUID, CompanyUnitRecord.getIdentification().getUuid().toString());
         root.putPOJO("id", record.getIdentification());
@@ -79,7 +82,7 @@ public class UnitRecordOutputWrapper extends RecordOutputWrapper<CompanyUnitReco
         container.addNontemporal(CompanyUnitRecord.IO_FIELD_INDUSTRY_RESPONSIBILITY_CODE, record.getIndustryResponsibilityCode());
 
         container.addBitemporal("navn", record.getNames(), true);
-        container.addBitemporal(CompanyUnitRecord.IO_FIELD_LOCATION_ADDRESS, record.getLocationAddress());
+        container.addBitemporal(CompanyUnitRecord.IO_FIELD_LOCATION_ADDRESS, record.getLocationAddress(), this::createAddressNode);
         container.addBitemporal(CompanyUnitRecord.IO_FIELD_POSTAL_ADDRESS, record.getPostalAddress(), this::createAddressNode);
         container.addBitemporal(CompanyUnitRecord.IO_FIELD_PHONE, record.getPhoneNumber(), true);
         container.addBitemporal(CompanyUnitRecord.IO_FIELD_FAX, record.getFaxNumber(), true);
