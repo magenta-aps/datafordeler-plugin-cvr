@@ -85,6 +85,30 @@ public class Bitemporality {
         return Equality.equal(this.registrationFrom, registrationTime) && effect.compareRange(this);
     }
 
+    public boolean overlapsRegistration(OffsetDateTime rangeStart, OffsetDateTime rangeEnd) {
+        return (this.registrationFrom == null || rangeEnd == null || !rangeEnd.isBefore(this.registrationFrom)) && (this.registrationTo == null || rangeStart == null || !rangeStart.isAfter(this.registrationTo));
+    }
+
+    public boolean overlapsEffect(OffsetDateTime rangeStart, OffsetDateTime rangeEnd) {
+        return (this.effectFrom == null || rangeEnd == null || !rangeEnd.isBefore(this.effectFrom)) && (this.effectTo == null || rangeStart == null || !rangeStart.isAfter(this.effectTo));
+    }
+
+    public boolean overlaps(Bitemporality other) {
+        return this.overlapsRegistration(other.registrationFrom, other.registrationTo) && this.overlapsEffect(other.effectFrom, other.effectTo);
+    }
+
+    public boolean containsRegistration(OffsetDateTime rangeStart, OffsetDateTime rangeEnd) {
+        return (this.registrationFrom == null || (rangeStart != null && !rangeStart.isBefore(this.registrationFrom))) && (this.registrationTo == null || (rangeEnd != null && !rangeEnd.isAfter(this.registrationTo)));
+    }
+
+    public boolean containsEffect(OffsetDateTime rangeStart, OffsetDateTime rangeEnd) {
+        return (this.effectFrom == null || (rangeStart != null && !rangeStart.isBefore(this.effectFrom))) && (this.effectTo == null || (rangeEnd != null && !rangeEnd.isAfter(this.effectTo)));
+    }
+
+    public boolean contains(Bitemporality other) {
+        return this.containsRegistration(other.registrationFrom, other.registrationTo) && this.containsEffect(other.effectFrom, other.effectTo);
+    }
+
     public String toString() {
         return "Bitemporality " + this.registrationFrom + "|" + this.registrationTo + "|" + this.effectFrom + "|" + this.effectTo;
     }
