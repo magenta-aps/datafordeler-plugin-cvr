@@ -75,6 +75,7 @@ public class ParticipantRecordOutputWrapper extends RecordOutputWrapper<Particip
         container.addNontemporal(ParticipantRecord.IO_FIELD_POSITION, record.getPosition());
         container.addNontemporal(ParticipantRecord.IO_FIELD_BUSINESS_KEY, record.getBusinessKey());
         container.addNontemporal(ParticipantRecord.IO_FIELD_STATUS_CODE, record.getStatusCode());
+        container.addNontemporal(ParticipantRecord.IO_FIELD_CONFIDENTIAL_ENRICHED, record.getConfidentialEnriched());
 
         container.addBitemporal("navn", record.getNames(), true);
         container.addBitemporal(ParticipantRecord.IO_FIELD_LOCATION_ADDRESS, record.getLocationAddress(), this::createAddressNode);

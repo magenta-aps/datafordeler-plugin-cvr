@@ -21,7 +21,7 @@ import java.util.*;
  * with this class at the base.
  */
 @Entity
-@Table(name= ParticipantRecord.TABLE_NAME)
+@Table(name=ParticipantRecord.TABLE_NAME)
 public class ParticipantRecord extends CvrEntityRecord {
 
     public static final String TABLE_NAME = "cvr_record_participant";
@@ -65,6 +65,19 @@ public class ParticipantRecord extends CvrEntityRecord {
 
     public String getPosition() {
         return this.position;
+    }
+
+
+
+    public static final String DB_FIELD_CONFIDENTIAL_ENRICHED = "confidentialEnriched";
+    public static final String IO_FIELD_CONFIDENTIAL_ENRICHED = "fortroligBeriget";
+
+    @Column(name = DB_FIELD_CONFIDENTIAL_ENRICHED)
+    @JsonProperty(value = IO_FIELD_CONFIDENTIAL_ENRICHED)
+    private Boolean confidentialEnriched;
+
+    public Boolean getConfidentialEnriched() {
+        return this.confidentialEnriched;
     }
 
 
