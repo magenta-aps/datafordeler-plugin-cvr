@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.exception.ParseException;
@@ -22,6 +23,7 @@ import java.util.Objects;
         @Index(name = CompanyYearlyNumbersRecord.TABLE_NAME + "__unit", columnList = CompanyYearlyNumbersRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
         @Index(name = CompanyYearlyNumbersRecord.TABLE_NAME + "__year", columnList = CompanyYearlyNumbersRecord.DB_FIELD_YEAR),
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyYearlyNumbersRecord extends CompanyNumbersRecord {
 
     public static final String TABLE_NAME = "cvr_record_yearly_numbers";

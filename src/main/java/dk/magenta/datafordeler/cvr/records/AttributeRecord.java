@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
@@ -29,6 +30,7 @@ import java.util.Set;
         @Index(name = AttributeRecord.TABLE_NAME + "__fusion", columnList = AttributeRecord.DB_FIELD_FUSION + DatabaseEntry.REF),
         @Index(name = AttributeRecord.TABLE_NAME + "__office", columnList = AttributeRecord.DB_FIELD_OFFICE + DatabaseEntry.REF)
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AttributeRecord extends CvrNontemporalDataRecord {
 
     public static final String TABLE_NAME = "cvr_record_attribute";

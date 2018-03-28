@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import org.hibernate.Session;
@@ -18,6 +19,7 @@ import java.util.Set;
         @Index(name = OfficeRelationRecord.TABLE_NAME + "__relation", columnList = OfficeRelationRecord.DB_FIELD_COMPANY_RELATION + DatabaseEntry.REF),
         @Index(name = OfficeRelationRecord.TABLE_NAME + "__unit", columnList = OfficeRelationRecord.DB_FIELD_UNIT + DatabaseEntry.REF),
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class OfficeRelationRecord extends CvrNontemporalRecord {
 
     public static final String TABLE_NAME = CompanyParticipantRelationRecord.TABLE_NAME + "_office";

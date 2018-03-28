@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.database.IdentifiedEntity;
@@ -13,6 +14,7 @@ import java.time.OffsetDateTime;
 import java.util.*;
 
 @MappedSuperclass
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class CvrEntityRecord extends CvrBitemporalRecord implements IdentifiedEntity {
 
     public abstract List<CvrRecord> getAll();

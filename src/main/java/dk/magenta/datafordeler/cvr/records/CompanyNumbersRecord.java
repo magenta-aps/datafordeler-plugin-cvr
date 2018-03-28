@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Column;
@@ -13,6 +14,7 @@ import java.util.regex.Pattern;
  * Abstract record for Company and CompanyUnit employee numbers.
  */
 @MappedSuperclass
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class CompanyNumbersRecord extends CvrBitemporalDataRecord {
 
     private static class Range {

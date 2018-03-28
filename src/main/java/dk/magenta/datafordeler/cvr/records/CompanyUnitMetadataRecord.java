@@ -1,9 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.*;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import org.hibernate.Session;
 import org.hibernate.annotations.Where;
@@ -17,6 +14,7 @@ import java.util.Set;
 @Table(name = CompanyUnitMetadataRecord.TABLE_NAME, indexes = {
         @Index(name = CompanyUnitMetadataRecord.TABLE_NAME + "__unit", columnList = MetadataRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyUnitMetadataRecord extends MetadataRecord {
 
     public static final String TABLE_NAME = "cvr_record_unit_metadata";
