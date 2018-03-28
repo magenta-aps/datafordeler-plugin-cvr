@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Identification;
@@ -23,6 +24,7 @@ import java.util.UUID;
 @Table(name = CompanyUnitLinkRecord.TABLE_NAME, indexes = {
         @Index(name = CompanyUnitLinkRecord.TABLE_NAME + "__company", columnList = CompanyLinkRecord.DB_FIELD_COMPANY + DatabaseEntry.REF)
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyUnitLinkRecord extends CvrBitemporalDataRecord {
 
     public static final String TABLE_NAME = "cvr_record_company_unit_relation";

@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
@@ -32,6 +33,7 @@ import java.util.UUID;
         @Index(name = AddressRecord.TABLE_NAME + "__municipality", columnList = AddressRecord.DB_FIELD_MUNICIPALITY + DatabaseEntry.REF),
         @Index(name = AddressRecord.TABLE_NAME + "__postcode", columnList = AddressRecord.DB_FIELD_POSTCODE_REF + DatabaseEntry.REF),
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AddressRecord extends CvrBitemporalDataMetaRecord {
 
     public static final String TABLE_NAME = "cvr_record_address";

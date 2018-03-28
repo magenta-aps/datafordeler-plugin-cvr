@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
@@ -21,6 +22,7 @@ import java.time.ZoneOffset;
         @Index(name = LifecycleRecord.TABLE_NAME + "__participant", columnList = LifecycleRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
         @Index(name = LifecycleRecord.TABLE_NAME + "__participant_company_relation", columnList = LifecycleRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LifecycleRecord extends CvrBitemporalDataRecord {
 
     public static final String TABLE_NAME = "cvr_record_lifecycle";

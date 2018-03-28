@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.Objects;
         @Index(name = MetadataContactRecord.TABLE_NAME + "__unitmetadata", columnList = MetadataContactRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
         @Index(name = MetadataContactRecord.TABLE_NAME + "__participantmetadata", columnList = MetadataContactRecord.DB_FIELD_PARTICIPANT_METADATA + DatabaseEntry.REF)
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MetadataContactRecord extends CvrNontemporalRecord {
 
     public static final String TABLE_NAME = "cvr_record_metadata_contact";
