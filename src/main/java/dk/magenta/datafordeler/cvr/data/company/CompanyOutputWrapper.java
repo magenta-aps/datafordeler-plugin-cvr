@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dk.magenta.datafordeler.core.database.Effect;
+import dk.magenta.datafordeler.core.fapi.Query;
 import dk.magenta.datafordeler.cvr.data.CvrOutputWrapper;
 import dk.magenta.datafordeler.cvr.data.shared.LifecycleData;
 import dk.magenta.datafordeler.cvr.data.shared.ParticipantRelationData;
@@ -12,7 +13,6 @@ import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
 
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 /**
@@ -49,7 +49,7 @@ public class CompanyOutputWrapper extends CvrOutputWrapper<CompanyEntity> {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public Object wrapResult(CompanyEntity input) {
+    public Object wrapResult(CompanyEntity input, Query query) {
 
         // Root
         ObjectNode root = objectMapper.createObjectNode();
