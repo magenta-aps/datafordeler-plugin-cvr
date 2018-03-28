@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dk.magenta.datafordeler.core.database.Effect;
+import dk.magenta.datafordeler.core.fapi.Query;
 import dk.magenta.datafordeler.cvr.data.CvrOutputWrapper;
 import dk.magenta.datafordeler.cvr.data.shared.AttributeData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
@@ -17,7 +18,7 @@ public class ParticipantOutputWrapper extends CvrOutputWrapper<ParticipantEntity
     private ObjectMapper objectMapper;
 
     @Override
-    public Object wrapResult(ParticipantEntity input) {
+    public Object wrapResult(ParticipantEntity input, Query query) {
 
         objectMapper = new ObjectMapper();
 
