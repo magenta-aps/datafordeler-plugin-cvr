@@ -719,7 +719,7 @@ public class QueryTest {
             query.setNavn("Morten Kjærsgaard");
 
             List<ParticipantEntity> entities = QueryManager.getAllEntities(session, query, ParticipantEntity.class);
-            List<Object> wrapped = participantOutputWrapper.wrapResults(entities);
+            List<Object> wrapped = participantOutputWrapper.wrapResults(entities, query);
 
             Assert.assertEquals(1, wrapped.size());
             Assert.assertTrue(wrapped.get(0) instanceof ObjectNode);
@@ -730,7 +730,7 @@ public class QueryTest {
 
             loadParticipant(importMetadata);
             entities = QueryManager.getAllEntities(session, query, ParticipantEntity.class);
-            wrapped = participantOutputWrapper.wrapResults(entities);
+            wrapped = participantOutputWrapper.wrapResults(entities, query);
             String secondImport = objectMapper.writeValueAsString(wrapped);
 
             assertJsonEquality(objectMapper.readTree(firstImport), objectMapper.readTree(secondImport), true, true);
