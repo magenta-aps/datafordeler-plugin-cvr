@@ -297,7 +297,7 @@ public class QueryTest {
             UUID expectedUUID = UUID.fromString("2334456b-d2ca-372d-aa60-4a2ba7fed7cd");
 
             CompanyEntity companyEntity = QueryManager.getEntity(session, expectedUUID, CompanyEntity.class);
-            Object wrappedEntity = companyOutputWrapper.wrapResult(companyEntity);
+            Object wrappedEntity = companyOutputWrapper.wrapResult(companyEntity, new CompanyQuery());
             Assert.assertTrue(wrappedEntity instanceof ObjectNode);
             ObjectNode objectNode = (ObjectNode) wrappedEntity;
             Assert.assertEquals(91, objectNode.get("registreringer").size());
@@ -341,7 +341,7 @@ public class QueryTest {
             Assert.assertEquals(1, entities.size());
             Assert.assertEquals(expectedUUID, entities.get(0).getUUID());
 
-            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(companyOutputWrapper.wrapResult(entities.get(0))));
+            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(companyOutputWrapper.wrapResult(entities.get(0), new CompanyQuery())));
 
         } finally {
             QueryManager.clearCaches();
@@ -560,7 +560,7 @@ public class QueryTest {
             UUID expectedUUID = UUID.fromString("92ce7d3e-b261-31d6-a401-df408167dd1b");
 
             CompanyUnitEntity companyUnitEntity = QueryManager.getEntity(session, expectedUUID, CompanyUnitEntity.class);
-            Object wrapped = companyUnitOutputWrapper.wrapResult(companyUnitEntity);
+            Object wrapped = companyUnitOutputWrapper.wrapResult(companyUnitEntity, new CompanyQuery());
             Assert.assertTrue(wrapped instanceof ObjectNode);
             ObjectNode objectNode = (ObjectNode) wrapped;
             Assert.assertEquals(1, objectNode.get("registreringer").size());
