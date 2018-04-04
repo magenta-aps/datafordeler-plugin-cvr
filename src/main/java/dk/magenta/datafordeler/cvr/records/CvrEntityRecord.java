@@ -152,7 +152,7 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord implements Ide
 
     @Override
     public Identification getIdentification() {
-        return null;
+        return this.identification;
     }
 
     @Override
