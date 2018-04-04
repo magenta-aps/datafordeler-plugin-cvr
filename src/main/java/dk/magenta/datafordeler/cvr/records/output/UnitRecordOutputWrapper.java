@@ -65,7 +65,7 @@ public class UnitRecordOutputWrapper extends RecordOutputWrapper<CompanyUnitReco
     protected ObjectNode asRVD(CompanyUnitRecord record, Bitemporality mustContain) {
         ObjectNode root = this.getNode(record, mustContain);
 
-        //root.put(CompanyEntity.IO_FIELD_UUID, CompanyUnitRecord.getIdentification().getUuid().toString());
+        root.put("UUID", record.getIdentification().getUuid().toString());
         root.putPOJO("id", record.getIdentification());
 
         return root;
