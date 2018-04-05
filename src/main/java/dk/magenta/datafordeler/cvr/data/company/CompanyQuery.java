@@ -269,6 +269,7 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
     public void addKommuneKode(String kommunekode) {
         this.kommunekode.add(kommunekode);
         if (kommunekode != null) {
+            this.kommunekode.add(kommunekode);
             this.increaseDataParamCount();
         }
     }
@@ -316,7 +317,6 @@ public class CompanyQuery extends CvrQuery<CompanyEntity> {
 
     @Override
     public void setFromParameters(ParameterMap parameters) {
-        System.out.println("setFromParameters");
         this.setCvrNumre(parameters.get(CVRNUMMER));
         this.setReklamebeskyttelse(parameters.getFirst(REKLAMEBESKYTTELSE));
         this.setVirksomhedsnavn(parameters.getI(NAVN));

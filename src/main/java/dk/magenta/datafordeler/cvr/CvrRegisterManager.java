@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.magenta.datafordeler.core.configuration.ConfigurationManager;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.*;
 import dk.magenta.datafordeler.core.io.ImportInputStream;
@@ -117,6 +118,9 @@ public class CvrRegisterManager extends RegisterManager {
         return null;
     }
 
+    public ConfigurationManager<CvrConfiguration> getConfigurationManager() {
+        return this.configurationManager;
+    }
 
     /**
      * Pull data from the data source denoted by eventInterface, using the
@@ -156,9 +160,12 @@ public class CvrRegisterManager extends RegisterManager {
                 File cacheFile = new File("local/cvr/" + entityManager.getSchema() + "_" + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
                 try {
                     if (!cacheFile.exists()) {
-
+                        log.info("Cache file "+cacheFile.getAbsolutePath()+" doesn't exist. Creating new and filling from source");
                         if (lastUpdateTime == null) {
                             lastUpdateTime = OffsetDateTime.parse("0000-01-01T00:00:00Z");
+                            log.info("Last update time not found");
+                        } else {
+                            log.info("Last update time: "+lastUpdateTime.format(DateTimeFormatter.ISO_LOCAL_DATE));
                         }
                         requestBody = String.format(
                                 configuration.getQuery(schema),
