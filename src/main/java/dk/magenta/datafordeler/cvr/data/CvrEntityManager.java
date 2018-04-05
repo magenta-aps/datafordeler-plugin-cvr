@@ -365,7 +365,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         timer.measure(TASK_PARSE);
 
         
-        
+        toplevelRecord.setDafoUpdateOnTree(importMetadata.getImportTime());
         toplevelRecord.save(session);
 
         if (!SAVE_ONLY_RECORDS) {

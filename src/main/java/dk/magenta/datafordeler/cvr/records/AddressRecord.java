@@ -14,8 +14,7 @@ import org.hibernate.Session;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Record for Company, CompanyUnit and Participant address data.
@@ -615,5 +614,12 @@ public class AddressRecord extends CvrBitemporalDataMetaRecord {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), type, addressId, roadCode, cityName, supplementalCityName, roadName, houseNumberFrom, houseNumberTo, letterFrom, letterTo, floor, door, municipality, post, postnummer, postdistrikt, postBox, coName, countryCode, addressText, lastValidated, freeText);
+    }
+
+    @Override
+    public List<CvrRecord> subs() {
+        ArrayList<CvrRecord> subs = new ArrayList<>(super.subs());
+        subs.add(this.municipality);
+        return subs;
     }
 }

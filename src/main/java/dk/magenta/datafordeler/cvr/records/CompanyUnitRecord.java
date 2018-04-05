@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Effect;
-import dk.magenta.datafordeler.core.database.Registration;
 import dk.magenta.datafordeler.core.exception.ParseException;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
@@ -820,6 +819,31 @@ public class CompanyUnitRecord extends CvrEntityRecord {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<CvrRecord> subs() {
+        ArrayList<CvrRecord> subs = new ArrayList<>(super.subs());
+        subs.addAll(this.names);
+        subs.addAll(this.locationAddress);
+        subs.addAll(this.postalAddress);
+        subs.addAll(this.phoneNumber);
+        subs.addAll(this.faxNumber);
+        subs.addAll(this.emailAddress);
+        subs.addAll(this.lifecycle);
+        subs.addAll(this.primaryIndustry);
+        subs.addAll(this.secondaryIndustry1);
+        subs.addAll(this.secondaryIndustry2);
+        subs.addAll(this.secondaryIndustry3);
+        subs.addAll(this.yearlyNumbers);
+        subs.addAll(this.quarterlyNumbers);
+        subs.addAll(this.attributes);
+        subs.addAll(this.participantRelations);
+        subs.addAll(this.companyLinkRecords);
+        if (this.metadata != null) {
+            subs.add(this.metadata);
+        }
+        return subs;
     }
 
 }

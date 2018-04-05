@@ -14,10 +14,7 @@ import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.Filters;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Record for Company, CompanyUnit or Participant attributes.
@@ -231,5 +228,12 @@ public class AttributeRecord extends CvrNontemporalDataRecord {
                 this.addValue(attributeValueRecord);
             }
         }
+    }
+
+    @Override
+    public List<CvrRecord> subs() {
+        ArrayList<CvrRecord> subs = new ArrayList<>(super.subs());
+        subs.addAll(this.values);
+        return subs;
     }
 }

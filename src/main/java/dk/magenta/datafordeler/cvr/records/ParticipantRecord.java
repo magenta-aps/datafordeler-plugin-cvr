@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Effect;
-import dk.magenta.datafordeler.core.database.Registration;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantType;
@@ -561,5 +560,23 @@ public class ParticipantRecord extends CvrEntityRecord {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<CvrRecord> subs() {
+        ArrayList<CvrRecord> subs = new ArrayList<>(super.subs());
+        subs.addAll(this.names);
+        subs.addAll(this.locationAddress);
+        subs.addAll(this.postalAddress);
+        subs.addAll(this.businessAddress);
+        subs.addAll(this.phoneNumber);
+        subs.addAll(this.faxNumber);
+        subs.addAll(this.emailAddress);
+        subs.addAll(this.attributes);
+        subs.addAll(this.companyRelation);
+        if (this.metadata != null) {
+            subs.add(this.metadata);
+        }
+        return subs;
     }
 }

@@ -180,7 +180,6 @@ public class RecordTest {
             query.clearVirksomhedsform();
             query.setVirksomhedsnavn("MAGENTA ApS");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
-            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(QueryManager.getAllEntities(session, query, CompanyRecord.class)));
             query.clearKommuneKoder();
 
 
