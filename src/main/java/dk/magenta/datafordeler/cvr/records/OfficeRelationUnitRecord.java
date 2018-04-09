@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.Session;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -140,5 +142,13 @@ public class OfficeRelationUnitRecord extends CvrBitemporalRecord {
                 this.addLocationAddress(address);
             }
         }
+    }
+
+    @Override
+    public List<CvrRecord> subs() {
+        ArrayList<CvrRecord> subs = new ArrayList<>(super.subs());
+        subs.addAll(this.names);
+        subs.addAll(this.locationAddress);
+        return subs;
     }
 }

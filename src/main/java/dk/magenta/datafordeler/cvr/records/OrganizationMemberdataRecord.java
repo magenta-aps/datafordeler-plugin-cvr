@@ -6,9 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -110,5 +108,12 @@ public class OrganizationMemberdataRecord extends CvrRecord {
                 this.mergeAttribute(attribute);
             }
         }
+    }
+
+    @Override
+    public List<CvrRecord> subs() {
+        ArrayList<CvrRecord> subs = new ArrayList<>(super.subs());
+        subs.addAll(this.attributes);
+        return subs;
     }
 }

@@ -7,9 +7,7 @@ import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Record for Company status data.
@@ -202,5 +200,14 @@ public class FusionSplitRecord extends CvrNontemporalDataRecord {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<CvrRecord> subs() {
+        ArrayList<CvrRecord> subs = new ArrayList<>(super.subs());
+        subs.addAll(this.name);
+        subs.addAll(this.incoming);
+        subs.addAll(this.outgoing);
+        return subs;
     }
 }

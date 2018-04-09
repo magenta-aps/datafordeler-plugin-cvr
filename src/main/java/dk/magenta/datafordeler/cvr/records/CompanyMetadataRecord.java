@@ -3,7 +3,6 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.*;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Effect;
-import dk.magenta.datafordeler.core.database.Registration;
 import org.hibernate.Session;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.Filters;
@@ -11,9 +10,7 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = CompanyMetadataRecord.TABLE_NAME, indexes = {
@@ -470,5 +467,18 @@ public class CompanyMetadataRecord extends MetadataRecord {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<CvrRecord> subs() {
+        ArrayList<CvrRecord> subs = new ArrayList<>(super.subs());
+        subs.addAll(this.newestForm);
+        subs.addAll(this.newestName);
+        subs.addAll(this.newestLocation);
+        subs.addAll(this.newestPrimaryIndustry);
+        subs.addAll(this.newestSecondaryIndustry1);
+        subs.addAll(this.newestSecondaryIndustry2);
+        subs.addAll(this.newestSecondaryIndustry3);
+        return subs;
     }
 }

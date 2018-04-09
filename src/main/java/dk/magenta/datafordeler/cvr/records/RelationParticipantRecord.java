@@ -7,10 +7,7 @@ import org.hibernate.Session;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Record for one participant on a Company or CompanyUnit
@@ -185,5 +182,13 @@ public class RelationParticipantRecord extends CvrBitemporalRecord {
         for (AddressRecord address : this.locationAddress) {
             address.wire(session);
         }
+    }
+
+    @Override
+    public List<CvrRecord> subs() {
+        ArrayList<CvrRecord> subs = new ArrayList<>(super.subs());
+        subs.addAll(this.names);
+        subs.addAll(this.locationAddress);
+        return subs;
     }
 }
