@@ -31,9 +31,6 @@ public abstract class CvrRecord extends DatabaseEntry {
 
     @JsonProperty(value = IO_FIELD_DAFO_UPDATED)
     public OffsetDateTime getDafoUpdated() {
-        if (this.dafoUpdated == null) {
-            System.out.println("No updateTime for "+this.getClass().getCanonicalName());
-        }
         return this.dafoUpdated;
     }
 
