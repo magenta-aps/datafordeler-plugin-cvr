@@ -51,7 +51,7 @@ public abstract class RecordOutputWrapper<E extends CvrEntityRecord> extends Out
 
     protected class OutputContainer {
 
-        private final List<String> removeFieldNames = Arrays.asList(new String[]{"periode", "sidstOpdateret", "sidstIndlaest"});
+        private final List<String> removeFieldNames = Arrays.asList(new String[]{"periode", "sidstOpdateret", "sidstIndlaest", "dafoOpdateret"});
 
         private DoubleListHashMap<Bitemporality, String, JsonNode> bitemporalData = new DoubleListHashMap<>();
 
