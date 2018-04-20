@@ -25,7 +25,7 @@ import java.util.*;
 @Table(name="cvr_companyunit_basedata", indexes = {
         @Index(name = "cvr_companyunit_lastUpdated", columnList = DataItem.DB_FIELD_LAST_UPDATED),
         @Index(name = "cvr_companyunit_industry", columnList = CompanyUnitBaseData.DB_FIELD_PRIMARY_INDUSTRY + DatabaseEntry.REF),
-        @Index(name = "cvr_company_location", columnList = CompanyUnitBaseData.DB_FIELD_LOCATION_ADDRESS + DatabaseEntry.REF)
+        @Index(name = "cvr_companyunit_location", columnList = CompanyUnitBaseData.DB_FIELD_LOCATION_ADDRESS + DatabaseEntry.REF)
 })
 public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitBaseData> {
 
