@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
@@ -25,6 +26,7 @@ import java.util.Objects;
         @Index(name = CompanyIndustryRecord.TABLE_NAME + "__unitmetadata", columnList = CompanyIndustryRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
         @Index(name = CompanyIndustryRecord.TABLE_NAME + "__code", columnList = CompanyIndustryRecord.DB_FIELD_CODE)
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyIndustryRecord extends CvrBitemporalDataMetaRecord {
 
     public static final String TABLE_NAME = "cvr_record_industry";
@@ -47,6 +49,10 @@ public class CompanyIndustryRecord extends CvrBitemporalDataMetaRecord {
     @Column(name = DB_FIELD_CODE)
     @JsonProperty(value = IO_FIELD_CODE)
     private String industryCode;
+
+    public String getIndustryCode() {
+        return this.industryCode;
+    }
 
 
 

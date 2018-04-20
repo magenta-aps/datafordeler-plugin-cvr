@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Column;
@@ -7,6 +8,7 @@ import javax.persistence.MappedSuperclass;
 import java.util.Objects;
 
 @MappedSuperclass
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BaseAttributeValueRecord extends CvrBitemporalRecord {
 
     public static final String DB_FIELD_VALUE = "value";
@@ -24,6 +26,9 @@ public class BaseAttributeValueRecord extends CvrBitemporalRecord {
         this.value = value;
     }
 
+    public String getValue() {
+        return this.value;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
@@ -20,6 +21,7 @@ import java.util.Objects;
         @Index(name = FormRecord.TABLE_NAME + "__companymeta", columnList = FormRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
         @Index(name = FormRecord.TABLE_NAME + "__participant_company_relation", columnList = FormRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FormRecord extends CvrBitemporalDataRecord {
 
     public static final String TABLE_NAME = "cvr_record_form";

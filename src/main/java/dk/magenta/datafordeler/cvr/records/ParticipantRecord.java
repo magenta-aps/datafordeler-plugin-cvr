@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Effect;
@@ -21,7 +22,8 @@ import java.util.*;
  * with this class at the base.
  */
 @Entity
-@Table(name= ParticipantRecord.TABLE_NAME)
+@Table(name=ParticipantRecord.TABLE_NAME)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ParticipantRecord extends CvrEntityRecord {
 
     public static final String TABLE_NAME = "cvr_record_participant";
@@ -55,14 +57,66 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
+
+    public static final String DB_FIELD_POSITION = "position";
+    public static final String IO_FIELD_POSITION = "stilling";
+
+    @Column(name = DB_FIELD_POSITION)
+    @JsonProperty(value = IO_FIELD_POSITION)
+    private String position;
+
+    public String getPosition() {
+        return this.position;
+    }
+
+
+
+    public static final String DB_FIELD_CONFIDENTIAL_ENRICHED = "confidentialEnriched";
+    public static final String IO_FIELD_CONFIDENTIAL_ENRICHED = "fortroligBeriget";
+
+    @Column(name = DB_FIELD_CONFIDENTIAL_ENRICHED)
+    @JsonProperty(value = IO_FIELD_CONFIDENTIAL_ENRICHED)
+    private Boolean confidentialEnriched;
+
+    public Boolean getConfidentialEnriched() {
+        return this.confidentialEnriched;
+    }
+
+
+
+    public static final String DB_FIELD_BUSINESS_KEY = "businessKey";
+    public static final String IO_FIELD_BUSINESS_KEY = "forretningsnoegle";
+
+    @Column(name = DB_FIELD_BUSINESS_KEY)
+    @JsonProperty(value = IO_FIELD_BUSINESS_KEY)
+    private Long businessKey;
+
+    public Long getBusinessKey() {
+        return this.businessKey;
+    }
+
+
+
+    public static final String DB_FIELD_STATUS_CODE = "statusCode";
+    public static final String IO_FIELD_STATUS_CODE = "statusKode";
+
+    @Column(name = DB_FIELD_STATUS_CODE)
+    @JsonProperty(value = IO_FIELD_STATUS_CODE)
+    private Long statusCode;
+
+    public Long getStatusCode() {
+        return this.statusCode;
+    }
+
+
+
     public static final String DB_FIELD_NAMES = "names";
     public static final String IO_FIELD_NAMES = "navne";
 
     @OneToMany(mappedBy = SecNameRecord.DB_FIELD_PARTICIPANT, targetEntity = SecNameRecord.class, cascade = CascadeType.ALL)
     @Filters({
-            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition = "(" + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " < :" + Registration.FILTERPARAM_REGISTRATION_TO + ")"),
-            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_TO + " >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR " + CvrRecordPeriod.DB_FIELD_VALID_TO + " is null)"),
-            @Filter(name = Effect.FILTER_EFFECT_TO, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Effect.FILTERPARAM_EFFECT_TO + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)")
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
     })
     @JsonProperty(value = IO_FIELD_NAMES)
     public Set<SecNameRecord> names = new HashSet<>();
@@ -94,9 +148,8 @@ public class ParticipantRecord extends CvrEntityRecord {
     @OneToMany(mappedBy = AddressRecord.DB_FIELD_PARTICIPANT, targetEntity = AddressRecord.class, cascade = CascadeType.ALL)
     @Where(clause = AddressRecord.DB_FIELD_TYPE + "=" + AddressRecord.TYPE_LOCATION)
     @Filters({
-            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition = "(" + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " < :" + Registration.FILTERPARAM_REGISTRATION_TO + ")"),
-            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_TO + " >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR " + CvrRecordPeriod.DB_FIELD_VALID_TO + " is null)"),
-            @Filter(name = Effect.FILTER_EFFECT_TO, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Effect.FILTERPARAM_EFFECT_TO + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)")
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
     })
     @JsonProperty(value = IO_FIELD_LOCATION_ADDRESS)
     public Set<AddressRecord> locationAddress = new HashSet<>();
@@ -129,9 +182,8 @@ public class ParticipantRecord extends CvrEntityRecord {
     @OneToMany(mappedBy = AddressRecord.DB_FIELD_PARTICIPANT, targetEntity = AddressRecord.class, cascade = CascadeType.ALL)
     @Where(clause = AddressRecord.DB_FIELD_TYPE + "=" + AddressRecord.TYPE_POSTAL)
     @Filters({
-            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition = "(" + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " < :" + Registration.FILTERPARAM_REGISTRATION_TO + ")"),
-            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_TO + " >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR " + CvrRecordPeriod.DB_FIELD_VALID_TO + " is null)"),
-            @Filter(name = Effect.FILTER_EFFECT_TO, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Effect.FILTERPARAM_EFFECT_TO + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)")
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
     })
     @JsonProperty(value = IO_FIELD_POSTAL_ADDRESS)
     public Set<AddressRecord> postalAddress = new HashSet<>();
@@ -164,9 +216,8 @@ public class ParticipantRecord extends CvrEntityRecord {
     @OneToMany(mappedBy = AddressRecord.DB_FIELD_PARTICIPANT, targetEntity = AddressRecord.class, cascade = CascadeType.ALL)
     @Where(clause = AddressRecord.DB_FIELD_TYPE + "=" + AddressRecord.TYPE_BUSINESS)
     @Filters({
-            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition = "(" + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " < :" + Registration.FILTERPARAM_REGISTRATION_TO + ")"),
-            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_TO + " >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR " + CvrRecordPeriod.DB_FIELD_VALID_TO + " is null)"),
-            @Filter(name = Effect.FILTER_EFFECT_TO, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Effect.FILTERPARAM_EFFECT_TO + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)")
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
     })
     @JsonProperty(value = IO_FIELD_BUSINESS_ADDRESS)
     public Set<AddressRecord> businessAddress = new HashSet<>();
@@ -199,9 +250,8 @@ public class ParticipantRecord extends CvrEntityRecord {
     @OneToMany(mappedBy = ContactRecord.DB_FIELD_PARTICIPANT, targetEntity = ContactRecord.class, cascade = CascadeType.ALL)
     @Where(clause = ContactRecord.DB_FIELD_TYPE + "=" + ContactRecord.TYPE_TELEFONNUMMER)
     @Filters({
-            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition = "(" + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " < :" + Registration.FILTERPARAM_REGISTRATION_TO + ")"),
-            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_TO + " >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR " + CvrRecordPeriod.DB_FIELD_VALID_TO + " is null)"),
-            @Filter(name = Effect.FILTER_EFFECT_TO, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Effect.FILTERPARAM_EFFECT_TO + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)")
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
     })
     @JsonProperty(value = IO_FIELD_PHONE)
     public Set<ContactRecord> phoneNumber = new HashSet<>();
@@ -235,9 +285,8 @@ public class ParticipantRecord extends CvrEntityRecord {
     @OneToMany(mappedBy = ContactRecord.DB_FIELD_PARTICIPANT, targetEntity = ContactRecord.class, cascade = CascadeType.ALL)
     @Where(clause = ContactRecord.DB_FIELD_TYPE + "=" + ContactRecord.TYPE_TELEFAXNUMMER)
     @Filters({
-            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition = "(" + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " < :" + Registration.FILTERPARAM_REGISTRATION_TO + ")"),
-            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_TO + " >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR " + CvrRecordPeriod.DB_FIELD_VALID_TO + " is null)"),
-            @Filter(name = Effect.FILTER_EFFECT_TO, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Effect.FILTERPARAM_EFFECT_TO + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)")
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
     })
     @JsonProperty(value = IO_FIELD_FAX)
     public Set<ContactRecord> faxNumber = new HashSet<>();
@@ -271,9 +320,8 @@ public class ParticipantRecord extends CvrEntityRecord {
     @OneToMany(mappedBy = ContactRecord.DB_FIELD_PARTICIPANT, targetEntity = ContactRecord.class, cascade = CascadeType.ALL)
     @Where(clause = ContactRecord.DB_FIELD_TYPE + "=" + ContactRecord.TYPE_EMAILADRESSE)
     @Filters({
-            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition = "(" + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " < :" + Registration.FILTERPARAM_REGISTRATION_TO + ")"),
-            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_TO + " >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR " + CvrRecordPeriod.DB_FIELD_VALID_TO + " is null)"),
-            @Filter(name = Effect.FILTER_EFFECT_TO, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Effect.FILTERPARAM_EFFECT_TO + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)")
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
     })
     @JsonProperty(value = IO_FIELD_EMAIL)
     public Set<ContactRecord> emailAddress = new HashSet<>();
@@ -304,11 +352,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     public static final String IO_FIELD_ATTRIBUTES = "attributter";
 
     @OneToMany(mappedBy = AttributeRecord.DB_FIELD_PARTICIPANT, targetEntity = AttributeRecord.class, cascade = CascadeType.ALL)
-    @Filters({
-            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition = "(" + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " < :" + Registration.FILTERPARAM_REGISTRATION_TO + ")"),
-            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_TO + " >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR " + CvrRecordPeriod.DB_FIELD_VALID_TO + " is null)"),
-            @Filter(name = Effect.FILTER_EFFECT_TO, condition = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Effect.FILTERPARAM_EFFECT_TO + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)")
-    })
     @JsonProperty(value = IO_FIELD_ATTRIBUTES)
     public Set<AttributeRecord> attributes = new HashSet<>();
 
@@ -347,30 +390,6 @@ public class ParticipantRecord extends CvrEntityRecord {
 
 
 
-    public static final String DB_FIELD_POSITION = "position";
-    public static final String IO_FIELD_POSITION = "stilling";
-
-    @Column(name = DB_FIELD_POSITION)
-    @JsonProperty(value = IO_FIELD_POSITION)
-    public String position;
-
-
-    public static final String DB_FIELD_BUSINESS_KEY = "businessKey";
-    public static final String IO_FIELD_BUSINESS_KEY = "forretningsnoegle";
-
-    @Column(name = DB_FIELD_BUSINESS_KEY)
-    @JsonProperty(value = IO_FIELD_BUSINESS_KEY)
-    public Long businessKey;
-
-
-    public static final String DB_FIELD_STATUS_CODE = "statusCode";
-    public static final String IO_FIELD_STATUS_CODE = "statusKode";
-
-    @Column(name = DB_FIELD_STATUS_CODE)
-    @JsonProperty(value = IO_FIELD_STATUS_CODE)
-    public Long statusCode;
-
-
     public static final String DB_FIELD_META = "metadata";
     public static final String IO_FIELD_META = "deltagerpersonMetadata";
 
@@ -394,6 +413,10 @@ public class ParticipantRecord extends CvrEntityRecord {
     public static final String IO_FIELD_COMPANY_RELATION = "virksomhedSummariskRelation";
 
     @OneToMany(targetEntity = CompanyParticipantRelationRecord.class, mappedBy = CompanyParticipantRelationRecord.DB_FIELD_PARTICIPANT, cascade = CascadeType.ALL)
+    @Filters({
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+    })
     @JsonProperty(value = IO_FIELD_COMPANY_RELATION)
     private Set<CompanyParticipantRelationRecord> companyRelation = new HashSet<>();
 

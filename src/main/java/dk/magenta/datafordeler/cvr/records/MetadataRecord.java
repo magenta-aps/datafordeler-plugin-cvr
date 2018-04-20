@@ -1,8 +1,13 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.Effect;
+import dk.magenta.datafordeler.core.database.Registration;
 import org.hibernate.Session;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.Filters;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,6 +24,7 @@ import java.util.Set;
 
 
 @MappedSuperclass
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class MetadataRecord extends CvrBitemporalDataRecord {
 
     public static final String DB_FIELD_AGGREGATE_STATUS = "aggregateStatus";
@@ -39,9 +45,17 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     public static final String IO_FIELD_NEWEST_STATUS = "nyesteStatus";
 
     @OneToOne(targetEntity = StatusRecord.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Filters({
+            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition=CvrBitemporalRecord.FILTER_LAST_UPDATED),
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+    })
     @JsonProperty(value = IO_FIELD_NEWEST_STATUS)
     private StatusRecord newestStatus;
 
+    public StatusRecord getNewestStatus() {
+        return this.newestStatus;
+    }
 
 
 
@@ -76,7 +90,7 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     }
 
     @JsonProperty(IO_FIELD_NEWEST_CONTACT_DATA)
-    private Set<String> getMetadataContactData() {
+    public Set<String> getMetadataContactData() {
         HashSet<String> contacts = new HashSet<>();
         for (MetadataContactRecord metadataContactRecord : this.getMetadataContactRecords()) {
             contacts.add(metadataContactRecord.getData());
@@ -93,14 +107,27 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     @JsonProperty(value = IO_FIELD_UNIT_COUNT)
     private int unitCount;
 
+    public int getUnitCount() {
+        return this.unitCount;
+    }
+
 
 
     public static final String DB_FIELD_NEWEST_YEARLY_NUMBERS = "newestYearlyNumbers";
     public static final String IO_FIELD_NEWEST_YEARLY_NUMBERS = "nyesteAarsbeskaeftigelse";
 
     @OneToOne(cascade = CascadeType.ALL, targetEntity = CompanyYearlyNumbersRecord.class)
+    @Filters({
+            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition=CvrBitemporalRecord.FILTER_LAST_UPDATED),
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+    })
     @JsonProperty(value = IO_FIELD_NEWEST_YEARLY_NUMBERS)
     private CompanyYearlyNumbersRecord newestYearlyNumbers;
+
+    public CompanyYearlyNumbersRecord getNewestYearlyNumbers() {
+        return this.newestYearlyNumbers;
+    }
 
 
 
@@ -108,8 +135,17 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     public static final String IO_FIELD_NEWEST_QUARTERLY_NUMBERS = "nyesteKvartalsbeskaeftigelse";
 
     @OneToOne(cascade = CascadeType.ALL, targetEntity = CompanyQuarterlyNumbersRecord.class)
+    @Filters({
+            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition=CvrBitemporalRecord.FILTER_LAST_UPDATED),
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+    })
     @JsonProperty(value = IO_FIELD_NEWEST_QUARTERLY_NUMBERS)
     private CompanyQuarterlyNumbersRecord newestQuarterlyNumbers;
+
+    public CompanyQuarterlyNumbersRecord getNewestQuarterlyNumbers() {
+        return this.newestQuarterlyNumbers;
+    }
 
 
 
@@ -117,8 +153,17 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     public static final String IO_FIELD_NEWEST_MONTHLY_NUMBERS = "nyesteMaanedsbeskaeftigelse";
 
     @OneToOne(cascade = CascadeType.ALL, targetEntity = CompanyMonthlyNumbersRecord.class)
+    @Filters({
+            @Filter(name = Registration.FILTER_REGISTRATION_TO, condition=CvrBitemporalRecord.FILTER_LAST_UPDATED),
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+    })
     @JsonProperty(value = IO_FIELD_NEWEST_MONTHLY_NUMBERS)
     private CompanyMonthlyNumbersRecord newestMonthlyNumbers;
+
+    public CompanyMonthlyNumbersRecord getNewestMonthlyNumbers() {
+        return this.newestMonthlyNumbers;
+    }
 
 
 
@@ -129,6 +174,10 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     @JsonProperty(value = IO_FIELD_FOUNDING_DATE)
     private LocalDate foundingDate;
 
+    public LocalDate getFoundingDate() {
+        return this.foundingDate;
+    }
+
 
 
     public static final String DB_FIELD_EFFECT_DATE = "effectDate";
@@ -137,6 +186,10 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     @Column(name = DB_FIELD_EFFECT_DATE)
     @JsonProperty(value = IO_FIELD_EFFECT_DATE)
     private LocalDate effectDate;
+
+    public LocalDate getEffectDate() {
+        return this.effectDate;
+    }
 
 
 

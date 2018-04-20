@@ -1,7 +1,9 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.Identification;
+import dk.magenta.datafordeler.core.database.IdentifiedEntity;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
 import org.hibernate.Session;
@@ -9,13 +11,11 @@ import org.hibernate.Session;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @MappedSuperclass
-public abstract class CvrEntityRecord extends CvrBitemporalRecord {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public abstract class CvrEntityRecord extends CvrBitemporalRecord implements IdentifiedEntity {
 
     public abstract List<CvrRecord> getAll();
 
@@ -62,6 +62,10 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord {
     @JsonProperty(value = IO_FIELD_SAMT_ID)
     private long samtId;
 
+    public long getSamtId() {
+        return this.samtId;
+    }
+
 
 
     public static final String DB_FIELD_REGISTER_ERROR = "registerError";
@@ -70,6 +74,10 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord {
     @Column(name = DB_FIELD_REGISTER_ERROR)
     @JsonProperty(value = IO_FIELD_REGISTER_ERROR)
     private boolean registerError;
+
+    public boolean getRegisterError() {
+        return this.registerError;
+    }
 
 
 
@@ -80,6 +88,10 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord {
     @JsonProperty(value = IO_FIELD_DATA_ACCESS)
     private long dataAccess;
 
+    public long getDataAccess() {
+        return this.dataAccess;
+    }
+
 
 
     public static final String DB_FIELD_LOADING_ERROR = "loadingError";
@@ -88,6 +100,10 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord {
     @Column(name = DB_FIELD_LOADING_ERROR)
     @JsonProperty(value = IO_FIELD_LOADING_ERROR)
     private boolean loadingError;
+
+    public boolean getLoadingError() {
+        return this.loadingError;
+    }
 
 
 
@@ -115,6 +131,10 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord {
     @JsonProperty(value = IO_FIELD_ERRORDESCRIPTION)
     private String errorDescription;
 
+    public String getErrorDescription() {
+        return this.errorDescription;
+    }
+
 
 
     public static final String DB_FIELD_EFFECT_AGENT = "effectAgent";
@@ -124,4 +144,24 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord {
     @JsonProperty(value = IO_FIELD_EFFECT_AGENT)
     private String effectAgent;
 
+    public String getEffectAgent() {
+        return this.effectAgent;
+    }
+
+
+
+    @Override
+    public Identification getIdentification() {
+        return this.identification;
+    }
+
+    @Override
+    public void forceLoad(Session session) {
+
+    }
+
+    @Override
+    public IdentifiedEntity getNewest(Collection<IdentifiedEntity> collection) {
+        return null;
+    }
 }

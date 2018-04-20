@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import org.hibernate.annotations.Where;
@@ -17,6 +18,7 @@ import java.util.Set;
 @Table(name = FusionSplitRecord.TABLE_NAME, indexes = {
         @Index(name = FusionSplitRecord.TABLE_NAME + "__company", columnList = FusionSplitRecord.DB_FIELD_COMPANY + DatabaseEntry.REF + "," + FusionSplitRecord.DB_FIELD_SPLIT),
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FusionSplitRecord extends CvrNontemporalDataRecord {
 
     public static final String TABLE_NAME = "cvr_record_fusion";

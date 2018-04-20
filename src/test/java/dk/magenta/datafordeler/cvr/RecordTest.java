@@ -10,6 +10,7 @@ import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.io.ImportMetadata;
+import dk.magenta.datafordeler.core.user.DafoUserManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntityManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyRecordQuery;
@@ -26,6 +27,13 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -35,8 +43,10 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
+import static org.mockito.Mockito.when;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = Application.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RecordTest {
 
     @Autowired
@@ -48,6 +58,8 @@ public class RecordTest {
     @Autowired
     private CvrPlugin plugin;
 
+    @Autowired
+    private TestRestTemplate restTemplate;
 
     private static HashMap<String, String> schemaMap = new HashMap<>();
     static {
@@ -56,6 +68,12 @@ public class RecordTest {
         schemaMap.put("deltager", ParticipantEntity.schema);
     }
 
+    @SpyBean
+    private DafoUserManager dafoUserManager;
+
+    private void applyAccess(TestUserDetails testUserDetails) {
+        when(dafoUserManager.getFallbackUser()).thenReturn(testUserDetails);
+    }
 
     private HashMap<Integer, JsonNode> loadCompany() throws IOException, DataFordelerException {
         return loadCompany("/company_in.json");
@@ -300,6 +318,22 @@ public class RecordTest {
         }
     }
 
+    @Test
+    public void testRestCompany() throws IOException, DataFordelerException {
+        loadCompany("/company_in.json");
+        TestUserDetails testUserDetails = new TestUserDetails();
+        HttpEntity<String> httpEntity = new HttpEntity<String>("", new HttpHeaders());
+        ResponseEntity<String> resp = restTemplate.exchange("/cvr/company/1/rest/search?cvrnummer=25052943", HttpMethod.GET, httpEntity, String.class);
+        Assert.assertEquals(403, resp.getStatusCodeValue());
+
+        testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
+        this.applyAccess(testUserDetails);
+
+        resp = restTemplate.exchange("/cvr/company/1/rest/search?cvrnummer=25052943&virkningFra=2000-01-01&virkningTil=2000-01-01", HttpMethod.GET, httpEntity, String.class);
+        String body = resp.getBody();
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectMapper.readTree(body)));
+    }
+
     private HashMap<Integer, JsonNode> loadUnit(String resource) throws IOException, DataFordelerException {
         ImportMetadata importMetadata = new ImportMetadata();
         Session session = sessionManager.getSessionFactory().openSession();
@@ -457,6 +491,21 @@ public class RecordTest {
         }
     }
 
+    @Test
+    public void testRestCompanyUnit() throws IOException, DataFordelerException {
+        loadUnit("/unit.json");
+        TestUserDetails testUserDetails = new TestUserDetails();
+        HttpEntity<String> httpEntity = new HttpEntity<String>("", new HttpHeaders());
+        ResponseEntity<String> resp = restTemplate.exchange("/cvr/unit/1/rest/search?pnummer=1020895337", HttpMethod.GET, httpEntity, String.class);
+        Assert.assertEquals(403, resp.getStatusCodeValue());
+
+        testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
+        this.applyAccess(testUserDetails);
+
+        resp = restTemplate.exchange("/cvr/unit/1/rest/search?pnummer=1020895337&virkningFra=2016-01-01&virkningTil=2016-01-01", HttpMethod.GET, httpEntity, String.class);
+        String body = resp.getBody();
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectMapper.readTree(body)));
+    }
 
     private HashMap<Long, JsonNode> loadParticipant(String resource) throws IOException, DataFordelerException {
         ImportMetadata importMetadata = new ImportMetadata();
@@ -615,6 +664,22 @@ public class RecordTest {
         }
     }
 
+
+    @Test
+    public void testRestParticipant() throws IOException, DataFordelerException {
+        loadParticipant("/person.json");
+        TestUserDetails testUserDetails = new TestUserDetails();
+        HttpEntity<String> httpEntity = new HttpEntity<String>("", new HttpHeaders());
+        ResponseEntity<String> resp = restTemplate.exchange("/cvr/participant/1/rest/search?deltagernummer=4000004988", HttpMethod.GET, httpEntity, String.class);
+        Assert.assertEquals(403, resp.getStatusCodeValue());
+
+        testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
+        this.applyAccess(testUserDetails);
+
+        resp = restTemplate.exchange("/cvr/participant/1/rest/search?deltagernummer=4000004988&virkningFra=2001-01-01&virkningTil=2001-01-01", HttpMethod.GET, httpEntity, String.class);
+        String body = resp.getBody();
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectMapper.readTree(body)));
+    }
 
     /**
      * Checks that all items in n1 are also present in n2

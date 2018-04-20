@@ -2,7 +2,11 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.*;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.core.database.Effect;
+import dk.magenta.datafordeler.core.database.Registration;
 import org.hibernate.Session;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.Filters;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -25,6 +29,10 @@ public class CompanyMetadataRecord extends MetadataRecord {
     public static final String IO_FIELD_NEWEST_FORM = "nyesteVirksomhedsform";
 
     @OneToMany(mappedBy = FormRecord.DB_FIELD_COMPANY_METADATA, targetEntity = FormRecord.class, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Filters({
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+    })
     private Set<FormRecord> newestForm = new HashSet<>();
 
     public void setNewestForm(Set<FormRecord> newestForm) {
@@ -63,6 +71,10 @@ public class CompanyMetadataRecord extends MetadataRecord {
     public static final String IO_FIELD_NEWEST_NAME = "nyesteNavn";
 
     @OneToMany(targetEntity = BaseNameRecord.class, mappedBy = BaseNameRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Filters({
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+    })
     @JsonProperty(value = IO_FIELD_NEWEST_NAME)
     private Set<BaseNameRecord> newestName = new HashSet<>();
 
@@ -102,6 +114,10 @@ public class CompanyMetadataRecord extends MetadataRecord {
     public static final String IO_FIELD_NEWEST_LOCATION = "nyesteBeliggenhedsadresse";
 
     @OneToMany(targetEntity = AddressRecord.class, mappedBy = AddressRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Filters({
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+    })
     @JsonProperty(value = IO_FIELD_NEWEST_LOCATION)
     private Set<AddressRecord> newestLocation = new HashSet<>();
 
@@ -140,6 +156,10 @@ public class CompanyMetadataRecord extends MetadataRecord {
 
     @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=0")
+    @Filters({
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+    })
     @JsonProperty(value = IO_FIELD_NEWEST_PRIMARY_INDUSTRY)
     private Set<CompanyIndustryRecord> newestPrimaryIndustry = new HashSet<>();
 
@@ -182,6 +202,10 @@ public class CompanyMetadataRecord extends MetadataRecord {
 
     @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=1")
+    @Filters({
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+    })
     @JsonProperty(value = IO_FIELD_NEWEST_SECONDARY_INDUSTRY1)
     private Set<CompanyIndustryRecord> newestSecondaryIndustry1 = new HashSet<>();
 
@@ -225,6 +249,10 @@ public class CompanyMetadataRecord extends MetadataRecord {
 
     @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=2")
+    @Filters({
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+    })
     @JsonProperty(value = IO_FIELD_NEWEST_SECONDARY_INDUSTRY2)
     private Set<CompanyIndustryRecord> newestSecondaryIndustry2 = new HashSet<>();
 
@@ -267,6 +295,10 @@ public class CompanyMetadataRecord extends MetadataRecord {
 
     @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANY_METADATA, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=3")
+    @Filters({
+            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
+            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+    })
     @JsonProperty(value = IO_FIELD_NEWEST_SECONDARY_INDUSTRY3)
     private Set<CompanyIndustryRecord> newestSecondaryIndustry3 = new HashSet<>();
 
@@ -309,6 +341,10 @@ public class CompanyMetadataRecord extends MetadataRecord {
     @JsonProperty(value = IO_FIELD_NEWEST_FAD_CPR)
     private Set<String> newestFadCpr = new HashSet<>();
 
+    public Set<String> getNewestFadCpr() {
+        return this.newestFadCpr;
+    }
+
 
 
     public static final String DB_FIELD_NEWEST_STATUS = "newestStatus";
@@ -317,6 +353,11 @@ public class CompanyMetadataRecord extends MetadataRecord {
     @OneToOne(targetEntity = StatusRecord.class, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonProperty(value = IO_FIELD_NEWEST_STATUS)
     private StatusRecord newestStatus;
+
+    @Override
+    public StatusRecord getNewestStatus() {
+        return this.newestStatus;
+    }
 
 
 
@@ -327,6 +368,11 @@ public class CompanyMetadataRecord extends MetadataRecord {
     @JsonProperty(value = IO_FIELD_UNIT_COUNT)
     private int unitCount;
 
+    @Override
+    public int getUnitCount() {
+        return this.unitCount;
+    }
+
 
 
     public static final String DB_FIELD_FOUNDING_DATE = "foundingDate";
@@ -336,6 +382,11 @@ public class CompanyMetadataRecord extends MetadataRecord {
     @JsonProperty(value = IO_FIELD_FOUNDING_DATE)
     private LocalDate foundingDate;
 
+    @Override
+    public LocalDate getFoundingDate() {
+        return this.foundingDate;
+    }
+
 
 
     public static final String DB_FIELD_EFFECT_DATE = "effectDate";
@@ -344,6 +395,11 @@ public class CompanyMetadataRecord extends MetadataRecord {
     @Column(name = DB_FIELD_EFFECT_DATE)
     @JsonProperty(value = IO_FIELD_EFFECT_DATE)
     private LocalDate effectDate;
+
+    @Override
+    public LocalDate getEffectDate() {
+        return this.effectDate;
+    }
 
 
 
