@@ -44,6 +44,10 @@ public class ContactRecord extends CvrBitemporalDataRecord {
     @JsonProperty(value = IO_FIELD_DATA)
     protected String contactInformation;
 
+    public String getContactInformation() {
+        return this.contactInformation;
+    }
+
 
 
     public static final String DB_FIELD_SECRET = "secret";
@@ -52,6 +56,10 @@ public class ContactRecord extends CvrBitemporalDataRecord {
     @Column(name = DB_FIELD_SECRET)
     @JsonProperty(value = IO_FIELD_SECRET)
     protected boolean secret;
+
+    public boolean isSecret() {
+        return this.secret;
+    }
 
 
 
@@ -65,6 +73,10 @@ public class ContactRecord extends CvrBitemporalDataRecord {
         this.secondary = secondary;
     }
 
+    public boolean isSecondary() {
+        return this.secondary;
+    }
+
 
 
     public static final String DB_FIELD_TYPE = "type";
@@ -76,6 +88,12 @@ public class ContactRecord extends CvrBitemporalDataRecord {
     public void setType(int type) {
         this.type = type;
     }
+
+    public int getType() {
+        return this.type;
+    }
+
+    
 
     @Override
     public void populateBaseData(CompanyBaseData baseData, Session session) {
