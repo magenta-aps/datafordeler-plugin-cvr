@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr;
 
 import dk.magenta.datafordeler.core.database.DataItem;
+import dk.magenta.datafordeler.core.database.FieldDefinition;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.core.fapi.Query;
 import dk.magenta.datafordeler.cvr.records.CvrBitemporalRecord;
