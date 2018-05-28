@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.records.service;
 
+import dk.magenta.datafordeler.core.MonitorService;
 import dk.magenta.datafordeler.core.arearestriction.AreaRestriction;
 import dk.magenta.datafordeler.core.arearestriction.AreaRestrictionType;
 import dk.magenta.datafordeler.core.database.DataItem;
@@ -40,6 +41,9 @@ public class ParticipantRecordService extends FapiBaseService<ParticipantRecord,
     @Autowired
     private ParticipantRecordOutputWrapper participantRecordOutputWrapper;
 
+    @Autowired
+    private MonitorService monitorService;
+
     public ParticipantRecordService() {
         super();
     }
@@ -47,6 +51,8 @@ public class ParticipantRecordService extends FapiBaseService<ParticipantRecord,
     @PostConstruct
     public void init() {
         this.setOutputWrapper(this.participantRecordOutputWrapper);
+        this.monitorService.addAccessCheckPoint("/cvr/participant/1/rest/1234");
+        this.monitorService.addAccessCheckPoint("/cvr/participant/1/rest/search?deltagernummer=1234");
     }
 
     @Override
