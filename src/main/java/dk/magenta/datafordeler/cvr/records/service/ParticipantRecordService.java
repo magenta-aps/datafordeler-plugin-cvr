@@ -65,6 +65,10 @@ public class ParticipantRecordService extends FapiBaseService<ParticipantRecord,
         return "unit";
     }
 
+    public static String getDomain() {
+        return "https://data.gl/cvr/participant/1/rest/";
+    }
+
     @Override
     protected Class<ParticipantRecord> getEntityClass() {
         return ParticipantRecord.class;

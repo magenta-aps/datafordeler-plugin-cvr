@@ -65,6 +65,10 @@ public class CompanyUnitRecordService extends FapiBaseService<CompanyUnitRecord,
         return "unit";
     }
 
+    public static String getDomain() {
+        return "https://data.gl/cvr/unit/1/rest/";
+    }
+
     @Override
     protected Class<CompanyUnitRecord> getEntityClass() {
         return CompanyUnitRecord.class;
