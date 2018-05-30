@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.Identification;
@@ -31,6 +32,9 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord implements Ide
         }
         return newer;
     }
+
+    @JsonIgnore
+    protected abstract String getDomain();
 
     public abstract Map<String, Object> getIdentifyingFilter();
 

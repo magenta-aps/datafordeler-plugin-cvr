@@ -9,6 +9,7 @@ import dk.magenta.datafordeler.core.database.Registration;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantType;
+import dk.magenta.datafordeler.cvr.records.service.ParticipantRecordService;
 import org.hibernate.Session;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.Filters;
@@ -27,6 +28,12 @@ import java.util.*;
 public class ParticipantRecord extends CvrEntityRecord {
 
     public static final String TABLE_NAME = "cvr_record_participant";
+
+    @Override
+    @JsonIgnore
+    protected String getDomain() {
+        return ParticipantRecordService.getDomain();
+    }
 
     public static final String DB_FIELD_UNIT_NUMBER = "unitNumber";
     public static final String IO_FIELD_UNIT_NUMBER = "enhedsNummer";

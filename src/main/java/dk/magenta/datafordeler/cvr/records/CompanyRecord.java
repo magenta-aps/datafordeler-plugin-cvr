@@ -8,6 +8,7 @@ import dk.magenta.datafordeler.core.database.Effect;
 import dk.magenta.datafordeler.core.database.Registration;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
+import dk.magenta.datafordeler.cvr.records.service.CompanyRecordService;
 import org.hibernate.Session;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.Filters;
@@ -29,6 +30,13 @@ import java.util.*;
 public class CompanyRecord extends CvrEntityRecord {
 
     public static final String TABLE_NAME = "cvr_record_company";
+
+    @Override
+    @JsonIgnore
+    protected String getDomain() {
+        return CompanyRecordService.getDomain();
+    }
+
 
     public static final String DB_FIELD_CVR_NUMBER = "cvrNumber";
     public static final String IO_FIELD_CVR_NUMBER = "cvrNummer";
