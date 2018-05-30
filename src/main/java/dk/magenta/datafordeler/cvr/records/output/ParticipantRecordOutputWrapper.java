@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.records.output;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import dk.magenta.datafordeler.core.database.Entity;
 import dk.magenta.datafordeler.core.fapi.Query;
 import dk.magenta.datafordeler.cvr.data.Bitemporality;
 import dk.magenta.datafordeler.cvr.records.ParticipantMetadataRecord;
@@ -62,10 +63,8 @@ public class ParticipantRecordOutputWrapper extends RecordOutputWrapper<Particip
 
     protected ObjectNode asRVD(ParticipantRecord record, Bitemporality mustContain) {
         ObjectNode root = this.getNode(record, mustContain);
-
-        root.put("UUID", record.getIdentification().getUuid().toString());
-        root.putPOJO("id", record.getIdentification());
-
+        root.put(Entity.IO_FIELD_UUID, record.getIdentification().getUuid().toString());
+        root.putPOJO(Entity.IO_FIELD_DOMAIN, record.getIdentification().getDomain());
         return root;
     }
 
