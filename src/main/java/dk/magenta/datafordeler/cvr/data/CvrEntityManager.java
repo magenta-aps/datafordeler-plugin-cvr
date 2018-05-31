@@ -101,6 +101,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
     public CvrRegisterManager getRegisterManager() {
         return (CvrRegisterManager) super.getRegisterManager();
     }
+
     /**
      * Return the URI substrings that are listened on in the service
      */
