@@ -8,7 +8,6 @@ import dk.magenta.datafordeler.core.exception.DataStreamException;
 import dk.magenta.datafordeler.core.exception.HttpStatusException;
 import dk.magenta.datafordeler.core.fapi.FapiService;
 import dk.magenta.datafordeler.core.plugin.ScanScrollCommunicator;
-import dk.magenta.datafordeler.core.util.InputStreamReader;
 import dk.magenta.datafordeler.cvr.CvrRegisterManager;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfiguration;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfigurationManager;
@@ -25,10 +24,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.StringJoiner;
+import java.util.UUID;
 
 /**
- * Created by lars on 16-05-17.
+ * Company-specific EntityManager, specifying various settings that methods in the superclass
+ * will use to import data.
  */
 @Component
 public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, CompanyRegistration, CompanyEffect, CompanyBaseData, CompanyRecord> {
@@ -110,9 +113,15 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
         return new CompanyBaseData();
     }
 
-
     @Autowired
     private CvrConfigurationManager configurationManager;
+
+    @Override
+    public boolean pullEnabled() {
+        CvrConfiguration configuration = configurationManager.getConfiguration();
+        return (configuration.getCompanyRegisterType() != CvrConfiguration.RegisterType.DISABLED);
+    }
+
 
     public HashSet<CompanyRecord> directLookup(HashSet<String> cvrNumbers, OffsetDateTime since) {
         HashSet<CompanyRecord> records = new HashSet<>();
@@ -121,6 +130,7 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
         CvrConfiguration configuration = this.configurationManager.getConfiguration();
 
         String schema = CompanyEntity.schema;
+
         eventCommunicator.setUsername(configuration.getUsername(schema));
         eventCommunicator.setPassword(configuration.getPassword(schema));
         eventCommunicator.setThrottle(0);
@@ -141,8 +151,8 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
             requestBody += "}," +
                     "\"filter\": {" +
                     "\"range\": {" +
-                    "\"Vrvirksomhed.sidstIndlaest\": {" +
-                    "\"gte\": \"2015-05-01\"" +
+                    "\"Vrvirksomhed.sidstOpdateret\": {" +
+                    "\"gte\": \""+since.format(DateTimeFormatter.ISO_LOCAL_DATE)+"\"" +
                     "}" +
                     "}" +
                     "}";
@@ -163,7 +173,7 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
             );
             JsonNode topNode = this.getObjectMapper().readTree(rawData);
             ObjectReader reader = this.getObjectMapper().readerFor(CompanyRecord.class);
-            if (topNode.has("hits")) {
+            if (topNode != null && topNode.has("hits")) {
                 topNode = topNode.get("hits");
                 if (topNode.has("hits")) {
                     topNode = topNode.get("hits");

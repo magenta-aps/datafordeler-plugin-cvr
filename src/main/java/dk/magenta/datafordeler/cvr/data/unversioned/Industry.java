@@ -8,7 +8,6 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,7 +16,7 @@ import java.util.List;
 import static dk.magenta.datafordeler.cvr.data.unversioned.Industry.DB_FIELD_CODE;
 
 /**
- * Created by lars on 26-01-15.
+ * Nontemporal storage of an industry (code + name).
  */
 @Entity
 @Table(name = "cvr_industry", indexes = {
@@ -35,7 +34,7 @@ public class Industry extends UnversionedEntity {
 
     @JsonProperty(value = IO_FIELD_CODE)
     @XmlElement(name = IO_FIELD_CODE)
-    @Column(nullable = false, unique = false)
+    @Column(nullable = false, unique = false, name = DB_FIELD_CODE)
     private String industryCode;
 
     public String getIndustryCode() {
@@ -67,44 +66,59 @@ public class Industry extends UnversionedEntity {
 
     //----------------------------------------------------
 
-    private static HashMap<String, Industry> industryCache = new HashMap<>();
+    /**
+     * To avoid hitting the database every time we need a reference to an Industry, we keep
+     * a cache of references. This cache is used to get a pointer to the L1 cache, for quick
+     * lookup, and avoids the dreaded "duplicate object" issue in Hibernate (where two queries
+     * return to equal objects, and saving one makes Hibernate complain that there's another
+     * object with this id.
+     */
+    private static HashMap<String, Long> industryCache = new HashMap<>();
 
     static {
         QueryManager.addCache(industryCache);
     }
 
-    private static boolean prepopulated = false;
-
-    public static void prepopulateCache(Session session) {
-        log.debug("Prepopulating industry cache");
-        List<Industry> industries = QueryManager.getAllItems(session, Industry.class);
-        for (Industry industry : industries) {
-            industryCache.put(industry.industryCode, industry);
+    public static void initializeCache(Session session) {
+        if (industryCache.isEmpty()) {
+            log.debug("Prepopulating industry cache");
+            List<Industry> industries = QueryManager.getAllItems(session, Industry.class);
+            for (Industry industry : industries) {
+                industryCache.put(industry.industryCode, industry.getId());
+            }
+            log.debug("industry cache contains " + industryCache.size() + " nodes");
         }
-        log.debug("industryCache contains "+industryCache.size()+" nodes");
-        prepopulated = true;
     }
 
-    public static Industry getIndustry(String branchekode, String branchetekst, Session session) {
-        if (branchekode != null) {
-            Industry industry = industryCache.get(branchekode);
-            if (industry == null) {
-                log.debug("Industry code "+branchekode+" not found in cache");
-                if (!prepopulated) {
-                    log.debug("Querying database");
-                    industry = QueryManager.getItem(session, Industry.class, Collections.singletonMap(DB_FIELD_CODE, branchekode));
-                }
-                if (industry == null) {
-                    log.debug("Not found; creating new");
-                    industry = new Industry();
-                    industry.setIndustryCode(branchekode);
-                    industry.setIndustryText(branchetekst);
-                    session.save(industry);
-                }
-                industryCache.put(branchekode, industry);
-            } else {
-                log.debug("Industry "+branchekode+" found in cache ("+industry.getId()+")");
+    /**
+     * Obtain an Industry object, either from cache or from database, if it exists, or creates one if it doesn't.
+     * @param industryCode
+     * @param industryText
+     * @param session
+     * @return
+     */
+    public static Industry getIndustry(String industryCode, String industryText, Session session) {
+        if (industryCode != null) {
+            initializeCache(session);
+            Industry industry = null;
+            Long id = industryCache.get(industryCode);
+            if (id != null) {
+                industry = session.get(Industry.class, id);
             }
+            if (industry == null) {
+                log.debug("Industry code "+industryCode+" not found in cache, querying database");
+                industry = QueryManager.getItem(session, Industry.class, Collections.singletonMap(DB_FIELD_CODE, industryCode));
+            }
+            if (industry == null) {
+                log.debug("Industry "+industryCode+" not found; creating new");
+                industry = new Industry();
+                industry.setIndustryCode(industryCode);
+                industry.setIndustryText(industryText);
+                session.save(industry);
+            } else {
+                log.debug("Industry "+industryCode+" found in cache ("+industry.getId()+")");
+            }
+            industryCache.put(industryCode, industry.getId());
             return industry;
         } else {
             return null;

@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Created by lars on 16-05-17.
- */
 public class CompanyUnitEntityReference extends EntityReference<CompanyUnitEntity, CompanyUnitRegistrationReference> {
     @Override
     public Class<CompanyUnitEntity> getEntityClass() {

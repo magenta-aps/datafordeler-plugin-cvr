@@ -3,21 +3,22 @@ package dk.magenta.datafordeler.cvr.data.company;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import dk.magenta.datafordeler.cvr.data.shared.SingleData;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by lars on 16-05-17.
+ * Storage for data on a Company's credit text,
+ * referenced by {@link dk.magenta.datafordeler.cvr.data.company.CompanyBaseData}
  */
 @Entity
 @Table(name = "cvr_company_credit", indexes = {
-        @Index(name = "companyCreditData", columnList = "value"),
-},
-uniqueConstraints = {
-        @UniqueConstraint(name = "value", columnNames = "value")
+        @Index(name = "cvr_company_creditData", columnList = CompanyCreditData.DB_FIELD_VALUE),
 })
 public class CompanyCreditData extends SingleData<String> {
 

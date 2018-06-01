@@ -3,6 +3,8 @@ package dk.magenta.datafordeler.cvr.data.companyunit;
 import dk.magenta.datafordeler.core.database.RegistrationReference;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.fapi.FapiService;
+import dk.magenta.datafordeler.cvr.configuration.CvrConfiguration;
+import dk.magenta.datafordeler.cvr.configuration.CvrConfigurationManager;
 import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.records.CompanyUnitRecord;
 import org.apache.logging.log4j.LogManager;
@@ -15,9 +17,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.UUID;
 
-/**
- * Created by lars on 16-05-17.
- */
 @Component
 public class CompanyUnitEntityManager extends CvrEntityManager<CompanyUnitEntity, CompanyUnitRegistration, CompanyUnitEffect, CompanyUnitBaseData, CompanyUnitRecord> {
 
@@ -96,6 +95,15 @@ public class CompanyUnitEntityManager extends CvrEntityManager<CompanyUnitEntity
     @Override
     protected CompanyUnitBaseData createDataItem() {
         return new CompanyUnitBaseData();
+    }
+
+    @Autowired
+    private CvrConfigurationManager configurationManager;
+
+    @Override
+    public boolean pullEnabled() {
+        CvrConfiguration configuration = configurationManager.getConfiguration();
+        return (configuration.getCompanyUnitRegisterType() != CvrConfiguration.RegisterType.DISABLED);
     }
 
 }

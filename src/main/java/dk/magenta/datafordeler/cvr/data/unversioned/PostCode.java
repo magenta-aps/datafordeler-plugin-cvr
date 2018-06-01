@@ -18,7 +18,7 @@ import java.util.List;
 import static dk.magenta.datafordeler.cvr.data.unversioned.PostCode.DB_FIELD_CODE;
 
 /**
- * Created by lars on 26-01-15.
+ * Nontemporal storage of a postcode (code + name)
  */
 @Entity
 @Table(name = "cvr_postcode", indexes = {
@@ -62,46 +62,65 @@ public class PostCode extends UnversionedEntity {
         this.postDistrict = postDistrict;
     }
 
+    @JsonProperty
+    public Long getId() {
+        return super.getId();
+    }
     //----------------------------------------------------
 
-    private static HashMap<Integer, PostCode> postCodeCache = new HashMap<>();
+    /**
+     * To avoid hitting the database every time we need a reference to a PostCode, we keep
+     * a cache of references. This cache is used to get a pointer to the L1 cache, for quick
+     * lookup, and avoids the dreaded "duplicate object" issue in Hibernate (where two queries
+     * return to equal objects, and saving one makes Hibernate complain that there's another
+     * object with this id.
+     */
+    private static HashMap<Integer, Long> postCodeCache = new HashMap<>();
 
     static {
         QueryManager.addCache(postCodeCache);
     }
 
-    private static boolean prepopulated = false;
-
-    public static void prepopulateCache(Session session) {
-        log.debug("Prepopulating postcode cache");
-        List<PostCode> postCodes = QueryManager.getAllItems(session, PostCode.class);
-        for (PostCode postCode : postCodes) {
-            postCodeCache.put(postCode.postCode, postCode);
+    public static void initializeCache(Session session) {
+        if (postCodeCache.isEmpty()) {
+            log.debug("Prepopulating postCode cache");
+            List<PostCode> municipalities = QueryManager.getAllItems(session, PostCode.class);
+            for (PostCode postCode : municipalities) {
+                postCodeCache.put(postCode.postCode, postCode.getId());
+            }
+            log.debug("postCode cache contains " + postCodeCache.size() + " nodes");
         }
-        log.debug("postcodeCache contains "+postCodeCache.size()+" nodes");
-        prepopulated = true;
     }
 
-    public static PostCode getPostcode(int postCode, String postDistrict, Session session) {
-        if (postCode > 0) {
-            PostCode post = postCodeCache.get(postCode);
-            if (post == null) {
-                log.debug("Postcode "+postCode+" not found in cache");
-                if (!prepopulated) {
-                    log.debug("Querying database");
-                    post = QueryManager.getItem(session, PostCode.class, Collections.singletonMap(DB_FIELD_CODE, postCode));
-                }
-                if (post == null) {
-                    log.debug("Not found; creating new");
-                    post = new PostCode();
-                    post.setPostCode(postCode);
-                    post.setPostDistrict(postDistrict);
-                    session.save(post);
-                }
-                postCodeCache.put(postCode, post);
-            } else {
-                log.debug("PostCode "+postCode+" found in cache ("+post.getId()+")");
+    /**
+     * Obtain a PostCode object, either from cache or from database, if it exists, or creates one if it doesn't.
+     * @param code
+     * @param postDistrict
+     * @param session
+     * @return
+     */
+    public static PostCode getPostcode(int code, String postDistrict, Session session) {
+        if (code > 0) {
+            initializeCache(session);
+            PostCode post = null;
+            Long id = postCodeCache.get(code);
+            if (id != null) {
+                post = session.get(PostCode.class, id);
             }
+            if (post == null) {
+                log.debug("PostCode code "+code+" not found in cache, querying database");
+                post = QueryManager.getItem(session, PostCode.class, Collections.singletonMap(DB_FIELD_CODE, code));
+            }
+            if (post == null) {
+                log.debug("PostCode " + code + " not found; creating new");
+                post = new PostCode();
+                post.setPostCode(code);
+                post.setPostDistrict(postDistrict);
+                session.save(post);
+            } else {
+                log.debug("PostCode " + code + " found (" + post.getId() + ")");
+            }
+            postCodeCache.put(code, post.getId());
             return post;
         } else {
             return null;

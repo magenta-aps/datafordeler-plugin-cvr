@@ -1,6 +1,8 @@
 package dk.magenta.datafordeler.cvr.data.companyunit;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DataItem;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.core.exception.ParseException;
@@ -17,11 +19,13 @@ import java.time.OffsetDateTime;
 import java.util.*;
 
 /**
- * Created by lars on 12-06-17.
+ * Base class for Company Unit data, linking to Effects and delegating storage to referred classes
  */
 @Entity
 @Table(name="cvr_companyunit_basedata", indexes = {
-        @Index(name = "cvr_companyunit_lastUpdated", columnList = "lastUpdated")
+        @Index(name = "cvr_companyunit_lastUpdated", columnList = DataItem.DB_FIELD_LAST_UPDATED),
+        @Index(name = "cvr_companyunit_industry", columnList = CompanyUnitBaseData.DB_FIELD_PRIMARY_INDUSTRY + DatabaseEntry.REF),
+        @Index(name = "cvr_companyunit_location", columnList = CompanyUnitBaseData.DB_FIELD_LOCATION_ADDRESS + DatabaseEntry.REF)
 })
 public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitBaseData> {
 
@@ -43,6 +47,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_ADVERTPROTECTION = "advertProtection";
     public static final String IO_FIELD_ADVERTPROTECTION = "reklamebeskyttelse";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_ADVERTPROTECTION + DatabaseEntry.REF)
     private BooleanData advertProtection;
 
     @JsonProperty(value = IO_FIELD_ADVERTPROTECTION)
@@ -60,6 +65,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_PNUMBER = "pNumber";
     public static final String IO_FIELD_PNUMBER = "pNummer";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_PNUMBER + DatabaseEntry.REF)
     private IntegerData pNumber;
 
     @JsonProperty(value = IO_FIELD_PNUMBER)
@@ -77,6 +83,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_LOCATION_ADDRESS = "locationAddress";
     public static final String IO_FIELD_LOCATION_ADDRESS = "beliggenhedsadresse";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_LOCATION_ADDRESS + DatabaseEntry.REF)
     private AddressData locationAddress;
 
     @JsonProperty(value = IO_FIELD_LOCATION_ADDRESS)
@@ -94,6 +101,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_POSTAL_ADDRESS = "postalAddress";
     public static final String IO_FIELD_POSTAL_ADDRESS = "postadresse";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_POSTAL_ADDRESS + DatabaseEntry.REF)
     private AddressData postalAddress;
 
     @JsonProperty(value = IO_FIELD_POSTAL_ADDRESS)
@@ -153,12 +161,13 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_PRIMARY_INDUSTRY = "primaryIndustry";
     public static final String IO_FIELD_PRIMARY_INDUSTRY = "hovedbranche";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_PRIMARY_INDUSTRY + DatabaseEntry.REF)
     private IndustryData primaryIndustry;
 
     @JsonProperty(value = IO_FIELD_PRIMARY_INDUSTRY)
-    public String getPrimaryIndustry() {
+    public Industry getPrimaryIndustry() {
         if (primaryIndustry != null) {
-            return primaryIndustry.getIndustry().getIndustryCode();
+            return primaryIndustry.getIndustry();
         } else {
             return null;
         }
@@ -170,12 +179,13 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_SECONDARY_INDUSTRY_1 = "secondaryIndustry1";
     public static final String IO_FIELD_SECONDARY_INDUSTRY_1 = "bibranche1";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_SECONDARY_INDUSTRY_1 + DatabaseEntry.REF)
     private IndustryData secondaryIndustry1;
 
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_1)
-    public String getSecondaryIndustry1() {
-        if(secondaryIndustry1 != null)
-            return secondaryIndustry1.getIndustry().getIndustryCode();
+    public Industry getSecondaryIndustry1() {
+        if (secondaryIndustry1 != null)
+            return secondaryIndustry1.getIndustry();
         else
             return null;
     }
@@ -186,12 +196,13 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_SECONDARY_INDUSTRY_2 = "secondaryIndustry2";
     public static final String IO_FIELD_SECONDARY_INDUSTRY_2 = "bibranche2";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_SECONDARY_INDUSTRY_2 + DatabaseEntry.REF)
     private IndustryData secondaryIndustry2;
 
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_2)
-    public String getSecondaryIndustry2() {
+    public Industry getSecondaryIndustry2() {
         if (secondaryIndustry2 != null) {
-            return secondaryIndustry2.getIndustry().getIndustryCode();
+            return secondaryIndustry2.getIndustry();
         } else {
             return null;
         }
@@ -203,12 +214,13 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_SECONDARY_INDUSTRY_3 = "secondaryIndustry3";
     public static final String IO_FIELD_SECONDARY_INDUSTRY_3 = "bibranche3";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_SECONDARY_INDUSTRY_3 + DatabaseEntry.REF)
     private IndustryData secondaryIndustry3;
 
     @JsonProperty(value = IO_FIELD_SECONDARY_INDUSTRY_3)
-    public String getSecondaryIndustry3() {
+    public Industry getSecondaryIndustry3() {
         if (secondaryIndustry3 != null) {
-            return secondaryIndustry3.getIndustry().getIndustryCode();
+            return secondaryIndustry3.getIndustry();
         } else {
             return null;
         }
@@ -220,6 +232,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_NAME = "name";
     public static final String IO_FIELD_NAME = "navn";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_NAME + DatabaseEntry.REF)
     private TextData name;
 
     @JsonProperty(value = IO_FIELD_NAME)
@@ -235,8 +248,9 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
 
 
     public static final String DB_FIELD_PHONENUMBER = "phoneNumber";
-    public static final String IO_FIELD_PHONENUMBER = "telefonnummer";
+    public static final String IO_FIELD_PHONENUMBER = "telefon";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_PHONENUMBER + DatabaseEntry.REF)
     private ContactData phoneNumber;
 
     @JsonProperty(value = IO_FIELD_PHONENUMBER)
@@ -252,8 +266,9 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
 
 
     public static final String DB_FIELD_EMAIL = "emailAddress";
-    public static final String IO_FIELD_EMAIL = "emailadresse";
+    public static final String IO_FIELD_EMAIL = "email";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_EMAIL + DatabaseEntry.REF)
     private ContactData emailAddress;
 
     @JsonProperty(value = IO_FIELD_EMAIL)
@@ -269,8 +284,9 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
 
 
     public static final String DB_FIELD_FAXNUMBER = "faxNumber";
-    public static final String IO_FIELD_FAXNUMBER = "telefaxnummer";
+    public static final String IO_FIELD_FAXNUMBER = "telefax";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_FAXNUMBER + DatabaseEntry.REF)
     private ContactData faxNumber;
 
     @JsonProperty(IO_FIELD_FAXNUMBER)
@@ -288,6 +304,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
     public static final String DB_FIELD_IS_PRIMARY = "isPrimary";
     public static final String IO_FIELD_IS_PRIMARY = "primaer";
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = DB_FIELD_IS_PRIMARY + DatabaseEntry.REF)
     private BooleanData isPrimary;
 
     @JsonProperty(value = IO_FIELD_IS_PRIMARY)
@@ -300,15 +317,15 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
 
 
     public static final String DB_FIELD_CVR_NUMBER = "associatedCvrNumber";
-    public static final String IO_FIELD_CVR_NUMBER = "tilknyttetVirksomhedsCVRNummer";
+    public static final String IO_FIELD_CVR_NUMBER = "tilknyttetCvrNummer";
     @OneToMany(cascade = CascadeType.ALL)
-    private List<IntegerData> associatedCvrNumber;
+    private Set<CompanyUnitCvrNumber> associatedCvrNumber;
 
     @JsonProperty(value = IO_FIELD_CVR_NUMBER)
     public List<Long> getAssociatedCvrNumber() {
         if (associatedCvrNumber != null) {
             ArrayList<Long> list = new ArrayList<>();
-            for (IntegerData i : this.associatedCvrNumber) {
+            for (CompanyUnitCvrNumber i : this.associatedCvrNumber) {
                 Long cvr = i.getValue();
                 if (cvr != null) {
                     list.add(cvr);
@@ -338,7 +355,7 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
 
     public static final String DB_FIELD_ATTRIBUTES = "attributeData";
     public static final String IO_FIELD_ATTRIBUTES = "attributter";
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "companyUnitBaseData")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = AttributeData.DB_FIELD_COMPANYUNITBASE)
     private Set<AttributeData> attributeData = new HashSet<>();
 
     @JsonProperty(value = IO_FIELD_ATTRIBUTES)
@@ -610,14 +627,15 @@ public class CompanyUnitBaseData extends CvrData<CompanyUnitEffect, CompanyUnitB
 
     public void addAssociatedCvrNumber(long cvrNumber) {
         if (this.associatedCvrNumber == null) {
-            this.associatedCvrNumber = new ArrayList<>();
+            this.associatedCvrNumber = new HashSet<>();
         }
-        for (IntegerData i : this.associatedCvrNumber) {
+        for (CompanyUnitCvrNumber i : this.associatedCvrNumber) {
             if (i.getValue() == cvrNumber) {
                 return;
             }
         }
-        IntegerData i = new IntegerData();
+        CompanyUnitCvrNumber i = new CompanyUnitCvrNumber();
+        i.setCompanyUnitBaseData(this);
         i.setValue(cvrNumber);
         this.associatedCvrNumber.add(i);
     }

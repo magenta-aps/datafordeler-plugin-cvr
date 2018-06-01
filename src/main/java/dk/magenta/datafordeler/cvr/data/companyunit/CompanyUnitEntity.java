@@ -12,7 +12,8 @@ import javax.xml.bind.annotation.XmlElement;
 import java.util.UUID;
 
 /**
- * Created by lars on 16-05-17.
+ * An Entity representing a company unit. Bitemporal data is structured as described
+ * in {@link dk.magenta.datafordeler.core.database.Entity}
  */
 @javax.persistence.Entity
 @Table(name="cvr_companyunit_entity", indexes = {
@@ -40,11 +41,13 @@ public class CompanyUnitEntity extends CvrEntity<CompanyUnitEntity, CompanyUnitR
         return new CompanyUnitRegistration();
     }
 
-    @Column
+    public static final String DB_FIELD_PNUMBER = "pNumber";
+    public static final String IO_FIELD_PNUMBER = "pnummer";
+    @Column(name = DB_FIELD_PNUMBER)
     private int pNumber;
 
-    @JsonProperty(value = "pNumber")
-    @XmlElement(name = "pNumber")
+    @JsonProperty(value = IO_FIELD_PNUMBER)
+    @XmlElement(name = IO_FIELD_PNUMBER)
     public int getPNumber() {
         return pNumber;
     }

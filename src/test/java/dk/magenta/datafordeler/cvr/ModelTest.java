@@ -29,9 +29,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.UUID;
 
-/**
- * Created by lars on 10-06-17.
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = Application.class)
 public class ModelTest {
@@ -46,9 +43,9 @@ public class ModelTest {
     public void testCompany() throws DataFordelerException, JsonProcessingException {
         Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
+        CompanyEntity company = new CompanyEntity();
         try {
             Identification identification = new Identification(UUID.randomUUID(), "test");
-            CompanyEntity company = new CompanyEntity();
             company.setIdentifikation(identification);
             company.setCvrNumber(78975790);
 
@@ -143,7 +140,6 @@ public class ModelTest {
 
             companyBase1.setQuarterlyEmployeeNumbers(2017, 2, 1, 2, 1, 2, 1, 2);
 
-
             ParticipantLink participantLink = QueryManager.getItem(session, ParticipantLink.class, Collections.singletonMap(ParticipantLink.DB_FIELD_VALUE, 44446666));
             if (participantLink == null) {
                 participantLink = new ParticipantLink();
@@ -167,6 +163,7 @@ public class ModelTest {
 
 
             QueryManager.saveRegistration(session, company, registrering);
+            transaction.commit();
 
 
             CompanyQuery companyQuery = new CompanyQuery();
@@ -194,7 +191,11 @@ public class ModelTest {
             Assert.assertEquals(1, QueryManager.getAllEntities(session, companyQuery, CompanyEntity.class).size());
 
         } finally {
-            transaction.rollback();
+            try {
+                transaction = session.beginTransaction();
+                session.delete(company);
+                transaction.commit();
+            } catch (Exception e) {}
             session.close();
             QueryManager.clearCaches();
         }
@@ -281,7 +282,7 @@ public class ModelTest {
                 session.saveOrUpdate(primaryIndustry);
             }
             unitBase.setPrimaryIndustry(primaryIndustry);
-            Assert.assertEquals("123456", unitBase.getPrimaryIndustry());
+            Assert.assertEquals("123456", unitBase.getPrimaryIndustry().getIndustryCode());
 
 
             unitBase.setPhoneNumber("87654321", false);
@@ -347,8 +348,10 @@ public class ModelTest {
             participantBase.addEffect(effect);
 
 
-            participantBase.setNames("Mickey Mouse");
-            Assert.assertEquals("Mickey Mouse", participantBase.getNames());
+            participantBase.addName("Mickey Mouse");
+            participantBase.setUnitNumber(123456);
+            Assert.assertTrue(participantBase.getNames().contains("Mickey Mouse"));
+            Assert.assertEquals(1, participantBase.getNames().size());
 
 
             ParticipantType type = QueryManager.getItem(session, ParticipantType.class, Collections.singletonMap(ParticipantType.DB_FIELD_NAME, "Person"));

@@ -1,55 +1,117 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
 import org.hibernate.Session;
 
-/**
- * Created by lars on 26-06-17.
- */
-public class ContactRecord extends CvrBaseRecord {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
+import java.util.Objects;
 
-    public enum Type {
-        TELEFONNUMMER,
-        TELEFAXNUMMER,
-        EMAILADRESSE,
-        HJEMMESIDE,
-        OBLIGATORISK_EMAILADRESSE
+/**
+ * Record for Company, CompanyUnit and Participant contact information.
+ */
+@Entity
+@Table(name = ContactRecord.TABLE_NAME, indexes = {
+        @Index(name = ContactRecord.TABLE_NAME + "__company", columnList = ContactRecord.DB_FIELD_COMPANY + DatabaseEntry.REF + "," + ContactRecord.DB_FIELD_TYPE),
+        @Index(name = ContactRecord.TABLE_NAME + "__companyunit", columnList = ContactRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF + "," + ContactRecord.DB_FIELD_TYPE),
+        @Index(name = ContactRecord.TABLE_NAME + "__participant", columnList = ContactRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF + "," + ContactRecord.DB_FIELD_TYPE),
+        @Index(name = ContactRecord.TABLE_NAME + "__data", columnList = ContactRecord.DB_FIELD_DATA),
+})
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ContactRecord extends CvrBitemporalDataRecord {
+
+    public static final String TABLE_NAME = "cvr_record_contact";
+
+    public static final int TYPE_TELEFONNUMMER = 0;
+    public static final int TYPE_TELEFAXNUMMER = 1;
+    public static final int TYPE_EMAILADRESSE = 2;
+    public static final int TYPE_HJEMMESIDE = 3;
+    public static final int TYPE_OBLIGATORISK_EMAILADRESSE = 4;
+
+
+    public static final String DB_FIELD_DATA = "contactInformation";
+    public static final String IO_FIELD_DATA = "kontaktoplysning";
+
+    @Column(name = DB_FIELD_DATA)
+    @JsonProperty(value = IO_FIELD_DATA)
+    protected String contactInformation;
+
+    public String getContactInformation() {
+        return this.contactInformation;
     }
 
-    @JsonProperty(value = "kontaktoplysning")
-    protected String contectInformation;
 
-    @JsonProperty(value = "hemmelig")
+
+    public static final String DB_FIELD_SECRET = "secret";
+    public static final String IO_FIELD_SECRET = "hemmelig";
+
+    @Column(name = DB_FIELD_SECRET)
+    @JsonProperty(value = IO_FIELD_SECRET)
     protected boolean secret;
 
-    @JsonIgnore
-    private Type type;
+    public boolean isSecret() {
+        return this.secret;
+    }
 
-    public void setType(Type type) {
+
+
+    public static final String DB_FIELD_SECONDARY = "secondary";
+
+    @Column(name = DB_FIELD_SECONDARY)
+    @JsonIgnore
+    protected boolean secondary;
+
+    public void setSecondary(boolean secondary) {
+        this.secondary = secondary;
+    }
+
+    public boolean isSecondary() {
+        return this.secondary;
+    }
+
+
+
+    public static final String DB_FIELD_TYPE = "type";
+
+    @Column(name = DB_FIELD_TYPE)
+    @JsonIgnore
+    private int type;
+
+    public void setType(int type) {
         this.type = type;
     }
+
+    public int getType() {
+        return this.type;
+    }
+
+    
 
     @Override
     public void populateBaseData(CompanyBaseData baseData, Session session) {
         switch (this.type) {
-            case TELEFONNUMMER:
-                baseData.setPhoneNumber(this.contectInformation, this.secret);
+            case TYPE_TELEFONNUMMER:
+                baseData.setPhoneNumber(this.contactInformation, this.secret);
                 break;
-            case TELEFAXNUMMER:
-                baseData.setFaxNumber(this.contectInformation, this.secret);
+            case TYPE_TELEFAXNUMMER:
+                baseData.setFaxNumber(this.contactInformation, this.secret);
                 break;
-            case EMAILADRESSE:
-                baseData.setEmailAddress(this.contectInformation, this.secret);
+            case TYPE_EMAILADRESSE:
+                baseData.setEmailAddress(this.contactInformation, this.secret);
                 break;
-            case HJEMMESIDE:
-                baseData.setHomepage(this.contectInformation, this.secret);
+            case TYPE_HJEMMESIDE:
+                baseData.setHomepage(this.contactInformation, this.secret);
                 break;
-            case OBLIGATORISK_EMAILADRESSE:
-                baseData.setMandatoryEmail(this.contectInformation, this.secret);
+            case TYPE_OBLIGATORISK_EMAILADRESSE:
+                baseData.setMandatoryEmail(this.contactInformation, this.secret);
                 break;
         }
     }
@@ -57,14 +119,14 @@ public class ContactRecord extends CvrBaseRecord {
     @Override
     public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
         switch (this.type) {
-            case TELEFONNUMMER:
-                baseData.setPhoneNumber(this.contectInformation, this.secret);
+            case TYPE_TELEFONNUMMER:
+                baseData.setPhoneNumber(this.contactInformation, this.secret);
                 break;
-            case TELEFAXNUMMER:
-                baseData.setFaxNumber(this.contectInformation, this.secret);
+            case TYPE_TELEFAXNUMMER:
+                baseData.setFaxNumber(this.contactInformation, this.secret);
                 break;
-            case EMAILADRESSE:
-                baseData.setEmailAddress(this.contectInformation, this.secret);
+            case TYPE_EMAILADRESSE:
+                baseData.setEmailAddress(this.contactInformation, this.secret);
                 break;
         }
     }
@@ -72,15 +134,32 @@ public class ContactRecord extends CvrBaseRecord {
     @Override
     public void populateBaseData(ParticipantBaseData baseData, Session session) {
         switch (this.type) {
-            case TELEFONNUMMER:
-                baseData.setPhoneNumber(this.contectInformation, this.secret);
+            case TYPE_TELEFONNUMMER:
+                baseData.setPhoneNumber(this.contactInformation, this.secret);
                 break;
-            case TELEFAXNUMMER:
-                baseData.setFaxNumber(this.contectInformation, this.secret);
+            case TYPE_TELEFAXNUMMER:
+                baseData.setFaxNumber(this.contactInformation, this.secret);
                 break;
-            case EMAILADRESSE:
-                baseData.setEmailAddress(this.contectInformation, this.secret);
+            case TYPE_EMAILADRESSE:
+                baseData.setEmailAddress(this.contactInformation, this.secret);
                 break;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        ContactRecord that = (ContactRecord) o;
+        return secret == that.secret &&
+                secondary == that.secondary &&
+                type == that.type &&
+                Objects.equals(contactInformation, that.contactInformation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), contactInformation, secret, secondary, type);
     }
 }

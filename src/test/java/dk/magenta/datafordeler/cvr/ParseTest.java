@@ -19,6 +19,8 @@ import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntityManager;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +29,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by lars on 26-06-17.
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = Application.class)
 public class ParseTest {
@@ -69,13 +70,16 @@ public class ParseTest {
             for (JsonNode item : itemList) {
                 String type = item.get("_type").asText();
                 CompanyEntityManager entityManager = (CompanyEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-                List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrvirksomhed"), importMetadata, session);
+                List<? extends Registration> registrations = entityManager.parseData(item.get("_source").get("Vrvirksomhed"), importMetadata, session);
                 System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations.get(0).getEntity()));
 
                 Collections.sort(registrations);
-                Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:47+01:00"), registrations.get(0).getRegistrationFrom());
-                Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:51+01:00"), registrations.get(0).getRegistrationTo());
-                Assert.assertEquals(123, registrations.size());
+                Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:00+01:00"), registrations.get(0).getRegistrationFrom());
+                Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:37:00+01:00"), registrations.get(0).getRegistrationTo());
+                Assert.assertEquals(91, registrations.size());
+                //Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:47+01:00"), registrations.get(0).getRegistrationFrom());
+                //Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:51+01:00"), registrations.get(0).getRegistrationTo());
+                //Assert.assertEquals(123, registrations.size());
             }
         } finally {
             transaction.rollback();
@@ -98,7 +102,7 @@ public class ParseTest {
             for (JsonNode item : itemList) {
                 String type = item.get("_type").asText();
                 CompanyUnitEntityManager entityManager = (CompanyUnitEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-                List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("VrproduktionsEnhed"), importMetadata, session);
+                List<? extends Registration> registrations = entityManager.parseData(item.get("_source").get("VrproduktionsEnhed"), importMetadata, session);
                 System.out.println("registrations.size: " + registrations.size());
                 System.out.println(objectMapper.writeValueAsString(registrations));
             }
@@ -115,7 +119,7 @@ public class ParseTest {
         Session session = sessionManager.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         try {
-        importMetadata.setSession(session);
+            importMetadata.setSession(session);
             InputStream input = ParseTest.class.getResourceAsStream("/person.json");
             JsonNode root = objectMapper.readTree(input);
             JsonNode itemList = root.get("hits").get("hits");
@@ -124,10 +128,10 @@ public class ParseTest {
             for (JsonNode item : itemList) {
                 String type = item.get("_type").asText();
                 ParticipantEntityManager entityManager = (ParticipantEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-                List<? extends Registration> registrations = entityManager.parseRegistration(item.get("_source").get("Vrdeltagerperson"), importMetadata, session);
+                List<? extends Registration> registrations = entityManager.parseData(item.get("_source").get("Vrdeltagerperson"), importMetadata, session);
                 System.out.println("registrations.size: " + registrations.size());
                 System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations));
-                Assert.assertEquals(4, registrations.size());
+                Assert.assertEquals(5, registrations.size());
             }
         } finally {
             transaction.rollback();

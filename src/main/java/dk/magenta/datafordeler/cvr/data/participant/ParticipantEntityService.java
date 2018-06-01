@@ -20,11 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
 
-/**
- * Created by lars on 19-05-17.
- */
 @RestController
-@RequestMapping("/cvr/participant/1/rest")
+@RequestMapping("/cvr/participant/0/rest")
 public class ParticipantEntityService extends FapiService<ParticipantEntity, ParticipantQuery> {
 
     @Autowired

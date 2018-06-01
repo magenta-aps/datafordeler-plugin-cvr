@@ -18,7 +18,7 @@ import java.util.List;
 import static dk.magenta.datafordeler.cvr.data.unversioned.CompanyStatus.DB_FIELD_NAME;
 
 /**
- * Created by lars on 26-01-15.
+ * Nontemporal storage of a company status.
  */
 @Entity
 @Table(name = "cvr_status", indexes = {@Index(name = "cvrStatus", columnList = DB_FIELD_NAME)})
@@ -44,7 +44,16 @@ public class CompanyStatus extends UnversionedEntity {
         this.status = status;
     }
 
-    private static HashMap<String, CompanyStatus> statusCache = new HashMap<>();
+    //--------------------------------------------------------------------------
+
+    /**
+     * To avoid hitting the database every time we need a reference to a CompanyStatus, we keep
+     * a cache of references. This cache is used to get a pointer to the L1 cache, for quick
+     * lookup, and avoids the dreaded "duplicate object" issue in Hibernate (where two queries
+     * return to equal objects, and saving one makes Hibernate complain that there's another
+     * object with this id.
+     */
+    private static HashMap<String, Long> statusCache = new HashMap<>();
 
     private static boolean prepopulated = false;
 
@@ -52,34 +61,44 @@ public class CompanyStatus extends UnversionedEntity {
         QueryManager.addCache(statusCache);
     }
 
-    public static void prepopulateCache(Session session) {
-        log.debug("Prepopulating status cache");
-        List<CompanyStatus> statuses = QueryManager.getAllItems(session, CompanyStatus.class);
-        for (CompanyStatus status : statuses) {
-            statusCache.put(status.status, status);
+    public static void initializeCache(Session session) {
+        if (statusCache.isEmpty()) {
+            log.debug("Prepopulating status cache");
+            List<CompanyStatus> municipalities = QueryManager.getAllItems(session, CompanyStatus.class);
+            for (CompanyStatus status : municipalities) {
+                statusCache.put(status.status, status.getId());
+            }
+            log.debug("status cache contains " + statusCache.size() + " nodes");
         }
-        log.debug("companyStatusCache contains "+statusCache.size()+" nodes");
-        prepopulated = true;
     }
 
+    /**
+     * Obtain a CompanyStatus object, either from cache or from database, if it exists, or creates one if it doesn't.
+     * @param statusText
+     * @param session
+     * @return
+     */
     public static CompanyStatus getStatus(String statusText, Session session) {
         if (statusText != null) {
-            CompanyStatus status = statusCache.get(statusText);
-            if (status == null) {
-                log.debug("Status "+statusText+" not found in cache");
-                if (!prepopulated) {
-                    log.debug("Querying database");
-                    status = QueryManager.getItem(session, CompanyStatus.class, Collections.singletonMap(DB_FIELD_NAME, statusText));
-                }
-                if (status == null) {
-                    status = new CompanyStatus();
-                    status.setStatus(statusText);
-                    session.save(status);
-                }
-                statusCache.put(statusText, status);
-            } else {
-                log.debug("Status "+statusText+" found in cache ("+status.getId()+")");
+            initializeCache(session);
+            CompanyStatus status = null;
+            Long id = statusCache.get(statusText);
+            if (id != null) {
+                status = session.get(CompanyStatus.class, id);
             }
+            if (status == null) {
+                log.debug("CompanyStatus code "+statusText+" not found in cache, querying database");
+                status = QueryManager.getItem(session, CompanyStatus.class, Collections.singletonMap(DB_FIELD_NAME, statusText));
+            }
+            if (status == null) {
+                log.debug("CompanyStatus "+statusText+" not found; creating new");
+                status = new CompanyStatus();
+                status.setStatus(statusText);
+                session.save(status);
+            } else {
+                log.debug("CompanyStatus "+statusText+" found in cache ("+status.getId()+")");
+            }
+            statusCache.put(statusText, status.getId());
             return status;
         } else {
             return null;

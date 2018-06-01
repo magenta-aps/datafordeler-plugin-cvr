@@ -14,71 +14,171 @@ import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 import java.util.*;
 
 /**
- * Created by lars on 19-05-17.
+ * Container for a query for Company units, defining fields and database lookup
  */
 public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
 
-    public static final String ASSOCIATED_COMPANY_CVR = "tilknyttetVirksomhedsCVRNummer";
-    public static final String PRIMARYINDUSTRY = "hovedbranche";
-    public static final String KOMMUNEKODE = "kommunekode";
+    public static final String P_NUMBER = CompanyUnitEntity.IO_FIELD_PNUMBER;
+    public static final String ASSOCIATED_COMPANY_CVR = CompanyUnitBaseData.IO_FIELD_CVR_NUMBER;
+    public static final String PRIMARYINDUSTRY = CompanyUnitBaseData.IO_FIELD_PRIMARY_INDUSTRY;
+    public static final String KOMMUNEKODE = Municipality.IO_FIELD_CODE;
+
+    @QueryField(type = QueryField.FieldType.INT, queryName = P_NUMBER)
+    private List<String> pNummer = new ArrayList<>();
+
+    public Collection<String> getPNummer() {
+        return pNummer;
+    }
+
+    public void addPNummer(String pnummer) {
+        if (pnummer != null) {
+            this.pNummer.add(pnummer);
+            this.increaseDataParamCount();
+        }
+    }
+
+    public void setPNummer(String pNumre) {
+        this.pNummer.clear();
+        this.addPNummer(pNumre);
+    }
+
+    public void setPNummer(Collection<String> pNumre) {
+        this.pNummer.clear();
+        if (pNumre != null) {
+            for (String pNummer : pNumre) {
+                this.addPNummer(pNummer);
+            }
+        }
+    }
+
+    public void clearPNummer() {
+        this.pNummer.clear();
+    }
+
+
 
     @QueryField(type = QueryField.FieldType.INT, queryName = ASSOCIATED_COMPANY_CVR)
-    private String associatedCompanyCvrNumber;
+    private List<String> associatedCompanyCvrNumber = new ArrayList<>();
 
-    public String getAssociatedCompanyCvrNumber() {
+    public Collection<String> getAssociatedCompanyCvrNummer() {
         return associatedCompanyCvrNumber;
     }
 
-    public void setAssociatedCompanyCvrNumber(String associatedCompanyCvrNumber) {
-        this.associatedCompanyCvrNumber = associatedCompanyCvrNumber;
+    public void addAssociatedCompanyCvrNummer(String cvrNummer) {
+        if (cvrNummer != null) {
+            this.associatedCompanyCvrNumber.add(cvrNummer);
+            this.increaseDataParamCount();
+        }
     }
 
-    @QueryField(type = QueryField.FieldType.STRING, queryName = PRIMARYINDUSTRY)
-    private String primaryIndustry;
+    public void setAssociatedCompanyCvrNummer(String cvrNumre) {
+        this.associatedCompanyCvrNumber.clear();
+        this.addAssociatedCompanyCvrNummer(cvrNumre);
+    }
 
-    public String getPrimaryIndustry() {
+    public void setAssociatedCompanyCvrNummer(Collection<String> cvrNumre) {
+        this.associatedCompanyCvrNumber.clear();
+        if (cvrNumre != null) {
+            for (String cvrNummer : cvrNumre) {
+                this.addAssociatedCompanyCvrNummer(cvrNummer);
+            }
+        }
+    }
+
+    public void clearAssociatedCompanyCvrNummer() {
+        this.associatedCompanyCvrNumber.clear();
+    }
+
+
+
+    @QueryField(type = QueryField.FieldType.STRING, queryName = PRIMARYINDUSTRY)
+    private List<String> primaryIndustry = new ArrayList<>();
+
+    public Collection<String> getPrimaryIndustry() {
         return primaryIndustry;
     }
 
-    public void setPrimaryIndustry(String primaryIndustry) {
-        this.primaryIndustry = primaryIndustry;
+    public void addPrimaryIndustry(String primaryIndustry) {
+        if (primaryIndustry != null) {
+            this.primaryIndustry.add(primaryIndustry);
+            this.increaseDataParamCount();
+        }
     }
+
+    public void setPrimaryIndustry(String primaryIndustry) {
+        this.primaryIndustry.clear();
+        this.addPrimaryIndustry(primaryIndustry);
+    }
+
+    public void setPrimaryIndustry(Collection<String> primaryIndustries) {
+        this.primaryIndustry.clear();
+        if (primaryIndustries != null) {
+            for (String primaryIndustry : primaryIndustries) {
+                this.addPrimaryIndustry(primaryIndustry);
+            }
+        }
+    }
+
+    public void clearPrimaryIndustry() {
+        this.primaryIndustry.clear();
+    }
+
 
 
     @QueryField(type = QueryField.FieldType.STRING, queryName = KOMMUNEKODE)
-    private List<String> kommunekoder = new ArrayList<>();
+    private List<String> kommunekode = new ArrayList<>();
 
-    public Collection<String> getKommunekoder() {
-        return this.kommunekoder;
+    public Collection<String> getKommuneKode() {
+        return kommunekode;
     }
 
-    public void addKommunekode(String kommunekode) {
-        this.kommunekoder.add(kommunekode);
+    public void addKommuneKode(String kommunekode) {
+        if (kommunekode != null) {
+            this.kommunekode.add(kommunekode);
+            this.increaseDataParamCount();
+        }
     }
 
-    public void addKommunekode(int kommunekode) {
-        this.addKommunekode(String.format("%03d", kommunekode));
+    public void addKommuneKode(int kommunekode) {
+        this.addKommuneKode(String.format("%03d", kommunekode));
     }
+
+    public void setKommuneKode(String kommunekode) {
+        this.kommunekode.clear();
+        this.addKommuneKode(kommunekode);
+    }
+
+    public void setKommuneKode(Collection<String> kommunekoder) {
+        this.kommunekode.clear();
+        if (kommunekoder != null) {
+            for (String kommunekode : kommunekoder) {
+                this.addKommuneKode(kommunekode);
+            }
+        }
+    }
+
+    public void clearKommuneKode() {
+        this.kommunekode.clear();
+    }
+
 
 
     @Override
     public Map<String, Object> getSearchParameters() {
         HashMap<String, Object> map = new HashMap<>();
+        map.put(P_NUMBER, this.pNummer);
         map.put(ASSOCIATED_COMPANY_CVR, this.associatedCompanyCvrNumber);
         map.put(PRIMARYINDUSTRY, this.primaryIndustry);
-        map.put(KOMMUNEKODE, this.kommunekoder);
+        map.put(KOMMUNEKODE, this.kommunekode);
         return map;
     }
 
     @Override
     public void setFromParameters(ParameterMap parameters) {
-        this.setAssociatedCompanyCvrNumber(parameters.getFirst(ASSOCIATED_COMPANY_CVR));
+        this.setPNummer(parameters.getI(P_NUMBER));
+        this.setAssociatedCompanyCvrNummer(parameters.getI(ASSOCIATED_COMPANY_CVR));
         this.setPrimaryIndustry(parameters.getFirst(PRIMARYINDUSTRY));
-        if (parameters.containsKey(KOMMUNEKODE)) {
-            for (String kommunekode : parameters.get(KOMMUNEKODE)) {
-                this.addKommunekode(kommunekode);
-            }
-        }
+        this.setKommuneKode(parameters.getI(KOMMUNEKODE));
     }
 
     @Override
@@ -94,26 +194,27 @@ public class CompanyUnitQuery extends CvrQuery<CompanyUnitEntity> {
     @Override
     public LookupDefinition getLookupDefinition() {
         LookupDefinition lookupDefinition = new LookupDefinition(this, CompanyUnitBaseData.class);
-/*
-        if (this.pNumber != null) {
-            lookupDefinition.put(LookupDefinition.entityref + ".pNumber", this.pNumber);
-*/
-        if (this.associatedCompanyCvrNumber != null) {
+
+        if (this.pNummer != null && !this.pNummer.isEmpty()) {
+            lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + CompanyUnitEntity.DB_FIELD_PNUMBER, this.pNummer, Integer.class);
+        }
+
+        if (this.associatedCompanyCvrNumber != null && !this.associatedCompanyCvrNumber.isEmpty()) {
             lookupDefinition.put(CompanyUnitBaseData.DB_FIELD_CVR_NUMBER + LookupDefinition.separator + IntegerData.DB_FIELD_VALUE, this.associatedCompanyCvrNumber, Long.class);
         }
-        if (this.primaryIndustry != null) {
+        if (this.primaryIndustry != null && !this.primaryIndustry.isEmpty()) {
             lookupDefinition.put(CompanyUnitBaseData.DB_FIELD_PRIMARY_INDUSTRY + LookupDefinition.separator + IndustryData.DB_FIELD_INDUSTRY + LookupDefinition.separator + Industry.DB_FIELD_CODE, this.primaryIndustry, String.class);
             lookupDefinition.put(CompanyUnitBaseData.DB_FIELD_PRIMARY_INDUSTRY + LookupDefinition.separator + IndustryData.DB_FIELD_PRIMARY, true, Boolean.class);
         }
-        if (!this.kommunekoder.isEmpty()) {
+        if (this.kommunekode != null && !this.kommunekode.isEmpty()) {
             StringJoiner sj = new StringJoiner(LookupDefinition.separator);
             sj.add(CompanyUnitBaseData.DB_FIELD_LOCATION_ADDRESS);
             sj.add(AddressData.DB_FIELD_ADDRESS);
             sj.add(Address.DB_FIELD_MUNICIPALITY);
             sj.add(Municipality.DB_FIELD_CODE);
-            lookupDefinition.put(sj.toString(), this.kommunekoder, Integer.class);
+            lookupDefinition.put(sj.toString(), this.kommunekode, Integer.class);
         }
-        if (!this.getKommunekodeRestriction().isEmpty()) {
+        if (this.getKommunekodeRestriction() != null && !this.getKommunekodeRestriction().isEmpty()) {
             StringJoiner sj = new StringJoiner(LookupDefinition.separator);
             sj.add(CompanyUnitBaseData.DB_FIELD_LOCATION_ADDRESS);
             sj.add(AddressData.DB_FIELD_ADDRESS);

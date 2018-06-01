@@ -9,16 +9,16 @@ import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 import javax.persistence.*;
 
 /**
- * Created by lars on 16-05-17.
+ * Configuration instance class, holding configuration values in fields
  */
 @javax.persistence.Entity
 @Table(name="cvr_config")
 public class CvrConfiguration implements Configuration {
 
     public enum RegisterType {
-        DISABLED(-1),
-        //LOCAL_FILE(0),
-        REMOTE_HTTP(1);
+        DISABLED(0),
+        LOCAL_FILE(1),
+        REMOTE_HTTP(2);
 
         private int value;
         RegisterType(int value) {
@@ -61,7 +61,7 @@ public class CvrConfiguration implements Configuration {
             "        \"filtered\": {\n" +
             "            \"filter\": {\n" +
             "                \"range\": {\n" +
-            "                    \"Vrvirksomhed.sidstIndlaest\": {\n" +
+            "                    \"Vrvirksomhed.sidstOpdateret\": {\n" +
             "                        \"gte\": \"%s\"\n" +
             "                    }\n" +
             "                }\n" +
@@ -122,7 +122,7 @@ public class CvrConfiguration implements Configuration {
             "        \"filtered\": {\n" +
             "            \"filter\": {\n" +
             "                \"range\": {\n" +
-            "                    \"VrproduktionsEnhed.sidstIndlaest\": {\n" +
+            "                    \"VrproduktionsEnhed.sidstOpdateret\": {\n" +
             "                        \"gte\": \"%s\"\n" +
             "                    }\n" +
             "                }\n" +
@@ -180,7 +180,7 @@ public class CvrConfiguration implements Configuration {
             "        \"filtered\": {\n" +
             "            \"filter\": {\n" +
             "                \"range\": {\n" +
-            "                    \"Vrdeltagerperson.sidstIndlaest\": {\n" +
+            "                    \"Vrdeltagerperson.sidstOpdateret\": {\n" +
             "                        \"gte\": \"%s\"\n" +
             "                    }\n" +
             "                }\n" +
@@ -312,6 +312,34 @@ public class CvrConfiguration implements Configuration {
 
     public void setCompanyRegisterQuery(String companyRegisterQuery) {
         this.companyRegisterQuery = companyRegisterQuery;
+    }
+
+    public void setCompanyUnitRegisterUsername(String companyUnitRegisterUsername) {
+        this.companyUnitRegisterUsername = companyUnitRegisterUsername;
+    }
+
+    public void setCompanyUnitRegisterPassword(String companyUnitRegisterPassword) {
+        this.companyUnitRegisterPassword = companyUnitRegisterPassword;
+    }
+
+    public void setCompanyUnitRegisterQuery(String companyUnitRegisterQuery) {
+        this.companyUnitRegisterQuery = companyUnitRegisterQuery;
+    }
+
+    public void setParticipantRegisterUsername(String participantRegisterUsername) {
+        this.participantRegisterUsername = participantRegisterUsername;
+    }
+
+    public void setParticipantRegisterPassword(String participantRegisterPassword) {
+        this.participantRegisterPassword = participantRegisterPassword;
+    }
+
+    public void setParticipantRegisterQuery(String participantRegisterQuery) {
+        this.participantRegisterQuery = participantRegisterQuery;
+    }
+
+    public void setCompanyRegisterType(RegisterType companyRegisterType) {
+        this.companyRegisterType = companyRegisterType;
     }
 
     public void setCompanyUnitRegisterType(RegisterType companyUnitRegisterType) {

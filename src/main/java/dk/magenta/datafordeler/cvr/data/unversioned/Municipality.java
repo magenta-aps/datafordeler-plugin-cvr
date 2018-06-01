@@ -1,6 +1,5 @@
 package dk.magenta.datafordeler.cvr.data.unversioned;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import org.apache.logging.log4j.LogManager;
@@ -19,13 +18,12 @@ import java.util.List;
 import static dk.magenta.datafordeler.cvr.data.unversioned.Municipality.DB_FIELD_CODE;
 
 /**
- * Created by lars on 26-01-15.
+ * Nontemporal storage of a municipality (code + name).
  */
 @Entity
 @Table(name = "cvr_municipality", indexes = {
-        @Index(name = "companyMunicipalityCode", columnList = DB_FIELD_CODE)
+        @Index(name = "cvr_municipality_code", columnList = DB_FIELD_CODE)
 })
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Municipality extends UnversionedEntity {
 
     private static Logger log = LogManager.getLogger(Municipality.class.getSimpleName());
@@ -64,46 +62,76 @@ public class Municipality extends UnversionedEntity {
         this.name = name;
     }
 
+    @JsonProperty
+    public Long getId() {
+        return super.getId();
+    }
+
+
     //----------------------------------------------------
 
-    private static HashMap<Integer, Municipality> municipalityCache = new HashMap<>();
-
-    private static boolean prepopulated = false;
+    /**
+     * To avoid hitting the database every time we need a reference to a Municipality, we keep
+     * a cache of references. This cache is used to get a pointer to the L1 cache, for quick
+     * lookup, and avoids the dreaded "duplicate object" issue in Hibernate (where two queries
+     * return to equal objects, and saving one makes Hibernate complain that there's another
+     * object with this id.
+     */
+    private static HashMap<Integer, Long> municipalityCache = new HashMap<>();
 
     static {
         QueryManager.addCache(municipalityCache);
     }
 
-    public static void prepopulateCache(Session session) {
-        log.debug("Prepopulating municipality cache");
-        List<Municipality> municipalities = QueryManager.getAllItems(session, Municipality.class);
-        for (Municipality municipality : municipalities) {
-            municipalityCache.put(municipality.code, municipality);
+    public static void initializeCache(Session session) {
+        if (municipalityCache.isEmpty()) {
+            log.debug("Prepopulating municipality cache");
+            List<Municipality> municipalities = QueryManager.getAllItems(session, Municipality.class);
+            for (Municipality municipality : municipalities) {
+                municipalityCache.put(municipality.code, municipality.getId());
+            }
+            log.debug("municipality cache contains " + municipalityCache.size() + " nodes");
         }
-        log.debug("municipalityCache contains "+municipalityCache.size()+" nodes");
-        prepopulated = true;
     }
 
+    /**
+     * Obtain a Municipality object, either from cache or from database, if it exists, or creates one if it doesn't.
+     * @param code
+     * @param name
+     * @param session
+     * @return
+     */
     public static Municipality getMunicipality(int code, String name, Session session) {
         if (code > 0) {
-            Municipality municipality = municipalityCache.get(code);
+            initializeCache(session);
+            Municipality municipality = null;
+            Long id = municipalityCache.get(code);
+            if (id != null) {
+                municipality = session.get(Municipality.class, id);
+            }
             if (municipality == null) {
-                log.debug("Municipality code "+code+" not found in cache");
-                if (!prepopulated) {
-                    log.debug("Querying database");
-                    municipality = QueryManager.getItem(session, Municipality.class, Collections.singletonMap(DB_FIELD_CODE, code));
-                }
-                if (municipality == null) {
-                    municipality = new Municipality();
-                    municipality.setCode(code);
+                log.debug("Municipality code "+code+" not found in cache, querying database");
+                municipality = QueryManager.getItem(session, Municipality.class, Collections.singletonMap(DB_FIELD_CODE, code));
+                if (municipality != null && municipality.name.equals("") && name != null) {
                     municipality.setName(name);
                     session.save(municipality);
                 }
-                municipalityCache.put(code, municipality);
-            } else {
-                log.debug("Municipality "+code+" found in cache ("+municipality.getId()+")");
             }
+            if (municipality == null) {
+                log.debug("Municipality "+code+" not found; creating new, with name "+name);
+                municipality = new Municipality();
+                municipality.setCode(code);
+                if (name == null) {
+                    name = "";
+                }
+                municipality.setName(name);
+                session.save(municipality);
+            } else {
+                log.debug("Municipality "+code+" found ("+municipality.getId()+")");
+            }
+            municipalityCache.put(code, municipality.getId());
             return municipality;
+
         } else {
             return null;
         }

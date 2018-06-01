@@ -1,21 +1,23 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.data.DetailData;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by lars on 16-05-17.
+ * Storage for data on a Company's form
+ * referenced by {@link dk.magenta.datafordeler.cvr.data.company.CompanyBaseData}
  */
 @Entity
-@Table(name="cvr_company_form")
+@Table(name="cvr_company_form", indexes = {
+        @Index(name = "cvr_company_form_form", columnList = CompanyFormData.DB_FIELD_FORM + DatabaseEntry.REF)
+})
 public class CompanyFormData extends DetailData {
 
     /**
@@ -35,6 +37,7 @@ public class CompanyFormData extends DetailData {
     @ManyToOne
     @JsonProperty(value = IO_FIELD_FORM)
     @XmlElement(name = IO_FIELD_FORM)
+    @JoinColumn(name = DB_FIELD_FORM + DatabaseEntry.REF)
     private CompanyForm companyForm;
 
     public CompanyForm getCompanyForm() {

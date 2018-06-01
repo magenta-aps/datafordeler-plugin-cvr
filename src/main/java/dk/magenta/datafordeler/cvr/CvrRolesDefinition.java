@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by jubk on 01-07-2017.
- */
 public class CvrRolesDefinition extends RolesDefinition {
 
     public static ReadServiceRole READ_CVR_ROLE = new ReadServiceRole(

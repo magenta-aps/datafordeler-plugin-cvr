@@ -1,8 +1,10 @@
 package dk.magenta.datafordeler.cvr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dk.magenta.datafordeler.core.configuration.ConfigurationManager;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.*;
+import dk.magenta.datafordeler.core.io.ImportInputStream;
 import dk.magenta.datafordeler.core.io.ImportMetadata;
 import dk.magenta.datafordeler.core.io.PluginSourceData;
 import dk.magenta.datafordeler.core.plugin.*;
@@ -27,9 +29,6 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-/**
- * Created by lars on 16-05-17.
- */
 @Component
 public class CvrRegisterManager extends RegisterManager {
 
@@ -108,12 +107,20 @@ public class CvrRegisterManager extends RegisterManager {
         return this.configurationManager.getConfiguration().getPullCronSchedule();
     }
 
+    @Override
+    public boolean pullsEventsCommonly() {
+        return false;
+    }
+
 
     @Override
     public URI getEventInterface(EntityManager entityManager) {
         return null;
     }
 
+    public ConfigurationManager<CvrConfiguration> getConfigurationManager() {
+        return this.configurationManager;
+    }
 
     /**
      * Pull data from the data source denoted by eventInterface, using the
@@ -140,18 +147,25 @@ public class CvrRegisterManager extends RegisterManager {
         session.close();
 
         CvrConfiguration configuration = this.configurationManager.getConfiguration();
-        switch (configuration.getRegisterType(schema)) {
+        CvrConfiguration.RegisterType registerType = configuration.getRegisterType(schema);
+        if (registerType == null) {
+            registerType = CvrConfiguration.RegisterType.DISABLED;
+        }
+        switch (registerType) {
             case DISABLED:
                 break;
             case REMOTE_HTTP:
                 final ArrayList<Throwable> errors = new ArrayList<>();
                 InputStream responseBody;
-                File cacheFile = new File("cache/cvr" + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
+                File cacheFile = new File("local/cvr/" + entityManager.getSchema() + "_" + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
                 try {
                     if (!cacheFile.exists()) {
-
+                        log.info("Cache file "+cacheFile.getAbsolutePath()+" doesn't exist. Creating new and filling from source");
                         if (lastUpdateTime == null) {
                             lastUpdateTime = OffsetDateTime.parse("0000-01-01T00:00:00Z");
+                            log.info("Last update time not found");
+                        } else {
+                            log.info("Last update time: "+lastUpdateTime.format(DateTimeFormatter.ISO_LOCAL_DATE));
                         }
                         requestBody = String.format(
                                 configuration.getQuery(schema),
@@ -192,7 +206,7 @@ public class CvrRegisterManager extends RegisterManager {
                 }
 
                 try {
-                    return new FileInputStream(cacheFile);
+                    return new ImportInputStream(new FileInputStream(cacheFile), cacheFile);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }

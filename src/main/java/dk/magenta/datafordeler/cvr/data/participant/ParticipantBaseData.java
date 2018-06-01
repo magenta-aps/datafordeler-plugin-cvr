@@ -1,9 +1,14 @@
 package dk.magenta.datafordeler.cvr.data.participant;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DataItem;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.cvr.data.CvrData;
-import dk.magenta.datafordeler.cvr.data.shared.*;
+import dk.magenta.datafordeler.cvr.data.DetailData;
+import dk.magenta.datafordeler.cvr.data.shared.AddressData;
+import dk.magenta.datafordeler.cvr.data.shared.AttributeData;
+import dk.magenta.datafordeler.cvr.data.shared.ContactData;
 import dk.magenta.datafordeler.cvr.data.unversioned.Address;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -15,40 +20,52 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by lars on 16-05-17.
+ * Base class for Participant data, linking to Effects and delegating storage to referred classes
  */
 @javax.persistence.Entity
 @Table(name="cvr_participant_data", indexes = {
-        @Index(name = "cvr_participant_lastUpdated", columnList = "lastUpdated")
+        @Index(name = "cvr_participant_lastUpdated", columnList = DataItem.DB_FIELD_LAST_UPDATED),
+        @Index(name = "cvr_participant_unitnumber", columnList = ParticipantBaseData.DB_FIELD_UNIT_NUMBER),
+        @Index(name = "cvr_participant_location", columnList = ParticipantBaseData.DB_FIELD_LOCATION_ADDRESS + DatabaseEntry.REF)
 })
 public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantBaseData> {
 
     public static final String DB_FIELD_NAMES = "names";
-    public static final String IO_FIELD_NAMES = "navne";
+    public static final String IO_FIELD_NAMES = "navn";
 
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private TextData names;
+    @OneToMany(cascade = CascadeType.ALL, targetEntity = ParticipantName.class, mappedBy = ParticipantName.DB_FIELD_BASEDATA)
+    private Set<ParticipantName> names;
 
-    public String getNames() {
-        if (names != null) {
-            return names.getValue();
-        } else {
-            return null;
+    public Set<String> getNames() {
+        HashSet<String> nameSet = new HashSet<>();
+        if (this.names != null) {
+            for (ParticipantName nameItem : this.names) {
+                nameSet.add(nameItem.getValue());
+            }
         }
+        return nameSet;
     }
 
-    public void setNames(String name) {
+    public void addName(String name) {
         if (this.names == null) {
-            this.names = new TextData(TextData.Type.NAVN);
+            this.names = new HashSet<>();
         }
-        this.names.setValue(name);
+        for (ParticipantName nameItem : this.names) {
+            if (name.equals(nameItem.getValue())) {
+                return;
+            }
+        }
+        ParticipantName participantName = new ParticipantName();
+        participantName.setParticipantBaseData(this);
+        participantName.setValue(name);
+        this.names.add(participantName);
     }
 
     //--------------------------------------------------------------------------
 
 
     public static final String DB_FIELD_PHONENUMBER = "phoneNumber";
-    public static final String IO_FIELD_PHONENUMBER = "telefonnummer";
+    public static final String IO_FIELD_PHONENUMBER = "telefon";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private ContactData phoneNumber;
@@ -75,7 +92,7 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
 
 
     public static final String DB_FIELD_EMAIL = "emailAddress";
-    public static final String IO_FIELD_EMAIL = "emailadresse";
+    public static final String IO_FIELD_EMAIL = "email";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private ContactData emailAddress;
@@ -102,7 +119,7 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
 
 
     public static final String DB_FIELD_FAXNUMBER = "faxNumber";
-    public static final String IO_FIELD_FAXNUMBER = "telefaxnummer";
+    public static final String IO_FIELD_FAXNUMBER = "telefax";
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private ContactData faxNumber;
@@ -128,26 +145,26 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
     //--------------------------------------------------------------------------
 
 
-    public static final String DB_FIELD_LOCATION_ADDRESS = "locationAddress";
+    public static final String DB_FIELD_LOCATION_ADDRESS = "locationaddress";
     public static final String IO_FIELD_LOCATION_ADDRESS = "beliggenhedsadresse";
 
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private AddressData locationAddress;
+    @OneToOne(optional = true, cascade = CascadeType.ALL, targetEntity = AddressData.class)
+    private AddressData locationaddress;
 
     @JsonProperty(value = IO_FIELD_LOCATION_ADDRESS)
     public Address getLocationAddress() {
-        if (locationAddress != null) {
-            return locationAddress.getAddress();
+        if (locationaddress != null) {
+            return locationaddress.getAddress();
         } else {
             return null;
         }
     }
 
     public void setLocationAddress(Address address) {
-        if (this.locationAddress == null) {
-            this.locationAddress = new AddressData();
+        if (this.locationaddress == null) {
+            this.locationaddress = new AddressData();
         }
-        this.locationAddress.setAddress(address);
+        this.locationaddress.setAddress(address);
     }
 
 
@@ -203,28 +220,19 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
 
     //--------------------------------------------------------------------------
 
-
     public static final String DB_FIELD_UNIT_NUMBER = "unitNumber";
-    public static final String IO_FIELD_UNIT_NUMBER = "enhedsnummer";
+    public static final String IO_FIELD_UNIT_NUMBER = "deltagernummer";
 
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private IntegerData unitNumber;
+    @Column(nullable = true, name = DB_FIELD_UNIT_NUMBER)
+    private Long unitNumber;
 
     public Long getUnitNumber() {
-        if (unitNumber != null) {
-            return unitNumber.getValue();
-        } else {
-            return null;
-        }
+        return this.unitNumber;
     }
 
     public void setUnitNumber(long unitNumber) {
-        if (this.unitNumber == null) {
-            this.unitNumber = new IntegerData();
-        }
-        this.unitNumber.setValue(unitNumber);
+        this.unitNumber = unitNumber;
     }
-
 
     //--------------------------------------------------------------------------
 
@@ -298,7 +306,7 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
     public static final String DB_FIELD_ATTRIBUTES = "attributeData";
     public static final String IO_FIELD_ATTRIBUTES = "attributter";
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = AttributeData.DB_FIELD_PARTICIPANTBASE)
     private Set<AttributeData> attributeData = new HashSet<>();
 
     public Set<AttributeData> getAttributeData() {
@@ -313,8 +321,35 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
         return attributeData;
     }
 
+    public void addAttribute(String type, String valueType, String value, int sequenceNumber) {
+        AttributeData attributeData = new AttributeData();
+        attributeData.setType(type);
+        attributeData.setValueType(valueType);
+        attributeData.setValue(value);
+        attributeData.setSequenceNumber(sequenceNumber);
+        this.addAttribute(attributeData);
+    }
+
     public void addAttribute(AttributeData attributeData) {
+        attributeData.setParticipantBaseData(this);
         this.attributeData.add(attributeData);
+    }
+
+    //--------------------------------------------------------------------------
+
+    public static final String DB_FIELD_POSITION = "position";
+    public static final String IO_FIELD_POSITION = "stilling";
+
+    @Column(name = DB_FIELD_POSITION, nullable = true)
+    private String position;
+
+    public String getPosition() {
+        return this.position;
+    }
+
+    @JsonProperty(value = IO_FIELD_POSITION)
+    public void setPosition(String position) {
+        this.position = position;
     }
 
     //--------------------------------------------------------------------------
@@ -329,10 +364,8 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
     public Map<String, Object> asMap() {
         HashMap<String, Object> map = new HashMap<>();
 
-
-
         if (this.names != null) {
-            map.put("names", this.names.getValue());
+            map.put("names", this.getNames());
         }
         if (this.phoneNumber != null) {
             map.put("phoneNumber", this.phoneNumber.getValue());
@@ -343,8 +376,8 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
         if (this.faxNumber != null) {
             map.put("faxNumber", this.faxNumber.getValue());
         }
-        if (this.locationAddress != null) {
-            map.put("locationAddress", this.locationAddress.getAddress());
+        if (this.locationaddress != null) {
+            map.put("locationaddress", this.locationaddress.getAddress());
         }
         if (this.postalAddress != null) {
             map.put("postalAddress", this.postalAddress.getAddress());
@@ -353,7 +386,7 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
             map.put("businessAddress", this.businessAddress.getAddress());
         }
         if (this.unitNumber != null) {
-            map.put("unitNumber", this.unitNumber.getValue());
+            map.put("unitNumber", this.unitNumber);
         }
         if (this.unitType != null) {
             map.put("unitType", this.unitType.getName());
@@ -376,7 +409,7 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
         LookupDefinition lookupDefinition = new LookupDefinition(ParticipantBaseData.class);
         lookupDefinition.setMatchNulls(true);
         if (this.names != null) {
-            lookupDefinition.putAll(DB_FIELD_NAMES, this.names.databaseFields());
+            lookupDefinition.putAll(DB_FIELD_NAMES, DetailData.listDatabaseFields(this.names));
         }
         if (this.phoneNumber != null) {
             lookupDefinition.putAll(DB_FIELD_PHONENUMBER, this.phoneNumber.databaseFields());
@@ -387,8 +420,8 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
         if (this.faxNumber != null) {
             lookupDefinition.putAll(DB_FIELD_FAXNUMBER, this.faxNumber.databaseFields());
         }
-        if (this.locationAddress != null) {
-            lookupDefinition.putAll(DB_FIELD_LOCATION_ADDRESS, this.locationAddress.databaseFields());
+        if (this.locationaddress != null) {
+            lookupDefinition.putAll(DB_FIELD_LOCATION_ADDRESS, this.locationaddress.databaseFields());
         }
         if (this.postalAddress != null) {
             lookupDefinition.putAll(DB_FIELD_LOCATION_ADDRESS, this.postalAddress.databaseFields());
@@ -397,7 +430,7 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
             lookupDefinition.putAll(DB_FIELD_BUSINESS_ADDRESS, this.businessAddress.databaseFields());
         }
         if (this.unitNumber != null) {
-            lookupDefinition.putAll(DB_FIELD_UNIT_NUMBER, this.unitNumber.databaseFields());
+            lookupDefinition.put(DB_FIELD_UNIT_NUMBER, this.unitNumber);
         }
         if (this.status != null) {
             lookupDefinition.putAll(DB_FIELD_STATUS, this.status.databaseFields());
@@ -408,7 +441,6 @@ public class ParticipantBaseData extends CvrData<ParticipantEffect, ParticipantB
 
         return lookupDefinition;
     }
-
 
     public void forceLoad(Session session) {
         Hibernate.initialize(this.attributeData);

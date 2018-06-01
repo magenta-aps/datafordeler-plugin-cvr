@@ -18,7 +18,7 @@ import java.util.List;
 import static dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm.DB_FIELD_CODE;
 
 /**
- * Created by lars on 26-01-15.
+ * Nontemporal storage of a company form.
  */
 @Entity
 @Table(name = "cvr_form", indexes = {
@@ -67,7 +67,7 @@ public class CompanyForm extends UnversionedEntity {
     //----------------------------------------------------
 
     public static final String DB_FIELD_CODE = "companyFormCode";
-    public static final String IO_FIELD_CODE = "virksomhedsformkode";
+    public static final String IO_FIELD_CODE = "formkode";
 
     @JsonProperty(value = IO_FIELD_CODE)
     @XmlElement(name = IO_FIELD_CODE)
@@ -85,7 +85,7 @@ public class CompanyForm extends UnversionedEntity {
     //----------------------------------------------------
 
     public static final String DB_FIELD_SOURCE = "responsibleDataSource";
-    public static final String IO_FIELD_SOURCE = "ansvarligDataleverandoer";
+    public static final String IO_FIELD_SOURCE = "dataleverandør";
 
     @JsonProperty(value = IO_FIELD_SOURCE)
     @XmlElement(name = IO_FIELD_SOURCE)
@@ -102,46 +102,63 @@ public class CompanyForm extends UnversionedEntity {
 
     //----------------------------------------------------
 
-    private static HashMap<String, CompanyForm> formCache = new HashMap<>();
+    /**
+     * To avoid hitting the database every time we need a reference to a CompanyForm, we keep
+     * a cache of references. This cache is used to get a pointer to the L1 cache, for quick
+     * lookup, and avoids the dreaded "duplicate object" issue in Hibernate (where two queries
+     * return to equal objects, and saving one makes Hibernate complain that there's another
+     * object with this id.
+     */
+    private static HashMap<String, Long> formCache = new HashMap<>();
 
     static {
         QueryManager.addCache(formCache);
     }
 
-    private static boolean prepopulated = false;
-
-    public static void prepopulateCache(Session session) {
-        log.debug("Prepopulating form cache");
-        List<CompanyForm> forms = QueryManager.getAllItems(session, CompanyForm.class);
-        for (CompanyForm companyForm : forms) {
-            formCache.put(companyForm.companyFormCode, companyForm);
+    public static void initializeCache(Session session) {
+        if (formCache.isEmpty()) {
+            log.debug("Prepopulating form cache");
+            List<CompanyForm> municipalities = QueryManager.getAllItems(session, CompanyForm.class);
+            for (CompanyForm form : municipalities) {
+                formCache.put(form.companyFormCode, form.getId());
+            }
+            log.debug("form cache contains " + formCache.size() + " nodes");
         }
-        log.debug("companyFormCache contains "+formCache.size()+" nodes");
-        prepopulated = true;
     }
 
-    public static CompanyForm getForm(String companyFormCode, String shortDescription, String longDescription, String responsibleDataSource, Session session) {
-        if (companyFormCode != null) {
-            CompanyForm form = formCache.get(companyFormCode);
-            if (form == null) {
-                log.debug("Form code "+companyFormCode+" not found in cache");
-                if (!prepopulated) {
-                    log.debug("Querying database");
-                    form = QueryManager.getItem(session, CompanyForm.class, Collections.singletonMap(DB_FIELD_CODE, companyFormCode));
-                }
-                if (form == null) {
-                    log.debug("Not found; creating new");
-                    form = new CompanyForm();
-                    form.setCompanyFormCode(companyFormCode);
-                    form.setShortDescription(shortDescription);
-                    form.setLongDescription(longDescription);
-                    form.setResponsibleDataSource(responsibleDataSource);
-                    session.save(form);
-                }
-                formCache.put(companyFormCode, form);
-            } else {
-                log.debug("Form "+companyFormCode+" found in cache ("+form.getId()+")");
+    /**
+     * Obtain a CompanyForm object, either from cache or from database, if it exists, or creates one if it doesn't.
+     * @param code
+     * @param shortDescription
+     * @param longDescription
+     * @param responsibleDataSource
+     * @param session
+     * @return
+     */
+    public static CompanyForm getForm(String code, String shortDescription, String longDescription, String responsibleDataSource, Session session) {
+        if (code != null) {
+            initializeCache(session);
+            CompanyForm form = null;
+            Long id = formCache.get(code);
+            if (id != null) {
+                form = session.get(CompanyForm.class, id);
             }
+            if (form == null) {
+                log.debug("CompanyForm code "+code+" not found in cache, querying database");
+                form = QueryManager.getItem(session, CompanyForm.class, Collections.singletonMap(DB_FIELD_CODE, code));
+            }
+            if (form == null) {
+                log.debug("CompanyForm "+code+" not found; creating new");
+                form = new CompanyForm();
+                form.setCompanyFormCode(code);
+                form.setShortDescription(shortDescription);
+                form.setLongDescription(longDescription);
+                form.setResponsibleDataSource(responsibleDataSource);
+                session.save(form);
+            } else {
+                log.debug("CompanyForm "+code+" found in cache ("+form.getId()+")");
+            }
+            formCache.put(code, form.getId());
             return form;
         } else {
             return null;

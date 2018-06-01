@@ -3,6 +3,8 @@ package dk.magenta.datafordeler.cvr.data.participant;
 import dk.magenta.datafordeler.core.database.RegistrationReference;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.fapi.FapiService;
+import dk.magenta.datafordeler.cvr.configuration.CvrConfiguration;
+import dk.magenta.datafordeler.cvr.configuration.CvrConfigurationManager;
 import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.records.ParticipantRecord;
 import org.apache.logging.log4j.LogManager;
@@ -15,9 +17,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.UUID;
 
-/**
- * Created by lars on 16-05-17.
- */
 @Component
 public class ParticipantEntityManager extends CvrEntityManager<ParticipantEntity, ParticipantRegistration, ParticipantEffect, ParticipantBaseData, ParticipantRecord> {
 
@@ -84,19 +83,28 @@ public class ParticipantEntityManager extends CvrEntityManager<ParticipantEntity
 
     @Override
     protected UUID generateUUID(ParticipantRecord record) {
-        return ParticipantEntity.generateUUID(record.unitType, record.unitNumber);
+        return ParticipantEntity.generateUUID(record.getUnitType(), record.getUnitNumber());
     }
 
     @Override
     protected ParticipantEntity createBasicEntity(ParticipantRecord record) {
         ParticipantEntity participant = new ParticipantEntity();
-        participant.setParticipantNumber(record.unitNumber);
+        participant.setParticipantNumber(record.getUnitNumber());
         return participant;
     }
 
     @Override
     protected ParticipantBaseData createDataItem() {
         return new ParticipantBaseData();
+    }
+
+    @Autowired
+    private CvrConfigurationManager configurationManager;
+
+    @Override
+    public boolean pullEnabled() {
+        CvrConfiguration configuration = configurationManager.getConfiguration();
+        return (configuration.getParticipantRegisterType() != CvrConfiguration.RegisterType.DISABLED);
     }
 
 }

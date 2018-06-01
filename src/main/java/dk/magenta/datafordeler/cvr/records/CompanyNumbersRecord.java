@@ -1,16 +1,21 @@
 package dk.magenta.datafordeler.cvr.records;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by lars on 26-06-17.
+ * Abstract record for Company and CompanyUnit employee numbers.
  */
-public abstract class CompanyNumbersRecord extends CvrBaseRecord {
+@MappedSuperclass
+@JsonIgnoreProperties(ignoreUnknown = true)
+public abstract class CompanyNumbersRecord extends CvrBitemporalDataRecord {
 
     private static class Range {
         public int low;
@@ -22,14 +27,26 @@ public abstract class CompanyNumbersRecord extends CvrBaseRecord {
         }
     }
 
-    @JsonProperty(value = "antalAnsatte")
-    private int employees;
+    public static final String DB_FIELD_EMPLOYEES_BASE = "employees";
+    public static final String IO_FIELD_EMPLOYEES_BASE = "antalAnsatte";
 
-    @JsonIgnore
-    private int employeeLow;
+    @Column(name = DB_FIELD_EMPLOYEES_BASE)
+    @JsonProperty(value = IO_FIELD_EMPLOYEES_BASE)
+    private Integer employees;
 
-    @JsonIgnore
-    private int employeeHigh;
+    public static final String DB_FIELD_EMPLOYEES_LOW = "employeeLow";
+    public static final String IO_FIELD_EMPLOYEES_LOW = "antalAnsatteMin";
+
+    @Column(name = DB_FIELD_EMPLOYEES_LOW)
+    @JsonProperty(value = IO_FIELD_EMPLOYEES_LOW)
+    private Integer employeeLow;
+
+    public static final String DB_FIELD_EMPLOYEES_HIGH = "employeeHigh";
+    public static final String IO_FIELD_EMPLOYEES_HIGH = "antalAnsatteMax";
+
+    @Column(name = DB_FIELD_EMPLOYEES_HIGH)
+    @JsonProperty(value = IO_FIELD_EMPLOYEES_HIGH)
+    private Integer employeeHigh;
 
     @JsonProperty(value = "intervalKodeAntalAnsatte")
     public void setEmployeeRange(String range) {
@@ -40,24 +57,32 @@ public abstract class CompanyNumbersRecord extends CvrBaseRecord {
         }
     }
 
-    public int getEmployeeLow() {
+    @JsonProperty(value = "intervalKodeAntalAnsatte")
+    public String getEmployeeRange() {
+        if (this.employeeLow != null && this.employeeHigh != null) {
+            return "ANTAL_" + this.employeeLow + "_" + this.employeeHigh;
+        }
+        return null;
+    }
+
+    public Integer getEmployeeLow() {
         return this.employeeLow;
     }
 
-    public int getEmployeeHigh() {
+    public Integer getEmployeeHigh() {
         return this.employeeHigh;
     }
 
 
 
     @JsonProperty(value = "antalAarsvaerk")
-    private int fulltimeEquivalent;
+    private Integer fulltimeEquivalent;
 
-    @JsonIgnore
-    private int fulltimeEquivalentLow;
+    @JsonProperty(value = "antalAarsvaerkMin")
+    private Integer fulltimeEquivalentLow;
 
-    @JsonIgnore
-    private int fulltimeEquivalentHigh;
+    @JsonProperty(value = "antalAarsvaerkMax")
+    private Integer fulltimeEquivalentHigh;
 
     @JsonProperty(value = "intervalKodeAntalAarsvaerk")
     public void setFulltimeEquivalentRange(String range) {
@@ -68,24 +93,32 @@ public abstract class CompanyNumbersRecord extends CvrBaseRecord {
         }
     }
 
-    public int getFulltimeEquivalentLow() {
+    @JsonProperty(value = "intervalKodeAntalAarsvaerk")
+    public String getFulltimeEquivalentRange() {
+        if (this.fulltimeEquivalentLow != null && this.fulltimeEquivalentHigh != null) {
+            return "ANTAL_" + this.fulltimeEquivalentLow + "_" + this.fulltimeEquivalentHigh;
+        }
+        return null;
+    }
+
+    public Integer getFulltimeEquivalentLow() {
         return this.fulltimeEquivalentLow;
     }
 
-    public int getFulltimeEquivalentHigh() {
+    public Integer getFulltimeEquivalentHigh() {
         return this.fulltimeEquivalentHigh;
     }
 
 
 
     @JsonProperty(value = "antalInklusivEjere")
-    private int includingOwners;
+    private Integer includingOwners;
 
-    @JsonIgnore
-    private int includingOwnersLow;
+    @JsonProperty(value = "antalInklusivEjereMin")
+    private Integer includingOwnersLow;
 
-    @JsonIgnore
-    private int includingOwnersHigh;
+    @JsonProperty(value = "antalInklusivEjereMax")
+    private Integer includingOwnersHigh;
 
     @JsonProperty(value = "intervalKodeAntalInklusivEjere")
     public void setIncludingOwnersRange(String range) {
@@ -96,11 +129,19 @@ public abstract class CompanyNumbersRecord extends CvrBaseRecord {
         }
     }
 
-    public int getIncludingOwnersLow() {
+    @JsonProperty(value = "intervalKodeAntalInklusivEjere")
+    public String getIncludingOwnersRange() {
+        if (this.includingOwnersLow != null && this.includingOwnersHigh != null) {
+            return "ANTAL_" + this.includingOwnersLow + "_" + this.includingOwnersHigh;
+        }
+        return null;
+    }
+
+    public Integer getIncludingOwnersLow() {
         return this.includingOwnersLow;
     }
 
-    public int getIncludingOwnersHigh() {
+    public Integer getIncludingOwnersHigh() {
         return this.includingOwnersHigh;
     }
 
@@ -122,5 +163,27 @@ public abstract class CompanyNumbersRecord extends CvrBaseRecord {
 
     public LocalDate getValidTo() {
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        CompanyNumbersRecord that = (CompanyNumbersRecord) o;
+        return Objects.equals(employees, that.employees) &&
+                Objects.equals(employeeLow, that.employeeLow) &&
+                Objects.equals(employeeHigh, that.employeeHigh) &&
+                Objects.equals(fulltimeEquivalent, that.fulltimeEquivalent) &&
+                Objects.equals(fulltimeEquivalentLow, that.fulltimeEquivalentLow) &&
+                Objects.equals(fulltimeEquivalentHigh, that.fulltimeEquivalentHigh) &&
+                Objects.equals(includingOwners, that.includingOwners) &&
+                Objects.equals(includingOwnersLow, that.includingOwnersLow) &&
+                Objects.equals(includingOwnersHigh, that.includingOwnersHigh);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), employees, employeeLow, employeeHigh, fulltimeEquivalent, fulltimeEquivalentLow, fulltimeEquivalentHigh, includingOwners, includingOwnersLow, includingOwnersHigh);
     }
 }

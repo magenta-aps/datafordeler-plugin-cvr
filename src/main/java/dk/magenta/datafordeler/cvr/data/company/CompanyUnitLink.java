@@ -10,14 +10,15 @@ import javax.xml.bind.annotation.XmlElement;
 import java.util.*;
 
 /**
- * Created by lars on 15-06-17.
+ * Storage for data on a Company's units
+ * referenced by {@link dk.magenta.datafordeler.cvr.data.company.CompanyBaseData}
  */
 @Entity
 @Table(name = "cvr_company_unitlink")
 public class CompanyUnitLink extends DetailData {
 
     public static final String DB_FIELD_PNUMBER = "pNumber";
-    public static final String IO_FIELD_PNUMBER = "pNummer";
+    public static final String IO_FIELD_PNUMBER = "pnummer";
 
     @JsonProperty(value = IO_FIELD_PNUMBER)
     @XmlElement(name = IO_FIELD_PNUMBER)
@@ -35,7 +36,7 @@ public class CompanyUnitLink extends DetailData {
     //------------------------------------------------------------
 
     public static final String DB_FIELD_IDENTIFICATION = "identification";
-    public static final String IO_FIELD_IDENTIFICATION = "identification";
+    public static final String IO_FIELD_IDENTIFICATION = "identifikation";
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JsonProperty(value = IO_FIELD_IDENTIFICATION)

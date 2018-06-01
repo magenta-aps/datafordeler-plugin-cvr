@@ -10,13 +10,12 @@ import javax.persistence.Table;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by lars on 16-05-17.
- */
 @Entity
 @Table(
     name = "cvr_company_boolean",
-    indexes = {@Index(name = "companyTypeBoolean", columnList = "type")}
+    indexes = {
+            @Index(name = "cvr_boolean_type", columnList = "type")
+    }
 )
 public class BooleanData extends SingleData<Boolean> {
 
