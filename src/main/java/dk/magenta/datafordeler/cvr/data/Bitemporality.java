@@ -5,10 +5,7 @@ import dk.magenta.datafordeler.core.util.Equality;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Objects;
-import java.util.Set;
 
 public class Bitemporality {
     public OffsetDateTime registrationFrom = null;

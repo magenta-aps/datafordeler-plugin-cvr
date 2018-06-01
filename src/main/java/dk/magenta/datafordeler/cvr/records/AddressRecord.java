@@ -14,7 +14,10 @@ import org.hibernate.Session;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Record for Company, CompanyUnit and Participant address data.
