@@ -65,7 +65,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
     private static boolean IMPORT_ONLY_CURRENT = false;
     private static boolean DONT_IMPORT_CURRENT = false;
     private static boolean SAVE_RECORD_DATA = false;
-    private static boolean SAVE_ONLY_RECORDS = false;
+    private static boolean SAVE_ONLY_RECORDS = true;
 
     private ScanScrollCommunicator commonFetcher;
 
