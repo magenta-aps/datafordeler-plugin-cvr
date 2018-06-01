@@ -8,10 +8,7 @@ import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import org.hibernate.Session;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Record for one participating organization on a Company or CompanyUnit
@@ -21,7 +18,7 @@ import java.util.Set;
         @Index(name = OrganizationRecord.TABLE_NAME + "__relation", columnList = OrganizationRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OrganizationRecord extends DatabaseEntry {
+public class OrganizationRecord extends CvrRecord {
 
     public static final String TABLE_NAME = CompanyParticipantRelationRecord.TABLE_NAME + "_organization";
 
@@ -209,5 +206,14 @@ public class OrganizationRecord extends DatabaseEntry {
                 }
             }
         }
+    }
+
+    @Override
+    public List<CvrRecord> subs() {
+        ArrayList<CvrRecord> subs = new ArrayList<>(super.subs());
+        subs.addAll(this.names);
+        subs.addAll(this.attributes);
+        subs.addAll(this.memberData);
+        return subs;
     }
 }

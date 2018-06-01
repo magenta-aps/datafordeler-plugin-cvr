@@ -257,4 +257,22 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
     }
 
     public abstract boolean merge(MetadataRecord other);
+
+    @Override
+    public List<CvrRecord> subs() {
+        ArrayList<CvrRecord> subs = new ArrayList<>(super.subs());
+        if (this.newestYearlyNumbers != null) {
+            subs.add(this.newestYearlyNumbers);
+        }
+        if (this.newestMonthlyNumbers != null) {
+            subs.add(this.newestMonthlyNumbers);
+        }
+        if (this.newestQuarterlyNumbers != null) {
+            subs.add(this.newestQuarterlyNumbers);
+        }
+        if (this.newestStatus != null) {
+            subs.add(this.newestStatus);
+        }
+        return subs;
+    }
 }

@@ -9,9 +9,7 @@ import org.hibernate.annotations.Filters;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = CompanyUnitMetadataRecord.TABLE_NAME, indexes = {
@@ -353,5 +351,18 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<CvrRecord> subs() {
+        ArrayList<CvrRecord> subs = new ArrayList<>(super.subs());
+        subs.addAll(this.newestName);
+        subs.addAll(this.newestLocation);
+        subs.addAll(this.newestPrimaryIndustry);
+        subs.addAll(this.newestSecondaryIndustry1);
+        subs.addAll(this.newestSecondaryIndustry2);
+        subs.addAll(this.newestSecondaryIndustry3);
+        subs.addAll(this.metadataContactRecords);
+        return subs;
     }
 }

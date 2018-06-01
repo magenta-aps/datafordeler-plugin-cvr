@@ -266,4 +266,18 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
     public int hashCode() {
         return Objects.hash(super.hashCode(), relationParticipantRecord, relationCompanyRecord, offices, organizations);
     }
+
+    @Override
+    public List<CvrRecord> subs() {
+        ArrayList<CvrRecord> subs = new ArrayList<>(super.subs());
+        if (this.relationParticipantRecord != null) {
+            subs.add(this.relationParticipantRecord);
+        }
+        if (this.relationCompanyRecord != null) {
+            subs.add(this.relationCompanyRecord);
+        }
+        subs.addAll(this.offices);
+        subs.addAll(this.organizations);
+        return subs;
+    }
 }

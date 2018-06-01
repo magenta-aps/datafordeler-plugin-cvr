@@ -6,10 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Record for one participant on a Company or CompanyUnit
@@ -301,7 +298,18 @@ public class RelationCompanyRecord extends CvrBitemporalRecord {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(super.hashCode(), unitNumber, unitType, cvrNumber);
+    }
+
+    @Override
+    public List<CvrRecord> subs() {
+        ArrayList<CvrRecord> subs = new ArrayList<>(super.subs());
+        subs.addAll(this.regNumber);
+        subs.addAll(this.names);
+        subs.addAll(this.lifecycle);
+        subs.addAll(this.status);
+        subs.addAll(this.companyStatus);
+        subs.addAll(this.form);
+        return subs;
     }
 }

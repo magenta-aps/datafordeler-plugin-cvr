@@ -3,15 +3,12 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.*;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Effect;
-import dk.magenta.datafordeler.core.database.Registration;
 import org.hibernate.Session;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.Filters;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = ParticipantMetadataRecord.TABLE_NAME, indexes = {
@@ -131,4 +128,11 @@ public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
         return false;
     }
 
+    @Override
+    public List<CvrRecord> subs() {
+        ArrayList<CvrRecord> subs = new ArrayList<>(super.subs());
+        subs.addAll(this.newestLocation);
+        subs.addAll(this.metadataContactRecords);
+        return subs;
+    }
 }

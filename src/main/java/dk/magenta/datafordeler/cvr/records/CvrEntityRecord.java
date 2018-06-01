@@ -55,6 +55,12 @@ public abstract class CvrEntityRecord extends CvrBitemporalRecord implements Ide
         }
     }
 
+    public void setDafoUpdateOnTree(OffsetDateTime updateTime) {
+        for (CvrRecord record : this.fullSubs()) {
+            record.setDafoUpdated(updateTime);
+        }
+    }
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     protected Identification identification;
 

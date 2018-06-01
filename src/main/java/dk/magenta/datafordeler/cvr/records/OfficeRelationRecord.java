@@ -7,9 +7,7 @@ import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import org.hibernate.Session;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Record for one participant on a Company or CompanyUnit
@@ -119,4 +117,13 @@ public class OfficeRelationRecord extends CvrNontemporalRecord {
         }
     }
 
+    @Override
+    public List<CvrRecord> subs() {
+        ArrayList<CvrRecord> subs = new ArrayList<>(super.subs());
+        subs.addAll(this.attributes);
+        if (this.officeRelationUnitRecord != null) {
+            subs.add(this.officeRelationUnitRecord);
+        }
+        return subs;
+    }
 }
