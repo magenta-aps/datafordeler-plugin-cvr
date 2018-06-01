@@ -274,7 +274,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                         }
                         timer.measure(TASK_COMMIT);
 
-                        log.info("Chunk " + chunkCount + ":\n" + timer.formatAllTotal());
+                        log.debug("Chunk " + chunkCount + ":\n" + timer.formatAllTotal());
                     }
                     chunkCount++;
                 } catch (IOException e) {
@@ -334,7 +334,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                 if (jsonNode.size() == 0) {
                     throw new DataStreamException("No input data");
                 }
-                log.info("Node contains "+jsonNode.size()+" subnodes");
+                log.debug("Node contains "+jsonNode.size()+" subnodes");
                 // We have a list of results
 
                 for (JsonNode item : jsonNode) {
