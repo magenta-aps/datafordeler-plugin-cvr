@@ -64,8 +64,6 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
 
     private static boolean IMPORT_ONLY_CURRENT = false;
     private static boolean DONT_IMPORT_CURRENT = false;
-    private static boolean SAVE_RECORD_DATA = false;
-    private static boolean SAVE_ONLY_RECORDS = true;
 
     private ScanScrollCommunicator commonFetcher;
 
@@ -324,7 +322,6 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
      * @throws ParseException
      */
     public List<? extends Registration> parseData(JsonNode jsonNode, ImportMetadata importMetadata, Session session) throws DataFordelerException {
-        ArrayList<Registration> registrations = new ArrayList<>();
 
         if (jsonNode.has("hits")) {
             jsonNode = jsonNode.get("hits");
@@ -336,17 +333,12 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                     throw new DataStreamException("No input data");
                 }
                 log.debug("Node contains "+jsonNode.size()+" subnodes");
-                // We have a list of results
-
                 for (JsonNode item : jsonNode) {
-                    registrations.addAll(this.parseData(item, importMetadata, session));
-                    //this.parseData(item, importMetadata, session);
+                    this.parseData(item, importMetadata, session);
                 }
-
-                return registrations;
+                return null;
             }
         }
-
 
         timer.start(TASK_PARSE);
         this.checkInterrupt(importMetadata);
@@ -366,114 +358,10 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         }
         timer.measure(TASK_PARSE);
 
-        
         toplevelRecord.setDafoUpdateOnTree(importMetadata.getImportTime());
         toplevelRecord.save(session);
-
-        if (!SAVE_ONLY_RECORDS) {
-
-            timer.start(TASK_FIND_ENTITY);
-            this.checkInterrupt(importMetadata);
-            UUID uuid = this.generateUUID(toplevelRecord);
-            E entity = null;
-            String domain = CvrPlugin.getDomain();
-            Identification identification = QueryManager.getIdentification(session, uuid, domain);
-            if (identification != null) {
-                entity = QueryManager.getEntity(session, identification, this.getEntityClass());
-            }
-            if (entity == null) {
-                log.debug("Creating new Entity");
-                entity = this.createBasicEntity(toplevelRecord);
-                entity.setIdentifikation(
-                        QueryManager.getOrCreateIdentification(session, uuid, domain)
-                );
-            } else {
-                log.debug("Using existing entity");
-            }
-            timer.measure(TASK_FIND_ENTITY);
-
-            this.checkInterrupt(importMetadata);
-            HashSet<R> entityRegistrations = new HashSet<>();
-            OffsetDateTime lastUpdate = this.getLastUpdated(session);
-            List<CvrRecord> recentlyUpdated = toplevelRecord.getSince(lastUpdate);
-
-
-            ListHashMap<Bitemporality, CvrRecord> groups = this.sortIntoGroups(recentlyUpdated);
-
-            for (Bitemporality bitemporality : groups.keySet()) {
-
-                timer.start(TASK_FIND_REGISTRATIONS);
-                List<CvrRecord> group = groups.get(bitemporality);
-                List<R> entityRegistrationList = entity.findRegistrations(bitemporality.registrationFrom, bitemporality.registrationTo);
-                ArrayList<V> effects = new ArrayList<>();
-                for (R registration : entityRegistrationList) {
-                    V effect = registration.getEffect(bitemporality);
-                    if (effect == null) {
-                        effect = registration.createEffect(bitemporality);
-                    }
-                    effects.add(effect);
-                }
-                entityRegistrations.addAll(entityRegistrationList);
-                timer.measure(TASK_FIND_REGISTRATIONS);
-
-
-                timer.start(TASK_FIND_ITEMS);
-                // R-V-D scenario
-                // Every DataItem that we locate for population must match the given effects exactly,
-                // or we risk assigning data to an item that shouldn't be assigned to
-                D baseData = null;
-                HashSet<D> searchPool = new HashSet<>();
-                for (V effect : effects) {
-                    searchPool.addAll(effect.getDataItems());
-                }
-
-                for (D data : searchPool) {
-                    if (data.getEffects().containsAll(effects) && effects.containsAll(data.getEffects())) {
-                        baseData = data;
-                        log.debug("Reuse existing basedata");
-                        break;
-                    }
-                }
-                if (baseData == null) {
-                    log.debug("Creating new basedata");
-                    baseData = this.createDataItem();
-                    for (V effect : effects) {
-                        log.debug("Wire basedata to effect " + effect.getRegistration().getRegistrationFrom() + "|" + effect.getRegistration().getRegistrationTo() + "|" + effect.getEffectFrom() + "|" + effect.getEffectTo());
-                        baseData.addEffect(effect);
-                    }
-                }
-                timer.measure(TASK_FIND_ITEMS);
-
-                OffsetDateTime timestamp = importMetadata.getImportTime();
-                for (CvrRecord record : group) {
-                    timer.start(TASK_POPULATE_DATA + " " + record.getClass().getSimpleName());
-                    record.populateBaseData(baseData, session, timestamp);
-                    baseData.setUpdated(timestamp);
-                    if (SAVE_RECORD_DATA) {
-                        RecordData recordData = new RecordData(timestamp);
-                        recordData.setSourceData(objectMapper.valueToTree(record).toString());
-                        baseData.addRecordData(recordData);
-                    }
-                    timer.measure(TASK_POPULATE_DATA + " " + record.getClass().getSimpleName());
-                }
-            }
-
-
-            timer.start(TASK_SAVE);
-            for (R registration : entityRegistrations) {
-                registration.setLastImportTime(importMetadata.getImportTime());
-                session.saveOrUpdate(registration);
-            }
-            session.saveOrUpdate(entity);
-            timer.measure(TASK_SAVE);
-
-
-            registrations.addAll(entityRegistrations);
-
-            this.checkInterrupt(importMetadata);
-
-        }
-        return registrations;
+        
+        return null;
     }
 
     /**
