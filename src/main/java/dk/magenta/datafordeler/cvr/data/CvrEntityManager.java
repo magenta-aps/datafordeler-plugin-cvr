@@ -279,7 +279,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                     throw new DataStreamException(e);
                 }
             }
-            log.info("Removing progress indicator");
+            log.info(timer.formatAllTotal());
             Session progressSession = this.configurationSessionManager.getSessionFactory().openSession();
             progressSession.beginTransaction();
             progressSession.delete(progress);
