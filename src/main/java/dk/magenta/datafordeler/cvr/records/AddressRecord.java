@@ -29,6 +29,7 @@ import java.util.UUID;
         @Index(name = AddressRecord.TABLE_NAME + "__participant", columnList = AddressRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
         @Index(name = AddressRecord.TABLE_NAME + "__companymetadata", columnList = AddressRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
         @Index(name = AddressRecord.TABLE_NAME + "__unitmetadata", columnList = AddressRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
+        @Index(name = AddressRecord.TABLE_NAME + "__participantmetadata", columnList = AddressRecord.DB_FIELD_PARTICIPANT_METADATA + DatabaseEntry.REF),
         @Index(name = AddressRecord.TABLE_NAME + "__officeunit", columnList = AddressRecord.DB_FIELD_OFFICE_UNIT + DatabaseEntry.REF),
         @Index(name = AddressRecord.TABLE_NAME + "__participantrelation", columnList = AddressRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF),
         @Index(name = AddressRecord.TABLE_NAME + "__type", columnList = AddressRecord.DB_FIELD_TYPE),
