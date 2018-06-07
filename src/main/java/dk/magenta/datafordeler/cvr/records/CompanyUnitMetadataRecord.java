@@ -13,7 +13,7 @@ import java.util.*;
 
 @Entity
 @Table(name = CompanyUnitMetadataRecord.TABLE_NAME, indexes = {
-        @Index(name = CompanyUnitMetadataRecord.TABLE_NAME + "__unit", columnList = MetadataRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = CompanyUnitMetadataRecord.TABLE_NAME + "__unit", columnList = MetadataRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF, unique = true),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyUnitMetadataRecord extends MetadataRecord {
