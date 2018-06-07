@@ -17,8 +17,8 @@ import java.util.UUID;
  */
 @javax.persistence.Entity
 @Table(name="cvr_participant_entity", indexes = {
-        @Index(name = "cvr_participant_identification", columnList = "identification_id"),
-        @Index(name = "cvr_participant_participantNumber", columnList = "participantNumber")
+        @Index(name = "cvr_participant_identification", columnList = "identification_id", unique = true),
+        @Index(name = "cvr_participant_participantNumber", columnList = "participantNumber", unique = true)
 })
 public class ParticipantEntity extends CvrEntity<ParticipantEntity, ParticipantRegistration> {
 

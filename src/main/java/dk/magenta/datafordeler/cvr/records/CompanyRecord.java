@@ -22,7 +22,7 @@ import java.util.*;
  */
 @Entity
 @Table(name = CompanyRecord.TABLE_NAME, indexes = {
-        @Index(name = CompanyRecord.TABLE_NAME + "__cvrnumber", columnList = CompanyRecord.DB_FIELD_CVR_NUMBER),
+        @Index(name = CompanyRecord.TABLE_NAME + "__cvrnumber", columnList = CompanyRecord.DB_FIELD_CVR_NUMBER, unique = true),
         @Index(name = CompanyRecord.TABLE_NAME + "__advertprotection", columnList = CompanyRecord.DB_FIELD_ADVERTPROTECTION)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)

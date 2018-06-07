@@ -17,8 +17,8 @@ import java.util.UUID;
  */
 @javax.persistence.Entity
 @Table(name="cvr_companyunit_entity", indexes = {
-        @Index(name = "cvr_companyunit_identification", columnList = "identification_id"),
-        @Index(name = "cvr_companyunit_pNumber", columnList = "pNumber")
+        @Index(name = "cvr_companyunit_identification", columnList = "identification_id", unique = true),
+        @Index(name = "cvr_companyunit_pNumber", columnList = "pNumber", unique = true)
 })
 public class CompanyUnitEntity extends CvrEntity<CompanyUnitEntity, CompanyUnitRegistration> {
 

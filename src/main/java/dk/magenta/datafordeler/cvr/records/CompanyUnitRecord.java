@@ -23,8 +23,8 @@ import java.util.*;
  */
 @Entity
 @Table(name = CompanyUnitRecord.TABLE_NAME, indexes = {
-        @Index(name = CompanyUnitRecord.TABLE_NAME + "__pnumber", columnList = CompanyUnitRecord.DB_FIELD_P_NUMBER),
-        @Index(name = CompanyUnitRecord.TABLE_NAME + "__unitnumber", columnList = CompanyUnitRecord.DB_FIELD_UNITNUMBER),
+        @Index(name = CompanyUnitRecord.TABLE_NAME + "__pnumber", columnList = CompanyUnitRecord.DB_FIELD_P_NUMBER, unique = true),
+        @Index(name = CompanyUnitRecord.TABLE_NAME + "__unitnumber", columnList = CompanyUnitRecord.DB_FIELD_UNITNUMBER, unique = true),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyUnitRecord extends CvrEntityRecord {
