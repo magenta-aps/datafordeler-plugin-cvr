@@ -22,7 +22,9 @@ import java.util.*;
  * with this class at the base.
  */
 @Entity
-@Table(name=ParticipantRecord.TABLE_NAME)
+@Table(name=ParticipantRecord.TABLE_NAME, indexes = {
+        @Index(name = ParticipantRecord.TABLE_NAME + "__unitNumber", columnList = ParticipantRecord.DB_FIELD_UNIT_NUMBER, unique = true)
+})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ParticipantRecord extends CvrEntityRecord {
 
