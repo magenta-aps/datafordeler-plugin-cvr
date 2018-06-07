@@ -12,7 +12,7 @@ import java.util.*;
 
 @Entity
 @Table(name = ParticipantMetadataRecord.TABLE_NAME, indexes = {
-        @Index(name = ParticipantMetadataRecord.TABLE_NAME + "__participant", columnList = ParticipantMetadataRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+        @Index(name = ParticipantMetadataRecord.TABLE_NAME + "__participant", columnList = ParticipantMetadataRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF, unique = true),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {

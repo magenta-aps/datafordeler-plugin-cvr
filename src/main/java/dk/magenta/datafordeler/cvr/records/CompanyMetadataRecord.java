@@ -14,7 +14,7 @@ import java.util.*;
 
 @Entity
 @Table(name = CompanyMetadataRecord.TABLE_NAME, indexes = {
-        @Index(name = CompanyMetadataRecord.TABLE_NAME + "__company", columnList = MetadataRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = CompanyMetadataRecord.TABLE_NAME + "__company", columnList = MetadataRecord.DB_FIELD_COMPANY + DatabaseEntry.REF, unique = true),
         @Index(name = CompanyMetadataRecord.TABLE_NAME + "__unit", columnList = MetadataRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
