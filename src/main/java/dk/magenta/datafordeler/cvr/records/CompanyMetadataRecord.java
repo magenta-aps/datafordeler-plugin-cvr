@@ -15,12 +15,11 @@ import java.util.*;
 @Entity
 @Table(name = CompanyMetadataRecord.TABLE_NAME, indexes = {
         @Index(name = CompanyMetadataRecord.TABLE_NAME + "__company", columnList = MetadataRecord.DB_FIELD_COMPANY + DatabaseEntry.REF, unique = true),
-        @Index(name = CompanyMetadataRecord.TABLE_NAME + "__unit", columnList = MetadataRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyMetadataRecord extends MetadataRecord {
 
-    public static final String TABLE_NAME = "cvr_record_metadata";
+    public static final String TABLE_NAME = "cvr_record_company_metadata";
 
     public static final String DB_FIELD_NEWEST_FORM = "newestForm";
     public static final String IO_FIELD_NEWEST_FORM = "nyesteVirksomhedsform";
