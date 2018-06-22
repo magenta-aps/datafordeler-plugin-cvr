@@ -169,7 +169,7 @@ public class CvrRegisterManager extends RegisterManager {
                         }
                         requestBody = String.format(
                                 configuration.getQuery(schema),
-                                lastUpdateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                                lastUpdateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
                         );
 
                         eventCommunicator.setUsername(configuration.getUsername(schema));

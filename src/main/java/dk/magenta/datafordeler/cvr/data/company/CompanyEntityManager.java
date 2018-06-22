@@ -142,27 +142,20 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
 
         String requestBody = "{" +
                 "\"query\": {" +
-                "\"filtered\": {" +
-                "\"query\": {" +
                 "\"terms\": {" +
-                "\"cvrNummer\": [" + csep.toString() + "]" +
+                "\"Vrvirksomhed.cvrNummer\": [" + csep.toString() + "]" +
                 "}";
         if (since != null) {
             requestBody += "}," +
-                    "\"filter\": {" +
                     "\"range\": {" +
                     "\"Vrvirksomhed.sidstOpdateret\": {" +
-                    "\"gte\": \""+since.format(DateTimeFormatter.ISO_LOCAL_DATE)+"\"" +
-                    "}" +
+                    "\"gte\": \""+since.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)+"\"" +
                     "}" +
                     "}";
         } else {
             requestBody += "}";
         }
-         requestBody +=
-                "}"+
-                "}"+
-                "}";
+         requestBody += "}";
 
         InputStream rawData;
         try {
