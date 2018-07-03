@@ -223,6 +223,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         long startChunk = importMetadata.getStartChunk();
 
         InterruptedPull progress = new InterruptedPull();
+        timer.clear();
 
         try {
             while (scanner.hasNext()) {
@@ -279,7 +280,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                     throw new DataStreamException(e);
                 }
             }
-            log.info(timer.formatAllTotal());
+            log.info("All chunks handled\n"+timer.formatAllTotal());
             Session progressSession = this.configurationSessionManager.getSessionFactory().openSession();
             progressSession.beginTransaction();
             progressSession.delete(progress);
@@ -295,6 +296,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             e.setEntityManager(this);
             throw e;
         }
+        log.info("Parse complete");
         return null;
     }
 
