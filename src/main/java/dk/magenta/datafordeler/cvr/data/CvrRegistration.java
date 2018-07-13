@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.data;
 
 import dk.magenta.datafordeler.core.database.Registration;
+import dk.magenta.datafordeler.core.util.Bitemporality;
 import dk.magenta.datafordeler.core.util.Equality;
 
 import java.time.OffsetDateTime;

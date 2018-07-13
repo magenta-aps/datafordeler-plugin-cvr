@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.*;
 import dk.magenta.datafordeler.core.fapi.OutputWrapper;
+import dk.magenta.datafordeler.core.util.Bitemporality;
+import dk.magenta.datafordeler.core.util.BitemporalityComparator;
 import dk.magenta.datafordeler.core.util.DoubleListHashMap;
 import dk.magenta.datafordeler.core.util.ListHashMap;
-import dk.magenta.datafordeler.cvr.data.Bitemporality;
-import dk.magenta.datafordeler.cvr.data.BitemporalityComparator;
 import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 import dk.magenta.datafordeler.cvr.records.*;
 
@@ -221,7 +221,7 @@ public abstract class RecordOutputWrapper<E extends CvrEntityRecord> extends Out
                             ArrayNode effectsNode = objectMapper.createArrayNode();
                             registrationNode.set("virkninger", effectsNode);
                             ArrayList<Bitemporality> sortedEffects = new ArrayList<>(presentBitemporalities);
-                            sortedEffects.sort(effectComparator);
+                            sortedEffects.sort(BitemporalityComparator.EFFECT);
                             Bitemporality lastEffect = null;
                             ObjectNode effectNode = null;
                             for (Bitemporality bitemporality : sortedEffects) {
@@ -301,10 +301,6 @@ public abstract class RecordOutputWrapper<E extends CvrEntityRecord> extends Out
     protected abstract void fillMetadataContainer(OutputContainer container, E item);
 
     protected abstract ObjectMapper getObjectMapper();
-
-    protected static final Comparator<Bitemporality> effectComparator =
-            Comparator.nullsFirst(new BitemporalityComparator(BitemporalityComparator.Type.EFFECT_FROM))
-            .thenComparing(Comparator.nullsLast(new BitemporalityComparator(BitemporalityComparator.Type.EFFECT_TO)));
 
     protected static String formatTime(OffsetDateTime time) {
         return formatTime(time, false);

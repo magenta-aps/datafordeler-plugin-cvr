@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.Effect;
 import dk.magenta.datafordeler.core.database.Registration;
+import dk.magenta.datafordeler.core.util.Bitemporality;
 import dk.magenta.datafordeler.core.util.Equality;
 import dk.magenta.datafordeler.core.util.ListHashMap;
-import dk.magenta.datafordeler.cvr.data.Bitemporality;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
