@@ -40,7 +40,7 @@ import org.springframework.stereotype.Component;
  * }
  */
 @Component
-public class ParticipantRecordOutputWrapper extends RecordOutputWrapper<ParticipantRecord> {
+public class ParticipantRecordOutputWrapper extends CvrRecordOutputWrapper<ParticipantRecord> {
 
     @Autowired
     private ObjectMapper objectMapper;

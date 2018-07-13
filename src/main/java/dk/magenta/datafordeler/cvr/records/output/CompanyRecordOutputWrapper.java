@@ -42,7 +42,7 @@ import java.util.Collections;
  * }
  */
 @Component
-public class CompanyRecordOutputWrapper extends RecordOutputWrapper<CompanyRecord> {
+public class CompanyRecordOutputWrapper extends CvrRecordOutputWrapper<CompanyRecord> {
 
     @Autowired
     private ObjectMapper objectMapper;
