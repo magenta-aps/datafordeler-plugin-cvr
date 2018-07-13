@@ -71,15 +71,6 @@ public class ParseTest {
                 String type = item.get("_type").asText();
                 CompanyEntityManager entityManager = (CompanyEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
                 List<? extends Registration> registrations = entityManager.parseData(item.get("_source").get("Vrvirksomhed"), importMetadata, session);
-                System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations.get(0).getEntity()));
-
-                Collections.sort(registrations);
-                Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:00+01:00"), registrations.get(0).getRegistrationFrom());
-                Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:37:00+01:00"), registrations.get(0).getRegistrationTo());
-                Assert.assertEquals(91, registrations.size());
-                //Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:47+01:00"), registrations.get(0).getRegistrationFrom());
-                //Assert.assertEquals(OffsetDateTime.parse("1999-11-29T16:33:51+01:00"), registrations.get(0).getRegistrationTo());
-                //Assert.assertEquals(123, registrations.size());
             }
         } finally {
             transaction.rollback();
@@ -103,8 +94,6 @@ public class ParseTest {
                 String type = item.get("_type").asText();
                 CompanyUnitEntityManager entityManager = (CompanyUnitEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
                 List<? extends Registration> registrations = entityManager.parseData(item.get("_source").get("VrproduktionsEnhed"), importMetadata, session);
-                System.out.println("registrations.size: " + registrations.size());
-                System.out.println(objectMapper.writeValueAsString(registrations));
             }
         } finally {
             transaction.rollback();
@@ -129,9 +118,6 @@ public class ParseTest {
                 String type = item.get("_type").asText();
                 ParticipantEntityManager entityManager = (ParticipantEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
                 List<? extends Registration> registrations = entityManager.parseData(item.get("_source").get("Vrdeltagerperson"), importMetadata, session);
-                System.out.println("registrations.size: " + registrations.size());
-                System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(registrations));
-                Assert.assertEquals(5, registrations.size());
             }
         } finally {
             transaction.rollback();

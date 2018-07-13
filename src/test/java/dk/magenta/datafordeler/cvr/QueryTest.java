@@ -8,6 +8,7 @@ import dk.magenta.datafordeler.core.Application;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
+import dk.magenta.datafordeler.core.fapi.OutputWrapper;
 import dk.magenta.datafordeler.core.fapi.ParameterMap;
 import dk.magenta.datafordeler.core.io.ImportMetadata;
 import dk.magenta.datafordeler.core.user.DafoUserManager;
@@ -724,7 +725,7 @@ public class QueryTest {
             query.setNavn("Morten Kjærsgaard");
 
             List<ParticipantEntity> entities = QueryManager.getAllEntities(session, query, ParticipantEntity.class);
-            List<Object> wrapped = participantOutputWrapper.wrapResults(entities, query);
+            List<Object> wrapped = participantOutputWrapper.wrapResults(entities, query, OutputWrapper.Mode.LEGACY);
 
             Assert.assertEquals(1, wrapped.size());
             Assert.assertTrue(wrapped.get(0) instanceof ObjectNode);
@@ -736,7 +737,7 @@ public class QueryTest {
 
             loadParticipant(importMetadata);
             entities = QueryManager.getAllEntities(session, query, ParticipantEntity.class);
-            wrapped = participantOutputWrapper.wrapResults(entities, query);
+            wrapped = participantOutputWrapper.wrapResults(entities, query, OutputWrapper.Mode.LEGACY);
             String secondImport = objectMapper.writeValueAsString(wrapped);
 
             assertJsonEquality(objectMapper.readTree(firstImport), objectMapper.readTree(secondImport), true, true);
