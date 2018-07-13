@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.data;
 
 import dk.magenta.datafordeler.core.database.Effect;
+import dk.magenta.datafordeler.core.util.Bitemporality;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.TemporalAccessor;

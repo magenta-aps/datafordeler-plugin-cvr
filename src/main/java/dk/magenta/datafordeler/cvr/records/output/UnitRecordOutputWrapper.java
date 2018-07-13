@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dk.magenta.datafordeler.core.database.Entity;
 import dk.magenta.datafordeler.core.fapi.Query;
-import dk.magenta.datafordeler.cvr.data.Bitemporality;
+import dk.magenta.datafordeler.core.util.Bitemporality;
 import dk.magenta.datafordeler.cvr.records.CompanyUnitMetadataRecord;
 import dk.magenta.datafordeler.cvr.records.CompanyUnitRecord;
 import org.springframework.beans.factory.annotation.Autowired;
