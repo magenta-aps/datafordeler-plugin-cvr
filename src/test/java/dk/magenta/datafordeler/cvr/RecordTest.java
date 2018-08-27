@@ -13,6 +13,7 @@ import dk.magenta.datafordeler.core.io.ImportMetadata;
 import dk.magenta.datafordeler.core.user.DafoUserManager;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntityManager;
+import dk.magenta.datafordeler.cvr.data.company.CompanyOutputWrapper;
 import dk.magenta.datafordeler.cvr.data.company.CompanyRecordQuery;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntityManager;
@@ -21,6 +22,7 @@ import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntityManager;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantRecordQuery;
 import dk.magenta.datafordeler.cvr.records.*;
+import dk.magenta.datafordeler.cvr.records.output.CompanyRecordOutputWrapper;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.junit.Assert;
@@ -54,6 +56,9 @@ public class RecordTest {
 
     @Autowired
     private SessionManager sessionManager;
+
+    @Autowired
+    private CompanyRecordOutputWrapper companyRecordOutputWrapper;
 
     @Autowired
     private CvrPlugin plugin;
@@ -180,6 +185,8 @@ public class RecordTest {
             query.clearVirksomhedsform();
             query.setVirksomhedsnavn("MAGENTA ApS");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
+
+            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(this.companyRecordOutputWrapper.wrapResult(QueryManager.getAllEntities(session, query, CompanyRecord.class).get(0), query)));
             query.clearKommuneKoder();
 
 

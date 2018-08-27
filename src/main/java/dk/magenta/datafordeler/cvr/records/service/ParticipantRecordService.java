@@ -75,11 +75,6 @@ public class ParticipantRecordService extends FapiBaseService<ParticipantRecord,
     }
 
     @Override
-    protected Class<? extends DataItem> getDataClass() {
-        return CompanyBaseData.class;
-    }
-
-    @Override
     public Plugin getPlugin() {
         return this.cvrPlugin;
     }

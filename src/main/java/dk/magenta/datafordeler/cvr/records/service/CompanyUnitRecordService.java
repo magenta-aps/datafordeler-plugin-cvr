@@ -75,11 +75,6 @@ public class CompanyUnitRecordService extends FapiBaseService<CompanyUnitRecord,
     }
 
     @Override
-    protected Class<? extends DataItem> getDataClass() {
-        return CompanyBaseData.class;
-    }
-
-    @Override
     public Plugin getPlugin() {
         return this.cvrPlugin;
     }

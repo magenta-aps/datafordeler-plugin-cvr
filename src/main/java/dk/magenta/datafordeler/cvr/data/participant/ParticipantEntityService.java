@@ -48,11 +48,6 @@ public class ParticipantEntityService extends FapiService<ParticipantEntity, Par
     }
 
     @Override
-    protected Class<? extends DataItem> getDataClass() {
-        return ParticipantBaseData.class;
-    }
-
-    @Override
     public Plugin getPlugin() {
         return this.cvrPlugin;
     }

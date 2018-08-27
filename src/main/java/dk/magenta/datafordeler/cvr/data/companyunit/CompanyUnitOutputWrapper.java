@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.data.companyunit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import dk.magenta.datafordeler.core.fapi.BaseQuery;
 import dk.magenta.datafordeler.core.fapi.Query;
 import dk.magenta.datafordeler.cvr.data.CvrOutputWrapper;
 import dk.magenta.datafordeler.cvr.data.shared.LifecycleData;
@@ -17,7 +18,7 @@ public class CompanyUnitOutputWrapper extends CvrOutputWrapper<CompanyUnitEntity
     private ObjectMapper objectMapper;
 
     @Override
-    public Object wrapResult(CompanyUnitEntity input, Query query) {
+    public Object wrapResult(CompanyUnitEntity input, BaseQuery query) {
 
         objectMapper = new ObjectMapper();
 

@@ -48,11 +48,6 @@ public class CompanyEntityService extends FapiService<CompanyEntity, CompanyQuer
     }
 
     @Override
-    protected Class<? extends DataItem> getDataClass() {
-        return CompanyBaseData.class;
-    }
-
-    @Override
     public Plugin getPlugin() {
         return this.cvrPlugin;
     }
