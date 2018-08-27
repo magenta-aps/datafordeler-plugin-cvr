@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records.output;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dk.magenta.datafordeler.core.database.Entity;
+import dk.magenta.datafordeler.core.fapi.BaseQuery;
 import dk.magenta.datafordeler.core.fapi.Query;
 import dk.magenta.datafordeler.core.util.Bitemporality;
 import dk.magenta.datafordeler.cvr.records.ParticipantMetadataRecord;
@@ -51,7 +52,7 @@ public class ParticipantRecordOutputWrapper extends CvrRecordOutputWrapper<Parti
     }
 
     @Override
-    public Object wrapResult(ParticipantRecord record, Query query) {
+    public Object wrapResult(ParticipantRecord record, BaseQuery query) {
         Bitemporality mustContain = new Bitemporality(query.getRegistrationFrom(), query.getRegistrationTo(), query.getEffectFrom(), query.getEffectTo());
         return this.asRVD(record, mustContain);
         //return this.asRecord(unitRecord);
