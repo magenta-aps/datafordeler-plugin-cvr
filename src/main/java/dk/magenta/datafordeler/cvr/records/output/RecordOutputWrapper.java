@@ -49,9 +49,9 @@ import java.util.function.Function;
  */
 public abstract class RecordOutputWrapper<E extends CvrEntityRecord> extends OutputWrapper<E> {
 
-    protected class OutputContainer {
+    public abstract List<String> getRemoveFieldNames();
 
-        private final List<String> removeFieldNames = Arrays.asList(new String[]{"periode", "sidstOpdateret", "sidstIndlaest", "dafoOpdateret"});
+    protected class OutputContainer {
 
         private DoubleListHashMap<Bitemporality, String, JsonNode> bitemporalData = new DoubleListHashMap<>();
 
@@ -82,7 +82,7 @@ public abstract class RecordOutputWrapper<E extends CvrEntityRecord> extends Out
                     JsonNode value = (converter != null) ? converter.apply(record) : objectMapper.valueToTree(record);
                     if (value instanceof ObjectNode) {
                         ObjectNode oValue = (ObjectNode) value;
-                        oValue.remove(removeFieldNames);
+                        oValue.remove(RecordOutputWrapper.this.getRemoveFieldNames());
                         if (unwrapSingle && value.size() == 1) {
                             this.bitemporalData.add(record.getBitemporality(), key, oValue.get(oValue.fieldNames().next()));
                             continue;

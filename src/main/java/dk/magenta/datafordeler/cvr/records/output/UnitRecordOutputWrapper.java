@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records.output;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dk.magenta.datafordeler.core.database.Entity;
+import dk.magenta.datafordeler.core.fapi.BaseQuery;
 import dk.magenta.datafordeler.core.fapi.Query;
 import dk.magenta.datafordeler.core.util.Bitemporality;
 import dk.magenta.datafordeler.cvr.records.CompanyUnitMetadataRecord;
@@ -42,7 +43,7 @@ import java.util.Collections;
  * }
  */
 @Component
-public class UnitRecordOutputWrapper extends RecordOutputWrapper<CompanyUnitRecord> {
+public class UnitRecordOutputWrapper extends CvrRecordOutputWrapper<CompanyUnitRecord> {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -53,7 +54,7 @@ public class UnitRecordOutputWrapper extends RecordOutputWrapper<CompanyUnitReco
     }
 
     @Override
-    public Object wrapResult(CompanyUnitRecord record, Query query) {
+    public Object wrapResult(CompanyUnitRecord record, BaseQuery query) {
         Bitemporality mustContain = new Bitemporality(query.getRegistrationFrom(), query.getRegistrationTo(), query.getEffectFrom(), query.getEffectTo());
         return this.asRVD(record, mustContain);
         //return this.asRecord(unitRecord);
