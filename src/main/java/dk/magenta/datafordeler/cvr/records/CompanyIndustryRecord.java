@@ -122,4 +122,13 @@ public class CompanyIndustryRecord extends CvrBitemporalDataMetaRecord {
     public int hashCode() {
         return Objects.hash(super.hashCode(), index, industryCode, industryText);
     }
+
+    @Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        CompanyIndustryRecord that = (CompanyIndustryRecord) o;
+        return index == that.index &&
+                Objects.equals(industryCode, that.industryCode) &&
+                Objects.equals(industryText, that.industryText);
+    }
 }

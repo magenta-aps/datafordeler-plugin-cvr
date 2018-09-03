@@ -141,4 +141,15 @@ public class FormRecord extends CvrBitemporalDataRecord {
     public int hashCode() {
         return Objects.hash(super.hashCode(), companyFormCode, shortDescription, longDescription, responsibleDatasource, companyForm);
     }
+
+    @Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        FormRecord that = (FormRecord) o;
+        return Objects.equals(companyFormCode, that.companyFormCode) &&
+                Objects.equals(shortDescription, that.shortDescription) &&
+                Objects.equals(longDescription, that.longDescription) &&
+                Objects.equals(responsibleDatasource, that.responsibleDatasource) &&
+                Objects.equals(companyForm, that.companyForm);
+    }
 }

@@ -89,4 +89,12 @@ public class CompanyMonthlyNumbersRecord extends CompanyNumbersRecord {
     public int hashCode() {
         return Objects.hash(super.hashCode(), year, month);
     }
+
+
+    @Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        CompanyMonthlyNumbersRecord that = (CompanyMonthlyNumbersRecord) o;
+        return year == that.year && month == that.month;
+    }
 }

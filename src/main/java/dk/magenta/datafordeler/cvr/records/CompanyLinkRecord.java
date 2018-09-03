@@ -36,4 +36,10 @@ public class CompanyLinkRecord extends CvrBitemporalDataRecord {
         baseData.addAssociatedCvrNumber(this.cvrNumber);
     }
 
+    @Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        CompanyLinkRecord that = (CompanyLinkRecord) o;
+        return this.cvrNumber == that.cvrNumber;
+    }
 }

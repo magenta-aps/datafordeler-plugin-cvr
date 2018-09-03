@@ -135,4 +135,11 @@ public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
         subs.addAll(this.metadataContactRecords);
         return subs;
     }
+
+    /*@Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        ParticipantMetadataRecord that = (ParticipantMetadataRecord) o;
+        return this.cvrNumber == that.cvrNumber;
+    }*/
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.Effect;
+import dk.magenta.datafordeler.core.database.Nontemporal;
 import dk.magenta.datafordeler.core.database.Registration;
 import org.hibernate.Session;
 import org.hibernate.annotations.Filter;
@@ -17,10 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @MappedSuperclass
@@ -274,5 +272,24 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
             subs.add(this.newestStatus);
         }
         return subs;
+    }
+
+    @Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        MetadataRecord that = (MetadataRecord) o;
+        if (
+                !Objects.equals(this.aggregateStatus, that.aggregateStatus) ||
+                !Objects.equals(this.effectDate, that.effectDate) ||
+                !Objects.equals(this.foundingDate, that.foundingDate) ||
+                !Objects.equals(this.unitCount, that.unitCount) ||
+                !Nontemporal.equalData(this.newestMonthlyNumbers, that.newestMonthlyNumbers) ||
+                !Nontemporal.equalData(this.newestQuarterlyNumbers, that.newestQuarterlyNumbers) ||
+                !Nontemporal.equalData(this.newestYearlyNumbers, that.newestYearlyNumbers) ||
+                !Nontemporal.equalData(this.newestStatus, that.newestStatus)
+                ) {
+            return false;
+        }
+        return true;
     }
 }

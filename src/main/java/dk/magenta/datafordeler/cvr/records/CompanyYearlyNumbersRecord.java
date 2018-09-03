@@ -74,4 +74,11 @@ public class CompanyYearlyNumbersRecord extends CompanyNumbersRecord {
     public int hashCode() {
         return Objects.hash(super.hashCode(), year);
     }
+
+    @Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        CompanyYearlyNumbersRecord that = (CompanyYearlyNumbersRecord) o;
+        return year == that.year;
+    }
 }
