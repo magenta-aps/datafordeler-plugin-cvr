@@ -1,13 +1,7 @@
 package dk.magenta.datafordeler.cvr.records.output;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import dk.magenta.datafordeler.core.database.Entity;
-import dk.magenta.datafordeler.core.fapi.BaseQuery;
-import dk.magenta.datafordeler.core.util.Bitemporality;
 import dk.magenta.datafordeler.cvr.records.CompanyUnitMetadataRecord;
 import dk.magenta.datafordeler.cvr.records.CompanyUnitRecord;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -44,35 +38,9 @@ import java.util.Collections;
 @Component
 public class UnitRecordOutputWrapper extends CvrRecordOutputWrapper<CompanyUnitRecord> {
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Override
-    protected ObjectMapper getObjectMapper() {
-        return this.objectMapper;
-    }
-
-    @Override
-    public Object wrapResult(CompanyUnitRecord record, BaseQuery query) {
-        Bitemporality mustContain = new Bitemporality(query.getRegistrationFrom(), query.getRegistrationTo(), query.getEffectFrom(), query.getEffectTo());
-        return this.asRVD(record, mustContain);
-        //return this.asRecord(unitRecord);
-    }
-
-    private ObjectNode asRecord(CompanyUnitRecord record) {
-        return objectMapper.valueToTree(record);
-    }
-
-    protected ObjectNode asRVD(CompanyUnitRecord record, Bitemporality mustContain) {
-        ObjectNode root = this.getNode(record, mustContain);
-        root.put(Entity.IO_FIELD_UUID, record.getIdentification().getUuid().toString());
-        root.put(Entity.IO_FIELD_DOMAIN, record.getIdentification().getDomain());
-        return root;
-    }
-
-
-    @Override
-    protected void fillContainer(OutputContainer container, CompanyUnitRecord record) {
+    protected void fillContainer(OutputContainer oContainer, CompanyUnitRecord record) {
+        CvrOutputContainer container = (CvrOutputContainer) oContainer;
 
         container.addNontemporal(CompanyUnitRecord.IO_FIELD_P_NUMBER, record.getpNumber());
         container.addNontemporal(CompanyUnitRecord.IO_FIELD_ADVERTPROTECTION, record.getAdvertProtection());
@@ -80,21 +48,21 @@ public class UnitRecordOutputWrapper extends CvrRecordOutputWrapper<CompanyUnitR
         container.addNontemporal(CompanyUnitRecord.IO_FIELD_UNITTYPE, record.getUnitType());
         container.addNontemporal(CompanyUnitRecord.IO_FIELD_INDUSTRY_RESPONSIBILITY_CODE, record.getIndustryResponsibilityCode());
 
-        container.addBitemporal("navn", record.getNames(), true);
-        container.addBitemporal(CompanyUnitRecord.IO_FIELD_LOCATION_ADDRESS, record.getLocationAddress(), this::createAddressNode);
-        container.addBitemporal(CompanyUnitRecord.IO_FIELD_POSTAL_ADDRESS, record.getPostalAddress(), this::createAddressNode);
-        container.addBitemporal(CompanyUnitRecord.IO_FIELD_PHONE, record.getPhoneNumber(), true);
-        container.addBitemporal(CompanyUnitRecord.IO_FIELD_FAX, record.getFaxNumber(), true);
-        container.addBitemporal(CompanyUnitRecord.IO_FIELD_EMAIL, record.getEmailAddress(), true);
-        container.addBitemporal(CompanyUnitRecord.IO_FIELD_PRIMARY_INDUSTRY, record.getPrimaryIndustry());
-        container.addBitemporal(CompanyUnitRecord.IO_FIELD_SECONDARY_INDUSTRY1, record.getSecondaryIndustry1());
-        container.addBitemporal(CompanyUnitRecord.IO_FIELD_SECONDARY_INDUSTRY2, record.getSecondaryIndustry2());
-        container.addBitemporal(CompanyUnitRecord.IO_FIELD_SECONDARY_INDUSTRY3, record.getSecondaryIndustry3());
-        container.addBitemporal("livscyklusAktiv", record.getLifecycle(), this::createLifecycleNode);
-        container.addBitemporal(CompanyUnitRecord.IO_FIELD_YEARLY_NUMBERS, record.getYearlyNumbers());
-        container.addBitemporal(CompanyUnitRecord.IO_FIELD_QUARTERLY_NUMBERS, record.getQuarterlyNumbers());
+        container.addCvrBitemporal("navn", record.getNames(), true);
+        container.addCvrBitemporal(CompanyUnitRecord.IO_FIELD_LOCATION_ADDRESS, record.getLocationAddress(), this::createAddressNode);
+        container.addCvrBitemporal(CompanyUnitRecord.IO_FIELD_POSTAL_ADDRESS, record.getPostalAddress(), this::createAddressNode);
+        container.addCvrBitemporal(CompanyUnitRecord.IO_FIELD_PHONE, record.getPhoneNumber(), true);
+        container.addCvrBitemporal(CompanyUnitRecord.IO_FIELD_FAX, record.getFaxNumber(), true);
+        container.addCvrBitemporal(CompanyUnitRecord.IO_FIELD_EMAIL, record.getEmailAddress(), true);
+        container.addCvrBitemporal(CompanyUnitRecord.IO_FIELD_PRIMARY_INDUSTRY, record.getPrimaryIndustry());
+        container.addCvrBitemporal(CompanyUnitRecord.IO_FIELD_SECONDARY_INDUSTRY1, record.getSecondaryIndustry1());
+        container.addCvrBitemporal(CompanyUnitRecord.IO_FIELD_SECONDARY_INDUSTRY2, record.getSecondaryIndustry2());
+        container.addCvrBitemporal(CompanyUnitRecord.IO_FIELD_SECONDARY_INDUSTRY3, record.getSecondaryIndustry3());
+        container.addCvrBitemporal("livscyklusAktiv", record.getLifecycle(), this::createLifecycleNode);
+        container.addCvrBitemporal(CompanyUnitRecord.IO_FIELD_YEARLY_NUMBERS, record.getYearlyNumbers());
+        container.addCvrBitemporal(CompanyUnitRecord.IO_FIELD_QUARTERLY_NUMBERS, record.getQuarterlyNumbers());
         container.addAttribute(CompanyUnitRecord.IO_FIELD_ATTRIBUTES, record.getAttributes());
-        container.addBitemporal(CompanyUnitRecord.IO_FIELD_COMPANY_LINK, record.getCompanyLinkRecords(), null, true, true);
+        container.addCvrBitemporal(CompanyUnitRecord.IO_FIELD_COMPANY_LINK, record.getCompanyLinkRecords(), null, true, true);
         container.addNontemporal(CompanyUnitRecord.IO_FIELD_SAMT_ID, record.getSamtId());
         container.addNontemporal(CompanyUnitRecord.IO_FIELD_REGISTER_ERROR, record.getRegisterError());
         container.addNontemporal(CompanyUnitRecord.IO_FIELD_DATA_ACCESS, record.getDataAccess());
@@ -110,20 +78,22 @@ public class UnitRecordOutputWrapper extends CvrRecordOutputWrapper<CompanyUnitR
     }
 
     @Override
-    protected void fillMetadataContainer(OutputContainer container, CompanyUnitRecord record) {
+    protected void fillMetadataContainer(OutputContainer oContainer, CompanyUnitRecord record) {
+        CvrOutputContainer container = (CvrOutputContainer) oContainer;
+
         CompanyUnitMetadataRecord meta = record.getMetadata();
         container.addNontemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_CVR_RELATION, meta.getNewestCvrRelation());
         container.addNontemporal(CompanyUnitMetadataRecord.IO_FIELD_AGGREGATE_STATUS, meta.getAggregateStatus());
-        container.addNontemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_CONTACT_DATA, meta.getMetadataContactRecords(), null, true, true);
-        container.addBitemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_PRIMARY_INDUSTRY, meta.getNewestPrimaryIndustry());
-        container.addBitemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_SECONDARY_INDUSTRY1, meta.getNewestSecondaryIndustry1());
-        container.addBitemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_SECONDARY_INDUSTRY2, meta.getNewestSecondaryIndustry2());
-        container.addBitemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_SECONDARY_INDUSTRY3, meta.getNewestSecondaryIndustry3());
-        container.addBitemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_NAME, meta.getNewestName());
-        container.addBitemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_YEARLY_NUMBERS, Collections.singleton(meta.getNewestYearlyNumbers()));
-        container.addBitemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_QUARTERLY_NUMBERS, Collections.singleton(meta.getNewestQuarterlyNumbers()));
-        container.addBitemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_MONTHLY_NUMBERS, Collections.singleton(meta.getNewestMonthlyNumbers()));
-        container.addBitemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_LOCATION, meta.getNewestLocation(), this::createAddressNode);
+        container.addCvrNontemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_CONTACT_DATA, meta.getMetadataContactRecords(), null, true, true);
+        container.addCvrBitemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_PRIMARY_INDUSTRY, meta.getNewestPrimaryIndustry());
+        container.addCvrBitemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_SECONDARY_INDUSTRY1, meta.getNewestSecondaryIndustry1());
+        container.addCvrBitemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_SECONDARY_INDUSTRY2, meta.getNewestSecondaryIndustry2());
+        container.addCvrBitemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_SECONDARY_INDUSTRY3, meta.getNewestSecondaryIndustry3());
+        container.addCvrBitemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_NAME, meta.getNewestName());
+        container.addCvrBitemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_YEARLY_NUMBERS, Collections.singleton(meta.getNewestYearlyNumbers()));
+        container.addCvrBitemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_QUARTERLY_NUMBERS, Collections.singleton(meta.getNewestQuarterlyNumbers()));
+        container.addCvrBitemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_MONTHLY_NUMBERS, Collections.singleton(meta.getNewestMonthlyNumbers()));
+        container.addCvrBitemporal(CompanyUnitMetadataRecord.IO_FIELD_NEWEST_LOCATION, meta.getNewestLocation(), this::createAddressNode);
     }
 
 }
