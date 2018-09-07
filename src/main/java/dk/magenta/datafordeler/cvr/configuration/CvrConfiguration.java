@@ -70,6 +70,16 @@ public class CvrConfiguration implements Configuration {
             "    }\n" +
             "}\n";
 
+    @Column
+    private String companyRegisterDirectLookupCertificate = "";
+
+    @Column
+    private String companyRegisterDirectLookupPassword = "";
+
+    @Column
+    private String companyRegisterDirectLookupAddress = "";
+
+
     public RegisterType getCompanyRegisterType() {
         return this.companyRegisterType;
     }
@@ -94,11 +104,17 @@ public class CvrConfiguration implements Configuration {
         return this.companyRegisterQuery;
     }
 
+    public String getCompanyRegisterDirectLookupCertificate() {
+        return this.companyRegisterDirectLookupCertificate;
+    }
 
+    public String getCompanyRegisterDirectLookupPassword() {
+        return this.companyRegisterDirectLookupPassword;
+    }
 
-
-
-
+    public String getCompanyRegisterDirectLookupAddress() {
+        return this.companyRegisterDirectLookupAddress;
+    }
 
     @Column
     @Enumerated(EnumType.ORDINAL)
@@ -190,6 +206,15 @@ public class CvrConfiguration implements Configuration {
             "}\n";
 
 
+    @Column
+    private String participantRegisterDirectLookupCertificate = "";
+
+    @Column
+    private String participantRegisterDirectLookupPassword = "";
+
+    @Column
+    private String participantRegisterDirectLookupAddress = "";
+
     public RegisterType getParticipantRegisterType() {
         return this.participantRegisterType;
     }
@@ -214,13 +239,17 @@ public class CvrConfiguration implements Configuration {
         return this.participantRegisterQuery;
     }
 
+    public String getParticipantRegisterDirectLookupCertificate() {
+        return this.participantRegisterDirectLookupCertificate;
+    }
 
+    public String getParticipantRegisterDirectLookupPassword() {
+        return this.participantRegisterDirectLookupPassword;
+    }
 
-
-
-
-
-
+    public String getParticipantRegisterDirectLookupAddress() {
+        return this.participantRegisterDirectLookupAddress;
+    }
 
     public String getPullCronSchedule() {
         return this.pullCronSchedule;
