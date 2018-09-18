@@ -67,7 +67,6 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_UNITNUMBER = "unitNumber";
     public static final String IO_FIELD_UNITNUMBER = "enhedsNummer";
 
@@ -78,7 +77,6 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public long getUnitNumber() {
         return this.unitNumber;
     }
-
 
 
     public static final String DB_FIELD_UNITTYPE = "unitType";
@@ -93,7 +91,6 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_INDUSTRY_RESPONSIBILITY_CODE = "industryResponsibilityCode";
     public static final String IO_FIELD_INDUSTRY_RESPONSIBILITY_CODE = "brancheAnsvarskode";
 
@@ -104,7 +101,6 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public Integer getIndustryResponsibilityCode() {
         return this.industryResponsibilityCode;
     }
-
 
 
     public static final String DB_FIELD_NAMES = "names";
@@ -123,8 +119,8 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     }
 
     public void setNames(Set<SecNameRecord> names) {
-        this.names = names;
-        for (SecNameRecord record : names) {
+        this.names = (names == null) ? new HashSet<>() : new HashSet<>(names);
+        for (SecNameRecord record : this.names) {
             record.setCompanyUnitRecord(this);
         }
     }
@@ -138,12 +134,11 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_LOCATION_ADDRESS = "locationAddress";
     public static final String IO_FIELD_LOCATION_ADDRESS = "beliggenhedsadresse";
 
     @OneToMany(mappedBy = AddressRecord.DB_FIELD_COMPANYUNIT, targetEntity = AddressRecord.class, cascade = CascadeType.ALL)
-    @Where(clause = AddressRecord.DB_FIELD_TYPE+"="+AddressRecord.TYPE_LOCATION)
+    @Where(clause = AddressRecord.DB_FIELD_TYPE + "=" + AddressRecord.TYPE_LOCATION)
     @Filters({
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
@@ -152,11 +147,11 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     private Set<AddressRecord> locationAddress = new HashSet<>();
 
     public void setLocationAddress(Set<AddressRecord> locationAddress) {
-        for (AddressRecord record : locationAddress) {
+        this.locationAddress = (locationAddress == null) ? new HashSet<>() : new HashSet<>(locationAddress);
+        for (AddressRecord record : this.locationAddress) {
             record.setType(AddressRecord.TYPE_LOCATION);
             record.setCompanyUnitRecord(this);
         }
-        this.locationAddress = locationAddress;
     }
 
     public void addLocationAddress(AddressRecord record) {
@@ -172,12 +167,11 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_POSTAL_ADDRESS = "postalAddress";
     public static final String IO_FIELD_POSTAL_ADDRESS = "postadresse";
 
     @OneToMany(mappedBy = AddressRecord.DB_FIELD_COMPANYUNIT, targetEntity = AddressRecord.class, cascade = CascadeType.ALL)
-    @Where(clause = AddressRecord.DB_FIELD_TYPE+"="+AddressRecord.TYPE_POSTAL)
+    @Where(clause = AddressRecord.DB_FIELD_TYPE + "=" + AddressRecord.TYPE_POSTAL)
     @Filters({
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
@@ -186,11 +180,12 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     private Set<AddressRecord> postalAddress = new HashSet<>();
 
     public void setPostalAddress(Set<AddressRecord> postalAddress) {
-        for (AddressRecord record : postalAddress) {
+        this.postalAddress = (postalAddress == null) ? new HashSet<>() : new HashSet<>(postalAddress);
+        for (AddressRecord record : this.postalAddress) {
             record.setType(AddressRecord.TYPE_POSTAL);
             record.setCompanyUnitRecord(this);
         }
-        this.postalAddress = postalAddress;
+
     }
 
     public void addPostalAddress(AddressRecord record) {
@@ -210,7 +205,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public static final String IO_FIELD_PHONE = "telefonNummer";
 
     @OneToMany(mappedBy = ContactRecord.DB_FIELD_COMPANYUNIT, targetEntity = ContactRecord.class, cascade = CascadeType.ALL)
-    @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_TELEFONNUMMER)
+    @Where(clause = ContactRecord.DB_FIELD_TYPE + "=" + ContactRecord.TYPE_TELEFONNUMMER)
     @Filters({
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
@@ -219,11 +214,11 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     private Set<ContactRecord> phoneNumber = new HashSet<>();
 
     public void setPhoneNumber(Set<ContactRecord> phoneNumber) {
-        for (ContactRecord record : phoneNumber) {
+        this.phoneNumber = (phoneNumber == null) ? new HashSet<>() : new HashSet<>(phoneNumber);
+        for (ContactRecord record : this.phoneNumber) {
             record.setType(ContactRecord.TYPE_TELEFONNUMMER);
             record.setCompanyUnitRecord(this);
         }
-        this.phoneNumber = phoneNumber;
     }
 
     public void addPhoneNumber(ContactRecord record) {
@@ -240,12 +235,11 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_FAX = "faxNumber";
     public static final String IO_FIELD_FAX = "telefaxNummer";
 
     @OneToMany(mappedBy = ContactRecord.DB_FIELD_COMPANYUNIT, targetEntity = ContactRecord.class, cascade = CascadeType.ALL)
-    @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_TELEFAXNUMMER)
+    @Where(clause = ContactRecord.DB_FIELD_TYPE + "=" + ContactRecord.TYPE_TELEFAXNUMMER)
     @Filters({
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
@@ -254,11 +248,11 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     private Set<ContactRecord> faxNumber = new HashSet<>();
 
     public void setFaxNumber(Set<ContactRecord> faxNumber) {
-        for (ContactRecord record : faxNumber) {
+        this.faxNumber = (faxNumber == null) ? new HashSet<>() : new HashSet<>(faxNumber);
+        for (ContactRecord record : this.faxNumber) {
             record.setType(ContactRecord.TYPE_TELEFAXNUMMER);
             record.setCompanyUnitRecord(this);
         }
-        this.faxNumber = faxNumber;
     }
 
     public void addFaxNumber(ContactRecord record) {
@@ -275,12 +269,11 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_EMAIL = "emailAddress";
     public static final String IO_FIELD_EMAIL = "elektroniskPost";
 
     @OneToMany(mappedBy = ContactRecord.DB_FIELD_COMPANYUNIT, targetEntity = ContactRecord.class, cascade = CascadeType.ALL)
-    @Where(clause = ContactRecord.DB_FIELD_TYPE+"="+ContactRecord.TYPE_EMAILADRESSE)
+    @Where(clause = ContactRecord.DB_FIELD_TYPE + "=" + ContactRecord.TYPE_EMAILADRESSE)
     @Filters({
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
@@ -289,11 +282,11 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     private Set<ContactRecord> emailAddress = new HashSet<>();
 
     public void setEmailAddress(Set<ContactRecord> emailAddress) {
-        for (ContactRecord record : emailAddress) {
+        this.emailAddress = (emailAddress == null) ? new HashSet<>() : new HashSet<>(emailAddress);
+        for (ContactRecord record : this.emailAddress) {
             record.setType(ContactRecord.TYPE_EMAILADRESSE);
             record.setCompanyUnitRecord(this);
         }
-        this.emailAddress = emailAddress;
     }
 
     public void addEmailAddress(ContactRecord record) {
@@ -309,7 +302,6 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_LIFECYCLE = "lifecycle";
     public static final String IO_FIELD_LIFECYCLE = "livsforloeb";
 
@@ -322,8 +314,8 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     private Set<LifecycleRecord> lifecycle = new HashSet<>();
 
     public void setLifecycle(Set<LifecycleRecord> lifecycle) {
-        this.lifecycle = lifecycle;
-        for (LifecycleRecord lifecycleRecord : lifecycle) {
+        this.lifecycle = (lifecycle == null) ? new HashSet<>() : new HashSet<>(lifecycle);
+        for (LifecycleRecord lifecycleRecord : this.lifecycle) {
             lifecycleRecord.setCompanyUnitRecord(this);
         }
     }
@@ -340,12 +332,11 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_PRIMARY_INDUSTRY = "primaryIndustry";
     public static final String IO_FIELD_PRIMARY_INDUSTRY = "hovedbranche";
 
     @OneToMany(mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANYUNIT, targetEntity = CompanyIndustryRecord.class, cascade = CascadeType.ALL)
-    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=0")
+    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX + "=0")
     @Filters({
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
@@ -354,11 +345,11 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     private Set<CompanyIndustryRecord> primaryIndustry = new HashSet<>();
 
     public void setPrimaryIndustry(Set<CompanyIndustryRecord> primaryIndustry) {
-        for (CompanyIndustryRecord record : primaryIndustry) {
+        this.primaryIndustry = (primaryIndustry == null) ? new HashSet<>() : new HashSet<>(primaryIndustry);
+        for (CompanyIndustryRecord record : this.primaryIndustry) {
             record.setIndex(0);
             record.setCompanyUnitRecord(this);
         }
-        this.primaryIndustry = primaryIndustry;
     }
 
     public void addPrimaryIndustry(CompanyIndustryRecord record) {
@@ -378,7 +369,7 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public static final String IO_FIELD_SECONDARY_INDUSTRY1 = "bibranche1";
 
     @OneToMany(mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANYUNIT, targetEntity = CompanyIndustryRecord.class, cascade = CascadeType.ALL)
-    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=1")
+    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX + "=1")
     @Filters({
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
@@ -387,11 +378,11 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     private Set<CompanyIndustryRecord> secondaryIndustry1 = new HashSet<>();
 
     public void setSecondaryIndustry1(Set<CompanyIndustryRecord> secondaryIndustryRecords) {
-        for (CompanyIndustryRecord record : secondaryIndustryRecords) {
+        this.secondaryIndustry1 = (secondaryIndustryRecords == null) ? new HashSet<>() : new HashSet<>(secondaryIndustryRecords);
+        for (CompanyIndustryRecord record : this.secondaryIndustry1) {
             record.setIndex(1);
             record.setCompanyUnitRecord(this);
         }
-        this.secondaryIndustry1 = secondaryIndustryRecords;
     }
 
     public void addSecondaryIndustry1(CompanyIndustryRecord record) {
@@ -407,12 +398,11 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_SECONDARY_INDUSTRY2 = "secondaryIndustry2";
     public static final String IO_FIELD_SECONDARY_INDUSTRY2 = "bibranche2";
 
     @OneToMany(mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANYUNIT, targetEntity = CompanyIndustryRecord.class, cascade = CascadeType.ALL)
-    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=2")
+    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX + "=2")
     @Filters({
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
@@ -421,11 +411,11 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     private Set<CompanyIndustryRecord> secondaryIndustry2 = new HashSet<>();
 
     public void setSecondaryIndustry2(Set<CompanyIndustryRecord> secondaryIndustryRecords) {
-        for (CompanyIndustryRecord record : secondaryIndustryRecords) {
+        this.secondaryIndustry2 = (secondaryIndustryRecords == null) ? new HashSet<>() : new HashSet<>(secondaryIndustryRecords);
+        for (CompanyIndustryRecord record : this.secondaryIndustry2) {
             record.setIndex(2);
             record.setCompanyUnitRecord(this);
         }
-        this.secondaryIndustry2 = secondaryIndustryRecords;
     }
 
     public void addSecondaryIndustry2(CompanyIndustryRecord record) {
@@ -441,12 +431,11 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_SECONDARY_INDUSTRY3 = "secondaryIndustry3";
     public static final String IO_FIELD_SECONDARY_INDUSTRY3 = "bibranche3";
 
     @OneToMany(mappedBy = CompanyIndustryRecord.DB_FIELD_COMPANYUNIT, targetEntity = CompanyIndustryRecord.class, cascade = CascadeType.ALL)
-    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=3")
+    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX + "=3")
     @Filters({
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
@@ -455,11 +444,11 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     private Set<CompanyIndustryRecord> secondaryIndustry3 = new HashSet<>();
 
     public void setSecondaryIndustry3(Set<CompanyIndustryRecord> secondaryIndustryRecords) {
-        for (CompanyIndustryRecord record : secondaryIndustryRecords) {
+        this.secondaryIndustry3 = (secondaryIndustryRecords == null) ? new HashSet<>() : new HashSet<>(secondaryIndustryRecords);
+        for (CompanyIndustryRecord record : this.secondaryIndustry3) {
             record.setIndex(3);
             record.setCompanyUnitRecord(this);
         }
-        this.secondaryIndustry3 = secondaryIndustryRecords;
     }
 
     public void addSecondaryIndustry3(CompanyIndustryRecord record) {
@@ -475,7 +464,6 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_YEARLY_NUMBERS = "yearlyNumbers";
     public static final String IO_FIELD_YEARLY_NUMBERS = "aarsbeskaeftigelse";
 
@@ -488,8 +476,8 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     private Set<CompanyYearlyNumbersRecord> yearlyNumbers = new HashSet<>();
 
     public void setYearlyNumbers(Set<CompanyYearlyNumbersRecord> yearlyNumbers) {
-        this.yearlyNumbers = yearlyNumbers;
-        for (CompanyYearlyNumbersRecord yearlyNumbersRecord : yearlyNumbers) {
+        this.yearlyNumbers = (yearlyNumbers == null) ? new HashSet<>() : new HashSet<>(yearlyNumbers);
+        for (CompanyYearlyNumbersRecord yearlyNumbersRecord : this.yearlyNumbers) {
             yearlyNumbersRecord.setCompanyUnitRecord(this);
         }
     }
@@ -506,7 +494,6 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_QUARTERLY_NUMBERS = "quarterlyNumbers";
     public static final String IO_FIELD_QUARTERLY_NUMBERS = "kvartalsbeskaeftigelse";
 
@@ -519,8 +506,8 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     private Set<CompanyQuarterlyNumbersRecord> quarterlyNumbers = new HashSet<>();
 
     public void setQuarterlyNumbers(Set<CompanyQuarterlyNumbersRecord> quarterlyNumbers) {
-        this.quarterlyNumbers = quarterlyNumbers;
-        for (CompanyQuarterlyNumbersRecord quarterlyNumbersRecord : quarterlyNumbers) {
+        this.quarterlyNumbers = (quarterlyNumbers == null) ? new HashSet<>() : new HashSet<>(quarterlyNumbers);
+        for (CompanyQuarterlyNumbersRecord quarterlyNumbersRecord : this.quarterlyNumbers) {
             quarterlyNumbersRecord.setCompanyUnitRecord(this);
         }
     }
@@ -535,7 +522,6 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     public Set<CompanyQuarterlyNumbersRecord> getQuarterlyNumbers() {
         return this.quarterlyNumbers;
     }
-
 
 
     //public static final String DB_FIELD_MONTHLY_NUMBERS = "monthlyNumbers";
@@ -554,8 +540,8 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     private Set<AttributeRecord> attributes = new HashSet<>();
 
     public void setAttributes(Set<AttributeRecord> attributes) {
-        this.attributes = attributes;
-        for (AttributeRecord attributeRecord : attributes) {
+        this.attributes = (attributes == null) ? new HashSet<>() : new HashSet<>(attributes);
+        for (AttributeRecord attributeRecord : this.attributes) {
             attributeRecord.setCompanyUnitRecord(this);
         }
     }
@@ -599,8 +585,8 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     private Set<CompanyParticipantRelationRecord> participantRelations = new HashSet<>();
 
     public void setParticipantRelations(Set<CompanyParticipantRelationRecord> participantRelations) {
-        this.participantRelations = participantRelations;
-        for (CompanyParticipantRelationRecord participantRelationRecord : participantRelations) {
+        this.participantRelations = (participantRelations == null) ? new HashSet<>() : new HashSet<>(participantRelations);
+        for (CompanyParticipantRelationRecord participantRelationRecord : this.participantRelations) {
             participantRelationRecord.setCompanyUnitRecord(this);
         }
     }
@@ -631,7 +617,6 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_COMPANY_LINK = "companyLinkRecords";
     public static final String IO_FIELD_COMPANY_LINK = "virksomhedsrelation";
 
@@ -644,8 +629,8 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     private Set<CompanyLinkRecord> companyLinkRecords = new HashSet<>();
 
     public void setCompanyLinkRecords(Set<CompanyLinkRecord> companyLinkRecords) {
-        this.companyLinkRecords = companyLinkRecords;
-        for (CompanyLinkRecord companyLinkRecord : companyLinkRecords) {
+        this.companyLinkRecords = (companyLinkRecords == null) ? new HashSet<>() : new HashSet<>(companyLinkRecords);
+        for (CompanyLinkRecord companyLinkRecord : this.companyLinkRecords) {
             companyLinkRecord.setCompanyUnitRecord(this);
         }
     }
@@ -662,7 +647,6 @@ public class CompanyUnitRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_META = "metadata";
     public static final String IO_FIELD_META = "produktionsEnhedMetadata";
 
@@ -673,7 +657,9 @@ public class CompanyUnitRecord extends CvrEntityRecord {
 
     public void setMetadata(CompanyUnitMetadataRecord metadata) {
         this.metadata = metadata;
-        this.metadata.setCompanyUnitRecord(this);
+        if (this.metadata != null) {
+            this.metadata.setCompanyUnitRecord(this);
+        }
     }
 
     public CompanyUnitMetadataRecord getMetadata() {

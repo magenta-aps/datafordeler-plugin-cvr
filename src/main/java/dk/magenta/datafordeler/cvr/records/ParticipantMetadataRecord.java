@@ -31,7 +31,10 @@ public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
     private Set<AddressRecord> newestLocation = new HashSet<>();
 
     public void setNewestLocation(Set<AddressRecord> newestLocation) {
-        this.newestLocation = newestLocation;
+        this.newestLocation = (newestLocation == null) ? new HashSet<>() : new HashSet<>(newestLocation);
+        for (AddressRecord addressRecord : this.newestLocation) {
+            addressRecord.setParticipantMetadataRecord(this);
+        }
     }
 
     @JsonSetter(IO_FIELD_NEWEST_LOCATION)
@@ -59,7 +62,6 @@ public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
     }
 
 
-
     public static final String DB_FIELD_NEWEST_CONTACT_DATA = "newestContactData";
     public static final String IO_FIELD_NEWEST_CONTACT_DATA = "nyesteKontaktoplysninger";
 
@@ -68,7 +70,7 @@ public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
 
     @JsonProperty(IO_FIELD_NEWEST_CONTACT_DATA)
     public void setMetadataContactData(Set<String> contactData) {
-        HashSet<String> contacts = new HashSet<>(contactData);
+        HashSet<String> contacts = (contactData == null) ? new HashSet<>() : new HashSet<>(contactData);
         HashSet<MetadataContactRecord> remove = new HashSet<>();
         for (MetadataContactRecord contactRecord : this.metadataContactRecords) {
             String data = contactRecord.getData();
@@ -106,7 +108,6 @@ public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
     public Set<MetadataContactRecord> getMetadataContactRecords() {
         return this.metadataContactRecords;
     }
-
 
 
     public void wire(Session session) {

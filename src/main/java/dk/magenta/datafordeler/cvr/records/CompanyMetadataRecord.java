@@ -32,7 +32,10 @@ public class CompanyMetadataRecord extends MetadataRecord {
     private Set<FormRecord> newestForm = new HashSet<>();
 
     public void setNewestForm(Set<FormRecord> newestForm) {
-        this.newestForm = newestForm;
+        this.newestForm = (newestForm == null) ? new HashSet<>() : new HashSet<>(newestForm);
+        for (FormRecord form : this.newestForm) {
+            form.setCompanyMetadataRecord(this);
+        }
     }
 
     @JsonSetter(IO_FIELD_NEWEST_FORM)
@@ -75,7 +78,10 @@ public class CompanyMetadataRecord extends MetadataRecord {
     private Set<BaseNameRecord> newestName = new HashSet<>();
 
     public void setNewestName(Set<BaseNameRecord> newestName) {
-        this.newestName = newestName;
+        this.newestName = (newestName == null) ? new HashSet<>() : new HashSet<>(newestName);
+        for (BaseNameRecord name : this.newestName) {
+            name.setCompanyMetadataRecord(this);
+        }
     }
 
     @JsonSetter(IO_FIELD_NEWEST_NAME)
@@ -118,7 +124,10 @@ public class CompanyMetadataRecord extends MetadataRecord {
     private Set<AddressRecord> newestLocation = new HashSet<>();
 
     public void setNewestLocation(Set<AddressRecord> newestLocation) {
-        this.newestLocation = newestLocation;
+        this.newestLocation = (newestLocation == null) ? new HashSet<>() : new HashSet<>(newestLocation);
+        for (AddressRecord location : this.newestLocation) {
+            location.setCompanyMetadataRecord(this);
+        }
     }
 
     @JsonSetter(IO_FIELD_NEWEST_LOCATION)
@@ -160,7 +169,10 @@ public class CompanyMetadataRecord extends MetadataRecord {
     private Set<CompanyIndustryRecord> newestPrimaryIndustry = new HashSet<>();
 
     public void setNewestPrimaryIndustry(Set<CompanyIndustryRecord> newestPrimaryIndustry) {
-        this.newestPrimaryIndustry = newestPrimaryIndustry;
+        this.newestPrimaryIndustry = (newestPrimaryIndustry == null) ? new HashSet<>() : new HashSet<>(newestPrimaryIndustry);
+        for (CompanyIndustryRecord industry : this.newestPrimaryIndustry) {
+            industry.setCompanyMetadataRecord(this);
+        }
     }
 
     @JsonSetter(IO_FIELD_NEWEST_PRIMARY_INDUSTRY)
@@ -206,7 +218,11 @@ public class CompanyMetadataRecord extends MetadataRecord {
     private Set<CompanyIndustryRecord> newestSecondaryIndustry1 = new HashSet<>();
 
     public void setNewestSecondaryIndustry1(Set<CompanyIndustryRecord> newestSecondaryIndustry1) {
-        this.newestSecondaryIndustry1 = newestSecondaryIndustry1;
+        this.newestSecondaryIndustry1 = (newestSecondaryIndustry1 == null) ? new HashSet<>() : new HashSet<>(newestSecondaryIndustry1);
+        for (CompanyIndustryRecord industry : this.newestSecondaryIndustry1) {
+            industry.setCompanyMetadataRecord(this);
+            industry.setIndex(1);
+        }
     }
 
     @JsonSetter(IO_FIELD_NEWEST_SECONDARY_INDUSTRY1)
@@ -253,7 +269,11 @@ public class CompanyMetadataRecord extends MetadataRecord {
     private Set<CompanyIndustryRecord> newestSecondaryIndustry2 = new HashSet<>();
 
     public void setNewestSecondaryIndustry2(Set<CompanyIndustryRecord> newestSecondaryIndustry2) {
-        this.newestSecondaryIndustry2 = newestSecondaryIndustry2;
+        this.newestSecondaryIndustry2 = (newestSecondaryIndustry2 == null) ? new HashSet<>() : new HashSet<>(newestSecondaryIndustry2);
+        for (CompanyIndustryRecord industry : this.newestSecondaryIndustry2) {
+            industry.setCompanyMetadataRecord(this);
+            industry.setIndex(2);
+        }
     }
 
     @JsonSetter(IO_FIELD_NEWEST_SECONDARY_INDUSTRY2)
@@ -299,7 +319,11 @@ public class CompanyMetadataRecord extends MetadataRecord {
     private Set<CompanyIndustryRecord> newestSecondaryIndustry3 = new HashSet<>();
 
     public void setNewestSecondaryIndustry3(Set<CompanyIndustryRecord> newestSecondaryIndustry3) {
-        this.newestSecondaryIndustry3 = newestSecondaryIndustry3;
+        this.newestSecondaryIndustry3 = (newestSecondaryIndustry3 == null) ? new HashSet<>() : new HashSet<>(newestSecondaryIndustry3);
+        for (CompanyIndustryRecord industryRecord : this.newestSecondaryIndustry3) {
+            industryRecord.setMetadataRecord(this);
+            industryRecord.setIndex(3);
+        }
     }
 
     @JsonSetter(IO_FIELD_NEWEST_SECONDARY_INDUSTRY3)
@@ -407,8 +431,8 @@ public class CompanyMetadataRecord extends MetadataRecord {
     }
 
     public void setMetadataContactRecords(Set<MetadataContactRecord> metadataContactRecords) {
-        this.metadataContactRecords = metadataContactRecords;
-        for (MetadataContactRecord metadataContactRecord : metadataContactRecords) {
+        this.metadataContactRecords = (metadataContactRecords == null) ? new HashSet<>() : new HashSet<>(metadataContactRecords);
+        for (MetadataContactRecord metadataContactRecord : this.metadataContactRecords) {
             metadataContactRecord.setCompanyMetadataRecord(this);
         }
     }
