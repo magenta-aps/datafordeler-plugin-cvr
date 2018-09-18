@@ -22,7 +22,7 @@ import java.util.*;
  * with this class at the base.
  */
 @Entity
-@Table(name=ParticipantRecord.TABLE_NAME, indexes = {
+@Table(name = ParticipantRecord.TABLE_NAME, indexes = {
         @Index(name = ParticipantRecord.TABLE_NAME + "__unitNumber", columnList = ParticipantRecord.DB_FIELD_UNIT_NUMBER, unique = true)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -65,7 +65,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_POSITION = "position";
     public static final String IO_FIELD_POSITION = "stilling";
 
@@ -76,7 +75,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     public String getPosition() {
         return this.position;
     }
-
 
 
     public static final String DB_FIELD_CONFIDENTIAL_ENRICHED = "confidentialEnriched";
@@ -91,7 +89,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_BUSINESS_KEY = "businessKey";
     public static final String IO_FIELD_BUSINESS_KEY = "forretningsnoegle";
 
@@ -102,7 +99,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     public Long getBusinessKey() {
         return this.businessKey;
     }
-
 
 
     public static final String DB_FIELD_STATUS_CODE = "statusCode";
@@ -117,7 +113,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_NAMES = "names";
     public static final String IO_FIELD_NAMES = "navne";
 
@@ -130,8 +125,8 @@ public class ParticipantRecord extends CvrEntityRecord {
     public Set<SecNameRecord> names = new HashSet<>();
 
     public void setNames(Set<SecNameRecord> names) {
-        this.names = names;
-        for (SecNameRecord record : names) {
+        this.names = (names == null) ? new HashSet<>() : new HashSet<>(names);
+        for (SecNameRecord record : this.names) {
             record.setParticipantRecord(this);
         }
     }
@@ -149,7 +144,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_LOCATION_ADDRESS = "locationAddress";
     public static final String IO_FIELD_LOCATION_ADDRESS = "beliggenhedsadresse";
 
@@ -163,11 +157,11 @@ public class ParticipantRecord extends CvrEntityRecord {
     public Set<AddressRecord> locationAddress = new HashSet<>();
 
     public void setLocationAddress(Set<AddressRecord> locationAddress) {
-        for (AddressRecord record : locationAddress) {
+        this.locationAddress = (locationAddress == null) ? new HashSet<>() : new HashSet<>(locationAddress);
+        for (AddressRecord record : this.locationAddress) {
             record.setType(AddressRecord.TYPE_LOCATION);
             record.setParticipantRecord(this);
         }
-        this.locationAddress = locationAddress;
     }
 
     public void addLocationAddress(AddressRecord record) {
@@ -183,7 +177,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_POSTAL_ADDRESS = "postalAddress";
     public static final String IO_FIELD_POSTAL_ADDRESS = "postadresse";
 
@@ -197,11 +190,11 @@ public class ParticipantRecord extends CvrEntityRecord {
     public Set<AddressRecord> postalAddress = new HashSet<>();
 
     public void setPostalAddress(Set<AddressRecord> postalAddress) {
-        for (AddressRecord record : postalAddress) {
+        this.postalAddress = (postalAddress == null) ? new HashSet<>() : new HashSet<>(postalAddress);
+        for (AddressRecord record : this.postalAddress) {
             record.setType(AddressRecord.TYPE_POSTAL);
             record.setParticipantRecord(this);
         }
-        this.postalAddress = postalAddress;
     }
 
     public void addPostalAddress(AddressRecord record) {
@@ -217,7 +210,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_BUSINESS_ADDRESS = "businessAddress";
     public static final String IO_FIELD_BUSINESS_ADDRESS = "forretningsadresse";
 
@@ -231,11 +223,11 @@ public class ParticipantRecord extends CvrEntityRecord {
     public Set<AddressRecord> businessAddress = new HashSet<>();
 
     public void setBusinessAddress(Set<AddressRecord> businessAddress) {
-        for (AddressRecord record : businessAddress) {
+        this.businessAddress = (businessAddress == null) ? new HashSet<>() : new HashSet<>(businessAddress);
+        for (AddressRecord record : this.businessAddress) {
             record.setType(AddressRecord.TYPE_BUSINESS);
             record.setParticipantRecord(this);
         }
-        this.businessAddress = businessAddress;
     }
 
     public void addBusinessAddress(AddressRecord record) {
@@ -251,7 +243,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_PHONE = "phoneNumber";
     public static final String IO_FIELD_PHONE = "telefonNummer";
 
@@ -265,11 +256,11 @@ public class ParticipantRecord extends CvrEntityRecord {
     public Set<ContactRecord> phoneNumber = new HashSet<>();
 
     public void setPhoneNumber(Set<ContactRecord> phoneNumber) {
-        for (ContactRecord record : phoneNumber) {
+        this.phoneNumber = (phoneNumber == null) ? new HashSet<>() : new HashSet<>(phoneNumber);
+        for (ContactRecord record : this.phoneNumber) {
             record.setType(ContactRecord.TYPE_TELEFONNUMMER);
             record.setParticipantRecord(this);
         }
-        this.phoneNumber = phoneNumber;
     }
 
     public void addPhoneNumber(ContactRecord record) {
@@ -286,7 +277,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_FAX = "faxNumber";
     public static final String IO_FIELD_FAX = "telefaxNummer";
 
@@ -300,11 +290,11 @@ public class ParticipantRecord extends CvrEntityRecord {
     public Set<ContactRecord> faxNumber = new HashSet<>();
 
     public void setFaxNumber(Set<ContactRecord> faxNumber) {
-        for (ContactRecord record : faxNumber) {
+        this.faxNumber = (faxNumber == null) ? new HashSet<>() : new HashSet<>(faxNumber);
+        for (ContactRecord record : this.faxNumber) {
             record.setType(ContactRecord.TYPE_TELEFAXNUMMER);
             record.setParticipantRecord(this);
         }
-        this.faxNumber = faxNumber;
     }
 
     public void addFaxNumber(ContactRecord record) {
@@ -321,7 +311,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_EMAIL = "emailAddress";
     public static final String IO_FIELD_EMAIL = "elektroniskPost";
 
@@ -335,11 +324,12 @@ public class ParticipantRecord extends CvrEntityRecord {
     public Set<ContactRecord> emailAddress = new HashSet<>();
 
     public void setEmailAddress(Set<ContactRecord> emailAddress) {
-        for (ContactRecord record : emailAddress) {
+        this.emailAddress = (emailAddress == null) ? new HashSet<>() : new HashSet<>(emailAddress);
+        for (ContactRecord record : this.emailAddress) {
             record.setType(ContactRecord.TYPE_EMAILADRESSE);
             record.setParticipantRecord(this);
         }
-        this.emailAddress = emailAddress;
+
     }
 
     public void addEmailAddress(ContactRecord record) {
@@ -355,7 +345,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_ATTRIBUTES = "attributes";
     public static final String IO_FIELD_ATTRIBUTES = "attributter";
 
@@ -364,8 +353,8 @@ public class ParticipantRecord extends CvrEntityRecord {
     public Set<AttributeRecord> attributes = new HashSet<>();
 
     public void setAttributes(Set<AttributeRecord> attributes) {
-        this.attributes = attributes;
-        for (AttributeRecord attributeRecord : attributes) {
+        this.attributes = (attributes == null) ? new HashSet<>() : new HashSet<>(attributes);
+        for (AttributeRecord attributeRecord : this.attributes) {
             attributeRecord.setParticipantRecord(this);
         }
     }
@@ -397,7 +386,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_META = "metadata";
     public static final String IO_FIELD_META = "deltagerpersonMetadata";
 
@@ -408,13 +396,14 @@ public class ParticipantRecord extends CvrEntityRecord {
 
     public void setMetadata(ParticipantMetadataRecord metadata) {
         this.metadata = metadata;
-        this.metadata.setParticipantRecord(this);
+        if (this.metadata != null) {
+            this.metadata.setParticipantRecord(this);
+        }
     }
 
     public ParticipantMetadataRecord getMetadata() {
         return this.metadata;
     }
-
 
 
     public static final String DB_FIELD_COMPANY_RELATION = "companyRelation";
@@ -429,8 +418,8 @@ public class ParticipantRecord extends CvrEntityRecord {
     private Set<CompanyParticipantRelationRecord> companyRelation = new HashSet<>();
 
     public void setCompanyRelation(Set<CompanyParticipantRelationRecord> companyRelation) {
-        this.companyRelation = companyRelation;
-        for (CompanyParticipantRelationRecord companyParticipantRelationRecord : companyRelation) {
+        this.companyRelation = (companyRelation == null) ? new HashSet<>() : new HashSet<>(companyRelation);
+        for (CompanyParticipantRelationRecord companyParticipantRelationRecord : this.companyRelation) {
             companyParticipantRelationRecord.setParticipantRecord(this);
         }
     }
@@ -459,7 +448,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     public Set<CompanyParticipantRelationRecord> getCompanyRelation() {
         return this.companyRelation;
     }
-
 
 
     @JsonIgnore

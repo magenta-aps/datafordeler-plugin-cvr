@@ -44,8 +44,8 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
     }
 
     public void setMetadataContactRecords(Set<MetadataContactRecord> metadataContactRecords) {
-        this.metadataContactRecords = metadataContactRecords;
-        for (MetadataContactRecord metadataContactRecord : metadataContactRecords) {
+        this.metadataContactRecords = (metadataContactRecords == null) ? new HashSet<>() : new HashSet<>(metadataContactRecords);
+        for (MetadataContactRecord metadataContactRecord : this.metadataContactRecords) {
             metadataContactRecord.setUnitMetadataRecord(this);
         }
     }
@@ -70,7 +70,10 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
     private Set<BaseNameRecord> newestName = new HashSet<>();
 
     public void setNewestName(Set<BaseNameRecord> newestName) {
-        this.newestName = newestName;
+        this.newestName = (newestName == null) ? new HashSet<>() : new HashSet<>(newestName);
+        for (BaseNameRecord nameRecord : this.newestName) {
+            nameRecord.setUnitMetadataRecord(this);
+        }
     }
 
     @JsonSetter(IO_FIELD_NEWEST_NAME)
@@ -98,7 +101,6 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
     }
 
 
-
     public static final String DB_FIELD_NEWEST_LOCATION = "newestLocation";
     public static final String IO_FIELD_NEWEST_LOCATION = "nyesteBeliggenhedsadresse";
 
@@ -111,7 +113,10 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
     private Set<AddressRecord> newestLocation = new HashSet<>();
 
     public void setNewestLocation(Set<AddressRecord> newestLocation) {
-        this.newestLocation = newestLocation;
+        this.newestLocation = (newestLocation == null) ? new HashSet<>() : new HashSet<>(newestLocation);
+        for (AddressRecord addressRecord : this.newestLocation) {
+            addressRecord.setUnitMetadataRecord(this);
+        }
     }
 
     @JsonSetter(IO_FIELD_NEWEST_LOCATION)
@@ -139,12 +144,11 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
     }
 
 
-
     public static final String DB_FIELD_NEWEST_PRIMARY_INDUSTRY = "newestPrimaryIndustry";
     public static final String IO_FIELD_NEWEST_PRIMARY_INDUSTRY = "nyesteHovedbranche";
 
     @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_UNIT_METADATA, cascade = CascadeType.ALL, orphanRemoval = true)
-    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=0")
+    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX + "=0")
     @Filters({
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
@@ -153,7 +157,10 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
     private Set<CompanyIndustryRecord> newestPrimaryIndustry = new HashSet<>();
 
     public void setNewestPrimaryIndustry(Set<CompanyIndustryRecord> newestPrimaryIndustry) {
-        this.newestPrimaryIndustry = newestPrimaryIndustry;
+        this.newestPrimaryIndustry = (newestPrimaryIndustry == null) ? new HashSet<>() : new HashSet<>(newestPrimaryIndustry);
+        for (CompanyIndustryRecord industryRecord : this.newestPrimaryIndustry) {
+            industryRecord.setUnitMetadataRecord(this);
+        }
     }
 
     @JsonSetter(IO_FIELD_NEWEST_PRIMARY_INDUSTRY)
@@ -182,13 +189,11 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
     }
 
 
-
-
     public static final String DB_FIELD_NEWEST_SECONDARY_INDUSTRY1 = "newestSecondaryIndustry1";
     public static final String IO_FIELD_NEWEST_SECONDARY_INDUSTRY1 = "nyesteBibranche1";
 
     @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_UNIT_METADATA, cascade = CascadeType.ALL, orphanRemoval = true)
-    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=1")
+    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX + "=1")
     @Filters({
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
@@ -197,7 +202,10 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
     private Set<CompanyIndustryRecord> newestSecondaryIndustry1 = new HashSet<>();
 
     public void setNewestSecondaryIndustry1(Set<CompanyIndustryRecord> newestSecondaryIndustry1) {
-        this.newestSecondaryIndustry1 = newestSecondaryIndustry1;
+        this.newestSecondaryIndustry1 = (newestSecondaryIndustry1 == null) ? new HashSet<>() : new HashSet<>(newestSecondaryIndustry1);
+        for (CompanyIndustryRecord industryRecord : this.newestSecondaryIndustry1) {
+            industryRecord.setUnitMetadataRecord(this);
+        }
     }
 
     @JsonSetter(IO_FIELD_NEWEST_SECONDARY_INDUSTRY1)
@@ -226,13 +234,11 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
     }
 
 
-
-
     public static final String DB_FIELD_NEWEST_SECONDARY_INDUSTRY2 = "newestSecondaryIndustry2";
     public static final String IO_FIELD_NEWEST_SECONDARY_INDUSTRY2 = "nyesteBibranche2";
 
     @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_UNIT_METADATA, cascade = CascadeType.ALL, orphanRemoval = true)
-    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=2")
+    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX + "=2")
     @Filters({
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
@@ -241,7 +247,10 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
     private Set<CompanyIndustryRecord> newestSecondaryIndustry2 = new HashSet<>();
 
     public void setNewestSecondaryIndustry2(Set<CompanyIndustryRecord> newestSecondaryIndustry2) {
-        this.newestSecondaryIndustry2 = newestSecondaryIndustry2;
+        this.newestSecondaryIndustry2 = (newestSecondaryIndustry2 == null) ? new HashSet<>() : new HashSet<>(newestSecondaryIndustry2);
+        for (CompanyIndustryRecord industryRecord : this.newestSecondaryIndustry2) {
+            industryRecord.setUnitMetadataRecord(this);
+        }
     }
 
     @JsonSetter(IO_FIELD_NEWEST_SECONDARY_INDUSTRY2)
@@ -270,15 +279,11 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
     }
 
 
-
-
-
-
     public static final String DB_FIELD_NEWEST_SECONDARY_INDUSTRY3 = "newestSecondaryIndustry3";
     public static final String IO_FIELD_NEWEST_SECONDARY_INDUSTRY3 = "nyesteBibranche3";
 
     @OneToMany(targetEntity = CompanyIndustryRecord.class, mappedBy = CompanyIndustryRecord.DB_FIELD_UNIT_METADATA, cascade = CascadeType.ALL, orphanRemoval = true)
-    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX+"=3")
+    @Where(clause = CompanyIndustryRecord.DB_FIELD_INDEX + "=3")
     @Filters({
             @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
             @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
@@ -287,7 +292,10 @@ public class CompanyUnitMetadataRecord extends MetadataRecord {
     private Set<CompanyIndustryRecord> newestSecondaryIndustry3 = new HashSet<>();
 
     public void setNewestSecondaryIndustry3(Set<CompanyIndustryRecord> newestSecondaryIndustry3) {
-        this.newestSecondaryIndustry3 = newestSecondaryIndustry3;
+        this.newestSecondaryIndustry3 = (newestSecondaryIndustry3 == null) ? new HashSet<>() : new HashSet<>(newestSecondaryIndustry3);
+        for (CompanyIndustryRecord industryRecord : this.newestSecondaryIndustry3) {
+            industryRecord.setUnitMetadataRecord(this);
+        }
     }
 
     @JsonSetter(IO_FIELD_NEWEST_SECONDARY_INDUSTRY3)
