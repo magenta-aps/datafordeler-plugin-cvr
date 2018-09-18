@@ -58,7 +58,7 @@ public class DirectLookup {
         String keystorePassword = configuration.getParticipantRegisterDirectLookupPassword();
         URI queryUri;
         try {
-            queryUri = new URL(configuration.getCompanyRegisterDirectLookupAddress().replace("%{unit}", unitNumber)).toURI();
+            queryUri = new URL(configuration.getParticipantRegisterDirectLookupAddress().replace("%{unit}", unitNumber)).toURI();
         } catch (URISyntaxException | MalformedURLException e) {
             throw new DataStreamException(e);
         }
