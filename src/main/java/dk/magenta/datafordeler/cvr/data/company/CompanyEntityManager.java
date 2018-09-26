@@ -1,7 +1,11 @@
 package dk.magenta.datafordeler.cvr.data.company;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import dk.magenta.datafordeler.core.database.RegistrationReference;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.DataStreamException;
@@ -26,6 +30,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
+import java.util.List;
 import java.util.StringJoiner;
 import java.util.UUID;
 
@@ -123,7 +128,7 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
     }
 
 
-    public HashSet<CompanyRecord> directLookup(HashSet<String> cvrNumbers, OffsetDateTime since) {
+    public HashSet<CompanyRecord> directLookup(HashSet<String> cvrNumbers, OffsetDateTime since, List<Integer> municipalityCodes) {
         HashSet<CompanyRecord> records = new HashSet<>();
         CvrRegisterManager registerManager = (CvrRegisterManager) this.getRegisterManager();
         ScanScrollCommunicator eventCommunicator = (ScanScrollCommunicator) registerManager.getEventFetcher();
@@ -140,26 +145,50 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
             csep.add("\"" + cvrNumber + "\"");
         }
 
-        String requestBody = "{" +
-                "\"query\": {" +
-                "\"terms\": {" +
-                "\"Vrvirksomhed.cvrNummer\": [" + csep.toString() + "]" +
-                "}";
-        if (since != null) {
-            requestBody += "}," +
-                    "\"range\": {" +
-                    "\"Vrvirksomhed.sidstOpdateret\": {" +
-                    "\"gte\": \""+since.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)+"\"" +
-                    "}" +
-                    "}";
-        } else {
-            requestBody += "}";
-        }
-         requestBody += "}";
+        ObjectMapper objectMapper = this.getObjectMapper();
+        ObjectNode topQuery = objectMapper.createObjectNode();
+        ObjectNode query = objectMapper.createObjectNode();
+        topQuery.set("query", query);
+        ObjectNode bool = objectMapper.createObjectNode();
+        query.set("bool", bool);
+        ArrayNode must = objectMapper.createArrayNode();
+        bool.set("must", must);
 
-        InputStream rawData;
+        ObjectNode cvrNumberQuery = objectMapper.createObjectNode();
+        must.add(cvrNumberQuery);
+        ObjectNode cvrNumberTerms = objectMapper.createObjectNode();
+        cvrNumberQuery.set("terms", cvrNumberTerms);
+        ArrayNode cvrNumberTermValues = objectMapper.createArrayNode();
+        cvrNumberTerms.set("Vrvirksomhed.cvrNummer", cvrNumberTermValues);
+        for (String cvrNumber : cvrNumbers) {
+            cvrNumberTermValues.add(cvrNumber);
+        }
+
+        if (municipalityCodes != null) {
+            ObjectNode municipalityQuery = objectMapper.createObjectNode();
+            must.add(municipalityQuery);
+            ObjectNode municipalityTerms = objectMapper.createObjectNode();
+            municipalityQuery.set("terms", municipalityTerms);
+            ArrayNode municipalityTermValues = objectMapper.createArrayNode();
+            cvrNumberTerms.set("Vrvirksomhed.beliggenhedsadresse.kommune.kommuneKode", municipalityTermValues);
+            for (Integer municipalityCode : municipalityCodes) {
+                municipalityTermValues.add(municipalityCode);
+            }
+        }
+
+        if (since != null) {
+            ObjectNode sinceQuery = objectMapper.createObjectNode();
+            must.add(sinceQuery);
+            ObjectNode sinceRange = objectMapper.createObjectNode();
+            sinceQuery.set("range", sinceRange);
+            ObjectNode sinceTermValue = objectMapper.createObjectNode();
+            sinceRange.set("Vrvirksomhed.sidstOpdateret", sinceTermValue);
+            sinceTermValue.put("gte", since.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        }
+
         try {
-            rawData = eventCommunicator.fetch(
+            String requestBody = objectMapper.writeValueAsString(topQuery);
+            InputStream rawData = eventCommunicator.fetch(
                     new URI(configuration.getStartAddress(schema)),
                     new URI(configuration.getScrollAddress(schema)),
                     requestBody
@@ -173,7 +202,6 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
                 }
                 if (topNode.isArray()) {
                     for (JsonNode item : topNode) {
-
                         if (item.has("_source")) {
                             item = item.get("_source");
                         }
