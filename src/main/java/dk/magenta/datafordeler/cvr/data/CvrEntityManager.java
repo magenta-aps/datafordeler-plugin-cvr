@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.data;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MapperFeature;
@@ -257,6 +258,13 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                         }
                         try {
                             this.parseData(this.getObjectMapper().readTree(data), importMetadata, session);
+                        } catch (JsonParseException e) {
+                            ImportInterruptedException ex = new ImportInterruptedException(e);
+                            session.getTransaction().rollback();
+                            importMetadata.setTransactionInProgress(false);
+                            session.clear();
+                            ex.setChunk(chunkCount);
+                            throw ex;
                         } catch (ImportInterruptedException e) {
                             session.getTransaction().rollback();
                             importMetadata.setTransactionInProgress(false);
