@@ -11,7 +11,7 @@ import dk.magenta.datafordeler.core.plugin.*;
 import dk.magenta.datafordeler.core.util.ItemInputStream;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfiguration;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfigurationManager;
-import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
+import dk.magenta.datafordeler.cvr.entitymanager.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.synchronization.CvrSourceData;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
