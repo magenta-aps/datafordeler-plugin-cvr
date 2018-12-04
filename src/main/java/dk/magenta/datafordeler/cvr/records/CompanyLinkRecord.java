@@ -3,8 +3,6 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
-import org.hibernate.Session;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,10 +28,5 @@ public class CompanyLinkRecord extends CvrBitemporalDataRecord {
     @Column(name = DB_FIELD_CVRNUMBER)
     @JsonProperty(value = IO_FIELD_CVRNUMBER)
     private int cvrNumber;
-
-    @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
-        baseData.addAssociatedCvrNumber(this.cvrNumber);
-    }
 
 }

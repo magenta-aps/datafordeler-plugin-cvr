@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
 import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
 import org.hibernate.Session;
 
@@ -108,14 +107,6 @@ public class FormRecord extends CvrBitemporalDataRecord {
 
     public void setRelationCompanyRecord(RelationCompanyRecord relationCompanyRecord) {
         this.relationCompanyRecord = relationCompanyRecord;
-    }
-
-
-
-    @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) {
-        CompanyForm form = CompanyForm.getForm(this.companyFormCode, this.shortDescription, this.longDescription, this.responsibleDatasource, session);
-        baseData.setCompanyForm(form);
     }
 
     public void wire(Session session) {

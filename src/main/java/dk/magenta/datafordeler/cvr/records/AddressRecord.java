@@ -4,11 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
-import dk.magenta.datafordeler.cvr.data.unversioned.Address;
-import dk.magenta.datafordeler.cvr.data.unversioned.Municipality;
 import dk.magenta.datafordeler.cvr.data.unversioned.PostCode;
 import org.hibernate.Session;
 
@@ -44,37 +39,6 @@ public class AddressRecord extends CvrBitemporalDataMetaRecord {
     public static final int TYPE_LOCATION = 0;
     public static final int TYPE_POSTAL = 1;
     public static final int TYPE_BUSINESS = 2;
-
-    @JsonIgnore
-    public Address getAddress() {
-        //return this.address;
-        Address address = new Address();
-        address.setRoadName(this.roadName);
-        address.setRoadCode(this.roadCode);
-        if (this.municipality != null) {
-            address.setMunicipality(this.municipality.getMunicipality());
-        }
-        address.setHouseNumberFrom(this.houseNumberFrom);
-        address.setHouseNumberTo(this.houseNumberTo);
-        address.setPost(this.post);
-        address.setAddressText(this.addressText);
-        address.setCoName(this.coName);
-        address.setCountryCode(this.countryCode);
-        address.setFloor(this.floor);
-        address.setDoor(this.door);
-        address.setLetterFrom(this.letterFrom);
-        address.setLetterTo(this.letterTo);
-        address.setLastValidated(this.lastValidated);
-        address.setPostdistrikt(this.postdistrikt);
-        try {
-            address.setPostBox(Integer.parseInt(this.postBox, 10));
-        } catch (NumberFormatException e) {}
-        address.setPostnummer(this.postnummer);
-        address.setSupplementalCityName(this.supplementalCityName);
-        return address;
-    }
-
-
 
 
     public static final String DB_FIELD_OFFICE_UNIT = "officeUnitRecord";
@@ -512,69 +476,6 @@ public class AddressRecord extends CvrBitemporalDataMetaRecord {
         this.freeText = freeText;
     }
 
-
-
-
-
-    @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) {
-        Address address = this.normalizeAddress(session);
-        //session.saveOrUpdate(this.address);
-        switch (this.type) {
-            case TYPE_LOCATION:
-                baseData.setLocationAddress(address);
-                break;
-            case TYPE_POSTAL:
-                baseData.setPostalAddress(address);
-                break;
-        }
-    }
-
-    @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
-        Address address = this.normalizeAddress(session);
-        //session.saveOrUpdate(this.address);
-        switch (this.type) {
-            case TYPE_LOCATION:
-                baseData.setLocationAddress(address);
-                break;
-            case TYPE_POSTAL:
-                baseData.setPostalAddress(address);
-                break;
-        }
-    }
-
-    @Override
-    public void populateBaseData(ParticipantBaseData baseData, Session session) {
-        Address address = this.normalizeAddress(session);
-        //session.saveOrUpdate(this.address);
-        switch (this.type) {
-            case TYPE_LOCATION:
-                baseData.setLocationAddress(address);
-                break;
-            case TYPE_POSTAL:
-                baseData.setPostalAddress(address);
-                break;
-            case TYPE_BUSINESS:
-                baseData.setBusinessAddress(address);
-                break;
-        }
-    }
-
-    private Address normalizeAddress(Session session) {
-        Address address = getAddress();
-        if (address != null) {
-            Municipality oldMunicipality = address.getMunicipality();
-            if (oldMunicipality != null) {
-                address.setMunicipality(Municipality.getMunicipality(oldMunicipality, session));
-            }
-            int postcode = address.getPostnummer();
-            if (postcode != 0) {
-                address.setPost(PostCode.getPostcode(postcode, address.getPostdistrikt(), session));
-            }
-        }
-        return address;
-    }
 
     public void wire(Session session) {
         if (this.municipality != null) {

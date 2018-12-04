@@ -4,23 +4,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.magenta.datafordeler.core.Application;
 import dk.magenta.datafordeler.core.database.QueryManager;
-import dk.magenta.datafordeler.core.database.Registration;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.io.ImportMetadata;
-import dk.magenta.datafordeler.core.plugin.EntityManager;
-import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
-import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
 import dk.magenta.datafordeler.cvr.data.company.CompanyEntityManager;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
 import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntityManager;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
 import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntityManager;
+import dk.magenta.datafordeler.cvr.records.CompanyRecord;
+import dk.magenta.datafordeler.cvr.records.CompanyUnitRecord;
+import dk.magenta.datafordeler.cvr.records.ParticipantRecord;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +24,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.time.OffsetDateTime;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = Application.class)
@@ -51,9 +41,9 @@ public class ParseTest {
 
     private static HashMap<String, String> schemaMap = new HashMap<>();
     static {
-        schemaMap.put("virksomhed", CompanyEntity.schema);
-        schemaMap.put("produktionsenhed", CompanyUnitEntity.schema);
-        schemaMap.put("deltager", ParticipantEntity.schema);
+        schemaMap.put("virksomhed", CompanyRecord.schema);
+        schemaMap.put("produktionsenhed", CompanyUnitRecord.schema);
+        schemaMap.put("deltager", ParticipantRecord.schema);
     }
 
     @Test
@@ -70,7 +60,7 @@ public class ParseTest {
             for (JsonNode item : itemList) {
                 String type = item.get("_type").asText();
                 CompanyEntityManager entityManager = (CompanyEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-                List<? extends Registration> registrations = entityManager.parseData(item.get("_source").get("Vrvirksomhed"), importMetadata, session);
+                entityManager.parseData(item.get("_source").get("Vrvirksomhed"), importMetadata, session);
             }
         } finally {
             transaction.rollback();
@@ -93,7 +83,7 @@ public class ParseTest {
             for (JsonNode item : itemList) {
                 String type = item.get("_type").asText();
                 CompanyUnitEntityManager entityManager = (CompanyUnitEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-                List<? extends Registration> registrations = entityManager.parseData(item.get("_source").get("VrproduktionsEnhed"), importMetadata, session);
+                entityManager.parseData(item.get("_source").get("VrproduktionsEnhed"), importMetadata, session);
             }
         } finally {
             transaction.rollback();
@@ -117,7 +107,7 @@ public class ParseTest {
             for (JsonNode item : itemList) {
                 String type = item.get("_type").asText();
                 ParticipantEntityManager entityManager = (ParticipantEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-                List<? extends Registration> registrations = entityManager.parseData(item.get("_source").get("Vrdeltagerperson"), importMetadata, session);
+                entityManager.parseData(item.get("_source").get("Vrdeltagerperson"), importMetadata, session);
             }
         } finally {
             transaction.rollback();

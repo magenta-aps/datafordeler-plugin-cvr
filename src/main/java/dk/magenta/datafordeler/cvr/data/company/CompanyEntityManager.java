@@ -2,17 +2,17 @@ package dk.magenta.datafordeler.cvr.data.company;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectReader;
-import dk.magenta.datafordeler.core.database.RegistrationReference;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.DataStreamException;
 import dk.magenta.datafordeler.core.exception.HttpStatusException;
-import dk.magenta.datafordeler.core.fapi.FapiService;
+import dk.magenta.datafordeler.core.fapi.FapiBaseService;
 import dk.magenta.datafordeler.core.plugin.ScanScrollCommunicator;
 import dk.magenta.datafordeler.cvr.CvrRegisterManager;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfiguration;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfigurationManager;
 import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.records.CompanyRecord;
+import dk.magenta.datafordeler.cvr.records.service.CompanyRecordService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ import java.util.UUID;
  * will use to import data.
  */
 @Component
-public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, CompanyRegistration, CompanyEffect, CompanyBaseData, CompanyRecord> {
+public class CompanyEntityManager extends CvrEntityManager<CompanyRecord> {
 
     public static final OffsetDateTime MIN_SQL_SERVER_DATETIME = OffsetDateTime.of(
             1, 1, 1, 0, 0, 0, 0,
@@ -42,7 +42,7 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
     );
 
     @Autowired
-    private CompanyEntityService companyEntityService;
+    private CompanyRecordService companyEntityService;
 
     @Autowired
     private SessionManager sessionManager;
@@ -50,10 +50,6 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
     private Logger log = LogManager.getLogger(CompanyEntityManager.class);
 
     public CompanyEntityManager() {
-        this.managedEntityClass = CompanyEntity.class;
-        this.managedEntityReferenceClass = CompanyEntityReference.class;
-        this.managedRegistrationClass = CompanyRegistration.class;
-        this.managedRegistrationReferenceClass = CompanyRegistrationReference.class;
     }
 
     @Override
@@ -62,18 +58,13 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
     }
 
     @Override
-    public FapiService getEntityService() {
+    public FapiBaseService getEntityService() {
         return this.companyEntityService;
     }
 
     @Override
     public String getSchema() {
-        return CompanyEntity.schema;
-    }
-
-    @Override
-    protected RegistrationReference createRegistrationReference(URI uri) {
-        return new CompanyRegistrationReference(uri);
+        return CompanyRecord.schema;
     }
 
     @Override
@@ -92,25 +83,8 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
     }
 
     @Override
-    protected Class getEntityClass() {
-        return CompanyEntity.class;
-    }
-
-    @Override
     protected UUID generateUUID(CompanyRecord record) {
-        return CompanyEntity.generateUUID(record.getCvrNumber());
-    }
-
-    @Override
-    protected CompanyEntity createBasicEntity(CompanyRecord record) {
-        CompanyEntity entity = new CompanyEntity();
-        entity.setCvrNumber(record.getCvrNumber());
-        return entity;
-    }
-
-    @Override
-    protected CompanyBaseData createDataItem() {
-        return new CompanyBaseData();
+        return CompanyRecord.generateUUID(record.getCvrNumber());
     }
 
     @Autowired
@@ -129,7 +103,7 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyEntity, Compan
         ScanScrollCommunicator eventCommunicator = (ScanScrollCommunicator) registerManager.getEventFetcher();
         CvrConfiguration configuration = this.configurationManager.getConfiguration();
 
-        String schema = CompanyEntity.schema;
+        String schema = CompanyRecord.schema;
 
         eventCommunicator.setUsername(configuration.getUsername(schema));
         eventCommunicator.setPassword(configuration.getPassword(schema));

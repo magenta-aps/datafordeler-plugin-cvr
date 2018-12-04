@@ -43,7 +43,7 @@ import java.util.*;
  * In particular, defines the flow of how data is imported.
  */
 @Component
-public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrRegistration<E, R, V>, V extends CvrEffect, D extends CvrData<V, D>, T extends CvrEntityRecord>
+public abstract class CvrEntityManager<T extends CvrEntityRecord>
         extends EntityManager {
 
     @Autowired
@@ -153,14 +153,12 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
         return this.getObjectMapper().readValue(referenceData.getBytes(charsetName), this.managedRegistrationReferenceClass);
     }
 
-    protected abstract RegistrationReference createRegistrationReference(URI uri);
-
     /**
      * Create a RegistrationReference object that encapsulates the given URI in the proper object
      */
     @Override
     public RegistrationReference parseReference(URI uri) {
-        return this.createRegistrationReference(uri);
+        return null;
     }
 
     /**
@@ -312,10 +310,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
     protected abstract SessionManager getSessionManager();
     protected abstract String getJsonTypeName();
     protected abstract Class<T> getRecordClass();
-    protected abstract Class<E> getEntityClass();
     protected abstract UUID generateUUID(T record);
-    protected abstract E createBasicEntity(T record);
-    protected abstract D createDataItem();
 
     /**
      * Parse an incoming JsonNode containing CVR data. A node may be a collection of nodes, in which case
@@ -331,7 +326,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
      * @return A list of registrations that have been saved to the database
      * @throws ParseException
      */
-    public List<? extends Registration> parseData(JsonNode jsonNode, ImportMetadata importMetadata, Session session) throws DataFordelerException {
+    public void parseData(JsonNode jsonNode, ImportMetadata importMetadata, Session session) throws DataFordelerException {
 
         if (jsonNode.has("hits")) {
             jsonNode = jsonNode.get("hits");
@@ -346,7 +341,7 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
                 for (JsonNode item : jsonNode) {
                     this.parseData(item, importMetadata, session);
                 }
-                return null;
+                return;
             }
         }
 
@@ -364,14 +359,12 @@ public abstract class CvrEntityManager<E extends CvrEntity<E, R>, R extends CvrR
             toplevelRecord = getObjectMapper().treeToValue(jsonNode, this.getRecordClass());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            return null;
+            return;
         }
         timer.measure(TASK_PARSE);
 
         toplevelRecord.setDafoUpdateOnTree(importMetadata.getImportTime());
         toplevelRecord.save(session);
-
-        return null;
     }
 
     /**

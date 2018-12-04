@@ -3,7 +3,7 @@ package dk.magenta.datafordeler.cvr;
 import dk.magenta.datafordeler.core.database.DataItem;
 import dk.magenta.datafordeler.core.database.FieldDefinition;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
-import dk.magenta.datafordeler.core.fapi.Query;
+import dk.magenta.datafordeler.core.fapi.BaseQuery;
 import dk.magenta.datafordeler.cvr.records.CvrBitemporalRecord;
 
 import java.time.OffsetDateTime;
@@ -15,7 +15,7 @@ public class CvrRecordLookupDefinition extends LookupDefinition {
         super(dataClass);
     }
 
-    public CvrRecordLookupDefinition(Query query, Class<? extends DataItem> dataClass) {
+    public CvrRecordLookupDefinition(BaseQuery query, Class<? extends DataItem> dataClass) {
         super(query, dataClass);
 
         if (query.getRecordAfter() != null) {

@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.unversioned.CompanyStatus;
-import org.hibernate.Session;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -53,12 +50,6 @@ public class CompanyStatusRecord extends CvrBitemporalDataRecord {
         this.relationCompanyRecord = relationCompanyRecord;
     }
 
-
-
-    @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) {
-        baseData.setStatus(CompanyStatus.getStatus(this.status, session));
-    }
 
     @Override
     public boolean equals(Object o) {

@@ -60,7 +60,7 @@ public class ParticipantRecordService extends FapiBaseService<ParticipantRecord,
 
     @Override
     public String getServiceName() {
-        return "unit";
+        return "participant";
     }
 
     public static String getDomain() {

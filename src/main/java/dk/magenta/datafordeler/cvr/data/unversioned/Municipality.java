@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.data.unversioned;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.QueryManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +25,7 @@ import static dk.magenta.datafordeler.cvr.data.unversioned.Municipality.DB_FIELD
 @Table(name = "cvr_municipality", indexes = {
         @Index(name = "cvr_municipality_code", columnList = DB_FIELD_CODE)
 })
-public class Municipality extends UnversionedEntity {
+public class Municipality extends DatabaseEntry {
 
     private static Logger log = LogManager.getLogger(Municipality.class.getSimpleName());
 

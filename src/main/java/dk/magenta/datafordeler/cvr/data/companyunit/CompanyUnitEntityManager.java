@@ -1,24 +1,23 @@
 package dk.magenta.datafordeler.cvr.data.companyunit;
 
-import dk.magenta.datafordeler.core.database.RegistrationReference;
 import dk.magenta.datafordeler.core.database.SessionManager;
-import dk.magenta.datafordeler.core.fapi.FapiService;
+import dk.magenta.datafordeler.core.fapi.FapiBaseService;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfiguration;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfigurationManager;
 import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.records.CompanyUnitRecord;
+import dk.magenta.datafordeler.cvr.records.service.CompanyUnitRecordService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.net.URI;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.UUID;
 
 @Component
-public class CompanyUnitEntityManager extends CvrEntityManager<CompanyUnitEntity, CompanyUnitRegistration, CompanyUnitEffect, CompanyUnitBaseData, CompanyUnitRecord> {
+public class CompanyUnitEntityManager extends CvrEntityManager<CompanyUnitRecord> {
 
     public static final OffsetDateTime MIN_SQL_SERVER_DATETIME = OffsetDateTime.of(
         1, 1, 1, 0, 0, 0, 0,
@@ -26,7 +25,7 @@ public class CompanyUnitEntityManager extends CvrEntityManager<CompanyUnitEntity
     );
 
     @Autowired
-    private CompanyUnitEntityService companyUnitEntityService;
+    private CompanyUnitRecordService companyUnitEntityService;
 
     @Autowired
     private SessionManager sessionManager;
@@ -34,10 +33,6 @@ public class CompanyUnitEntityManager extends CvrEntityManager<CompanyUnitEntity
     private Logger log = LogManager.getLogger(CompanyUnitEntityManager.class);
 
     public CompanyUnitEntityManager() {
-        this.managedEntityClass = CompanyUnitEntity.class;
-        this.managedEntityReferenceClass = CompanyUnitEntityReference.class;
-        this.managedRegistrationClass = CompanyUnitRegistration.class;
-        this.managedRegistrationReferenceClass = CompanyUnitRegistrationReference.class;
     }
 
     @Override
@@ -46,18 +41,13 @@ public class CompanyUnitEntityManager extends CvrEntityManager<CompanyUnitEntity
     }
 
     @Override
-    public FapiService getEntityService() {
+    public FapiBaseService getEntityService() {
         return this.companyUnitEntityService;
     }
 
     @Override
     public String getSchema() {
-        return CompanyUnitEntity.schema;
-    }
-
-    @Override
-    protected RegistrationReference createRegistrationReference(URI uri) {
-        return new CompanyUnitRegistrationReference(uri);
+        return CompanyUnitRecord.schema;
     }
 
     @Override
@@ -75,26 +65,10 @@ public class CompanyUnitEntityManager extends CvrEntityManager<CompanyUnitEntity
         return CompanyUnitRecord.class;
     }
 
-    @Override
-    protected Class<CompanyUnitEntity> getEntityClass() {
-        return CompanyUnitEntity.class;
-    }
 
     @Override
     protected UUID generateUUID(CompanyUnitRecord record) {
-        return CompanyUnitEntity.generateUUID(record.getpNumber());
-    }
-
-    @Override
-    protected CompanyUnitEntity createBasicEntity(CompanyUnitRecord record) {
-        CompanyUnitEntity entity = new CompanyUnitEntity();
-        entity.setPNumber(record.getpNumber());
-        return entity;
-    }
-
-    @Override
-    protected CompanyUnitBaseData createDataItem() {
-        return new CompanyUnitBaseData();
+        return CompanyUnitRecord.generateUUID(record.getpNumber());
     }
 
     @Autowired

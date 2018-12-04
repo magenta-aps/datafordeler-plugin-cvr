@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Effect;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
 import dk.magenta.datafordeler.cvr.records.service.CompanyRecordService;
 import org.hibernate.Session;
 import org.hibernate.annotations.Filter;
@@ -29,6 +27,8 @@ import java.util.*;
 public class CompanyRecord extends CvrEntityRecord {
 
     public static final String TABLE_NAME = "cvr_record_company";
+
+    public static final String schema = "virksomhed";
 
     @Override
     @JsonIgnore
@@ -1151,13 +1151,12 @@ public class CompanyRecord extends CvrEntityRecord {
 
     @Override
     public UUID generateUUID() {
-        return CompanyEntity.generateUUID(this.cvrNumber);
+        return CompanyRecord.generateUUID(this.cvrNumber);
     }
 
-    @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) {
-        baseData.setAdvertProtection(this.advertProtection);
-        baseData.setCvrNumber(this.cvrNumber);
+    public static UUID generateUUID(int cvrNumber) {
+        String uuidInput = "company:"+cvrNumber;
+        return UUID.nameUUIDFromBytes(uuidInput.getBytes());
     }
 
     @Override

@@ -1,13 +1,16 @@
 package dk.magenta.datafordeler.cvr.data.unversioned;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.QueryManager;
-import dk.magenta.datafordeler.cvr.data.shared.IndustryData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,12 +25,9 @@ import static dk.magenta.datafordeler.cvr.data.unversioned.Industry.DB_FIELD_COD
 @Table(name = "cvr_industry", indexes = {
         @Index(name = "industryCode", columnList = DB_FIELD_CODE)
 })
-public class Industry extends UnversionedEntity {
+public class Industry extends DatabaseEntry {
 
     private static Logger log = LogManager.getLogger(Industry.class.getSimpleName());
-
-    @OneToMany(mappedBy = "industry")
-    private List<IndustryData> industryData;
 
     public static final String DB_FIELD_CODE = "industryCode";
     public static final String IO_FIELD_CODE = "branchekode";
