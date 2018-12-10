@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 
 import javax.persistence.Column;
@@ -18,7 +19,7 @@ import javax.persistence.Table;
         @Index(name = CompanyLinkRecord.TABLE_NAME + "__cvrnumber", columnList = CompanyLinkRecord.DB_FIELD_CVRNUMBER),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CompanyLinkRecord extends CvrBitemporalDataRecord {
+public class CompanyLinkRecord extends CvrBitemporalDataRecord implements Bitemporal {
 
     public static final String TABLE_NAME = "cvr_record_unit_link_company";
 

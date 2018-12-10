@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.*;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Effect;
 import org.hibernate.Session;
@@ -15,7 +16,7 @@ import java.util.*;
         @Index(name = ParticipantMetadataRecord.TABLE_NAME + "__participant", columnList = ParticipantMetadataRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF, unique = true),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ParticipantMetadataRecord extends CvrBitemporalDataRecord {
+public class ParticipantMetadataRecord extends CvrBitemporalDataRecord implements Bitemporal {
 
     public static final String TABLE_NAME = "cvr_record_participant_metadata";
 

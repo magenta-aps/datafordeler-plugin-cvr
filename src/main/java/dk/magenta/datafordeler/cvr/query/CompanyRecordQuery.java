@@ -4,9 +4,9 @@ import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.core.fapi.BaseQuery;
 import dk.magenta.datafordeler.core.fapi.ParameterMap;
 import dk.magenta.datafordeler.core.fapi.QueryField;
+import dk.magenta.datafordeler.cvr.records.*;
 import dk.magenta.datafordeler.cvr.records.unversioned.CompanyForm;
 import dk.magenta.datafordeler.cvr.records.unversioned.Municipality;
-import dk.magenta.datafordeler.cvr.records.*;
 
 import java.util.*;
 
