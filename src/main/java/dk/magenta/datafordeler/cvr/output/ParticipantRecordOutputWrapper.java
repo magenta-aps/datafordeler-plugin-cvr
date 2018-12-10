@@ -1,13 +1,7 @@
 package dk.magenta.datafordeler.cvr.output;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import dk.magenta.datafordeler.core.database.Entity;
-import dk.magenta.datafordeler.core.fapi.BaseQuery;
-import dk.magenta.datafordeler.core.util.Bitemporality;
 import dk.magenta.datafordeler.cvr.records.ParticipantMetadataRecord;
 import dk.magenta.datafordeler.cvr.records.ParticipantRecord;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -42,35 +36,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ParticipantRecordOutputWrapper extends CvrRecordOutputWrapper<ParticipantRecord> {
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Override
-    protected ObjectMapper getObjectMapper() {
-        return this.objectMapper;
-    }
+    protected void fillContainer(OutputContainer oContainer, ParticipantRecord record) {
 
-    @Override
-    public Object wrapResult(ParticipantRecord record, BaseQuery query) {
-        Bitemporality mustContain = new Bitemporality(query.getRegistrationFrom(), query.getRegistrationTo(), query.getEffectFrom(), query.getEffectTo());
-        return this.asRVD(record, mustContain);
-        //return this.asRecord(unitRecord);
-    }
-
-    private ObjectNode asRecord(ParticipantRecord record) {
-        return objectMapper.valueToTree(record);
-    }
-
-    protected ObjectNode asRVD(ParticipantRecord record, Bitemporality mustContain) {
-        ObjectNode root = this.getNode(record, mustContain);
-        root.put(Entity.IO_FIELD_UUID, record.getIdentification().getUuid().toString());
-        root.putPOJO(Entity.IO_FIELD_DOMAIN, record.getIdentification().getDomain());
-        return root;
-    }
-
-
-    @Override
-    protected void fillContainer(OutputContainer container, ParticipantRecord record) {
+        CvrOutputContainer container = (CvrOutputContainer) oContainer;
 
         container.addNontemporal(ParticipantRecord.IO_FIELD_UNIT_NUMBER, record.getUnitNumber());
         container.addNontemporal(ParticipantRecord.IO_FIELD_UNIT_TYPE, record.getUnitType());
@@ -79,13 +48,13 @@ public class ParticipantRecordOutputWrapper extends CvrRecordOutputWrapper<Parti
         container.addNontemporal(ParticipantRecord.IO_FIELD_STATUS_CODE, record.getStatusCode());
         container.addNontemporal(ParticipantRecord.IO_FIELD_CONFIDENTIAL_ENRICHED, record.getConfidentialEnriched());
 
-        container.addBitemporal("navn", record.getNames(), true);
-        container.addBitemporal(ParticipantRecord.IO_FIELD_LOCATION_ADDRESS, record.getLocationAddress(), this::createAddressNode);
-        container.addBitemporal(ParticipantRecord.IO_FIELD_POSTAL_ADDRESS, record.getPostalAddress(), this::createAddressNode);
-        container.addBitemporal(ParticipantRecord.IO_FIELD_BUSINESS_ADDRESS, record.getBusinessAddress(), this::createAddressNode);
-        container.addBitemporal(ParticipantRecord.IO_FIELD_PHONE, record.getPhoneNumber(), true);
-        container.addBitemporal(ParticipantRecord.IO_FIELD_FAX, record.getFaxNumber(), true);
-        container.addBitemporal(ParticipantRecord.IO_FIELD_EMAIL, record.getEmailAddress(), true);
+        container.addCvrBitemporal("navn", record.getNames(), true);
+        container.addCvrBitemporal(ParticipantRecord.IO_FIELD_LOCATION_ADDRESS, record.getLocationAddress(), this::createAddressNode);
+        container.addCvrBitemporal(ParticipantRecord.IO_FIELD_POSTAL_ADDRESS, record.getPostalAddress(), this::createAddressNode);
+        container.addCvrBitemporal(ParticipantRecord.IO_FIELD_BUSINESS_ADDRESS, record.getBusinessAddress(), this::createAddressNode);
+        container.addCvrBitemporal(ParticipantRecord.IO_FIELD_PHONE, record.getPhoneNumber(), true);
+        container.addCvrBitemporal(ParticipantRecord.IO_FIELD_FAX, record.getFaxNumber(), true);
+        container.addCvrBitemporal(ParticipantRecord.IO_FIELD_EMAIL, record.getEmailAddress(), true);
         container.addAttribute(ParticipantRecord.IO_FIELD_ATTRIBUTES, record.getAttributes());
         container.addNontemporal(ParticipantRecord.IO_FIELD_SAMT_ID, record.getSamtId());
         container.addNontemporal(ParticipantRecord.IO_FIELD_REGISTER_ERROR, record.getRegisterError());
@@ -102,10 +71,12 @@ public class ParticipantRecordOutputWrapper extends CvrRecordOutputWrapper<Parti
     }
 
     @Override
-    protected void fillMetadataContainer(OutputContainer container, ParticipantRecord record) {
+    protected void fillMetadataContainer(OutputContainer oContainer, ParticipantRecord record) {
+        CvrOutputContainer container = (CvrOutputContainer) oContainer;
+
         ParticipantMetadataRecord meta = record.getMetadata();
-        container.addBitemporal(ParticipantMetadataRecord.IO_FIELD_NEWEST_LOCATION, meta.getNewestLocation(), this::createAddressNode);
-        container.addNontemporal(ParticipantMetadataRecord.IO_FIELD_NEWEST_CONTACT_DATA, meta.getMetadataContactRecords(), null, true, true);
+        container.addCvrBitemporal(ParticipantMetadataRecord.IO_FIELD_NEWEST_LOCATION, meta.getNewestLocation(), this::createAddressNode);
+        container.addCvrNontemporal(ParticipantMetadataRecord.IO_FIELD_NEWEST_CONTACT_DATA, meta.getMetadataContactRecords(), null, true, true);
     }
 
 }

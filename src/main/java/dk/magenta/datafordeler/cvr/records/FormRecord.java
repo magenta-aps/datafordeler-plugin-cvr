@@ -3,12 +3,16 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.core.database.Nontemporal;
 import dk.magenta.datafordeler.cvr.records.unversioned.CompanyForm;
 import org.hibernate.Session;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Record for Company form.
@@ -132,4 +136,15 @@ public class FormRecord extends CvrBitemporalDataRecord {
     public int hashCode() {
         return Objects.hash(super.hashCode(), companyFormCode, shortDescription, longDescription, responsibleDatasource, companyForm);
     }
+
+    /*@Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        FormRecord that = (FormRecord) o;
+        return Objects.equals(companyFormCode, that.companyFormCode) &&
+                Objects.equals(shortDescription, that.shortDescription) &&
+                Objects.equals(longDescription, that.longDescription) &&
+                Objects.equals(responsibleDatasource, that.responsibleDatasource) &&
+                Objects.equals(companyForm, that.companyForm);
+    }*/
 }

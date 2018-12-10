@@ -31,8 +31,9 @@ public abstract class CvrRecord extends DatabaseEntry {
         return this.dafoUpdated;
     }
 
-    public void setDafoUpdated(OffsetDateTime dafoUpdated) {
+    public CvrRecord setDafoUpdated(OffsetDateTime dafoUpdated) {
         this.dafoUpdated = dafoUpdated;
+        return this;
     }
 
     public CvrRecord() {

@@ -117,4 +117,14 @@ public class StatusRecord extends CvrBitemporalDataRecord {
     public int hashCode() {
         return Objects.hash(super.hashCode(), statusText, statusCode, creditDataText, creditDataCode);
     }
+
+    /*@Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        StatusRecord that = (StatusRecord) o;
+        return Objects.equals(statusCode, that.statusCode) &&
+                Objects.equals(creditDataCode, that.creditDataCode) &&
+                Objects.equals(statusText, that.statusText) &&
+                Objects.equals(creditDataText, that.creditDataText);
+    }*/
 }

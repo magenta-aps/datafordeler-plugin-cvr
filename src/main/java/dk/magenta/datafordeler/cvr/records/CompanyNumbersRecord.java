@@ -186,4 +186,21 @@ public abstract class CompanyNumbersRecord extends CvrBitemporalDataRecord {
     public int hashCode() {
         return Objects.hash(super.hashCode(), employees, employeeLow, employeeHigh, fulltimeEquivalent, fulltimeEquivalentLow, fulltimeEquivalentHigh, includingOwners, includingOwnersLow, includingOwnersHigh);
     }
+
+
+
+    /*@Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        CompanyNumbersRecord that = (CompanyNumbersRecord) o;
+        return Objects.equals(employees, that.employees) &&
+                Objects.equals(employeeLow, that.employeeLow) &&
+                Objects.equals(employeeHigh, that.employeeHigh) &&
+                Objects.equals(fulltimeEquivalent, that.fulltimeEquivalent) &&
+                Objects.equals(fulltimeEquivalentLow, that.fulltimeEquivalentLow) &&
+                Objects.equals(fulltimeEquivalentHigh, that.fulltimeEquivalentHigh) &&
+                Objects.equals(includingOwners, that.includingOwners) &&
+                Objects.equals(includingOwnersLow, that.includingOwnersLow) &&
+                Objects.equals(includingOwnersHigh, that.includingOwnersHigh);
+    }*/
 }

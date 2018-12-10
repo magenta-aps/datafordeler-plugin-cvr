@@ -64,4 +64,12 @@ public class CompanyStatusRecord extends CvrBitemporalDataRecord {
     public int hashCode() {
         return Objects.hash(super.hashCode(), status);
     }
+
+    /*
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        CompanyStatusRecord that = (CompanyStatusRecord) o;
+        return Objects.equals(status, that.status);
+    }
+    */
 }

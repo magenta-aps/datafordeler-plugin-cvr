@@ -70,4 +70,12 @@ public class SecNameRecord extends CvrBitemporalDataRecord {
     public int hashCode() {
         return Objects.hash(super.hashCode(), name, secondary);
     }
+
+    /*@Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        SecNameRecord that = (SecNameRecord) o;
+        return secondary == that.secondary &&
+                Objects.equals(name, that.name);
+    }*/
 }

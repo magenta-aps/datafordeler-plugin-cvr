@@ -3,10 +3,13 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Record for Company, CompanyUnit or Participant name.
@@ -110,8 +113,6 @@ public class BaseNameRecord extends CvrBitemporalMetaRecord {
         this.relationCompanyRecord = relationCompanyRecord;
     }
 
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -123,7 +124,7 @@ public class BaseNameRecord extends CvrBitemporalMetaRecord {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(super.hashCode(), name);
     }
+
 }

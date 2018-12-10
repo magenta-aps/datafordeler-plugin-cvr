@@ -29,4 +29,11 @@ public class CompanyLinkRecord extends CvrBitemporalDataRecord {
     @JsonProperty(value = IO_FIELD_CVRNUMBER)
     private int cvrNumber;
 
+
+    /*@Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        CompanyLinkRecord that = (CompanyLinkRecord) o;
+        return this.cvrNumber == that.cvrNumber;
+    }*/
 }

@@ -51,4 +51,11 @@ public class CompanyQuarterlyNumbersRecord extends CompanyNumbersRecord {
     public int hashCode() {
         return Objects.hash(super.hashCode(), year, quarter);
     }
+
+    /*@Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        CompanyQuarterlyNumbersRecord that = (CompanyQuarterlyNumbersRecord) o;
+        return year == that.year && quarter == that.quarter;
+    }*/
 }

@@ -34,4 +34,10 @@ public class LifecycleRecord extends CvrBitemporalDataRecord {
         this.relationCompanyRecord = relationCompanyRecord;
     }
 
+
+    /*@Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        return true;
+    }*/
 }

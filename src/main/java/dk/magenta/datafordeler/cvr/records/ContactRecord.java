@@ -107,4 +107,14 @@ public class ContactRecord extends CvrBitemporalDataRecord {
     public int hashCode() {
         return Objects.hash(super.hashCode(), contactInformation, secret, secondary, type);
     }
+
+    /*@Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        ContactRecord that = (ContactRecord) o;
+        return secret == that.secret &&
+                secondary == that.secondary &&
+                type == that.type &&
+                Objects.equals(contactInformation, that.contactInformation);
+    }*/
 }

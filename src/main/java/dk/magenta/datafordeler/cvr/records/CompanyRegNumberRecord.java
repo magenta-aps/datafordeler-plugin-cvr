@@ -61,4 +61,11 @@ public class CompanyRegNumberRecord extends CvrBitemporalDataRecord {
     public int hashCode() {
         return Objects.hash(super.hashCode(), regNumber);
     }
+
+    /*@Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        CompanyRegNumberRecord that = (CompanyRegNumberRecord) o;
+        return Objects.equals(regNumber, that.regNumber);
+    }*/
 }
