@@ -2,11 +2,11 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dk.magenta.datafordeler.core.database.*;
+import dk.magenta.datafordeler.core.database.Effect;
+import dk.magenta.datafordeler.core.database.Registration;
 import dk.magenta.datafordeler.core.util.Bitemporality;
 import dk.magenta.datafordeler.core.util.Equality;
 import dk.magenta.datafordeler.core.util.ListHashMap;
-import dk.magenta.datafordeler.cvr.data.CvrEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -54,11 +54,6 @@ public abstract class CvrBitemporalRecord extends CvrRecord implements Comparabl
         this.lastUpdated = lastUpdated;
     }
 
-    public CvrBitemporalRecord setDafoUpdated(OffsetDateTime dafoUpdated) {
-        super.setDafoUpdated(dafoUpdated);
-        return this;
-    }
-
 
 
     public static final String DB_FIELD_LAST_LOADED = "lastLoaded";
@@ -78,9 +73,8 @@ public abstract class CvrBitemporalRecord extends CvrRecord implements Comparabl
         return (this.lastUpdated != null) ? this.lastUpdated : this.lastLoaded;
     }
 
-    public CvrBitemporalRecord setRegistrationFrom(OffsetDateTime offsetDateTime) {
+    public void setRegistrationFrom(OffsetDateTime offsetDateTime) {
         this.lastUpdated = offsetDateTime;
-        return this;
     }
 
 
@@ -145,9 +139,8 @@ public abstract class CvrBitemporalRecord extends CvrRecord implements Comparabl
         return this.registrationTo;
     }
 
-    public CvrBitemporalRecord setRegistrationTo(OffsetDateTime registrationTo) {
+    public void setRegistrationTo(OffsetDateTime registrationTo) {
         this.registrationTo = registrationTo;
-        return this;
     }
 
     /**
@@ -187,18 +180,30 @@ public abstract class CvrBitemporalRecord extends CvrRecord implements Comparabl
     }
 
     public OffsetDateTime getEffectFrom() {
-        return Bitemporality.convertTime(this.validity.getValidFrom());
+        if (this.validity != null) {
+            return Bitemporality.convertTime(this.validity.getValidFrom());
+        }
+        return null;
     }
 
     public void setEffectFrom(OffsetDateTime offsetDateTime) {
+        if (this.validity == null) {
+            this.validity = new CvrRecordPeriod();
+        }
         this.validity.setValidFrom(convertTime(offsetDateTime));
     }
 
     public OffsetDateTime getEffectTo() {
-        return Bitemporality.convertTime(this.validity.getValidTo());
+        if (this.validity != null) {
+            return Bitemporality.convertTime(this.validity.getValidTo());
+        }
+        return null;
     }
 
     public void setEffectTo(OffsetDateTime offsetDateTime) {
+        if (this.validity == null) {
+            this.validity = new CvrRecordPeriod();
+        }
         this.validity.setValidTo(convertTime(offsetDateTime));
     }
 

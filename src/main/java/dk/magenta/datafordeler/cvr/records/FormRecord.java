@@ -3,9 +3,9 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.unversioned.CompanyForm;
+import dk.magenta.datafordeler.cvr.records.unversioned.CompanyForm;
 import org.hibernate.Session;
 
 import javax.persistence.*;
@@ -22,7 +22,7 @@ import java.util.Objects;
         @Index(name = FormRecord.TABLE_NAME + "__participant_company_relation", columnList = FormRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FormRecord extends CvrBitemporalDataRecord {
+public class FormRecord extends CvrBitemporalDataRecord implements Bitemporal {
 
     public static final String TABLE_NAME = "cvr_record_form";
 
@@ -108,14 +108,6 @@ public class FormRecord extends CvrBitemporalDataRecord {
 
     public void setRelationCompanyRecord(RelationCompanyRecord relationCompanyRecord) {
         this.relationCompanyRecord = relationCompanyRecord;
-    }
-
-
-
-    @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) {
-        CompanyForm form = CompanyForm.getForm(this.companyFormCode, this.shortDescription, this.longDescription, this.responsibleDatasource, session);
-        baseData.setCompanyForm(form);
     }
 
     public void wire(Session session) {

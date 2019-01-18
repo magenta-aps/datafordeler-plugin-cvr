@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Effect;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantType;
-import dk.magenta.datafordeler.cvr.records.service.ParticipantRecordService;
+import dk.magenta.datafordeler.cvr.service.ParticipantRecordService;
 import org.hibernate.Session;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.Filters;
@@ -29,6 +26,8 @@ import java.util.*;
 public class ParticipantRecord extends CvrEntityRecord {
 
     public static final String TABLE_NAME = "cvr_record_participant";
+
+    public static final String schema = "deltager";
 
     @Override
     @JsonIgnore
@@ -486,18 +485,12 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
     public UUID generateUUID() {
-        return ParticipantEntity.generateUUID(this.unitType, this.unitNumber);
+        return ParticipantRecord.generateUUID(this.unitType, this.unitNumber);
     }
 
-    @Override
-    public void populateBaseData(ParticipantBaseData baseData, Session session) {
-        baseData.setUnitNumber(this.unitNumber);
-        if (this.unitType != null) {
-            baseData.setUnitType(ParticipantType.getType(this.unitType, session));
-        }
-        if (this.position != null) {
-            baseData.setPosition(this.position);
-        }
+    public static UUID generateUUID(String unitType, long unitNumber) {
+        String uuidInput = "participant:"+unitType+"/"+unitNumber;
+        return UUID.nameUUIDFromBytes(uuidInput.getBytes());
     }
 
 

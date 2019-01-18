@@ -3,11 +3,8 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
-import dk.magenta.datafordeler.cvr.data.unversioned.Industry;
-import org.hibernate.Session;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +24,7 @@ import java.util.Objects;
         @Index(name = CompanyIndustryRecord.TABLE_NAME + "__code", columnList = CompanyIndustryRecord.DB_FIELD_CODE)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CompanyIndustryRecord extends CvrBitemporalDataMetaRecord {
+public class CompanyIndustryRecord extends CvrBitemporalDataMetaRecord implements Bitemporal {
 
     public static final String TABLE_NAME = "cvr_record_industry";
 
@@ -68,45 +65,6 @@ public class CompanyIndustryRecord extends CvrBitemporalDataMetaRecord {
     }
 
 
-
-    @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) {
-        Industry industry = Industry.getIndustry(this.industryCode, this.industryText, session);
-        switch (this.index) {
-            case 0:
-                baseData.setPrimaryIndustry(industry);
-                break;
-            case 1:
-                baseData.setSecondaryIndustry1(industry);
-                break;
-            case 2:
-                baseData.setSecondaryIndustry2(industry);
-                break;
-            case 3:
-                baseData.setSecondaryIndustry3(industry);
-                break;
-        }
-    }
-
-    @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
-        Industry industry = Industry.getIndustry(this.industryCode, this.industryText, session);
-        switch (this.index) {
-            case 0:
-                baseData.setPrimaryIndustry(industry);
-                break;
-            case 1:
-                baseData.setSecondaryIndustry1(industry);
-                break;
-            case 2:
-                baseData.setSecondaryIndustry2(industry);
-                break;
-            case 3:
-                baseData.setSecondaryIndustry3(industry);
-                break;
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -123,12 +81,12 @@ public class CompanyIndustryRecord extends CvrBitemporalDataMetaRecord {
         return Objects.hash(super.hashCode(), index, industryCode, industryText);
     }
 
-    @Override
+    /*@Override
     public boolean equalData(Object o) {
         if (!super.equalData(o)) return false;
         CompanyIndustryRecord that = (CompanyIndustryRecord) o;
         return index == that.index &&
                 Objects.equals(industryCode, that.industryCode) &&
                 Objects.equals(industryText, that.industryText);
-    }
+    }*/
 }

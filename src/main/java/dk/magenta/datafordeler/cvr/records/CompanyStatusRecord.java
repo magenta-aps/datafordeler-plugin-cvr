@@ -3,10 +3,8 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.unversioned.CompanyStatus;
-import org.hibernate.Session;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -21,7 +19,7 @@ import java.util.Objects;
         @Index(name = CompanyStatusRecord.TABLE_NAME + "__participant_company_relation", columnList = CompanyStatusRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CompanyStatusRecord extends CvrBitemporalDataRecord {
+public class CompanyStatusRecord extends CvrBitemporalDataRecord implements Bitemporal {
 
     public static final String TABLE_NAME = "cvr_record_company_status";
 
@@ -54,12 +52,6 @@ public class CompanyStatusRecord extends CvrBitemporalDataRecord {
     }
 
 
-
-    @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) {
-        baseData.setStatus(CompanyStatus.getStatus(this.status, session));
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -74,10 +66,11 @@ public class CompanyStatusRecord extends CvrBitemporalDataRecord {
         return Objects.hash(super.hashCode(), status);
     }
 
-    @Override
+    /*
     public boolean equalData(Object o) {
         if (!super.equalData(o)) return false;
         CompanyStatusRecord that = (CompanyStatusRecord) o;
         return Objects.equals(status, that.status);
     }
+    */
 }

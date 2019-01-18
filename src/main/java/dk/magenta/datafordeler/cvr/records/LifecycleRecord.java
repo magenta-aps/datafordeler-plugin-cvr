@@ -2,16 +2,10 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
-import org.hibernate.Session;
 
 import javax.persistence.*;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.Objects;
 
 /**
  * Record for Company and CompanyUnit lifecycle data.
@@ -24,7 +18,7 @@ import java.util.Objects;
         @Index(name = LifecycleRecord.TABLE_NAME + "__participant_company_relation", columnList = LifecycleRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LifecycleRecord extends CvrBitemporalDataRecord {
+public class LifecycleRecord extends CvrBitemporalDataRecord implements Bitemporal {
 
     public static final String TABLE_NAME = "cvr_record_lifecycle";
 
@@ -42,30 +36,9 @@ public class LifecycleRecord extends CvrBitemporalDataRecord {
     }
 
 
-
-    @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) {
-        if (this.getValidFrom() != null) {
-            baseData.setLivsforloebStart(OffsetDateTime.of(this.getValidFrom(), LocalTime.MIDNIGHT, ZoneOffset.UTC));
-        }
-        if (this.getValidTo() != null) {
-            baseData.setLivsforloebSlut(OffsetDateTime.of(this.getValidTo(), LocalTime.MIDNIGHT, ZoneOffset.UTC));
-        }
-    }
-
-    @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
-        if (this.getValidFrom() != null) {
-            baseData.setLifecycleStart(OffsetDateTime.of(this.getValidFrom(), LocalTime.MIDNIGHT, ZoneOffset.UTC));
-        }
-        if (this.getValidTo() != null) {
-            baseData.setLifecycleStop(OffsetDateTime.of(this.getValidTo(), LocalTime.MIDNIGHT, ZoneOffset.UTC));
-        }
-    }
-
-    @Override
+    /*@Override
     public boolean equalData(Object o) {
         if (!super.equalData(o)) return false;
         return true;
-    }
+    }*/
 }

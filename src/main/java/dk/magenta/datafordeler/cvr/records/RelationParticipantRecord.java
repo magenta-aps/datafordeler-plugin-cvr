@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import org.hibernate.Session;
 
 import javax.persistence.*;
@@ -15,7 +16,7 @@ import java.util.*;
 @Entity
 @Table(name = RelationParticipantRecord.TABLE_NAME)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RelationParticipantRecord extends CvrBitemporalRecord {
+public class RelationParticipantRecord extends CvrBitemporalRecord implements Bitemporal {
 
     public static final String TABLE_NAME = CompanyParticipantRelationRecord.TABLE_NAME + "_participant";
 

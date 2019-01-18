@@ -3,11 +3,8 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
-import org.hibernate.Session;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +23,7 @@ import java.util.Objects;
         @Index(name = ContactRecord.TABLE_NAME + "__data", columnList = ContactRecord.DB_FIELD_DATA),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ContactRecord extends CvrBitemporalDataRecord {
+public class ContactRecord extends CvrBitemporalDataRecord implements Bitemporal {
 
     public static final String TABLE_NAME = "cvr_record_contact";
 
@@ -93,58 +90,7 @@ public class ContactRecord extends CvrBitemporalDataRecord {
         return this.type;
     }
 
-    
 
-    @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) {
-        switch (this.type) {
-            case TYPE_TELEFONNUMMER:
-                baseData.setPhoneNumber(this.contactInformation, this.secret);
-                break;
-            case TYPE_TELEFAXNUMMER:
-                baseData.setFaxNumber(this.contactInformation, this.secret);
-                break;
-            case TYPE_EMAILADRESSE:
-                baseData.setEmailAddress(this.contactInformation, this.secret);
-                break;
-            case TYPE_HJEMMESIDE:
-                baseData.setHomepage(this.contactInformation, this.secret);
-                break;
-            case TYPE_OBLIGATORISK_EMAILADRESSE:
-                baseData.setMandatoryEmail(this.contactInformation, this.secret);
-                break;
-        }
-    }
-
-    @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
-        switch (this.type) {
-            case TYPE_TELEFONNUMMER:
-                baseData.setPhoneNumber(this.contactInformation, this.secret);
-                break;
-            case TYPE_TELEFAXNUMMER:
-                baseData.setFaxNumber(this.contactInformation, this.secret);
-                break;
-            case TYPE_EMAILADRESSE:
-                baseData.setEmailAddress(this.contactInformation, this.secret);
-                break;
-        }
-    }
-
-    @Override
-    public void populateBaseData(ParticipantBaseData baseData, Session session) {
-        switch (this.type) {
-            case TYPE_TELEFONNUMMER:
-                baseData.setPhoneNumber(this.contactInformation, this.secret);
-                break;
-            case TYPE_TELEFAXNUMMER:
-                baseData.setFaxNumber(this.contactInformation, this.secret);
-                break;
-            case TYPE_EMAILADRESSE:
-                baseData.setEmailAddress(this.contactInformation, this.secret);
-                break;
-        }
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -163,7 +109,7 @@ public class ContactRecord extends CvrBitemporalDataRecord {
         return Objects.hash(super.hashCode(), contactInformation, secret, secondary, type);
     }
 
-    @Override
+    /*@Override
     public boolean equalData(Object o) {
         if (!super.equalData(o)) return false;
         ContactRecord that = (ContactRecord) o;
@@ -171,5 +117,5 @@ public class ContactRecord extends CvrBitemporalDataRecord {
                 secondary == that.secondary &&
                 type == that.type &&
                 Objects.equals(contactInformation, that.contactInformation);
-    }
+    }*/
 }

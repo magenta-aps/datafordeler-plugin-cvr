@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 
 import javax.persistence.FetchType;
@@ -9,7 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class CvrBitemporalMetaRecord extends CvrBitemporalRecord {
+public class CvrBitemporalMetaRecord extends CvrBitemporalRecord implements Bitemporal {
 
     public void setMetadataRecord(MetadataRecord metadataRecord) {
         if (metadataRecord instanceof CompanyMetadataRecord) {

@@ -3,11 +3,8 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
-import org.hibernate.Session;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +23,7 @@ import java.util.Objects;
         @Index(name = SecNameRecord.TABLE_NAME + "__data", columnList = SecNameRecord.DB_FIELD_NAME),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SecNameRecord extends CvrBitemporalDataRecord {
+public class SecNameRecord extends CvrBitemporalDataRecord implements Bitemporal {
 
     public static final String TABLE_NAME = "cvr_record_name2";
 
@@ -61,21 +58,6 @@ public class SecNameRecord extends CvrBitemporalDataRecord {
 
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) {
-        baseData.setCompanyName(this.name);
-    }
-
-    @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
-        baseData.setName(this.name);
-    }
-
-    @Override
-    public void populateBaseData(ParticipantBaseData baseData, Session session) {
-        baseData.addName(this.name);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -90,11 +72,11 @@ public class SecNameRecord extends CvrBitemporalDataRecord {
         return Objects.hash(super.hashCode(), name, secondary);
     }
 
-    @Override
+    /*@Override
     public boolean equalData(Object o) {
         if (!super.equalData(o)) return false;
         SecNameRecord that = (SecNameRecord) o;
         return secondary == that.secondary &&
                 Objects.equals(name, that.name);
-    }
+    }*/
 }

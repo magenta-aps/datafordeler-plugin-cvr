@@ -2,9 +2,8 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
-import org.hibernate.Session;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +19,7 @@ import javax.persistence.Table;
         @Index(name = CompanyLinkRecord.TABLE_NAME + "__cvrnumber", columnList = CompanyLinkRecord.DB_FIELD_CVRNUMBER),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CompanyLinkRecord extends CvrBitemporalDataRecord {
+public class CompanyLinkRecord extends CvrBitemporalDataRecord implements Bitemporal {
 
     public static final String TABLE_NAME = "cvr_record_unit_link_company";
 
@@ -31,15 +30,11 @@ public class CompanyLinkRecord extends CvrBitemporalDataRecord {
     @JsonProperty(value = IO_FIELD_CVRNUMBER)
     private int cvrNumber;
 
-    @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
-        baseData.addAssociatedCvrNumber(this.cvrNumber);
-    }
 
-    @Override
+    /*@Override
     public boolean equalData(Object o) {
         if (!super.equalData(o)) return false;
         CompanyLinkRecord that = (CompanyLinkRecord) o;
         return this.cvrNumber == that.cvrNumber;
-    }
+    }*/
 }

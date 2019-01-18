@@ -189,7 +189,7 @@ public abstract class CompanyNumbersRecord extends CvrBitemporalDataRecord {
 
 
 
-    @Override
+    /*@Override
     public boolean equalData(Object o) {
         if (!super.equalData(o)) return false;
         CompanyNumbersRecord that = (CompanyNumbersRecord) o;
@@ -202,5 +202,5 @@ public abstract class CompanyNumbersRecord extends CvrBitemporalDataRecord {
                 Objects.equals(includingOwners, that.includingOwners) &&
                 Objects.equals(includingOwnersLow, that.includingOwnersLow) &&
                 Objects.equals(includingOwnersHigh, that.includingOwnersHigh);
-    }
+    }*/
 }

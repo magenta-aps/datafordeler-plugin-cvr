@@ -1,11 +1,8 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.core.exception.ParseException;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
-import org.hibernate.Session;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,7 +20,7 @@ import java.util.Objects;
         @Index(name = CompanyQuarterlyNumbersRecord.TABLE_NAME + "__year", columnList = CompanyQuarterlyNumbersRecord.DB_FIELD_YEAR),
         @Index(name = CompanyQuarterlyNumbersRecord.TABLE_NAME + "__quarter", columnList = CompanyQuarterlyNumbersRecord.DB_FIELD_QUARTER),
 })
-public class CompanyQuarterlyNumbersRecord extends CompanyNumbersRecord {
+public class CompanyQuarterlyNumbersRecord extends CompanyNumbersRecord implements Bitemporal {
 
     public static final String TABLE_NAME = "cvr_record_quarterly_numbers";
 
@@ -42,34 +39,6 @@ public class CompanyQuarterlyNumbersRecord extends CompanyNumbersRecord {
     private int quarter;
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) throws ParseException {
-        baseData.setQuarterlyEmployeeNumbers(
-                this.year,
-                this.quarter,
-                this.getEmployeeLow(),
-                this.getEmployeeHigh(),
-                this.getFulltimeEquivalentLow(),
-                this.getFulltimeEquivalentHigh(),
-                this.getIncludingOwnersLow(),
-                this.getIncludingOwnersHigh()
-        );
-    }
-
-    @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, Session session) throws ParseException {
-        baseData.setQuarterlyEmployeeNumbers(
-                this.year,
-                this.quarter,
-                this.getEmployeeLow(),
-                this.getEmployeeHigh(),
-                this.getFulltimeEquivalentLow(),
-                this.getFulltimeEquivalentHigh(),
-                this.getIncludingOwnersLow(),
-                this.getIncludingOwnersHigh()
-        );
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -84,10 +53,10 @@ public class CompanyQuarterlyNumbersRecord extends CompanyNumbersRecord {
         return Objects.hash(super.hashCode(), year, quarter);
     }
 
-    @Override
+    /*@Override
     public boolean equalData(Object o) {
         if (!super.equalData(o)) return false;
         CompanyQuarterlyNumbersRecord that = (CompanyQuarterlyNumbersRecord) o;
         return year == that.year && quarter == that.quarter;
-    }
+    }*/
 }

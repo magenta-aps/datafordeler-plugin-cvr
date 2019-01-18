@@ -5,11 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Effect;
+import dk.magenta.datafordeler.core.database.Nontemporal;
 import dk.magenta.datafordeler.core.database.Registration;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
-import org.hibernate.Session;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.Filters;
 
@@ -32,7 +29,7 @@ import java.util.*;
         @Index(name = AttributeRecord.TABLE_NAME + "__office", columnList = AttributeRecord.DB_FIELD_OFFICE + DatabaseEntry.REF)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AttributeRecord extends CvrNontemporalDataRecord {
+public class AttributeRecord extends CvrNontemporalDataRecord implements Nontemporal {
 
     public static final String TABLE_NAME = "cvr_record_attribute";
 
@@ -173,32 +170,6 @@ public class AttributeRecord extends CvrNontemporalDataRecord {
         this.officeRelationRecord = officeRelationRecord;
     }
 
-
-
-
-
-
-
-    @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) {
-        for (AttributeValueRecord record : values) {
-            record.populateBaseData(baseData, session);
-        }
-    }
-
-    @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
-        for (AttributeValueRecord record : values) {
-            record.populateBaseData(baseData, session);
-        }
-    }
-
-    @Override
-    public void populateBaseData(ParticipantBaseData baseData, Session session) {
-        for (AttributeValueRecord record : values) {
-            record.populateBaseData(baseData, session);
-        }
-    }
 
     @Override
     public boolean equals(Object o) {

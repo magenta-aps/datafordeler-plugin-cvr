@@ -3,10 +3,8 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.unversioned.CompanyStatus;
-import org.hibernate.Session;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -21,7 +19,7 @@ import java.util.Objects;
         @Index(name = StatusRecord.TABLE_NAME + "__relation", columnList = StatusRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StatusRecord extends CvrBitemporalDataRecord {
+public class StatusRecord extends CvrBitemporalDataRecord implements Bitemporal {
 
     public static final String TABLE_NAME = "cvr_record_status";
 
@@ -104,12 +102,6 @@ public class StatusRecord extends CvrBitemporalDataRecord {
     }
 
 
-
-    @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) {
-        baseData.setStatus(CompanyStatus.getStatus(this.statusText, session));
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -127,7 +119,7 @@ public class StatusRecord extends CvrBitemporalDataRecord {
         return Objects.hash(super.hashCode(), statusText, statusCode, creditDataText, creditDataCode);
     }
 
-    @Override
+    /*@Override
     public boolean equalData(Object o) {
         if (!super.equalData(o)) return false;
         StatusRecord that = (StatusRecord) o;
@@ -135,5 +127,5 @@ public class StatusRecord extends CvrBitemporalDataRecord {
                 Objects.equals(creditDataCode, that.creditDataCode) &&
                 Objects.equals(statusText, that.statusText) &&
                 Objects.equals(creditDataText, that.creditDataText);
-    }
+    }*/
 }

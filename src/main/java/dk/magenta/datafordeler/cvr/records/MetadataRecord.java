@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.Effect;
-import dk.magenta.datafordeler.core.database.Nontemporal;
 import dk.magenta.datafordeler.core.database.Registration;
 import org.hibernate.Session;
 import org.hibernate.annotations.Filter;
@@ -18,7 +17,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 @MappedSuperclass
@@ -274,7 +276,7 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
         return subs;
     }
 
-    @Override
+    /*@Override
     public boolean equalData(Object o) {
         if (!super.equalData(o)) return false;
         MetadataRecord that = (MetadataRecord) o;
@@ -291,5 +293,5 @@ public abstract class MetadataRecord extends CvrBitemporalDataRecord {
             return false;
         }
         return true;
-    }
+    }*/
 }

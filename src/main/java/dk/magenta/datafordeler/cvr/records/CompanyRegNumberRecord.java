@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 
 import javax.persistence.*;
@@ -18,7 +19,7 @@ import java.util.Objects;
         @Index(name = CompanyRegNumberRecord.TABLE_NAME + "__data", columnList = CompanyRegNumberRecord.DB_FIELD_REGNUMBER),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CompanyRegNumberRecord extends CvrBitemporalDataRecord {
+public class CompanyRegNumberRecord extends CvrBitemporalDataRecord implements Bitemporal {
 
     public static final String TABLE_NAME = "cvr_record_company_regnumber";
 
@@ -62,10 +63,10 @@ public class CompanyRegNumberRecord extends CvrBitemporalDataRecord {
         return Objects.hash(super.hashCode(), regNumber);
     }
 
-    @Override
+    /*@Override
     public boolean equalData(Object o) {
         if (!super.equalData(o)) return false;
         CompanyRegNumberRecord that = (CompanyRegNumberRecord) o;
         return Objects.equals(regNumber, that.regNumber);
-    }
+    }*/
 }
