@@ -60,4 +60,11 @@ public class CompanyUnitLinkRecord extends CvrBitemporalDataRecord {
     public int hashCode() {
         return Objects.hash(super.hashCode(), pNumber);
     }
+
+    @Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        CompanyUnitLinkRecord that = (CompanyUnitLinkRecord) o;
+        return pNumber == that.pNumber;
+    }
 }

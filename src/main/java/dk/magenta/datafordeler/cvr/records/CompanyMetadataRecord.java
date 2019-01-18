@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.*;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Effect;
+import dk.magenta.datafordeler.core.database.Nontemporal;
 import org.hibernate.Session;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.Filters;
@@ -504,4 +505,23 @@ public class CompanyMetadataRecord extends MetadataRecord {
         subs.addAll(this.newestSecondaryIndustry3);
         return subs;
     }
+
+    @Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        CompanyMetadataRecord that = (CompanyMetadataRecord) o;
+        if (
+                !Nontemporal.equalData(this.newestForm, that.newestForm) ||
+                !Nontemporal.equalData(this.newestName, that.newestName) ||
+                !Nontemporal.equalData(this.newestLocation, that.newestLocation) ||
+                !Nontemporal.equalData(this.newestPrimaryIndustry, that.newestPrimaryIndustry) ||
+                !Nontemporal.equalData(this.newestSecondaryIndustry2, that.newestSecondaryIndustry2) ||
+                !Nontemporal.equalData(this.newestSecondaryIndustry3, that.newestSecondaryIndustry3) ||
+                !Nontemporal.equalData(this.newestSecondaryIndustry2, that.newestSecondaryIndustry2)
+                ) {
+            return false;
+        }
+        return true;
+    }
+
 }

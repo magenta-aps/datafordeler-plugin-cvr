@@ -626,4 +626,32 @@ public class AddressRecord extends CvrBitemporalDataMetaRecord {
         subs.add(this.municipality);
         return subs;
     }
+
+    @Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        AddressRecord that = (AddressRecord) o;
+        return type == that.type &&
+                roadCode == that.roadCode &&
+                postnummer == that.postnummer &&
+                Objects.equals(addressId, that.addressId) &&
+                Objects.equals(cityName, that.cityName) &&
+                Objects.equals(supplementalCityName, that.supplementalCityName) &&
+                Objects.equals(roadName, that.roadName) &&
+                Objects.equals(houseNumberFrom, that.houseNumberFrom) &&
+                Objects.equals(houseNumberTo, that.houseNumberTo) &&
+                Objects.equals(letterFrom, that.letterFrom) &&
+                Objects.equals(letterTo, that.letterTo) &&
+                Objects.equals(floor, that.floor) &&
+                Objects.equals(door, that.door) &&
+                Objects.equals(municipality, that.municipality) &&
+                Objects.equals(post, that.post) &&
+                Objects.equals(postdistrikt, that.postdistrikt) &&
+                Objects.equals(postBox, that.postBox) &&
+                Objects.equals(coName, that.coName) &&
+                Objects.equals(countryCode, that.countryCode) &&
+                Objects.equals(addressText, that.addressText) &&
+                Objects.equals(lastValidated, that.lastValidated) &&
+                Objects.equals(freeText, that.freeText);
+    }
 }
