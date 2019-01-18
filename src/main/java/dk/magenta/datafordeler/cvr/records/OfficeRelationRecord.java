@@ -19,7 +19,7 @@ import java.util.*;
         @Index(name = OfficeRelationRecord.TABLE_NAME + "__unit", columnList = OfficeRelationRecord.DB_FIELD_UNIT + DatabaseEntry.REF),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OfficeRelationRecord extends CvrNontemporalRecord implements Nontemporal {
+public class OfficeRelationRecord extends CvrNontemporalRecord {
 
     public static final String TABLE_NAME = CompanyParticipantRelationRecord.TABLE_NAME + "_office";
 

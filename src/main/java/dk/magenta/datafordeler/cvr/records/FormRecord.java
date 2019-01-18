@@ -3,7 +3,6 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.records.unversioned.CompanyForm;
 import org.hibernate.Session;
@@ -22,7 +21,7 @@ import java.util.Objects;
         @Index(name = FormRecord.TABLE_NAME + "__participant_company_relation", columnList = FormRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FormRecord extends CvrBitemporalDataRecord implements Bitemporal {
+public class FormRecord extends CvrBitemporalDataRecord {
 
     public static final String TABLE_NAME = "cvr_record_form";
 
@@ -110,6 +109,7 @@ public class FormRecord extends CvrBitemporalDataRecord implements Bitemporal {
         this.relationCompanyRecord = relationCompanyRecord;
     }
 
+
     public void wire(Session session) {
         if (this.companyFormCode != null && (this.companyForm == null || !this.companyFormCode.equals(this.companyForm.getCompanyFormCode()))) {
             this.companyForm = CompanyForm.getForm(this.companyFormCode, this.shortDescription, this.longDescription, this.responsibleDatasource, session);
@@ -133,7 +133,7 @@ public class FormRecord extends CvrBitemporalDataRecord implements Bitemporal {
     public int hashCode() {
         return Objects.hash(super.hashCode(), companyFormCode, shortDescription, longDescription, responsibleDatasource, companyForm);
     }
-
+/*
     @Override
     public boolean equalData(Object o) {
         if (!super.equalData(o)) return false;
@@ -143,5 +143,5 @@ public class FormRecord extends CvrBitemporalDataRecord implements Bitemporal {
                 Objects.equals(longDescription, that.longDescription) &&
                 Objects.equals(responsibleDatasource, that.responsibleDatasource) &&
                 Objects.equals(companyForm, that.companyForm);
-    }
+    }*/
 }

@@ -1,7 +1,6 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 
 import javax.persistence.Column;
@@ -20,7 +19,7 @@ import java.util.Objects;
         @Index(name = CompanyQuarterlyNumbersRecord.TABLE_NAME + "__year", columnList = CompanyQuarterlyNumbersRecord.DB_FIELD_YEAR),
         @Index(name = CompanyQuarterlyNumbersRecord.TABLE_NAME + "__quarter", columnList = CompanyQuarterlyNumbersRecord.DB_FIELD_QUARTER),
 })
-public class CompanyQuarterlyNumbersRecord extends CompanyNumbersRecord implements Bitemporal {
+public class CompanyQuarterlyNumbersRecord extends CompanyNumbersRecord {
 
     public static final String TABLE_NAME = "cvr_record_quarterly_numbers";
 

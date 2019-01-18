@@ -64,10 +64,9 @@ public class CompanyUnitEntityManager extends CvrEntityManager<CompanyUnitRecord
         return CompanyUnitRecord.class;
     }
 
-
     @Override
     protected UUID generateUUID(CompanyUnitRecord record) {
-        return CompanyUnitRecord.generateUUID(record.getpNumber());
+        return record.generateUUID();
     }
 
     @Autowired

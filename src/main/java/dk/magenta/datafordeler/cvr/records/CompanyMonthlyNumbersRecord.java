@@ -2,7 +2,6 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 
 import javax.persistence.Column;
@@ -22,7 +21,7 @@ import java.util.Objects;
         @Index(name = CompanyMonthlyNumbersRecord.TABLE_NAME + "__month", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_MONTH),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CompanyMonthlyNumbersRecord extends CompanyNumbersRecord implements Bitemporal {
+public class CompanyMonthlyNumbersRecord extends CompanyNumbersRecord {
 
     public static final String TABLE_NAME = "cvr_record_monthly_numbers";
 

@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.core.database.Effect;
 import dk.magenta.datafordeler.core.database.Nontemporal;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.Filters;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -18,7 +21,7 @@ import java.util.*;
         @Index(name = FusionSplitRecord.TABLE_NAME + "__company", columnList = FusionSplitRecord.DB_FIELD_COMPANY + DatabaseEntry.REF + "," + FusionSplitRecord.DB_FIELD_SPLIT),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FusionSplitRecord extends CvrNontemporalDataRecord implements Nontemporal {
+public class FusionSplitRecord extends CvrNontemporalDataRecord {
 
     public static final String TABLE_NAME = "cvr_record_fusion";
 

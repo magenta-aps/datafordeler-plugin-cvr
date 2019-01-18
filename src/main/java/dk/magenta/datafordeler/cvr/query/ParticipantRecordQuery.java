@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.query;
 
+import dk.magenta.datafordeler.core.database.BaseLookupDefinition;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.core.fapi.BaseQuery;
 import dk.magenta.datafordeler.core.fapi.ParameterMap;
@@ -148,8 +149,8 @@ public class ParticipantRecordQuery extends BaseQuery {
         this.setKommuneKode(parameters.getI(KOMMUNEKODE));
     }
     @Override
-    public LookupDefinition getLookupDefinition() {
-        LookupDefinition lookupDefinition = new CvrRecordLookupDefinition(this, null);
+    public BaseLookupDefinition getLookupDefinition() {
+        BaseLookupDefinition lookupDefinition = new CvrRecordLookupDefinition(this);
 
         if (this.getEnhedsNummer() != null && !this.getEnhedsNummer().isEmpty()) {
             lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + ParticipantRecord.DB_FIELD_UNIT_NUMBER, this.getEnhedsNummer(), Long.class);

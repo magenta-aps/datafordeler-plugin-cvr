@@ -2,7 +2,6 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dk.magenta.datafordeler.core.database.Bitemporal;
 import org.hibernate.Session;
 
 import javax.persistence.*;
@@ -19,7 +18,7 @@ import java.util.Set;
         @Index(name = OfficeRelationUnitRecord.TABLE_NAME + "__unit", columnList = OfficeRelationUnitRecord.DB_FIELD_UNITNUMBER)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OfficeRelationUnitRecord extends CvrBitemporalRecord implements Bitemporal {
+public class OfficeRelationUnitRecord extends CvrBitemporalRecord {
 
     public static final String TABLE_NAME = OfficeRelationRecord.TABLE_NAME + "_unit";
 

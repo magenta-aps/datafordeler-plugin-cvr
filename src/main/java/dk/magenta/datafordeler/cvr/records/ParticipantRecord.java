@@ -352,9 +352,11 @@ public class ParticipantRecord extends CvrEntityRecord {
     public Set<AttributeRecord> attributes = new HashSet<>();
 
     public void setAttributes(Set<AttributeRecord> attributes) {
-        this.attributes = (attributes == null) ? new HashSet<>() : new HashSet<>(attributes);
-        for (AttributeRecord attributeRecord : this.attributes) {
-            attributeRecord.setParticipantRecord(this);
+        this.attributes = attributes;
+        if (attributes != null) {
+            for (AttributeRecord attributeRecord : attributes) {
+                attributeRecord.setParticipantRecord(this);
+            }
         }
     }
 

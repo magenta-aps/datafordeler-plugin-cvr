@@ -18,7 +18,7 @@ import javax.persistence.*;
         @Index(name = AddressMunicipalityRecord.TABLE_NAME + "__municipality", columnList = AddressMunicipalityRecord.DB_FIELD_MUNICIPALITY + DatabaseEntry.REF)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AddressMunicipalityRecord extends CvrBitemporalRecord implements Bitemporal {
+public class AddressMunicipalityRecord extends CvrBitemporalRecord {
 
     public static final String TABLE_NAME = "cvr_record_address_municipality";
 

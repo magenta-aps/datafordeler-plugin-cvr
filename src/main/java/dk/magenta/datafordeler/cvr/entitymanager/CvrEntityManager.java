@@ -137,31 +137,7 @@ public abstract class CvrEntityManager<T extends CvrEntityRecord>
         return null;
     }
 
-    /**
-     * Parse a raw reference data stream into a RegistrationReference object
-     */
-    @Override
-    public RegistrationReference parseReference(InputStream referenceData) throws IOException {
-        return this.getObjectMapper().readValue(referenceData, this.managedRegistrationReferenceClass);
-    }
-
-    /**
-     * Parse a raw reference data string into a RegistrationReference object
-     */
-    @Override
-    public RegistrationReference parseReference(String referenceData, String charsetName) throws IOException {
-        return this.getObjectMapper().readValue(referenceData.getBytes(charsetName), this.managedRegistrationReferenceClass);
-    }
-
-    /**
-     * Create a RegistrationReference object that encapsulates the given URI in the proper object
-     */
-    @Override
-    public RegistrationReference parseReference(URI uri) {
-        return null;
-    }
-
-    /**
+    /*
      * Returns the reference URI based on a RegistrationReference, basically unpacking it
      */
     @Override
@@ -435,5 +411,20 @@ public abstract class CvrEntityManager<T extends CvrEntityRecord>
         CvrConfiguration configuration = this.getRegisterManager().getConfigurationManager().getConfiguration();
         CvrConfiguration.RegisterType registerType = configuration.getRegisterType(this.getSchema());
         return (registerType != null && registerType != CvrConfiguration.RegisterType.DISABLED);
+    }
+
+    @Override
+    public RegistrationReference parseReference(InputStream inputStream) throws IOException {
+        return null;
+    }
+
+    @Override
+    public RegistrationReference parseReference(String s, String s1) throws IOException {
+        return null;
+    }
+
+    @Override
+    public RegistrationReference parseReference(URI uri) {
+        return null;
     }
 }

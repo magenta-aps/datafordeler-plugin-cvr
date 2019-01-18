@@ -2,7 +2,9 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.Effect;
+import dk.magenta.datafordeler.core.database.Monotemporal;
 import dk.magenta.datafordeler.core.database.Registration;
 import dk.magenta.datafordeler.core.util.Bitemporality;
 import dk.magenta.datafordeler.core.util.Equality;
@@ -36,6 +38,27 @@ public abstract class CvrBitemporalRecord extends CvrRecord implements Comparabl
     String DB_FIELD_EFFECT_TO = "effectTo";
     String IO_FIELD_EFFECT_TO = "virkningTil";
 */
+
+
+
+
+    // True if the sought registration ends after our query
+    public static final String FILTERLOGIC_REGISTRATION_AFTER = "(" + Monotemporal.DB_FIELD_REGISTRATION_TO + " >= :" + Monotemporal.FILTERPARAM_REGISTRATION_AFTER + " OR " + Monotemporal.DB_FIELD_REGISTRATION_TO + " is null)";
+
+    // True if the sought registration begins before our query
+    public static final String FILTERLOGIC_REGISTRATION_BEFORE = "(" + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " < :" + Monotemporal.FILTERPARAM_REGISTRATION_BEFORE + " OR " + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " is null)";
+
+
+
+    // True if the sought effect ends after our query
+    public static final String FILTERLOGIC_EFFECT_AFTER = "(" + CvrRecordPeriod.DB_FIELD_VALID_TO + " >= :" + Bitemporal.FILTERPARAM_EFFECT_AFTER + " OR " + CvrRecordPeriod.DB_FIELD_VALID_TO + " is null)";
+
+    // True if the sought effect begins before our query
+    public static final String FILTERLOGIC_EFFECT_BEFORE = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Bitemporal.FILTERPARAM_EFFECT_BEFORE + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)";
+
+
+
+
 
 
     public static final String DB_FIELD_LAST_UPDATED = "lastUpdated";

@@ -3,7 +3,6 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.cvr.records.unversioned.PostCode;
 import org.hibernate.Session;
@@ -33,7 +32,7 @@ import java.util.UUID;
         @Index(name = AddressRecord.TABLE_NAME + "__postcode", columnList = AddressRecord.DB_FIELD_POSTCODE_REF + DatabaseEntry.REF),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AddressRecord extends CvrBitemporalDataMetaRecord implements Bitemporal {
+public class AddressRecord extends CvrBitemporalDataMetaRecord {
 
     public static final String TABLE_NAME = "cvr_record_address";
 
@@ -528,7 +527,7 @@ public class AddressRecord extends CvrBitemporalDataMetaRecord implements Bitemp
         subs.add(this.municipality);
         return subs;
     }
-
+/*
     @Override
     public boolean equalData(Object o) {
         if (!super.equalData(o)) return false;
@@ -555,5 +554,5 @@ public class AddressRecord extends CvrBitemporalDataMetaRecord implements Bitemp
                 Objects.equals(addressText, that.addressText) &&
                 Objects.equals(lastValidated, that.lastValidated) &&
                 Objects.equals(freeText, that.freeText);
-    }
+    }*/
 }

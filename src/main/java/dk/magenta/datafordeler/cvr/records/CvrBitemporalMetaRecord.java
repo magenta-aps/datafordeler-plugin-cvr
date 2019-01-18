@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class CvrBitemporalMetaRecord extends CvrBitemporalRecord implements Bitemporal {
+public class CvrBitemporalMetaRecord extends CvrBitemporalRecord {
 
     public void setMetadataRecord(MetadataRecord metadataRecord) {
         if (metadataRecord instanceof CompanyMetadataRecord) {

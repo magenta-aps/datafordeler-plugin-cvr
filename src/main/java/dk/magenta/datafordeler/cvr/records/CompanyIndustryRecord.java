@@ -24,7 +24,7 @@ import java.util.Objects;
         @Index(name = CompanyIndustryRecord.TABLE_NAME + "__code", columnList = CompanyIndustryRecord.DB_FIELD_CODE)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CompanyIndustryRecord extends CvrBitemporalDataMetaRecord implements Bitemporal {
+public class CompanyIndustryRecord extends CvrBitemporalDataMetaRecord {
 
     public static final String TABLE_NAME = "cvr_record_industry";
 

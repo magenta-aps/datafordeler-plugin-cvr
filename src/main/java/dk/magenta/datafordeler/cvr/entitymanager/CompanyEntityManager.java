@@ -1,12 +1,10 @@
 package dk.magenta.datafordeler.cvr.entitymanager;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import dk.magenta.datafordeler.core.database.RegistrationReference;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.DataStreamException;
 import dk.magenta.datafordeler.core.exception.HttpStatusException;
@@ -47,7 +45,7 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyRecord> {
     );
 
     @Autowired
-    private CompanyRecordService companyEntityService;
+    private CompanyRecordService companyRecordService;
 
     @Autowired
     private SessionManager sessionManager;
@@ -64,7 +62,7 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyRecord> {
 
     @Override
     public FapiBaseService getEntityService() {
-        return this.companyEntityService;
+        return this.companyRecordService;
     }
 
     @Override
@@ -89,7 +87,7 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyRecord> {
 
     @Override
     protected UUID generateUUID(CompanyRecord record) {
-        return CompanyRecord.generateUUID(record.getCvrNumber());
+        return record.generateUUID();
     }
 
     @Autowired

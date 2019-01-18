@@ -77,6 +77,10 @@ public class RecordTest {
         when(dafoUserManager.getFallbackUser()).thenReturn(testUserDetails);
     }
 
+    private void whitelistLocalhost() {
+        when(dafoUserManager.getIpWhitelist()).thenReturn(Collections.singleton("127.0.0.1"));
+    }
+
     private HashMap<Integer, JsonNode> loadCompany() throws IOException, DataFordelerException {
         return loadCompany("/company_in.json");
     }
@@ -324,6 +328,7 @@ public class RecordTest {
     @Test
     public void testRestCompany() throws IOException, DataFordelerException {
         loadCompany("/company_in.json");
+        whitelistLocalhost();
         TestUserDetails testUserDetails = new TestUserDetails();
         HttpEntity<String> httpEntity = new HttpEntity<String>("", new HttpHeaders());
         ResponseEntity<String> resp = restTemplate.exchange("/cvr/company/1/rest/search?cvrNummer=25052943", HttpMethod.GET, httpEntity, String.class);
@@ -498,6 +503,7 @@ public class RecordTest {
     @Test
     public void testRestCompanyUnit() throws IOException, DataFordelerException {
         loadUnit("/unit.json");
+        whitelistLocalhost();
         TestUserDetails testUserDetails = new TestUserDetails();
         HttpEntity<String> httpEntity = new HttpEntity<String>("", new HttpHeaders());
         ResponseEntity<String> resp = restTemplate.exchange("/cvr/unit/1/rest/search?pnummer=1020895337", HttpMethod.GET, httpEntity, String.class);
@@ -509,6 +515,7 @@ public class RecordTest {
         resp = restTemplate.exchange("/cvr/unit/1/rest/search?pnummer=1020895337&virkningFra=2016-01-01&virkningTil=2016-01-01", HttpMethod.GET, httpEntity, String.class);
         String body = resp.getBody();
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectMapper.readTree(body)));
+        Assert.assertEquals(200, resp.getStatusCodeValue());
     }
 
     private HashMap<Long, JsonNode> loadParticipant(String resource) throws IOException, DataFordelerException {
@@ -672,17 +679,19 @@ public class RecordTest {
     @Test
     public void testRestParticipant() throws IOException, DataFordelerException {
         loadParticipant("/person.json");
+        whitelistLocalhost();
         TestUserDetails testUserDetails = new TestUserDetails();
         HttpEntity<String> httpEntity = new HttpEntity<String>("", new HttpHeaders());
-        ResponseEntity<String> resp = restTemplate.exchange("/cvr/participant/1/rest/search?deltagernummer=4000004988", HttpMethod.GET, httpEntity, String.class);
+        ResponseEntity<String> resp = restTemplate.exchange("/cvr/participant/1/rest/search?enhedsNummer=4000004988", HttpMethod.GET, httpEntity, String.class);
         Assert.assertEquals(403, resp.getStatusCodeValue());
 
         testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
         this.applyAccess(testUserDetails);
 
-        resp = restTemplate.exchange("/cvr/participant/1/rest/search?deltagernummer=4000004988&virkningFra=2001-01-01&virkningTil=2001-01-01", HttpMethod.GET, httpEntity, String.class);
+        resp = restTemplate.exchange("/cvr/participant/1/rest/search?enhedsNummer=4000004988&virkningFra=2001-01-01&virkningTil=2001-01-01", HttpMethod.GET, httpEntity, String.class);
         String body = resp.getBody();
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectMapper.readTree(body)));
+        Assert.assertEquals(200, resp.getStatusCodeValue());
     }
 
     /**

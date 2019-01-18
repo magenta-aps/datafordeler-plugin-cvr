@@ -1,5 +1,6 @@
 package dk.magenta.datafordeler.cvr.query;
 
+import dk.magenta.datafordeler.core.database.BaseLookupDefinition;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.core.fapi.BaseQuery;
 import dk.magenta.datafordeler.core.fapi.ParameterMap;
@@ -180,8 +181,8 @@ public class CompanyUnitRecordQuery extends BaseQuery {
 
 
     @Override
-    public LookupDefinition getLookupDefinition() {
-        LookupDefinition lookupDefinition = new CvrRecordLookupDefinition(this, null);
+    public BaseLookupDefinition getLookupDefinition() {
+        BaseLookupDefinition lookupDefinition = new CvrRecordLookupDefinition(this);
 
         if (this.getPNummer() != null && !this.getPNummer().isEmpty()) {
             lookupDefinition.put(LookupDefinition.entityref + LookupDefinition.separator + CompanyUnitRecord.DB_FIELD_P_NUMBER, this.getPNummer(), Integer.class);

@@ -64,10 +64,9 @@ public class ParticipantEntityManager extends CvrEntityManager<ParticipantRecord
         return ParticipantRecord.class;
     }
 
-
     @Override
     protected UUID generateUUID(ParticipantRecord record) {
-        return ParticipantRecord.generateUUID(record.getUnitType(), record.getUnitNumber());
+        return record.generateUUID();
     }
 
     @Autowired

@@ -3,7 +3,6 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 
 import javax.persistence.Column;
@@ -23,7 +22,7 @@ import java.util.Objects;
         @Index(name = ContactRecord.TABLE_NAME + "__data", columnList = ContactRecord.DB_FIELD_DATA),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ContactRecord extends CvrBitemporalDataRecord implements Bitemporal {
+public class ContactRecord extends CvrBitemporalDataRecord {
 
     public static final String TABLE_NAME = "cvr_record_contact";
 
@@ -89,7 +88,6 @@ public class ContactRecord extends CvrBitemporalDataRecord implements Bitemporal
     public int getType() {
         return this.type;
     }
-
 
 
     @Override

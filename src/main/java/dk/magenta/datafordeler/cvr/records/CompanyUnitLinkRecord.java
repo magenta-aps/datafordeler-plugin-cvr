@@ -2,7 +2,6 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Identification;
 import dk.magenta.datafordeler.core.database.QueryManager;
@@ -24,7 +23,7 @@ import java.util.UUID;
         @Index(name = CompanyUnitLinkRecord.TABLE_NAME + "__company", columnList = CompanyLinkRecord.DB_FIELD_COMPANY + DatabaseEntry.REF)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CompanyUnitLinkRecord extends CvrBitemporalDataRecord implements Bitemporal {
+public class CompanyUnitLinkRecord extends CvrBitemporalDataRecord {
 
     public static final String TABLE_NAME = "cvr_record_company_unit_relation";
 
@@ -34,7 +33,6 @@ public class CompanyUnitLinkRecord extends CvrBitemporalDataRecord implements Bi
     @Column(name = DB_FIELD_PNUMBER)
     @JsonProperty(value = IO_FIELD_PNUMBER)
     private int pNumber;
-
 
     private Identification getUnitIdentification(Session session) {
         UUID unitUUID = CompanyUnitRecord.generateUUID(this.pNumber);
