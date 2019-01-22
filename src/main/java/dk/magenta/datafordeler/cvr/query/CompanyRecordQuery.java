@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.query;
 
 import dk.magenta.datafordeler.core.database.BaseLookupDefinition;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.core.fapi.BaseQuery;
 import dk.magenta.datafordeler.core.fapi.ParameterMap;
@@ -370,5 +371,11 @@ public class CompanyRecordQuery extends BaseQuery {
             lookupDefinition.put(sj.toString(), this.getKommunekodeRestriction(), Integer.class);
         }
         return lookupDefinition;
+    }
+
+    @Override
+    protected Object castFilterParam(Object input, String filter) {
+        Object output = CvrBitemporalRecord.castFilterParam(input, filter);
+        return (output == null) ? super.castFilterParam(input, filter) : output;
     }
 }

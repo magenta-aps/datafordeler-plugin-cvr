@@ -214,4 +214,10 @@ public class CompanyUnitRecordQuery extends BaseQuery {
         return lookupDefinition;
     }
 
+    @Override
+    protected Object castFilterParam(Object input, String filter) {
+        Object output = CvrBitemporalRecord.castFilterParam(input, filter);
+        return (output == null) ? super.castFilterParam(input, filter) : output;
+    }
+
 }

@@ -5,10 +5,7 @@ import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.core.fapi.BaseQuery;
 import dk.magenta.datafordeler.core.fapi.ParameterMap;
 import dk.magenta.datafordeler.core.fapi.QueryField;
-import dk.magenta.datafordeler.cvr.records.AddressMunicipalityRecord;
-import dk.magenta.datafordeler.cvr.records.AddressRecord;
-import dk.magenta.datafordeler.cvr.records.ParticipantRecord;
-import dk.magenta.datafordeler.cvr.records.SecNameRecord;
+import dk.magenta.datafordeler.cvr.records.*;
 import dk.magenta.datafordeler.cvr.records.unversioned.Municipality;
 
 import java.util.*;
@@ -179,6 +176,12 @@ public class ParticipantRecordQuery extends BaseQuery {
             lookupDefinition.put(sj.toString(), this.getKommunekodeRestriction(), Integer.class);
         }
         return lookupDefinition;
+    }
+
+    @Override
+    protected Object castFilterParam(Object input, String filter) {
+        Object output = CvrBitemporalRecord.castFilterParam(input, filter);
+        return (output == null) ? super.castFilterParam(input, filter) : output;
     }
 
 }

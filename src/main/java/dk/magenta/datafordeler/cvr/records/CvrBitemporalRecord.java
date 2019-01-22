@@ -20,45 +20,38 @@ import java.util.Collection;
 import java.util.Objects;
 
 @MappedSuperclass
-public abstract class CvrBitemporalRecord extends CvrRecord implements Comparable<CvrBitemporalRecord> {
+public abstract class CvrBitemporalRecord extends CvrNontemporalRecord implements Comparable<CvrBitemporalRecord> {
 
-    public static final String FILTER_LAST_UPDATED = "(" + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " < :" + Registration.FILTERPARAM_REGISTRATION_TO + ")";
-    public static final String FILTER_EFFECT_FROM = "(" + CvrRecordPeriod.DB_FIELD_VALID_TO + " >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR " + CvrRecordPeriod.DB_FIELD_VALID_TO + " is null)";
-    public static final String FILTER_EFFECT_TO = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Effect.FILTERPARAM_EFFECT_TO + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)";
-
-/*
-    String FILTER_EFFECT_AFTER = "effectAfterFilter";
-    String FILTER_EFFECT_BEFORE = "effectBeforeFilter";
-    String FILTERPARAM_EFFECT_AFTER = "effectAfterDate";
-    String FILTERPARAM_EFFECT_BEFORE = "effectBeforeDate";
-    String FILTERLOGIC_EFFECT_AFTER = "(effectTo >= :effectAfterDate OR effectTo is null)";
-    String FILTERLOGIC_EFFECT_BEFORE = "(effectFrom < :effectBeforeDate OR effectFrom is null)";
-    String DB_FIELD_EFFECT_FROM = "effectFrom";
-    String IO_FIELD_EFFECT_FROM = "virkningFra";
-    String DB_FIELD_EFFECT_TO = "effectTo";
-    String IO_FIELD_EFFECT_TO = "virkningTil";
-*/
+    public static final String FILTERLOGIC_REGISTRATIONFROM_AFTER = "(" + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " >= :" + Monotemporal.FILTERPARAM_REGISTRATIONFROM_AFTER + ")";
+    public static final String FILTERLOGIC_REGISTRATIONFROM_BEFORE = "(" + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " < :" + Monotemporal.FILTERPARAM_REGISTRATIONFROM_BEFORE + " OR " + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " is null)";
+    public static final String FILTERLOGIC_REGISTRATIONTO_AFTER = "";
+    public static final String FILTERLOGIC_REGISTRATIONTO_BEFORE = "";
 
 
+    public static final String FILTERLOGIC_EFFECTFROM_AFTER = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " >= :" + Bitemporal.FILTERPARAM_EFFECTFROM_AFTER + ")";
+    public static final String FILTERLOGIC_EFFECTFROM_BEFORE = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Bitemporal.FILTERPARAM_EFFECTFROM_BEFORE + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)";
+    public static final String FILTERLOGIC_EFFECTTO_AFTER = "(" + CvrRecordPeriod.DB_FIELD_VALID_TO + " >= :" + Bitemporal.FILTERPARAM_EFFECTTO_AFTER + " OR " + CvrRecordPeriod.DB_FIELD_VALID_TO + " is null)";
+    public static final String FILTERLOGIC_EFFECTTO_BEFORE = "(" + CvrRecordPeriod.DB_FIELD_VALID_TO + " < :" + Bitemporal.FILTERPARAM_EFFECTTO_BEFORE + ")";
 
 
-    // True if the sought registration ends after our query
-    public static final String FILTERLOGIC_REGISTRATION_AFTER = "(" + Monotemporal.DB_FIELD_REGISTRATION_TO + " >= :" + Monotemporal.FILTERPARAM_REGISTRATION_AFTER + " OR " + Monotemporal.DB_FIELD_REGISTRATION_TO + " is null)";
-
-    // True if the sought registration begins before our query
-    public static final String FILTERLOGIC_REGISTRATION_BEFORE = "(" + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " < :" + Monotemporal.FILTERPARAM_REGISTRATION_BEFORE + " OR " + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " is null)";
+    public static final String FILTERPARAMTYPE_REGISTRATIONFROM = "java.time.OffsetDateTime";
+    public static final String FILTERPARAMTYPE_REGISTRATIONTO = "java.time.OffsetDateTime";
+    public static final String FILTERPARAMTYPE_EFFECTFROM = "java.time.LocalDate";
+    public static final String FILTERPARAMTYPE_EFFECTTO = "java.time.LocalDate";
+    public static final String FILTERPARAMTYPE_LASTUPDATED = "java.time.OffsetDateTime";
 
 
 
-    // True if the sought effect ends after our query
-    public static final String FILTERLOGIC_EFFECT_AFTER = "(" + CvrRecordPeriod.DB_FIELD_VALID_TO + " >= :" + Bitemporal.FILTERPARAM_EFFECT_AFTER + " OR " + CvrRecordPeriod.DB_FIELD_VALID_TO + " is null)";
-
-    // True if the sought effect begins before our query
-    public static final String FILTERLOGIC_EFFECT_BEFORE = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Bitemporal.FILTERPARAM_EFFECT_BEFORE + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)";
-
-
-
-
+    public static Object castFilterParam(Object input, String filter) {
+        switch (filter) {
+            case Bitemporal.FILTER_EFFECTFROM_AFTER:
+            case Bitemporal.FILTER_EFFECTFROM_BEFORE:
+            case Bitemporal.FILTER_EFFECTTO_AFTER:
+            case Bitemporal.FILTER_EFFECTTO_BEFORE:
+                return ((OffsetDateTime) input).toLocalDate();
+        }
+        return null;
+    }
 
 
     public static final String DB_FIELD_LAST_UPDATED = "lastUpdated";
@@ -202,6 +195,7 @@ public abstract class CvrBitemporalRecord extends CvrRecord implements Comparabl
         return Objects.hash(lastUpdated, lastLoaded, validity, registrationTo);
     }
 
+    @JsonIgnore
     public OffsetDateTime getEffectFrom() {
         if (this.validity != null) {
             return Bitemporality.convertTime(this.validity.getValidFrom());
@@ -216,6 +210,7 @@ public abstract class CvrBitemporalRecord extends CvrRecord implements Comparabl
         this.validity.setValidFrom(convertTime(offsetDateTime));
     }
 
+    @JsonIgnore
     public OffsetDateTime getEffectTo() {
         if (this.validity != null) {
             return Bitemporality.convertTime(this.validity.getValidTo());
