@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class CvrBitemporalDataRecord extends CvrBitemporalRecord {
+public abstract class CvrBitemporalDataRecord extends CvrBitemporalRecord {
 
 
     public static final String DB_FIELD_COMPANY = "companyRecord";

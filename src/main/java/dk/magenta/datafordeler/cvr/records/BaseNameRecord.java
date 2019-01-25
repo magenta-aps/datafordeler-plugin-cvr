@@ -110,8 +110,6 @@ public class BaseNameRecord extends CvrBitemporalMetaRecord {
         this.relationCompanyRecord = relationCompanyRecord;
     }
 
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -123,7 +121,7 @@ public class BaseNameRecord extends CvrBitemporalMetaRecord {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(super.hashCode(), name);
     }
+
 }

@@ -4,10 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
-import org.hibernate.Session;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -54,25 +50,12 @@ public class SecNameRecord extends CvrBitemporalDataRecord {
     @JsonIgnore
     private boolean secondary;
 
+    public boolean isSecondary() {
+        return this.secondary;
+    }
+
     public void setSecondary(boolean secondary) {
         this.secondary = secondary;
-    }
-
-
-
-    @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) {
-        baseData.setCompanyName(this.name);
-    }
-
-    @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
-        baseData.setName(this.name);
-    }
-
-    @Override
-    public void populateBaseData(ParticipantBaseData baseData, Session session) {
-        baseData.addName(this.name);
     }
 
     @Override
@@ -89,4 +72,12 @@ public class SecNameRecord extends CvrBitemporalDataRecord {
     public int hashCode() {
         return Objects.hash(super.hashCode(), name, secondary);
     }
+
+    /*@Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        SecNameRecord that = (SecNameRecord) o;
+        return secondary == that.secondary &&
+                Objects.equals(name, that.name);
+    }*/
 }
