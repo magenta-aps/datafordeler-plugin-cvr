@@ -1,7 +1,9 @@
 package dk.magenta.datafordeler.cvr.output;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.magenta.datafordeler.cvr.records.CompanyUnitMetadataRecord;
 import dk.magenta.datafordeler.cvr.records.CompanyUnitRecord;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -37,6 +39,14 @@ import java.util.Collections;
  */
 @Component
 public class UnitRecordOutputWrapper extends CvrRecordOutputWrapper<CompanyUnitRecord> {
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Override
+    public ObjectMapper getObjectMapper() {
+        return this.objectMapper;
+    }
 
     @Override
     protected void fillContainer(OutputContainer oContainer, CompanyUnitRecord record) {

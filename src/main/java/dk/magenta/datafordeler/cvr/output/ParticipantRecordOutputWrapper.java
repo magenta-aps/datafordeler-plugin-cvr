@@ -1,7 +1,9 @@
 package dk.magenta.datafordeler.cvr.output;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.magenta.datafordeler.cvr.records.ParticipantMetadataRecord;
 import dk.magenta.datafordeler.cvr.records.ParticipantRecord;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -35,6 +37,14 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ParticipantRecordOutputWrapper extends CvrRecordOutputWrapper<ParticipantRecord> {
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Override
+    public ObjectMapper getObjectMapper() {
+        return this.objectMapper;
+    }
 
     @Override
     protected void fillContainer(OutputContainer oContainer, ParticipantRecord record) {
