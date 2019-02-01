@@ -11,7 +11,7 @@ import dk.magenta.datafordeler.core.plugin.*;
 import dk.magenta.datafordeler.core.util.ItemInputStream;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfiguration;
 import dk.magenta.datafordeler.cvr.configuration.CvrConfigurationManager;
-import dk.magenta.datafordeler.cvr.data.CvrEntityManager;
+import dk.magenta.datafordeler.cvr.entitymanager.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.synchronization.CvrSourceData;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -115,7 +115,12 @@ public class CvrRegisterManager extends RegisterManager {
 
     @Override
     public URI getEventInterface(EntityManager entityManager) {
-        return null;
+        try {
+            return new URI(this.getConfigurationManager().getConfiguration().getStartAddress(entityManager.getSchema()));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public ConfigurationManager<CvrConfiguration> getConfigurationManager() {
@@ -169,7 +174,7 @@ public class CvrRegisterManager extends RegisterManager {
                         }
                         requestBody = String.format(
                                 configuration.getQuery(schema),
-                                lastUpdateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                                lastUpdateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
                         );
 
                         eventCommunicator.setUsername(configuration.getUsername(schema));
@@ -194,6 +199,8 @@ public class CvrRegisterManager extends RegisterManager {
                         eventCommunicator.wait(responseBody);
                         responseBody.close();
                         log.info("Loaded into cache file");
+                    } else {
+                        log.info("Cache file "+cacheFile.getAbsolutePath()+" already exists.");
                     }
                 } catch (URISyntaxException e) {
                     throw new ConfigurationException("Invalid pull URI '"+e.getInput()+"'");

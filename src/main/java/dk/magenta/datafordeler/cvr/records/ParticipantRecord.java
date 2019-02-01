@@ -3,18 +3,16 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.core.database.Effect;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantBaseData;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantType;
-import dk.magenta.datafordeler.cvr.records.service.ParticipantRecordService;
+import dk.magenta.datafordeler.core.database.*;
+import dk.magenta.datafordeler.cvr.service.ParticipantRecordService;
 import org.hibernate.Session;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.Filters;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
 import java.util.*;
 
 /**
@@ -22,11 +20,28 @@ import java.util.*;
  * with this class at the base.
  */
 @Entity
-@Table(name=ParticipantRecord.TABLE_NAME)
+@Table(name = ParticipantRecord.TABLE_NAME, indexes = {
+        @Index(name = ParticipantRecord.TABLE_NAME + "__unitNumber", columnList = ParticipantRecord.DB_FIELD_UNIT_NUMBER, unique = true)
+})
+
+@FilterDefs({
+        @FilterDef(name = Bitemporal.FILTER_EFFECTFROM_AFTER, parameters = @ParamDef(name = Bitemporal.FILTERPARAM_EFFECTFROM_AFTER, type = CvrBitemporalRecord.FILTERPARAMTYPE_EFFECTFROM)),
+        @FilterDef(name = Bitemporal.FILTER_EFFECTFROM_BEFORE, parameters = @ParamDef(name = Bitemporal.FILTERPARAM_EFFECTFROM_BEFORE, type = CvrBitemporalRecord.FILTERPARAMTYPE_EFFECTFROM)),
+        @FilterDef(name = Bitemporal.FILTER_EFFECTTO_AFTER, parameters = @ParamDef(name = Bitemporal.FILTERPARAM_EFFECTTO_AFTER, type = CvrBitemporalRecord.FILTERPARAMTYPE_EFFECTTO)),
+        @FilterDef(name = Bitemporal.FILTER_EFFECTTO_BEFORE, parameters = @ParamDef(name = Bitemporal.FILTERPARAM_EFFECTTO_BEFORE, type = CvrBitemporalRecord.FILTERPARAMTYPE_EFFECTTO)),
+        @FilterDef(name = Monotemporal.FILTER_REGISTRATIONFROM_AFTER, parameters = @ParamDef(name = Monotemporal.FILTERPARAM_REGISTRATIONFROM_AFTER, type = CvrBitemporalRecord.FILTERPARAMTYPE_REGISTRATIONFROM)),
+        @FilterDef(name = Monotemporal.FILTER_REGISTRATIONFROM_BEFORE, parameters = @ParamDef(name = Monotemporal.FILTERPARAM_REGISTRATIONFROM_BEFORE, type = CvrBitemporalRecord.FILTERPARAMTYPE_REGISTRATIONFROM)),
+        //@FilterDef(name = Monotemporal.FILTER_REGISTRATIONTO_AFTER, parameters = @ParamDef(name = Monotemporal.FILTERPARAM_REGISTRATIONTO_AFTER, type = CvrBitemporalRecord.FILTERPARAMTYPE_REGISTRATIONTO)),
+        //@FilterDef(name = Monotemporal.FILTER_REGISTRATIONTO_BEFORE, parameters = @ParamDef(name = Monotemporal.FILTERPARAM_REGISTRATIONTO_BEFORE, type = CvrBitemporalRecord.FILTERPARAMTYPE_REGISTRATIONTO)),
+        @FilterDef(name = Nontemporal.FILTER_LASTUPDATED_AFTER, parameters = @ParamDef(name = Nontemporal.FILTERPARAM_LASTUPDATED_AFTER, type = CvrBitemporalRecord.FILTERPARAMTYPE_LASTUPDATED)),
+        @FilterDef(name = Nontemporal.FILTER_LASTUPDATED_BEFORE, parameters = @ParamDef(name = Nontemporal.FILTERPARAM_LASTUPDATED_BEFORE, type = CvrBitemporalRecord.FILTERPARAMTYPE_LASTUPDATED))
+})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ParticipantRecord extends CvrEntityRecord {
 
     public static final String TABLE_NAME = "cvr_record_participant";
+
+    public static final String schema = "deltager";
 
     @Override
     @JsonIgnore
@@ -63,7 +78,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_POSITION = "position";
     public static final String IO_FIELD_POSITION = "stilling";
 
@@ -74,7 +88,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     public String getPosition() {
         return this.position;
     }
-
 
 
     public static final String DB_FIELD_CONFIDENTIAL_ENRICHED = "confidentialEnriched";
@@ -89,7 +102,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_BUSINESS_KEY = "businessKey";
     public static final String IO_FIELD_BUSINESS_KEY = "forretningsnoegle";
 
@@ -100,7 +112,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     public Long getBusinessKey() {
         return this.businessKey;
     }
-
 
 
     public static final String DB_FIELD_STATUS_CODE = "statusCode";
@@ -115,21 +126,28 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_NAMES = "names";
     public static final String IO_FIELD_NAMES = "navne";
 
     @OneToMany(mappedBy = SecNameRecord.DB_FIELD_PARTICIPANT, targetEntity = SecNameRecord.class, cascade = CascadeType.ALL)
     @Filters({
-            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
-            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+            @Filter(name = Bitemporal.FILTER_EFFECTFROM_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTFROM_AFTER),
+            @Filter(name = Bitemporal.FILTER_EFFECTFROM_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTFROM_BEFORE),
+            @Filter(name = Bitemporal.FILTER_EFFECTTO_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTTO_AFTER),
+            @Filter(name = Bitemporal.FILTER_EFFECTTO_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTTO_BEFORE),
+            @Filter(name = Monotemporal.FILTER_REGISTRATIONFROM_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_REGISTRATIONFROM_AFTER),
+            @Filter(name = Monotemporal.FILTER_REGISTRATIONFROM_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_REGISTRATIONFROM_BEFORE),
+            // @Filter(name = Monotemporal.FILTER_REGISTRATIONTO_AFTER, condition = Monotemporal.FILTERLOGIC_REGISTRATIONTO_AFTER),
+            // @Filter(name = Monotemporal.FILTER_REGISTRATIONTO_BEFORE, condition = Monotemporal.FILTERLOGIC_REGISTRATIONTO_BEFORE),
+            @Filter(name = Nontemporal.FILTER_LASTUPDATED_AFTER, condition = CvrNontemporalRecord.FILTERLOGIC_LASTUPDATED_AFTER),
+            @Filter(name = Nontemporal.FILTER_LASTUPDATED_BEFORE, condition = CvrNontemporalRecord.FILTERLOGIC_LASTUPDATED_BEFORE)
     })
     @JsonProperty(value = IO_FIELD_NAMES)
     public Set<SecNameRecord> names = new HashSet<>();
 
     public void setNames(Set<SecNameRecord> names) {
-        this.names = names;
-        for (SecNameRecord record : names) {
+        this.names = (names == null) ? new HashSet<>() : new HashSet<>(names);
+        for (SecNameRecord record : this.names) {
             record.setParticipantRecord(this);
         }
     }
@@ -147,25 +165,32 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_LOCATION_ADDRESS = "locationAddress";
     public static final String IO_FIELD_LOCATION_ADDRESS = "beliggenhedsadresse";
 
     @OneToMany(mappedBy = AddressRecord.DB_FIELD_PARTICIPANT, targetEntity = AddressRecord.class, cascade = CascadeType.ALL)
     @Where(clause = AddressRecord.DB_FIELD_TYPE + "=" + AddressRecord.TYPE_LOCATION)
     @Filters({
-            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
-            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+            @Filter(name = Bitemporal.FILTER_EFFECTFROM_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTFROM_AFTER),
+            @Filter(name = Bitemporal.FILTER_EFFECTFROM_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTFROM_BEFORE),
+            @Filter(name = Bitemporal.FILTER_EFFECTTO_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTTO_AFTER),
+            @Filter(name = Bitemporal.FILTER_EFFECTTO_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTTO_BEFORE),
+            @Filter(name = Monotemporal.FILTER_REGISTRATIONFROM_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_REGISTRATIONFROM_AFTER),
+            @Filter(name = Monotemporal.FILTER_REGISTRATIONFROM_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_REGISTRATIONFROM_BEFORE),
+            // @Filter(name = Monotemporal.FILTER_REGISTRATIONTO_AFTER, condition = Monotemporal.FILTERLOGIC_REGISTRATIONTO_AFTER),
+            // @Filter(name = Monotemporal.FILTER_REGISTRATIONTO_BEFORE, condition = Monotemporal.FILTERLOGIC_REGISTRATIONTO_BEFORE),
+            @Filter(name = Nontemporal.FILTER_LASTUPDATED_AFTER, condition = CvrNontemporalRecord.FILTERLOGIC_LASTUPDATED_AFTER),
+            @Filter(name = Nontemporal.FILTER_LASTUPDATED_BEFORE, condition = CvrNontemporalRecord.FILTERLOGIC_LASTUPDATED_BEFORE)
     })
     @JsonProperty(value = IO_FIELD_LOCATION_ADDRESS)
     public Set<AddressRecord> locationAddress = new HashSet<>();
 
     public void setLocationAddress(Set<AddressRecord> locationAddress) {
-        for (AddressRecord record : locationAddress) {
+        this.locationAddress = (locationAddress == null) ? new HashSet<>() : new HashSet<>(locationAddress);
+        for (AddressRecord record : this.locationAddress) {
             record.setType(AddressRecord.TYPE_LOCATION);
             record.setParticipantRecord(this);
         }
-        this.locationAddress = locationAddress;
     }
 
     public void addLocationAddress(AddressRecord record) {
@@ -181,25 +206,32 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_POSTAL_ADDRESS = "postalAddress";
     public static final String IO_FIELD_POSTAL_ADDRESS = "postadresse";
 
     @OneToMany(mappedBy = AddressRecord.DB_FIELD_PARTICIPANT, targetEntity = AddressRecord.class, cascade = CascadeType.ALL)
     @Where(clause = AddressRecord.DB_FIELD_TYPE + "=" + AddressRecord.TYPE_POSTAL)
     @Filters({
-            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
-            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+            @Filter(name = Bitemporal.FILTER_EFFECTFROM_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTFROM_AFTER),
+            @Filter(name = Bitemporal.FILTER_EFFECTFROM_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTFROM_BEFORE),
+            @Filter(name = Bitemporal.FILTER_EFFECTTO_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTTO_AFTER),
+            @Filter(name = Bitemporal.FILTER_EFFECTTO_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTTO_BEFORE),
+            @Filter(name = Monotemporal.FILTER_REGISTRATIONFROM_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_REGISTRATIONFROM_AFTER),
+            @Filter(name = Monotemporal.FILTER_REGISTRATIONFROM_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_REGISTRATIONFROM_BEFORE),
+            // @Filter(name = Monotemporal.FILTER_REGISTRATIONTO_AFTER, condition = Monotemporal.FILTERLOGIC_REGISTRATIONTO_AFTER),
+            // @Filter(name = Monotemporal.FILTER_REGISTRATIONTO_BEFORE, condition = Monotemporal.FILTERLOGIC_REGISTRATIONTO_BEFORE),
+            @Filter(name = Nontemporal.FILTER_LASTUPDATED_AFTER, condition = CvrNontemporalRecord.FILTERLOGIC_LASTUPDATED_AFTER),
+            @Filter(name = Nontemporal.FILTER_LASTUPDATED_BEFORE, condition = CvrNontemporalRecord.FILTERLOGIC_LASTUPDATED_BEFORE)
     })
     @JsonProperty(value = IO_FIELD_POSTAL_ADDRESS)
     public Set<AddressRecord> postalAddress = new HashSet<>();
 
     public void setPostalAddress(Set<AddressRecord> postalAddress) {
-        for (AddressRecord record : postalAddress) {
+        this.postalAddress = (postalAddress == null) ? new HashSet<>() : new HashSet<>(postalAddress);
+        for (AddressRecord record : this.postalAddress) {
             record.setType(AddressRecord.TYPE_POSTAL);
             record.setParticipantRecord(this);
         }
-        this.postalAddress = postalAddress;
     }
 
     public void addPostalAddress(AddressRecord record) {
@@ -215,25 +247,32 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_BUSINESS_ADDRESS = "businessAddress";
     public static final String IO_FIELD_BUSINESS_ADDRESS = "forretningsadresse";
 
     @OneToMany(mappedBy = AddressRecord.DB_FIELD_PARTICIPANT, targetEntity = AddressRecord.class, cascade = CascadeType.ALL)
     @Where(clause = AddressRecord.DB_FIELD_TYPE + "=" + AddressRecord.TYPE_BUSINESS)
     @Filters({
-            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
-            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+            @Filter(name = Bitemporal.FILTER_EFFECTFROM_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTFROM_AFTER),
+            @Filter(name = Bitemporal.FILTER_EFFECTFROM_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTFROM_BEFORE),
+            @Filter(name = Bitemporal.FILTER_EFFECTTO_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTTO_AFTER),
+            @Filter(name = Bitemporal.FILTER_EFFECTTO_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTTO_BEFORE),
+            @Filter(name = Monotemporal.FILTER_REGISTRATIONFROM_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_REGISTRATIONFROM_AFTER),
+            @Filter(name = Monotemporal.FILTER_REGISTRATIONFROM_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_REGISTRATIONFROM_BEFORE),
+            // @Filter(name = Monotemporal.FILTER_REGISTRATIONTO_AFTER, condition = Monotemporal.FILTERLOGIC_REGISTRATIONTO_AFTER),
+            // @Filter(name = Monotemporal.FILTER_REGISTRATIONTO_BEFORE, condition = Monotemporal.FILTERLOGIC_REGISTRATIONTO_BEFORE),
+            @Filter(name = Nontemporal.FILTER_LASTUPDATED_AFTER, condition = CvrNontemporalRecord.FILTERLOGIC_LASTUPDATED_AFTER),
+            @Filter(name = Nontemporal.FILTER_LASTUPDATED_BEFORE, condition = CvrNontemporalRecord.FILTERLOGIC_LASTUPDATED_BEFORE)
     })
     @JsonProperty(value = IO_FIELD_BUSINESS_ADDRESS)
     public Set<AddressRecord> businessAddress = new HashSet<>();
 
     public void setBusinessAddress(Set<AddressRecord> businessAddress) {
-        for (AddressRecord record : businessAddress) {
+        this.businessAddress = (businessAddress == null) ? new HashSet<>() : new HashSet<>(businessAddress);
+        for (AddressRecord record : this.businessAddress) {
             record.setType(AddressRecord.TYPE_BUSINESS);
             record.setParticipantRecord(this);
         }
-        this.businessAddress = businessAddress;
     }
 
     public void addBusinessAddress(AddressRecord record) {
@@ -249,25 +288,32 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_PHONE = "phoneNumber";
     public static final String IO_FIELD_PHONE = "telefonNummer";
 
     @OneToMany(mappedBy = ContactRecord.DB_FIELD_PARTICIPANT, targetEntity = ContactRecord.class, cascade = CascadeType.ALL)
     @Where(clause = ContactRecord.DB_FIELD_TYPE + "=" + ContactRecord.TYPE_TELEFONNUMMER)
     @Filters({
-            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
-            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+            @Filter(name = Bitemporal.FILTER_EFFECTFROM_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTFROM_AFTER),
+            @Filter(name = Bitemporal.FILTER_EFFECTFROM_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTFROM_BEFORE),
+            @Filter(name = Bitemporal.FILTER_EFFECTTO_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTTO_AFTER),
+            @Filter(name = Bitemporal.FILTER_EFFECTTO_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTTO_BEFORE),
+            @Filter(name = Monotemporal.FILTER_REGISTRATIONFROM_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_REGISTRATIONFROM_AFTER),
+            @Filter(name = Monotemporal.FILTER_REGISTRATIONFROM_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_REGISTRATIONFROM_BEFORE),
+            // @Filter(name = Monotemporal.FILTER_REGISTRATIONTO_AFTER, condition = Monotemporal.FILTERLOGIC_REGISTRATIONTO_AFTER),
+            // @Filter(name = Monotemporal.FILTER_REGISTRATIONTO_BEFORE, condition = Monotemporal.FILTERLOGIC_REGISTRATIONTO_BEFORE),
+            @Filter(name = Nontemporal.FILTER_LASTUPDATED_AFTER, condition = CvrNontemporalRecord.FILTERLOGIC_LASTUPDATED_AFTER),
+            @Filter(name = Nontemporal.FILTER_LASTUPDATED_BEFORE, condition = CvrNontemporalRecord.FILTERLOGIC_LASTUPDATED_BEFORE)
     })
     @JsonProperty(value = IO_FIELD_PHONE)
     public Set<ContactRecord> phoneNumber = new HashSet<>();
 
     public void setPhoneNumber(Set<ContactRecord> phoneNumber) {
-        for (ContactRecord record : phoneNumber) {
+        this.phoneNumber = (phoneNumber == null) ? new HashSet<>() : new HashSet<>(phoneNumber);
+        for (ContactRecord record : this.phoneNumber) {
             record.setType(ContactRecord.TYPE_TELEFONNUMMER);
             record.setParticipantRecord(this);
         }
-        this.phoneNumber = phoneNumber;
     }
 
     public void addPhoneNumber(ContactRecord record) {
@@ -284,25 +330,32 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_FAX = "faxNumber";
     public static final String IO_FIELD_FAX = "telefaxNummer";
 
     @OneToMany(mappedBy = ContactRecord.DB_FIELD_PARTICIPANT, targetEntity = ContactRecord.class, cascade = CascadeType.ALL)
     @Where(clause = ContactRecord.DB_FIELD_TYPE + "=" + ContactRecord.TYPE_TELEFAXNUMMER)
     @Filters({
-            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
-            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+            @Filter(name = Bitemporal.FILTER_EFFECTFROM_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTFROM_AFTER),
+            @Filter(name = Bitemporal.FILTER_EFFECTFROM_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTFROM_BEFORE),
+            @Filter(name = Bitemporal.FILTER_EFFECTTO_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTTO_AFTER),
+            @Filter(name = Bitemporal.FILTER_EFFECTTO_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTTO_BEFORE),
+            @Filter(name = Monotemporal.FILTER_REGISTRATIONFROM_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_REGISTRATIONFROM_AFTER),
+            @Filter(name = Monotemporal.FILTER_REGISTRATIONFROM_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_REGISTRATIONFROM_BEFORE),
+            // @Filter(name = Monotemporal.FILTER_REGISTRATIONTO_AFTER, condition = Monotemporal.FILTERLOGIC_REGISTRATIONTO_AFTER),
+            // @Filter(name = Monotemporal.FILTER_REGISTRATIONTO_BEFORE, condition = Monotemporal.FILTERLOGIC_REGISTRATIONTO_BEFORE),
+            @Filter(name = Nontemporal.FILTER_LASTUPDATED_AFTER, condition = CvrNontemporalRecord.FILTERLOGIC_LASTUPDATED_AFTER),
+            @Filter(name = Nontemporal.FILTER_LASTUPDATED_BEFORE, condition = CvrNontemporalRecord.FILTERLOGIC_LASTUPDATED_BEFORE)
     })
     @JsonProperty(value = IO_FIELD_FAX)
     public Set<ContactRecord> faxNumber = new HashSet<>();
 
     public void setFaxNumber(Set<ContactRecord> faxNumber) {
-        for (ContactRecord record : faxNumber) {
+        this.faxNumber = (faxNumber == null) ? new HashSet<>() : new HashSet<>(faxNumber);
+        for (ContactRecord record : this.faxNumber) {
             record.setType(ContactRecord.TYPE_TELEFAXNUMMER);
             record.setParticipantRecord(this);
         }
-        this.faxNumber = faxNumber;
     }
 
     public void addFaxNumber(ContactRecord record) {
@@ -319,25 +372,33 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_EMAIL = "emailAddress";
     public static final String IO_FIELD_EMAIL = "elektroniskPost";
 
     @OneToMany(mappedBy = ContactRecord.DB_FIELD_PARTICIPANT, targetEntity = ContactRecord.class, cascade = CascadeType.ALL)
     @Where(clause = ContactRecord.DB_FIELD_TYPE + "=" + ContactRecord.TYPE_EMAILADRESSE)
     @Filters({
-            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
-            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+            @Filter(name = Bitemporal.FILTER_EFFECTFROM_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTFROM_AFTER),
+            @Filter(name = Bitemporal.FILTER_EFFECTFROM_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTFROM_BEFORE),
+            @Filter(name = Bitemporal.FILTER_EFFECTTO_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTTO_AFTER),
+            @Filter(name = Bitemporal.FILTER_EFFECTTO_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTTO_BEFORE),
+            @Filter(name = Monotemporal.FILTER_REGISTRATIONFROM_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_REGISTRATIONFROM_AFTER),
+            @Filter(name = Monotemporal.FILTER_REGISTRATIONFROM_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_REGISTRATIONFROM_BEFORE),
+            // @Filter(name = Monotemporal.FILTER_REGISTRATIONTO_AFTER, condition = Monotemporal.FILTERLOGIC_REGISTRATIONTO_AFTER),
+            // @Filter(name = Monotemporal.FILTER_REGISTRATIONTO_BEFORE, condition = Monotemporal.FILTERLOGIC_REGISTRATIONTO_BEFORE),
+            @Filter(name = Nontemporal.FILTER_LASTUPDATED_AFTER, condition = CvrNontemporalRecord.FILTERLOGIC_LASTUPDATED_AFTER),
+            @Filter(name = Nontemporal.FILTER_LASTUPDATED_BEFORE, condition = CvrNontemporalRecord.FILTERLOGIC_LASTUPDATED_BEFORE)
     })
     @JsonProperty(value = IO_FIELD_EMAIL)
     public Set<ContactRecord> emailAddress = new HashSet<>();
 
     public void setEmailAddress(Set<ContactRecord> emailAddress) {
-        for (ContactRecord record : emailAddress) {
+        this.emailAddress = (emailAddress == null) ? new HashSet<>() : new HashSet<>(emailAddress);
+        for (ContactRecord record : this.emailAddress) {
             record.setType(ContactRecord.TYPE_EMAILADRESSE);
             record.setParticipantRecord(this);
         }
-        this.emailAddress = emailAddress;
+
     }
 
     public void addEmailAddress(ContactRecord record) {
@@ -353,7 +414,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_ATTRIBUTES = "attributes";
     public static final String IO_FIELD_ATTRIBUTES = "attributter";
 
@@ -363,8 +423,10 @@ public class ParticipantRecord extends CvrEntityRecord {
 
     public void setAttributes(Set<AttributeRecord> attributes) {
         this.attributes = attributes;
-        for (AttributeRecord attributeRecord : attributes) {
-            attributeRecord.setParticipantRecord(this);
+        if (attributes != null) {
+            for (AttributeRecord attributeRecord : attributes) {
+                attributeRecord.setParticipantRecord(this);
+            }
         }
     }
 
@@ -395,7 +457,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_META = "metadata";
     public static final String IO_FIELD_META = "deltagerpersonMetadata";
 
@@ -406,7 +467,9 @@ public class ParticipantRecord extends CvrEntityRecord {
 
     public void setMetadata(ParticipantMetadataRecord metadata) {
         this.metadata = metadata;
-        this.metadata.setParticipantRecord(this);
+        if (this.metadata != null) {
+            this.metadata.setParticipantRecord(this);
+        }
     }
 
     public ParticipantMetadataRecord getMetadata() {
@@ -414,21 +477,28 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
 
-
     public static final String DB_FIELD_COMPANY_RELATION = "companyRelation";
     public static final String IO_FIELD_COMPANY_RELATION = "virksomhedSummariskRelation";
 
     @OneToMany(targetEntity = CompanyParticipantRelationRecord.class, mappedBy = CompanyParticipantRelationRecord.DB_FIELD_PARTICIPANT, cascade = CascadeType.ALL)
     @Filters({
-            @Filter(name = Effect.FILTER_EFFECT_FROM, condition = CvrBitemporalRecord.FILTER_EFFECT_FROM),
-            @Filter(name = Effect.FILTER_EFFECT_TO, condition = CvrBitemporalRecord.FILTER_EFFECT_TO)
+            @Filter(name = Bitemporal.FILTER_EFFECTFROM_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTFROM_AFTER),
+            @Filter(name = Bitemporal.FILTER_EFFECTFROM_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTFROM_BEFORE),
+            @Filter(name = Bitemporal.FILTER_EFFECTTO_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTTO_AFTER),
+            @Filter(name = Bitemporal.FILTER_EFFECTTO_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_EFFECTTO_BEFORE),
+            @Filter(name = Monotemporal.FILTER_REGISTRATIONFROM_AFTER, condition = CvrBitemporalRecord.FILTERLOGIC_REGISTRATIONFROM_AFTER),
+            @Filter(name = Monotemporal.FILTER_REGISTRATIONFROM_BEFORE, condition = CvrBitemporalRecord.FILTERLOGIC_REGISTRATIONFROM_BEFORE),
+            // @Filter(name = Monotemporal.FILTER_REGISTRATIONTO_AFTER, condition = Monotemporal.FILTERLOGIC_REGISTRATIONTO_AFTER),
+            // @Filter(name = Monotemporal.FILTER_REGISTRATIONTO_BEFORE, condition = Monotemporal.FILTERLOGIC_REGISTRATIONTO_BEFORE),
+            @Filter(name = Nontemporal.FILTER_LASTUPDATED_AFTER, condition = CvrNontemporalRecord.FILTERLOGIC_LASTUPDATED_AFTER),
+            @Filter(name = Nontemporal.FILTER_LASTUPDATED_BEFORE, condition = CvrNontemporalRecord.FILTERLOGIC_LASTUPDATED_BEFORE)
     })
     @JsonProperty(value = IO_FIELD_COMPANY_RELATION)
     private Set<CompanyParticipantRelationRecord> companyRelation = new HashSet<>();
 
     public void setCompanyRelation(Set<CompanyParticipantRelationRecord> companyRelation) {
-        this.companyRelation = companyRelation;
-        for (CompanyParticipantRelationRecord companyParticipantRelationRecord : companyRelation) {
+        this.companyRelation = (companyRelation == null) ? new HashSet<>() : new HashSet<>(companyRelation);
+        for (CompanyParticipantRelationRecord companyParticipantRelationRecord : this.companyRelation) {
             companyParticipantRelationRecord.setParticipantRecord(this);
         }
     }
@@ -457,7 +527,6 @@ public class ParticipantRecord extends CvrEntityRecord {
     public Set<CompanyParticipantRelationRecord> getCompanyRelation() {
         return this.companyRelation;
     }
-
 
 
     @JsonIgnore
@@ -496,18 +565,12 @@ public class ParticipantRecord extends CvrEntityRecord {
     }
 
     public UUID generateUUID() {
-        return ParticipantEntity.generateUUID(this.unitType, this.unitNumber);
+        return ParticipantRecord.generateUUID(this.unitType, this.unitNumber);
     }
 
-    @Override
-    public void populateBaseData(ParticipantBaseData baseData, Session session) {
-        baseData.setUnitNumber(this.unitNumber);
-        if (this.unitType != null) {
-            baseData.setUnitType(ParticipantType.getType(this.unitType, session));
-        }
-        if (this.position != null) {
-            baseData.setPosition(this.position);
-        }
+    public static UUID generateUUID(String unitType, long unitNumber) {
+        String uuidInput = "participant:"+unitType+"/"+unitNumber;
+        return UUID.nameUUIDFromBytes(uuidInput.getBytes());
     }
 
 

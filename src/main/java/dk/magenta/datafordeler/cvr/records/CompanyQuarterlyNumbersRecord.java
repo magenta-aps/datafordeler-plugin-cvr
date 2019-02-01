@@ -2,10 +2,6 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.core.exception.ParseException;
-import dk.magenta.datafordeler.cvr.data.company.CompanyBaseData;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitBaseData;
-import org.hibernate.Session;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -42,34 +38,6 @@ public class CompanyQuarterlyNumbersRecord extends CompanyNumbersRecord {
     private int quarter;
 
     @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) throws ParseException {
-        baseData.setQuarterlyEmployeeNumbers(
-                this.year,
-                this.quarter,
-                this.getEmployeeLow(),
-                this.getEmployeeHigh(),
-                this.getFulltimeEquivalentLow(),
-                this.getFulltimeEquivalentHigh(),
-                this.getIncludingOwnersLow(),
-                this.getIncludingOwnersHigh()
-        );
-    }
-
-    @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, Session session) throws ParseException {
-        baseData.setQuarterlyEmployeeNumbers(
-                this.year,
-                this.quarter,
-                this.getEmployeeLow(),
-                this.getEmployeeHigh(),
-                this.getFulltimeEquivalentLow(),
-                this.getFulltimeEquivalentHigh(),
-                this.getIncludingOwnersLow(),
-                this.getIncludingOwnersHigh()
-        );
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -83,4 +51,11 @@ public class CompanyQuarterlyNumbersRecord extends CompanyNumbersRecord {
     public int hashCode() {
         return Objects.hash(super.hashCode(), year, quarter);
     }
+
+    /*@Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        CompanyQuarterlyNumbersRecord that = (CompanyQuarterlyNumbersRecord) o;
+        return year == that.year && quarter == that.quarter;
+    }*/
 }

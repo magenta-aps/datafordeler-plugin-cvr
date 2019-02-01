@@ -1,6 +1,7 @@
 package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 
 import javax.persistence.FetchType;

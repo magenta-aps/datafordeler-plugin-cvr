@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.core.database.Effect;
+import dk.magenta.datafordeler.core.database.Nontemporal;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.Filters;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;

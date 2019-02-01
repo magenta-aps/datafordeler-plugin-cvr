@@ -280,4 +280,14 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
         subs.addAll(this.organizations);
         return subs;
     }
+
+    /*@Override
+    public boolean equalData(Object o) {
+        if (!super.equalData(o)) return false;
+        CompanyParticipantRelationRecord that = (CompanyParticipantRelationRecord) o;
+        return Objects.equals(relationParticipantRecord, that.relationParticipantRecord) &&
+                Objects.equals(relationCompanyRecord, that.relationCompanyRecord) &&
+                Objects.equals(offices, that.offices) &&
+                Objects.equals(organizations, that.organizations);
+    }*/
 }

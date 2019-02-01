@@ -2,9 +2,9 @@ package dk.magenta.datafordeler.cvr.configuration;
 
 import dk.magenta.datafordeler.core.configuration.Configuration;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
-import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
+import dk.magenta.datafordeler.cvr.records.CompanyRecord;
+import dk.magenta.datafordeler.cvr.records.CompanyUnitRecord;
+import dk.magenta.datafordeler.cvr.records.ParticipantRecord;
 
 import javax.persistence.*;
 
@@ -70,6 +70,16 @@ public class CvrConfiguration implements Configuration {
             "    }\n" +
             "}\n";
 
+    @Column
+    private String companyRegisterDirectLookupCertificate = "";
+
+    @Column
+    private String companyRegisterDirectLookupPassword = "";
+
+    @Column
+    private String companyRegisterDirectLookupAddress = "";
+
+
     public RegisterType getCompanyRegisterType() {
         return this.companyRegisterType;
     }
@@ -94,11 +104,17 @@ public class CvrConfiguration implements Configuration {
         return this.companyRegisterQuery;
     }
 
+    public String getCompanyRegisterDirectLookupCertificate() {
+        return this.companyRegisterDirectLookupCertificate;
+    }
 
+    public String getCompanyRegisterDirectLookupPassword() {
+        return this.companyRegisterDirectLookupPassword;
+    }
 
-
-
-
+    public String getCompanyRegisterDirectLookupAddress() {
+        return this.companyRegisterDirectLookupAddress;
+    }
 
     @Column
     @Enumerated(EnumType.ORDINAL)
@@ -190,6 +206,15 @@ public class CvrConfiguration implements Configuration {
             "}\n";
 
 
+    @Column
+    private String participantRegisterDirectLookupCertificate = "";
+
+    @Column
+    private String participantRegisterDirectLookupPassword = "";
+
+    @Column
+    private String participantRegisterDirectLookupAddress = "";
+
     public RegisterType getParticipantRegisterType() {
         return this.participantRegisterType;
     }
@@ -214,13 +239,17 @@ public class CvrConfiguration implements Configuration {
         return this.participantRegisterQuery;
     }
 
+    public String getParticipantRegisterDirectLookupCertificate() {
+        return this.participantRegisterDirectLookupCertificate;
+    }
 
+    public String getParticipantRegisterDirectLookupPassword() {
+        return this.participantRegisterDirectLookupPassword;
+    }
 
-
-
-
-
-
+    public String getParticipantRegisterDirectLookupAddress() {
+        return this.participantRegisterDirectLookupAddress;
+    }
 
     public String getPullCronSchedule() {
         return this.pullCronSchedule;
@@ -231,11 +260,11 @@ public class CvrConfiguration implements Configuration {
 
     public String getQuery(String schema) {
         switch (schema) {
-            case CompanyEntity.schema:
+            case CompanyRecord.schema:
                 return this.getCompanyRegisterQuery();
-            case CompanyUnitEntity.schema:
+            case CompanyUnitRecord.schema:
                 return this.getCompanyUnitRegisterQuery();
-            case ParticipantEntity.schema:
+            case ParticipantRecord.schema:
                 return this.getParticipantRegisterQuery();
         }
         return null;
@@ -243,11 +272,11 @@ public class CvrConfiguration implements Configuration {
 
     public RegisterType getRegisterType(String schema) {
         switch (schema) {
-            case CompanyEntity.schema:
+            case CompanyRecord.schema:
                 return this.getCompanyRegisterType();
-            case CompanyUnitEntity.schema:
+            case CompanyUnitRecord.schema:
                 return this.getCompanyUnitRegisterType();
-            case ParticipantEntity.schema:
+            case ParticipantRecord.schema:
                 return this.getParticipantRegisterType();
         }
         return null;
@@ -255,11 +284,11 @@ public class CvrConfiguration implements Configuration {
 
     public String getStartAddress(String schema) {
         switch (schema) {
-            case CompanyEntity.schema:
+            case CompanyRecord.schema:
                 return this.getCompanyRegisterStartAddress();
-            case CompanyUnitEntity.schema:
+            case CompanyUnitRecord.schema:
                 return this.getCompanyUnitRegisterStartAddress();
-            case ParticipantEntity.schema:
+            case ParticipantRecord.schema:
                 return this.getParticipantRegisterStartAddress();
         }
         return null;
@@ -267,11 +296,11 @@ public class CvrConfiguration implements Configuration {
 
     public String getScrollAddress(String schema) {
         switch (schema) {
-            case CompanyEntity.schema:
+            case CompanyRecord.schema:
                 return this.getCompanyRegisterScrollAddress();
-            case CompanyUnitEntity.schema:
+            case CompanyUnitRecord.schema:
                 return this.getCompanyUnitRegisterScrollAddress();
-            case ParticipantEntity.schema:
+            case ParticipantRecord.schema:
                 return this.getParticipantRegisterScrollAddress();
         }
         return null;
@@ -279,11 +308,11 @@ public class CvrConfiguration implements Configuration {
 
     public String getUsername(String schema) {
         switch (schema) {
-            case CompanyEntity.schema:
+            case CompanyRecord.schema:
                 return this.getCompanyRegisterUsername();
-            case CompanyUnitEntity.schema:
+            case CompanyUnitRecord.schema:
                 return this.getCompanyUnitRegisterUsername();
-            case ParticipantEntity.schema:
+            case ParticipantRecord.schema:
                 return this.getParticipantRegisterUsername();
         }
         return null;
@@ -291,11 +320,11 @@ public class CvrConfiguration implements Configuration {
 
     public String getPassword(String schema) {
         switch (schema) {
-            case CompanyEntity.schema:
+            case CompanyRecord.schema:
                 return this.getCompanyRegisterPassword();
-            case CompanyUnitEntity.schema:
+            case CompanyUnitRecord.schema:
                 return this.getCompanyUnitRegisterPassword();
-            case ParticipantEntity.schema:
+            case ParticipantRecord.schema:
                 return this.getParticipantRegisterPassword();
         }
         return null;

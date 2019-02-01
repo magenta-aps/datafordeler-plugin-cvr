@@ -11,16 +11,15 @@ import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.io.ImportMetadata;
 import dk.magenta.datafordeler.core.user.DafoUserManager;
-import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
-import dk.magenta.datafordeler.cvr.data.company.CompanyEntityManager;
-import dk.magenta.datafordeler.cvr.data.company.CompanyRecordQuery;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntityManager;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitRecordQuery;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntityManager;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantRecordQuery;
+import dk.magenta.datafordeler.cvr.access.CvrRolesDefinition;
+import dk.magenta.datafordeler.cvr.entitymanager.CompanyEntityManager;
+import dk.magenta.datafordeler.cvr.query.CompanyRecordQuery;
+import dk.magenta.datafordeler.cvr.entitymanager.CompanyUnitEntityManager;
+import dk.magenta.datafordeler.cvr.query.CompanyUnitRecordQuery;
+import dk.magenta.datafordeler.cvr.entitymanager.ParticipantEntityManager;
+import dk.magenta.datafordeler.cvr.query.ParticipantRecordQuery;
 import dk.magenta.datafordeler.cvr.records.*;
+import dk.magenta.datafordeler.cvr.output.CompanyRecordOutputWrapper;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.junit.Assert;
@@ -56,6 +55,9 @@ public class RecordTest {
     private SessionManager sessionManager;
 
     @Autowired
+    private CompanyRecordOutputWrapper companyRecordOutputWrapper;
+
+    @Autowired
     private CvrPlugin plugin;
 
     @Autowired
@@ -63,9 +65,9 @@ public class RecordTest {
 
     private static HashMap<String, String> schemaMap = new HashMap<>();
     static {
-        schemaMap.put("virksomhed", CompanyEntity.schema);
-        schemaMap.put("produktionsenhed", CompanyUnitEntity.schema);
-        schemaMap.put("deltager", ParticipantEntity.schema);
+        schemaMap.put("virksomhed", CompanyRecord.schema);
+        schemaMap.put("produktionsenhed", CompanyUnitRecord.schema);
+        schemaMap.put("deltager", ParticipantRecord.schema);
     }
 
     @SpyBean
@@ -73,6 +75,10 @@ public class RecordTest {
 
     private void applyAccess(TestUserDetails testUserDetails) {
         when(dafoUserManager.getFallbackUser()).thenReturn(testUserDetails);
+    }
+
+    private void whitelistLocalhost() {
+        when(dafoUserManager.getIpWhitelist()).thenReturn(Collections.singleton("127.0.0.1"));
     }
 
     private HashMap<Integer, JsonNode> loadCompany() throws IOException, DataFordelerException {
@@ -180,6 +186,8 @@ public class RecordTest {
             query.clearVirksomhedsform();
             query.setVirksomhedsnavn("MAGENTA ApS");
             Assert.assertEquals(1, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
+
+            System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(this.companyRecordOutputWrapper.wrapResult(QueryManager.getAllEntities(session, query, CompanyRecord.class).get(0), query)));
             query.clearKommuneKoder();
 
 
@@ -320,17 +328,19 @@ public class RecordTest {
     @Test
     public void testRestCompany() throws IOException, DataFordelerException {
         loadCompany("/company_in.json");
+        whitelistLocalhost();
         TestUserDetails testUserDetails = new TestUserDetails();
         HttpEntity<String> httpEntity = new HttpEntity<String>("", new HttpHeaders());
-        ResponseEntity<String> resp = restTemplate.exchange("/cvr/company/1/rest/search?cvrnummer=25052943", HttpMethod.GET, httpEntity, String.class);
+        ResponseEntity<String> resp = restTemplate.exchange("/cvr/company/1/rest/search?cvrNummer=25052943", HttpMethod.GET, httpEntity, String.class);
         Assert.assertEquals(403, resp.getStatusCodeValue());
 
         testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
         this.applyAccess(testUserDetails);
 
-        resp = restTemplate.exchange("/cvr/company/1/rest/search?cvrnummer=25052943&virkningFra=2000-01-01&virkningTil=2000-01-01", HttpMethod.GET, httpEntity, String.class);
+        resp = restTemplate.exchange("/cvr/company/1/rest/search?cvrnummer=25052943&virkningFra=2000-01-01&virkningTil=2000-01-01&fmt=legacy", HttpMethod.GET, httpEntity, String.class);
         String body = resp.getBody();
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectMapper.readTree(body)));
+        Assert.assertEquals(200, resp.getStatusCodeValue());
     }
 
     private HashMap<Integer, JsonNode> loadUnit(String resource) throws IOException, DataFordelerException {
@@ -493,6 +503,7 @@ public class RecordTest {
     @Test
     public void testRestCompanyUnit() throws IOException, DataFordelerException {
         loadUnit("/unit.json");
+        whitelistLocalhost();
         TestUserDetails testUserDetails = new TestUserDetails();
         HttpEntity<String> httpEntity = new HttpEntity<String>("", new HttpHeaders());
         ResponseEntity<String> resp = restTemplate.exchange("/cvr/unit/1/rest/search?pnummer=1020895337", HttpMethod.GET, httpEntity, String.class);
@@ -504,6 +515,7 @@ public class RecordTest {
         resp = restTemplate.exchange("/cvr/unit/1/rest/search?pnummer=1020895337&virkningFra=2016-01-01&virkningTil=2016-01-01", HttpMethod.GET, httpEntity, String.class);
         String body = resp.getBody();
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectMapper.readTree(body)));
+        Assert.assertEquals(200, resp.getStatusCodeValue());
     }
 
     private HashMap<Long, JsonNode> loadParticipant(String resource) throws IOException, DataFordelerException {
@@ -667,17 +679,19 @@ public class RecordTest {
     @Test
     public void testRestParticipant() throws IOException, DataFordelerException {
         loadParticipant("/person.json");
+        whitelistLocalhost();
         TestUserDetails testUserDetails = new TestUserDetails();
         HttpEntity<String> httpEntity = new HttpEntity<String>("", new HttpHeaders());
-        ResponseEntity<String> resp = restTemplate.exchange("/cvr/participant/1/rest/search?deltagernummer=4000004988", HttpMethod.GET, httpEntity, String.class);
+        ResponseEntity<String> resp = restTemplate.exchange("/cvr/participant/1/rest/search?enhedsNummer=4000004988", HttpMethod.GET, httpEntity, String.class);
         Assert.assertEquals(403, resp.getStatusCodeValue());
 
         testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
         this.applyAccess(testUserDetails);
 
-        resp = restTemplate.exchange("/cvr/participant/1/rest/search?deltagernummer=4000004988&virkningFra=2001-01-01&virkningTil=2001-01-01", HttpMethod.GET, httpEntity, String.class);
+        resp = restTemplate.exchange("/cvr/participant/1/rest/search?enhedsNummer=4000004988&virkningFra=2001-01-01&virkningTil=2001-01-01", HttpMethod.GET, httpEntity, String.class);
         String body = resp.getBody();
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectMapper.readTree(body)));
+        Assert.assertEquals(200, resp.getStatusCodeValue());
     }
 
     /**

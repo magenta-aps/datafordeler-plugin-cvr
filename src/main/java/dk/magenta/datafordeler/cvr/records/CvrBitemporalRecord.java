@@ -2,27 +2,56 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.Effect;
+import dk.magenta.datafordeler.core.database.Monotemporal;
 import dk.magenta.datafordeler.core.database.Registration;
+import dk.magenta.datafordeler.core.util.Bitemporality;
 import dk.magenta.datafordeler.core.util.Equality;
 import dk.magenta.datafordeler.core.util.ListHashMap;
-import dk.magenta.datafordeler.cvr.data.Bitemporality;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.Objects;
 
 @MappedSuperclass
-public class CvrBitemporalRecord extends CvrRecord implements Comparable<CvrBitemporalRecord> {
+public abstract class CvrBitemporalRecord extends CvrNontemporalRecord implements Comparable<CvrBitemporalRecord> {
 
-    public static final String FILTER_LAST_UPDATED = "(" + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " < :" + Registration.FILTERPARAM_REGISTRATION_TO + ")";
-    public static final String FILTER_EFFECT_FROM = "(" + CvrRecordPeriod.DB_FIELD_VALID_TO + " >= :" + Effect.FILTERPARAM_EFFECT_FROM + " OR " + CvrRecordPeriod.DB_FIELD_VALID_TO + " is null)";
-    public static final String FILTER_EFFECT_TO = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Effect.FILTERPARAM_EFFECT_TO + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)";
+    public static final String FILTERLOGIC_REGISTRATIONFROM_AFTER = "(" + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " >= :" + Monotemporal.FILTERPARAM_REGISTRATIONFROM_AFTER + ")";
+    public static final String FILTERLOGIC_REGISTRATIONFROM_BEFORE = "(" + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " < :" + Monotemporal.FILTERPARAM_REGISTRATIONFROM_BEFORE + " OR " + CvrBitemporalRecord.DB_FIELD_LAST_UPDATED + " is null)";
+    public static final String FILTERLOGIC_REGISTRATIONTO_AFTER = "";
+    public static final String FILTERLOGIC_REGISTRATIONTO_BEFORE = "";
 
+
+    public static final String FILTERLOGIC_EFFECTFROM_AFTER = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " >= :" + Bitemporal.FILTERPARAM_EFFECTFROM_AFTER + ")";
+    public static final String FILTERLOGIC_EFFECTFROM_BEFORE = "(" + CvrRecordPeriod.DB_FIELD_VALID_FROM + " < :" + Bitemporal.FILTERPARAM_EFFECTFROM_BEFORE + " OR " + CvrRecordPeriod.DB_FIELD_VALID_FROM + " is null)";
+    public static final String FILTERLOGIC_EFFECTTO_AFTER = "(" + CvrRecordPeriod.DB_FIELD_VALID_TO + " >= :" + Bitemporal.FILTERPARAM_EFFECTTO_AFTER + " OR " + CvrRecordPeriod.DB_FIELD_VALID_TO + " is null)";
+    public static final String FILTERLOGIC_EFFECTTO_BEFORE = "(" + CvrRecordPeriod.DB_FIELD_VALID_TO + " < :" + Bitemporal.FILTERPARAM_EFFECTTO_BEFORE + ")";
+
+
+    public static final String FILTERPARAMTYPE_REGISTRATIONFROM = "java.time.OffsetDateTime";
+    public static final String FILTERPARAMTYPE_REGISTRATIONTO = "java.time.OffsetDateTime";
+    public static final String FILTERPARAMTYPE_EFFECTFROM = "java.time.LocalDate";
+    public static final String FILTERPARAMTYPE_EFFECTTO = "java.time.LocalDate";
+    public static final String FILTERPARAMTYPE_LASTUPDATED = "java.time.OffsetDateTime";
+
+
+
+    public static Object castFilterParam(Object input, String filter) {
+        switch (filter) {
+            case Bitemporal.FILTER_EFFECTFROM_AFTER:
+            case Bitemporal.FILTER_EFFECTFROM_BEFORE:
+            case Bitemporal.FILTER_EFFECTTO_AFTER:
+            case Bitemporal.FILTER_EFFECTTO_BEFORE:
+                return ((OffsetDateTime) input).toLocalDate();
+        }
+        return null;
+    }
 
 
     public static final String DB_FIELD_LAST_UPDATED = "lastUpdated";
@@ -43,8 +72,6 @@ public class CvrBitemporalRecord extends CvrRecord implements Comparable<CvrBite
 
 
 
-
-
     public static final String DB_FIELD_LAST_LOADED = "lastLoaded";
     public static final String IO_FIELD_LAST_LOADED = "sidstIndlaest";
 
@@ -62,6 +89,9 @@ public class CvrBitemporalRecord extends CvrRecord implements Comparable<CvrBite
         return (this.lastUpdated != null) ? this.lastUpdated : this.lastLoaded;
     }
 
+    public void setRegistrationFrom(OffsetDateTime offsetDateTime) {
+        this.lastUpdated = offsetDateTime;
+    }
 
 
     public static final String IO_FIELD_PERIOD = "periode";
@@ -166,7 +196,41 @@ public class CvrBitemporalRecord extends CvrRecord implements Comparable<CvrBite
     }
 
     @JsonIgnore
+    public OffsetDateTime getEffectFrom() {
+        if (this.validity != null) {
+            return Bitemporality.convertTime(this.validity.getValidFrom());
+        }
+        return null;
+    }
+
+    public void setEffectFrom(OffsetDateTime offsetDateTime) {
+        if (this.validity == null) {
+            this.validity = new CvrRecordPeriod();
+        }
+        this.validity.setValidFrom(convertTime(offsetDateTime));
+    }
+
+    @JsonIgnore
+    public OffsetDateTime getEffectTo() {
+        if (this.validity != null) {
+            return Bitemporality.convertTime(this.validity.getValidTo());
+        }
+        return null;
+    }
+
+    public void setEffectTo(OffsetDateTime offsetDateTime) {
+        if (this.validity == null) {
+            this.validity = new CvrRecordPeriod();
+        }
+        this.validity.setValidTo(convertTime(offsetDateTime));
+    }
+
+    @JsonIgnore
     public Bitemporality getBitemporality() {
         return new Bitemporality(this.getRegistrationFrom(), this.getRegistrationTo(), this.getValidFrom(), this.getValidTo());
+    }
+
+    public static LocalDate convertTime(OffsetDateTime time) {
+        return time != null ? time.atZoneSameInstant(ZoneOffset.UTC).toLocalDate() : null;
     }
 }
