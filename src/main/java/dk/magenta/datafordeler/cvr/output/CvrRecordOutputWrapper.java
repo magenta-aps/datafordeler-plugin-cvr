@@ -4,17 +4,21 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
+import com.fasterxml.jackson.databind.node.ContainerNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.fapi.RecordOutputWrapper;
 import dk.magenta.datafordeler.core.util.Bitemporality;
 import dk.magenta.datafordeler.core.util.ListHashMap;
 import dk.magenta.datafordeler.cvr.records.*;
 import dk.magenta.datafordeler.cvr.records.unversioned.Municipality;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public abstract class CvrRecordOutputWrapper<E extends CvrEntityRecord> extends RecordOutputWrapper<E> {
@@ -44,7 +48,9 @@ public abstract class CvrRecordOutputWrapper<E extends CvrEntityRecord> extends 
     @Override
     public ObjectNode getNode(E record, Bitemporality overlap, Mode mode) {
         if (mode == Mode.LEGACY) {
-            return this.getObjectMapper().valueToTree(record);
+            ObjectNode node = this.getObjectMapper().valueToTree(record);
+            this.overlapNode(node, overlap);
+            return node;
         }
 
         ObjectNode root = super.getNode(record, overlap, mode);
@@ -69,6 +75,44 @@ public abstract class CvrRecordOutputWrapper<E extends CvrEntityRecord> extends 
                 break;
         }
         return root;
+    }
+
+    private void overlapNode(ObjectNode node, Bitemporality overlap) {
+        ZoneId zone = ZoneId.of("Europe/Copenhagen");
+        ObjectMapper objectMapper = this.getObjectMapper();
+        traverse(node, subnode -> {
+            if (subnode instanceof ObjectNode) {
+                if (subnode.has(CvrBitemporalRecord.IO_FIELD_LAST_UPDATED)) {
+                    OffsetDateTime lastUpdated = objectMapper.convertValue(subnode.get(CvrBitemporalRecord.IO_FIELD_LAST_UPDATED), OffsetDateTime.class);
+                    Bitemporality bitemporality = new Bitemporality(lastUpdated, null);
+                    if (subnode.has(CvrBitemporalRecord.IO_FIELD_PERIOD)) {
+                        try {
+                            CvrRecordPeriod period = objectMapper.readerFor(CvrRecordPeriod.class).readValue(subnode.get(CvrBitemporalRecord.IO_FIELD_PERIOD));
+                            if (period != null) {
+                                bitemporality.effectFrom = period.getValidFrom() != null ? period.getValidFrom().atStartOfDay(zone).toOffsetDateTime() : null;
+                                bitemporality.effectTo = period.getValidTo() != null ? period.getValidTo().atStartOfDay(zone).toOffsetDateTime() : null;
+                            }
+                        } catch (IOException e) {
+                        }
+                    }
+                    return overlap.overlaps(bitemporality);
+                }
+            }
+            return true;
+        });
+    }
+
+    private static void traverse(JsonNode node, Function<JsonNode, Boolean> callback) {
+        for (Iterator<JsonNode> it = node.elements(); it.hasNext(); ) {
+            JsonNode entry = it.next();
+            if (callback.apply(entry)) {
+                if (entry.isContainerNode()) {
+                    traverse(entry, callback);
+                }
+            } else {
+                it.remove();
+            }
+        }
     }
 
     private ObjectNode createItemNode(CvrRecord record) {
