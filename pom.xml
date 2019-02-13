@@ -86,6 +86,14 @@
             <artifactId>opensaml</artifactId>
             <version>2.6.4</version>
         </dependency>
+
+
+        <dependency>
+            <groupId>com.google.crypto.tink</groupId>
+            <artifactId>tink</artifactId>
+            <version>1.2.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

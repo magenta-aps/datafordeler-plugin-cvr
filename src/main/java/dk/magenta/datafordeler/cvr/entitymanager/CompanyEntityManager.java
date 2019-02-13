@@ -18,12 +18,15 @@ import dk.magenta.datafordeler.cvr.service.CompanyRecordService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.GeneralSecurityException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -109,7 +112,12 @@ public class CompanyEntityManager extends CvrEntityManager<CompanyRecord> {
         String schema = CompanyRecord.schema;
 
         eventCommunicator.setUsername(configuration.getUsername(schema));
-        eventCommunicator.setPassword(configuration.getPassword(schema));
+        try {
+            eventCommunicator.setPassword(configuration.getPassword(schema));
+        } catch (GeneralSecurityException | IOException e) {
+            log.error(e);
+            return records;
+        }
         eventCommunicator.setThrottle(0);
 
         StringJoiner csep = new StringJoiner(",");
