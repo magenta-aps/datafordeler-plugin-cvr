@@ -26,12 +26,6 @@ public class CvrConfigurationManager extends ConfigurationManager<CvrConfigurati
     public void init() {
         // Very important to call init() on ConfigurationManager, or the config will not be loaded
         super.init();
-
-        CvrConfiguration configuration = this.getConfiguration();
-        configuration.encryptCompanyRegisterPassword();
-        configuration.encryptCompanyUnitRegisterPassword();
-        configuration.encryptParticipantRegisterPassword();
-
     }
 
     @Override

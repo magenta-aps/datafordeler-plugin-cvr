@@ -209,7 +209,7 @@ public class CvrRegisterManager extends RegisterManager {
                 } catch (IOException e) {
                     throw new DataStreamException(e);
                 } catch (GeneralSecurityException e) {
-                    e.printStackTrace();
+                    throw new ConfigurationException("Failed password decryption", e);
                 }
 
                 if (!errors.isEmpty()) {
