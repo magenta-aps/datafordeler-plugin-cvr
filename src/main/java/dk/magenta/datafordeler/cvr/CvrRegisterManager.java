@@ -18,12 +18,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -206,6 +208,8 @@ public class CvrRegisterManager extends RegisterManager {
                     throw new ConfigurationException("Invalid pull URI '"+e.getInput()+"'");
                 } catch (IOException e) {
                     throw new DataStreamException(e);
+                } catch (GeneralSecurityException e) {
+                    throw new ConfigurationException("Failed password decryption", e);
                 }
 
                 if (!errors.isEmpty()) {
