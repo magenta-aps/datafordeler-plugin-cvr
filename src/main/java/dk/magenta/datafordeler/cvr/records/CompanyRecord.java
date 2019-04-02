@@ -30,6 +30,8 @@ public class CompanyRecord extends CvrEntityRecord {
 
     public static final String TABLE_NAME = "cvr_record_company";
 
+    public static final String schema = "virksomhed";
+	
     @Override
     @JsonIgnore
     protected String getDomain() {

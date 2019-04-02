@@ -5,9 +5,11 @@ import dk.magenta.datafordeler.core.database.ConfigurationSessionManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 
 @Component
 public class CvrConfigurationManager extends ConfigurationManager<CvrConfiguration> {
@@ -15,6 +17,9 @@ public class CvrConfigurationManager extends ConfigurationManager<CvrConfigurati
     @Autowired
     private ConfigurationSessionManager sessionManager;
 
+    @Value("${cvr.encryption.keyfile:local/cvr/keyfile.json}")
+    private String encryptionKeyFileName;
+	
     private Logger log = LogManager.getLogger("CvrConfigurationManager");
 
     @PostConstruct
@@ -41,5 +46,15 @@ public class CvrConfigurationManager extends ConfigurationManager<CvrConfigurati
     @Override
     protected Logger getLog() {
         return this.log;
+    }
+	
+    @Override
+    public CvrConfiguration getConfiguration() {
+        CvrConfiguration configuration = super.getConfiguration();
+        File encryptionFile = new File(this.encryptionKeyFileName);
+        configuration.setCompanyRegisterPasswordEncryptionFile(encryptionFile);
+        configuration.setCompanyUnitRegisterPasswordEncryptionFile(encryptionFile);
+        configuration.setParticipantRegisterPasswordEncryptionFile(encryptionFile);
+        return configuration;
     }
 }

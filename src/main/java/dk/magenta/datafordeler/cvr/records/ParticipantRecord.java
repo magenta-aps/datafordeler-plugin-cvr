@@ -29,6 +29,8 @@ import java.util.*;
 public class ParticipantRecord extends CvrEntityRecord {
 
     public static final String TABLE_NAME = "cvr_record_participant";
+	
+    public static final String schema = "deltager";
 
     @Override
     @JsonIgnore

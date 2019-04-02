@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.GeneralSecurityException;
 
 @Component
 public class DirectLookup {
@@ -31,7 +32,12 @@ public class DirectLookup {
     public CompanyRecord companyLookup(String cvrNumber) throws DataFordelerException {
         CvrConfiguration configuration = this.configurationManager.getConfiguration();
         File keystore = new File(configuration.getCompanyRegisterDirectLookupCertificate());
-        String keystorePassword = configuration.getCompanyRegisterDirectLookupPassword();
+        String keystorePassword = null;
+        try {
+            keystorePassword = configuration.getCompanyRegisterDirectLookupPassword();
+        } catch (GeneralSecurityException | IOException e) {
+            throw new DataStreamException(e);
+        }
         URI queryUri;
         try {
             queryUri = new URL(configuration.getCompanyRegisterDirectLookupAddress().replace("%{cvr}", cvrNumber)).toURI();
@@ -55,7 +61,12 @@ public class DirectLookup {
     public ParticipantRecord participantLookup(String unitNumber) throws DataFordelerException {
         CvrConfiguration configuration = this.configurationManager.getConfiguration();
         File keystore = new File(configuration.getParticipantRegisterDirectLookupCertificate());
-        String keystorePassword = configuration.getParticipantRegisterDirectLookupPassword();
+        String keystorePassword = null;
+        try {
+            keystorePassword = configuration.getParticipantRegisterDirectLookupPassword();
+        } catch (GeneralSecurityException | IOException e) {
+            throw new DataStreamException(e);
+        }
         URI queryUri;
         try {
             queryUri = new URL(configuration.getParticipantRegisterDirectLookupAddress().replace("%{unit}", unitNumber)).toURI();

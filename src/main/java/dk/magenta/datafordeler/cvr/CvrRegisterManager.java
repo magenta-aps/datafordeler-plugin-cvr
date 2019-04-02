@@ -24,6 +24,7 @@ import javax.annotation.PostConstruct;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -199,7 +200,9 @@ public class CvrRegisterManager extends RegisterManager {
                     throw new ConfigurationException("Invalid pull URI '"+e.getInput()+"'");
                 } catch (IOException e) {
                     throw new DataStreamException(e);
-                }
+                } catch (GeneralSecurityException e) {
+                    throw new ConfigurationException("Failed password decryption", e);
+                 }
 
                 if (!errors.isEmpty()) {
                     throw new ParseException("Error while loading data for "+entityManager.getSchema(), errors.get(0));

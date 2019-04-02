@@ -1,12 +1,17 @@
 package dk.magenta.datafordeler.cvr.configuration;
 
 import dk.magenta.datafordeler.core.configuration.Configuration;
+import dk.magenta.datafordeler.core.util.Encryption;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
-import dk.magenta.datafordeler.cvr.data.company.CompanyEntity;
-import dk.magenta.datafordeler.cvr.data.companyunit.CompanyUnitEntity;
-import dk.magenta.datafordeler.cvr.data.participant.ParticipantEntity;
+import dk.magenta.datafordeler.cvr.records.CompanyRecord;
+import dk.magenta.datafordeler.cvr.records.CompanyUnitRecord;
+import dk.magenta.datafordeler.cvr.records.ParticipantRecord;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.io.File;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 /**
  * Configuration instance class, holding configuration values in fields
@@ -55,6 +60,16 @@ public class CvrConfiguration implements Configuration {
     @Column
     private String companyRegisterPassword = "";
 
+    @Column
+    private byte[] companyRegisterPasswordEncrypted;
+
+    @Transient
+    private File companyRegisterPasswordEncryptionFile;
+
+    public void setCompanyRegisterPasswordEncryptionFile(File companyRegisterPasswordEncryptionFile) {
+        this.companyRegisterPasswordEncryptionFile = companyRegisterPasswordEncryptionFile;
+    }
+
     @Column(length = 1024)
     private String companyRegisterQuery = "{\n" +
             "    \"query\": {\n" +
@@ -77,6 +92,9 @@ public class CvrConfiguration implements Configuration {
     private String companyRegisterDirectLookupPassword = "";
 
     @Column
+    private byte[] companyRegisterDirectLookupPasswordEncrypted;
+
+    @Column
     private String companyRegisterDirectLookupAddress = "";
 
 
@@ -96,8 +114,8 @@ public class CvrConfiguration implements Configuration {
         return this.companyRegisterUsername;
     }
 
-    public String getCompanyRegisterPassword() {
-        return this.companyRegisterPassword;
+    public String getCompanyRegisterPassword() throws GeneralSecurityException, IOException {
+        return Encryption.decrypt(this.companyRegisterPasswordEncryptionFile, this.companyRegisterPasswordEncrypted);
     }
 
     public String getCompanyRegisterQuery() {
@@ -108,8 +126,8 @@ public class CvrConfiguration implements Configuration {
         return this.companyRegisterDirectLookupCertificate;
     }
 
-    public String getCompanyRegisterDirectLookupPassword() {
-        return this.companyRegisterDirectLookupPassword;
+    public String getCompanyRegisterDirectLookupPassword() throws GeneralSecurityException, IOException {
+        return Encryption.decrypt(this.companyRegisterPasswordEncryptionFile, this.companyRegisterDirectLookupPasswordEncrypted);
     }
 
     public String getCompanyRegisterDirectLookupAddress() {
@@ -131,6 +149,16 @@ public class CvrConfiguration implements Configuration {
 
     @Column
     private String companyUnitRegisterPassword = "";
+
+    @Column
+    private byte[] companyUnitRegisterPasswordEncrypted;
+
+    @Transient
+    private File companyUnitRegisterPasswordEncryptionFile;
+
+    public void setCompanyUnitRegisterPasswordEncryptionFile(File companyUnitRegisterPasswordEncryptionFile) {
+        this.companyUnitRegisterPasswordEncryptionFile = companyUnitRegisterPasswordEncryptionFile;
+    }
 
     @Column(length = 1024)
     private String companyUnitRegisterQuery = "{\n" +
@@ -163,8 +191,8 @@ public class CvrConfiguration implements Configuration {
         return this.companyUnitRegisterUsername;
     }
 
-    public String getCompanyUnitRegisterPassword() {
-        return this.companyUnitRegisterPassword;
+    public String getCompanyUnitRegisterPassword() throws GeneralSecurityException, IOException {
+        return Encryption.decrypt(this.companyUnitRegisterPasswordEncryptionFile, this.companyUnitRegisterPasswordEncrypted);
     }
 
     public String getCompanyUnitRegisterQuery() {
@@ -190,6 +218,16 @@ public class CvrConfiguration implements Configuration {
     @Column
     private String participantRegisterPassword = "";
 
+    @Column
+    private byte[] participantRegisterPasswordEncrypted;
+
+    @Transient
+    private File participantRegisterPasswordEncryptionFile;
+
+    public void setParticipantRegisterPasswordEncryptionFile(File participantRegisterPasswordEncryptionFile) {
+        this.participantRegisterPasswordEncryptionFile = participantRegisterPasswordEncryptionFile;
+    }
+
     @Column(length = 1024)
     private String participantRegisterQuery = "{\n" +
             "    \"query\": {\n" +
@@ -213,6 +251,9 @@ public class CvrConfiguration implements Configuration {
     private String participantRegisterDirectLookupPassword = "";
 
     @Column
+    private byte[] participantRegisterDirectLookupPasswordEncrypted;
+
+    @Column
     private String participantRegisterDirectLookupAddress = "";
 
     public RegisterType getParticipantRegisterType() {
@@ -231,8 +272,8 @@ public class CvrConfiguration implements Configuration {
         return this.participantRegisterUsername;
     }
 
-    public String getParticipantRegisterPassword() {
-        return this.participantRegisterPassword;
+    public String getParticipantRegisterPassword() throws GeneralSecurityException, IOException {
+        return Encryption.decrypt(this.participantRegisterPasswordEncryptionFile, this.participantRegisterPasswordEncrypted);
     }
 
     public String getParticipantRegisterQuery() {
@@ -243,8 +284,8 @@ public class CvrConfiguration implements Configuration {
         return this.participantRegisterDirectLookupCertificate;
     }
 
-    public String getParticipantRegisterDirectLookupPassword() {
-        return this.participantRegisterDirectLookupPassword;
+    public String getParticipantRegisterDirectLookupPassword() throws GeneralSecurityException, IOException {
+        return Encryption.decrypt(this.participantRegisterPasswordEncryptionFile, this.participantRegisterDirectLookupPasswordEncrypted);
     }
 
     public String getParticipantRegisterDirectLookupAddress() {
@@ -260,11 +301,11 @@ public class CvrConfiguration implements Configuration {
 
     public String getQuery(String schema) {
         switch (schema) {
-            case CompanyEntity.schema:
+            case CompanyRecord.schema:
                 return this.getCompanyRegisterQuery();
-            case CompanyUnitEntity.schema:
+            case CompanyUnitRecord.schema:
                 return this.getCompanyUnitRegisterQuery();
-            case ParticipantEntity.schema:
+            case ParticipantRecord.schema:
                 return this.getParticipantRegisterQuery();
         }
         return null;
@@ -272,11 +313,11 @@ public class CvrConfiguration implements Configuration {
 
     public RegisterType getRegisterType(String schema) {
         switch (schema) {
-            case CompanyEntity.schema:
+            case CompanyRecord.schema:
                 return this.getCompanyRegisterType();
-            case CompanyUnitEntity.schema:
+            case CompanyUnitRecord.schema:
                 return this.getCompanyUnitRegisterType();
-            case ParticipantEntity.schema:
+            case ParticipantRecord.schema:
                 return this.getParticipantRegisterType();
         }
         return null;
@@ -284,11 +325,11 @@ public class CvrConfiguration implements Configuration {
 
     public String getStartAddress(String schema) {
         switch (schema) {
-            case CompanyEntity.schema:
+            case CompanyRecord.schema:
                 return this.getCompanyRegisterStartAddress();
-            case CompanyUnitEntity.schema:
+            case CompanyUnitRecord.schema:
                 return this.getCompanyUnitRegisterStartAddress();
-            case ParticipantEntity.schema:
+            case ParticipantRecord.schema:
                 return this.getParticipantRegisterStartAddress();
         }
         return null;
@@ -296,11 +337,11 @@ public class CvrConfiguration implements Configuration {
 
     public String getScrollAddress(String schema) {
         switch (schema) {
-            case CompanyEntity.schema:
+            case CompanyRecord.schema:
                 return this.getCompanyRegisterScrollAddress();
-            case CompanyUnitEntity.schema:
+            case CompanyUnitRecord.schema:
                 return this.getCompanyUnitRegisterScrollAddress();
-            case ParticipantEntity.schema:
+            case ParticipantRecord.schema:
                 return this.getParticipantRegisterScrollAddress();
         }
         return null;
@@ -308,23 +349,23 @@ public class CvrConfiguration implements Configuration {
 
     public String getUsername(String schema) {
         switch (schema) {
-            case CompanyEntity.schema:
+            case CompanyRecord.schema:
                 return this.getCompanyRegisterUsername();
-            case CompanyUnitEntity.schema:
+            case CompanyUnitRecord.schema:
                 return this.getCompanyUnitRegisterUsername();
-            case ParticipantEntity.schema:
+            case ParticipantRecord.schema:
                 return this.getParticipantRegisterUsername();
         }
         return null;
     }
 
-    public String getPassword(String schema) {
+    public String getPassword(String schema) throws GeneralSecurityException, IOException {
         switch (schema) {
-            case CompanyEntity.schema:
+            case CompanyRecord.schema:
                 return this.getCompanyRegisterPassword();
-            case CompanyUnitEntity.schema:
+            case CompanyUnitRecord.schema:
                 return this.getCompanyUnitRegisterPassword();
-            case ParticipantEntity.schema:
+            case ParticipantRecord.schema:
                 return this.getParticipantRegisterPassword();
         }
         return null;
@@ -377,5 +418,94 @@ public class CvrConfiguration implements Configuration {
 
     public void setParticipantRegisterType(RegisterType participantRegisterType) {
         this.participantRegisterType = participantRegisterType;
+    }
+
+
+    public boolean encryptCompanyRegisterPassword() {
+
+        System.out.println((this.companyRegisterPasswordEncryptionFile != null)+" && "+
+                !(this.companyRegisterPassword == null || this.companyRegisterPassword.isEmpty())+" && "+
+                (this.companyRegisterPasswordEncrypted == null || this.companyRegisterPasswordEncrypted.length == 0));
+        if (
+                this.companyRegisterPasswordEncryptionFile != null &&
+                !(this.companyRegisterPassword == null || this.companyRegisterPassword.isEmpty()) &&
+                (this.companyRegisterPasswordEncrypted == null || this.companyRegisterPasswordEncrypted.length == 0)
+                ) {
+            try {
+                this.companyRegisterPasswordEncrypted = Encryption.encrypt(this.companyRegisterPasswordEncryptionFile, this.companyRegisterPassword);
+                System.out.println(new String(this.companyRegisterPasswordEncrypted));
+                return true;
+            } catch (GeneralSecurityException | IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public boolean encryptCompanyUnitRegisterPassword() {
+        if (
+                this.companyUnitRegisterPasswordEncryptionFile != null &&
+                !(this.companyUnitRegisterPassword == null || this.companyUnitRegisterPassword.isEmpty()) &&
+                (this.companyUnitRegisterPasswordEncrypted == null || this.companyUnitRegisterPasswordEncrypted.length == 0)
+                ) {
+            try {
+                this.companyUnitRegisterPasswordEncrypted = Encryption.encrypt(this.companyUnitRegisterPasswordEncryptionFile, this.companyUnitRegisterPassword);
+                return true;
+            } catch (GeneralSecurityException | IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public boolean encryptParticipantRegisterPassword() {
+        if (
+                this.participantRegisterPasswordEncryptionFile != null &&
+                !(this.participantRegisterPassword == null || this.participantRegisterPassword.isEmpty()) &&
+                (this.participantRegisterPasswordEncrypted == null || this.participantRegisterPasswordEncrypted.length == 0)
+                ) {
+            try {
+                this.participantRegisterPasswordEncrypted = Encryption.encrypt(this.participantRegisterPasswordEncryptionFile, this.participantRegisterPassword);
+                return true;
+            } catch (GeneralSecurityException | IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+	
+	
+    public boolean encryptCompanyDirectRegisterPassword() {
+
+        if (
+                this.companyRegisterPasswordEncryptionFile != null &&
+                        !(this.companyRegisterDirectLookupPassword == null || this.companyRegisterDirectLookupPassword.isEmpty()) &&
+                        (this.companyRegisterDirectLookupPasswordEncrypted == null || this.companyRegisterDirectLookupPasswordEncrypted.length == 0)
+                ) {
+            try {
+                this.companyRegisterDirectLookupPasswordEncrypted = Encryption.encrypt(this.companyRegisterPasswordEncryptionFile, this.companyRegisterDirectLookupPassword);
+                return true;
+            } catch (GeneralSecurityException | IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+
+    public boolean encryptParticipantDirectRegisterPassword() {
+        if (
+                this.participantRegisterPasswordEncryptionFile != null &&
+                        !(this.participantRegisterDirectLookupPassword == null || this.participantRegisterDirectLookupPassword.isEmpty()) &&
+                        (this.participantRegisterDirectLookupPasswordEncrypted == null || this.participantRegisterDirectLookupPasswordEncrypted.length == 0)
+                ) {
+            try {
+                this.participantRegisterDirectLookupPasswordEncrypted = Encryption.encrypt(this.participantRegisterPasswordEncryptionFile, this.participantRegisterDirectLookupPassword);
+                return true;
+            } catch (GeneralSecurityException | IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 }

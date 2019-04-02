@@ -30,6 +30,8 @@ import java.util.*;
 public class CompanyUnitRecord extends CvrEntityRecord {
 
     public static final String TABLE_NAME = "cvr_record_unit";
+	
+    public static final String schema = "produktionsenhed";
 
     @Override
     @JsonIgnore
