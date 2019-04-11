@@ -164,9 +164,9 @@ public class RecordTest {
 
             CompanyRecordQuery query = new CompanyRecordQuery();
             OffsetDateTime time = OffsetDateTime.now();
-            query.setRegistrationTo(time);
-            query.setEffectFrom(time);
-            query.setEffectTo(time);
+            query.setRegistrationToAfter(time);
+            query.setEffectFromBefore(time);
+            query.setEffectToAfter(time);
             query.applyFilters(session);
 
             query.setKommuneKode(101);
@@ -191,14 +191,11 @@ public class RecordTest {
             query.clearKommuneKoder();
 
 
-
-
             time = OffsetDateTime.parse("1998-01-01T00:00:00Z");
-            query.setRegistrationTo(time);
-            query.setEffectFrom(time);
-            query.setEffectTo(time);
+            query.setRegistrationToAfter(time);
+            query.setEffectFromBefore(time);
+            query.setEffectToAfter(time);
             query.applyFilters(session);
-
 
             query.setKommuneKode(101);
             Assert.assertEquals(0, QueryManager.getAllEntities(session, query, CompanyRecord.class).size());
@@ -421,8 +418,8 @@ public class RecordTest {
             CompanyUnitRecordQuery query = new CompanyUnitRecordQuery();
             OffsetDateTime time = OffsetDateTime.parse("2017-01-01T00:00:00Z");
             //query.setRegistrationTo(time);
-            query.setEffectFrom(time);
-            query.setEffectTo(time);
+            query.setEffectFromBefore(time);
+            query.setEffectToAfter(time);
             query.applyFilters(session);
 
             query.setPrimaryIndustry("478900");
@@ -441,8 +438,8 @@ public class RecordTest {
 
             time = OffsetDateTime.parse("1900-01-01T00:00:00Z");
             query.setRegistrationTo(time);
-            query.setEffectFrom(time);
-            query.setEffectTo(time);
+            query.setEffectFromBefore(time);
+            query.setEffectToAfter(time);
             query.applyFilters(session);
 
 
@@ -595,8 +592,8 @@ public class RecordTest {
             ParticipantRecordQuery query = new ParticipantRecordQuery();
             OffsetDateTime time = OffsetDateTime.now();
             //query.setRegistrationTo(time);
-            query.setEffectFrom(time);
-            query.setEffectTo(time);
+            query.setEffectFromBefore(time);
+            query.setEffectToAfter(time);
             query.applyFilters(session);
 
             query.setEnhedsNummer("4000004988");
@@ -615,8 +612,8 @@ public class RecordTest {
 
             time = OffsetDateTime.parse("1900-01-01T00:00:00Z");
             //query.setRegistrationTo(time);
-            query.setEffectFrom(time);
-            query.setEffectTo(time);
+            query.setEffectFromBefore(time);
+            query.setEffectToAfter(time);
             query.applyFilters(session);
 
 
