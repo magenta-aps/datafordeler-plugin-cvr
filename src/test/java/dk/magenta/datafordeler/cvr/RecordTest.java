@@ -61,6 +61,9 @@ public class RecordTest {
     private CvrPlugin plugin;
 
     @Autowired
+    private CollectiveCvrLookup collectiveLookup;
+
+    @Autowired
     private TestRestTemplate restTemplate;
 
     private static HashMap<String, String> schemaMap = new HashMap<>();
@@ -696,6 +699,26 @@ public class RecordTest {
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectMapper.readTree(body)));
         Assert.assertEquals(200, resp.getStatusCodeValue());
     }
+
+    @Test
+    public void testCollectiveLookup() throws IOException, DataFordelerException {
+
+        loadParticipant("/person.json");
+
+        try (Session session = sessionManager.getSessionFactory().openSession()) {
+
+            String[] partisipants = {"25052943"};
+            Collection<CompanyRecord> companiesResult = collectiveLookup.getCompanies(session, Arrays.asList(partisipants));
+            Assert.assertEquals(1, companiesResult.size());
+            Assert.assertEquals(4001248508l, companiesResult.iterator().next().getUnitNumber());
+
+            String[] units = {"4000004988"};
+            Collection<ParticipantRecord>  partisipantsResult = collectiveLookup.participantLookup(session, Arrays.asList(units));
+            Assert.assertEquals(1, partisipantsResult.size());
+        }
+    }
+
+
 
     /**
      * Checks that all items in n1 are also present in n2

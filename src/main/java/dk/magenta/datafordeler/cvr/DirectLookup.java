@@ -19,6 +19,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Component
 public class DirectLookup {
@@ -28,6 +31,16 @@ public class DirectLookup {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    public Collection<CompanyRecord> companyLookup(Collection<String> cvrNumbers) throws DataFordelerException {
+        List<CompanyRecord> records = new ArrayList<CompanyRecord>();
+        for(String cvrNumber : cvrNumbers) {
+            records.add(companyLookup(cvrNumber));
+        }
+        return records;
+    }
+
+
 
     public CompanyRecord companyLookup(String cvrNumber) throws DataFordelerException {
         CvrConfiguration configuration = this.configurationManager.getConfiguration();
@@ -57,6 +70,15 @@ public class DirectLookup {
             }
         }
     }
+
+    public Collection<ParticipantRecord> participantLookup(Collection<String> unitNumbers) throws DataFordelerException {
+        List<ParticipantRecord> records = new ArrayList<ParticipantRecord>();
+        for(String unitNumber : unitNumbers) {
+            records.add(participantLookup(unitNumber));
+        }
+        return records;
+    }
+
 
     public ParticipantRecord participantLookup(String unitNumber) throws DataFordelerException {
         CvrConfiguration configuration = this.configurationManager.getConfiguration();
