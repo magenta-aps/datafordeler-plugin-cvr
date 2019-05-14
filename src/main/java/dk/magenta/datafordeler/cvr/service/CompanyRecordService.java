@@ -1,23 +1,25 @@
 package dk.magenta.datafordeler.cvr.service;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import dk.magenta.datafordeler.core.MonitorService;
 import dk.magenta.datafordeler.core.arearestriction.AreaRestriction;
 import dk.magenta.datafordeler.core.arearestriction.AreaRestrictionType;
-import dk.magenta.datafordeler.core.exception.AccessDeniedException;
-import dk.magenta.datafordeler.core.exception.AccessRequiredException;
-import dk.magenta.datafordeler.core.exception.HttpNotFoundException;
-import dk.magenta.datafordeler.core.exception.InvalidClientInputException;
+import dk.magenta.datafordeler.core.exception.*;
 import dk.magenta.datafordeler.core.fapi.FapiBaseService;
 import dk.magenta.datafordeler.core.plugin.AreaRestrictionDefinition;
 import dk.magenta.datafordeler.core.plugin.Plugin;
 import dk.magenta.datafordeler.core.user.DafoUserDetails;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
+import dk.magenta.datafordeler.cvr.DirectLookup;
 import dk.magenta.datafordeler.cvr.access.CvrAccessChecker;
 import dk.magenta.datafordeler.cvr.access.CvrAreaRestrictionDefinition;
 import dk.magenta.datafordeler.cvr.access.CvrRolesDefinition;
 import dk.magenta.datafordeler.cvr.output.CompanyRecordOutputWrapper;
 import dk.magenta.datafordeler.cvr.query.CompanyRecordQuery;
 import dk.magenta.datafordeler.cvr.records.CompanyRecord;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +28,12 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Stream;
 
 @RestController
@@ -36,11 +43,17 @@ public class CompanyRecordService extends FapiBaseService<CompanyRecord, Company
     @Autowired
     private CvrPlugin cvrPlugin;
 
+    private Logger log = LogManager.getLogger(CompanyRecordService.class.getCanonicalName());
+
     @Autowired
     private CompanyRecordOutputWrapper companyRecordOutputWrapper;
 
     @Autowired
     private MonitorService monitorService;
+
+    @Autowired
+    private DirectLookup directLookup;
+
 
     public CompanyRecordService() {
         super();
@@ -100,5 +113,35 @@ public class CompanyRecordService extends FapiBaseService<CompanyRecord, Company
                 query.addKommunekodeRestriction(restriction.getValue());
             }
         }
+    }
+
+    @Override
+    public List<CompanyRecord> searchByQuery(CompanyRecordQuery query, Session session) {
+        List<CompanyRecord> allRecords = new ArrayList<>();
+
+        List<CompanyRecord> localResults = super.searchByQuery(query, session);
+        if (!localResults.isEmpty()) {
+            log.info("There are "+localResults.size()+" local results");
+            allRecords.addAll(localResults);
+        }
+
+        HashSet<String> cvrNumbers = new HashSet<>(query.getCvrNumre());
+        if (!cvrNumbers.isEmpty()) {
+            for (CompanyRecord record : localResults) {
+                cvrNumbers.remove(Integer.toString(record.getCvrNumber()));
+            }
+            query.setCvrNumre(cvrNumbers);
+        }
+
+        try {
+            ObjectNode remoteQuery = query.getDirectLookupQuery(this.objectMapper);
+            if (remoteQuery != null) {
+                List<CompanyRecord> remoteResults = directLookup.lookup(remoteQuery, CompanyRecord.schema);
+                allRecords.addAll(remoteResults);
+            }
+        } catch (DataStreamException | IOException | URISyntaxException | HttpStatusException | GeneralSecurityException e) {
+            log.error("Exception", e);
+        }
+        return allRecords;
     }
 }

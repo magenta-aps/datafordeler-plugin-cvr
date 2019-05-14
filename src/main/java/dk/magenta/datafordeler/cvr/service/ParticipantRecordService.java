@@ -1,23 +1,28 @@
 package dk.magenta.datafordeler.cvr.service;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import dk.magenta.datafordeler.core.MonitorService;
 import dk.magenta.datafordeler.core.arearestriction.AreaRestriction;
 import dk.magenta.datafordeler.core.arearestriction.AreaRestrictionType;
-import dk.magenta.datafordeler.core.exception.AccessDeniedException;
-import dk.magenta.datafordeler.core.exception.AccessRequiredException;
-import dk.magenta.datafordeler.core.exception.HttpNotFoundException;
-import dk.magenta.datafordeler.core.exception.InvalidClientInputException;
+import dk.magenta.datafordeler.core.exception.*;
 import dk.magenta.datafordeler.core.fapi.FapiBaseService;
 import dk.magenta.datafordeler.core.plugin.AreaRestrictionDefinition;
 import dk.magenta.datafordeler.core.plugin.Plugin;
 import dk.magenta.datafordeler.core.user.DafoUserDetails;
 import dk.magenta.datafordeler.cvr.CvrPlugin;
+import dk.magenta.datafordeler.cvr.DirectLookup;
 import dk.magenta.datafordeler.cvr.access.CvrAccessChecker;
 import dk.magenta.datafordeler.cvr.access.CvrAreaRestrictionDefinition;
 import dk.magenta.datafordeler.cvr.access.CvrRolesDefinition;
 import dk.magenta.datafordeler.cvr.output.ParticipantRecordOutputWrapper;
+import dk.magenta.datafordeler.cvr.query.CompanyUnitRecordQuery;
 import dk.magenta.datafordeler.cvr.query.ParticipantRecordQuery;
+import dk.magenta.datafordeler.cvr.records.CompanyRecord;
+import dk.magenta.datafordeler.cvr.records.CompanyUnitRecord;
 import dk.magenta.datafordeler.cvr.records.ParticipantRecord;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +31,12 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Stream;
 
 @RestController
@@ -36,11 +46,16 @@ public class ParticipantRecordService extends FapiBaseService<ParticipantRecord,
     @Autowired
     private CvrPlugin cvrPlugin;
 
+    private Logger log = LogManager.getLogger(CompanyRecordService.class.getCanonicalName());
+
     @Autowired
     private ParticipantRecordOutputWrapper participantRecordOutputWrapper;
 
     @Autowired
     private MonitorService monitorService;
+
+    @Autowired
+    private DirectLookup directLookup;
 
     public ParticipantRecordService() {
         super();
@@ -100,5 +115,35 @@ public class ParticipantRecordService extends FapiBaseService<ParticipantRecord,
                 query.addKommunekodeRestriction(restriction.getValue());
             }
         }
+    }
+
+    @Override
+    public List<ParticipantRecord> searchByQuery(ParticipantRecordQuery query, Session session) {
+        List<ParticipantRecord> allRecords = new ArrayList<>();
+
+        List<ParticipantRecord> localResults = super.searchByQuery(query, session);
+        if (!localResults.isEmpty()) {
+            log.info("There are "+localResults.size()+" local results");
+            allRecords.addAll(localResults);
+        }
+
+        HashSet<String> eNumbers = new HashSet<>(query.getEnhedsNummer());
+        if (!eNumbers.isEmpty()) {
+            for (ParticipantRecord record : localResults) {
+                eNumbers.remove(record.getUnitNumber());
+            }
+            query.setEnhedsNummer(eNumbers);
+        }
+
+        try {
+            ObjectNode remoteQuery = query.getDirectLookupQuery(this.objectMapper);
+            if (remoteQuery != null) {
+                List<ParticipantRecord> remoteResults = directLookup.lookup(remoteQuery, CompanyRecord.schema);
+                allRecords.addAll(remoteResults);
+            }
+        } catch (DataStreamException | IOException | URISyntaxException | HttpStatusException | GeneralSecurityException e) {
+            log.error("Exception", e);
+        }
+        return allRecords;
     }
 }

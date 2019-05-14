@@ -700,22 +700,29 @@ public class RecordTest {
         Assert.assertEquals(200, resp.getStatusCodeValue());
     }
 
+
+
     @Test
     public void testCollectiveLookup() throws IOException, DataFordelerException {
+        whitelistLocalhost();
+        TestUserDetails testUserDetails = new TestUserDetails();
+        testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
+        this.applyAccess(testUserDetails);
 
         loadParticipant("/person.json");
+        loadCompany();
 
-        try (Session session = sessionManager.getSessionFactory().openSession()) {
+        HttpEntity<String> httpEntity = new HttpEntity<String>("", new HttpHeaders());
 
-            String[] partisipants = {"25052943"};
-            Collection<CompanyRecord> companiesResult = collectiveLookup.getCompanies(session, Arrays.asList(partisipants));
-            Assert.assertEquals(1, companiesResult.size());
-            Assert.assertEquals(4001248508l, companiesResult.iterator().next().getUnitNumber());
+        ResponseEntity<String> resp = restTemplate.exchange("/cvr/company/1/rest/search?cvrNummer=25052943", HttpMethod.GET, httpEntity, String.class);
+        JsonNode responseNode = objectMapper.readTree(resp.getBody());
 
-            String[] units = {"4000004988"};
-            Collection<ParticipantRecord>  partisipantsResult = collectiveLookup.participantLookup(session, Arrays.asList(units));
-            Assert.assertEquals(1, partisipantsResult.size());
-        }
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(responseNode));
+
+        Assert.assertEquals(1, responseNode.get("results").size());
+
+        ResponseEntity<String> resp2 = restTemplate.exchange("/cvr/company/1/rest/search?navne=MAGENTA ApS", HttpMethod.GET, httpEntity, String.class);
+        Assert.assertEquals(1, responseNode.get("results").size());
     }
 
 

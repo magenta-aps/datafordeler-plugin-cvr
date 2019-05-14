@@ -24,10 +24,15 @@ public class CollectiveCvrLookup {
         this.directLookup = directLookup;
     }
 
-    protected Collection<CompanyRecord> getCompanies(Session session, Collection<String> cvrNumbers) throws DataFordelerException {
+    public Collection<CompanyRecord> getCompanies(Session session, Collection<String> cvrNumbers) throws DataFordelerException {
         CompanyRecordQuery query = new CompanyRecordQuery();
         query.setCvrNumre(cvrNumbers);
+
         Collection<CompanyRecord> companyRecords = QueryManager.getAllEntities(session, query, CompanyRecord.class);
+
+        for(CompanyRecord record : companyRecords) {
+            cvrNumbers.remove(Integer.toString(record.getCvrNumber()));
+        }
 
         if(companyRecords.isEmpty()) {
             companyRecords = directLookup.companyLookup(cvrNumbers);
