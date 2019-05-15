@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dk.magenta.datafordeler.core.database.BaseLookupDefinition;
-import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.core.fapi.BaseQuery;
 import dk.magenta.datafordeler.core.fapi.ParameterMap;
@@ -397,17 +396,6 @@ public class CompanyRecordQuery extends BaseQuery {
             ArrayNode cvrNumber = DirectLookup.addList(objectMapper, terms, "Vrvirksomhed.cvrNummer");
             for (String cvr : this.getCvrNumre()) {
                 cvrNumber.add(cvr);
-            }
-            anySet = true;
-        }
-
-        if (this.getVirksomhedsnavn() != null && !this.getVirksomhedsnavn().isEmpty()) {
-            ObjectNode wrap = DirectLookup.addObject(objectMapper, must);
-            ObjectNode terms = DirectLookup.addObject(objectMapper, wrap, "terms");
-            ArrayNode cvrNumber = DirectLookup.addList(objectMapper, terms, "Vrvirksomhed.navne.navn");
-
-            for (String navn : this.getVirksomhedsnavn()) {
-                cvrNumber.add(navn);
             }
             anySet = true;
         }

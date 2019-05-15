@@ -1,6 +1,5 @@
 package dk.magenta.datafordeler.cvr.service;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import dk.magenta.datafordeler.core.MonitorService;
 import dk.magenta.datafordeler.core.arearestriction.AreaRestriction;
 import dk.magenta.datafordeler.core.arearestriction.AreaRestrictionType;
@@ -15,9 +14,7 @@ import dk.magenta.datafordeler.cvr.access.CvrAccessChecker;
 import dk.magenta.datafordeler.cvr.access.CvrAreaRestrictionDefinition;
 import dk.magenta.datafordeler.cvr.access.CvrRolesDefinition;
 import dk.magenta.datafordeler.cvr.output.UnitRecordOutputWrapper;
-import dk.magenta.datafordeler.cvr.query.CompanyRecordQuery;
 import dk.magenta.datafordeler.cvr.query.CompanyUnitRecordQuery;
-import dk.magenta.datafordeler.cvr.records.CompanyRecord;
 import dk.magenta.datafordeler.cvr.records.CompanyUnitRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,8 +27,6 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -52,9 +47,6 @@ public class CompanyUnitRecordService extends FapiBaseService<CompanyUnitRecord,
 
     @Autowired
     private MonitorService monitorService;
-
-    @Autowired
-    private DirectLookup directLookup;
 
     public CompanyUnitRecordService() {
         super();
@@ -132,16 +124,6 @@ public class CompanyUnitRecordService extends FapiBaseService<CompanyUnitRecord,
                 pNumbers.remove(Integer.toString(record.getpNumber()));
             }
             query.setPNummer(pNumbers);
-        }
-
-        try {
-            ObjectNode remoteQuery = query.getDirectLookupQuery(this.objectMapper);
-            if (remoteQuery != null) {
-                List<CompanyUnitRecord> remoteResults = directLookup.lookup(remoteQuery, CompanyRecord.schema);
-                allRecords.addAll(remoteResults);
-            }
-        } catch (DataStreamException | IOException | URISyntaxException | HttpStatusException | GeneralSecurityException e) {
-            log.error("Exception", e);
         }
         return allRecords;
     }

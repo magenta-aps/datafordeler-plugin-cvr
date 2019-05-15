@@ -14,6 +14,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 
+/**
+ * Lookup functionality for finding companys and participants first in local database.
+ * If the recuested item could no be found locally try finding it on virk.dk
+ */
 @Component
 public class CollectiveCvrLookup {
 
@@ -34,8 +38,8 @@ public class CollectiveCvrLookup {
             cvrNumbers.remove(Integer.toString(record.getCvrNumber()));
         }
 
-        if(companyRecords.isEmpty()) {
-            companyRecords = directLookup.companyLookup(cvrNumbers);
+        if(!cvrNumbers.isEmpty()) {
+            companyRecords.addAll(directLookup.companyLookup(cvrNumbers));
         }
 
         return companyRecords;
@@ -47,8 +51,12 @@ public class CollectiveCvrLookup {
         query.setEnhedsNummer(unitNumbers);
         Collection<ParticipantRecord> participantRecords = QueryManager.getAllEntities(session, query, ParticipantRecord.class);
 
-        if(participantRecords.isEmpty()) {
-            participantRecords = directLookup.participantLookup(unitNumbers);
+        for(ParticipantRecord record : participantRecords) {
+            unitNumbers.remove(Long.toString(record.getUnitNumber()));
+        }
+
+        if(!unitNumbers.isEmpty()) {
+            participantRecords.addAll(directLookup.participantLookup(unitNumbers));
         }
 
         return participantRecords;

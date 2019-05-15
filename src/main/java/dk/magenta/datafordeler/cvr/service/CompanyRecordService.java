@@ -1,6 +1,5 @@
 package dk.magenta.datafordeler.cvr.service;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import dk.magenta.datafordeler.core.MonitorService;
 import dk.magenta.datafordeler.core.arearestriction.AreaRestriction;
 import dk.magenta.datafordeler.core.arearestriction.AreaRestrictionType;
@@ -28,8 +27,6 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -50,9 +47,6 @@ public class CompanyRecordService extends FapiBaseService<CompanyRecord, Company
 
     @Autowired
     private MonitorService monitorService;
-
-    @Autowired
-    private DirectLookup directLookup;
 
 
     public CompanyRecordService() {
@@ -131,16 +125,6 @@ public class CompanyRecordService extends FapiBaseService<CompanyRecord, Company
                 cvrNumbers.remove(Integer.toString(record.getCvrNumber()));
             }
             query.setCvrNumre(cvrNumbers);
-        }
-
-        try {
-            ObjectNode remoteQuery = query.getDirectLookupQuery(this.objectMapper);
-            if (remoteQuery != null) {
-                List<CompanyRecord> remoteResults = directLookup.lookup(remoteQuery, CompanyRecord.schema);
-                allRecords.addAll(remoteResults);
-            }
-        } catch (DataStreamException | IOException | URISyntaxException | HttpStatusException | GeneralSecurityException e) {
-            log.error("Exception", e);
         }
         return allRecords;
     }
