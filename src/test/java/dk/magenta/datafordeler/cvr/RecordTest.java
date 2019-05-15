@@ -61,6 +61,9 @@ public class RecordTest {
     private CvrPlugin plugin;
 
     @Autowired
+    private CollectiveCvrLookup collectiveLookup;
+
+    @Autowired
     private TestRestTemplate restTemplate;
 
     private static HashMap<String, String> schemaMap = new HashMap<>();
@@ -693,6 +696,33 @@ public class RecordTest {
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectMapper.readTree(body)));
         Assert.assertEquals(200, resp.getStatusCodeValue());
     }
+
+
+
+    @Test
+    public void testCollectiveLookup() throws IOException, DataFordelerException {
+        whitelistLocalhost();
+        TestUserDetails testUserDetails = new TestUserDetails();
+        testUserDetails.giveAccess(CvrRolesDefinition.READ_CVR_ROLE);
+        this.applyAccess(testUserDetails);
+
+        loadParticipant("/person.json");
+        loadCompany();
+
+        HttpEntity<String> httpEntity = new HttpEntity<String>("", new HttpHeaders());
+
+        ResponseEntity<String> resp = restTemplate.exchange("/cvr/company/1/rest/search?cvrNummer=25052943", HttpMethod.GET, httpEntity, String.class);
+        JsonNode responseNode = objectMapper.readTree(resp.getBody());
+
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(responseNode));
+
+        Assert.assertEquals(1, responseNode.get("results").size());
+
+        ResponseEntity<String> resp2 = restTemplate.exchange("/cvr/company/1/rest/search?navne=MAGENTA ApS", HttpMethod.GET, httpEntity, String.class);
+        Assert.assertEquals(1, responseNode.get("results").size());
+    }
+
+
 
     /**
      * Checks that all items in n1 are also present in n2
