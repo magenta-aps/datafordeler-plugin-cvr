@@ -1,11 +1,14 @@
 package dk.magenta.datafordeler.cvr.query;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import dk.magenta.datafordeler.core.database.BaseLookupDefinition;
-import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.LookupDefinition;
 import dk.magenta.datafordeler.core.fapi.BaseQuery;
 import dk.magenta.datafordeler.core.fapi.ParameterMap;
 import dk.magenta.datafordeler.core.fapi.QueryField;
+import dk.magenta.datafordeler.cvr.DirectLookup;
 import dk.magenta.datafordeler.cvr.records.*;
 import dk.magenta.datafordeler.cvr.records.unversioned.CompanyForm;
 import dk.magenta.datafordeler.cvr.records.unversioned.Municipality;
@@ -376,5 +379,30 @@ public class CompanyRecordQuery extends BaseQuery {
     @Override
     protected Object castFilterParam(Object input, String filter) {
         return super.castFilterParam(input, filter);
+    }
+
+
+    public ObjectNode getDirectLookupQuery(ObjectMapper objectMapper) {
+        boolean anySet = false;
+        ObjectNode root = objectMapper.createObjectNode();
+        ObjectNode query = DirectLookup.addObject(objectMapper, root, "query");
+        ObjectNode bool = DirectLookup.addObject(objectMapper, query, "bool");
+        ArrayNode must = DirectLookup.addList(objectMapper, bool, "must");
+
+        if (this.getCvrNumre() != null && !this.getCvrNumre().isEmpty()) {
+            ObjectNode wrap = DirectLookup.addObject(objectMapper, must);
+            ObjectNode terms = DirectLookup.addObject(objectMapper, wrap, "terms");
+            ArrayNode cvrNumber = DirectLookup.addList(objectMapper, terms, "Vrvirksomhed.cvrNummer");
+            for (String cvr : this.getCvrNumre()) {
+                cvrNumber.add(cvr);
+            }
+            anySet = true;
+        }
+
+        if (!anySet) {
+            return null;
+        }
+
+        return root;
     }
 }

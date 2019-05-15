@@ -182,5 +182,4 @@ public class ParticipantRecordQuery extends BaseQuery {
     protected Object castFilterParam(Object input, String filter) {
         return super.castFilterParam(input, filter);
     }
-
 }
