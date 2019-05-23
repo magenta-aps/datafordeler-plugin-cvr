@@ -2,8 +2,7 @@ package dk.magenta.datafordeler.cvr;
 
 import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
-import dk.magenta.datafordeler.core.user.DafoUserDetails;
-import dk.magenta.datafordeler.cvr.configuration.CvrConfigurationManager;
+import dk.magenta.datafordeler.cvr.entitymanager.CompanyEntityManager;
 import dk.magenta.datafordeler.cvr.query.CompanyRecordQuery;
 import dk.magenta.datafordeler.cvr.query.ParticipantRecordQuery;
 import dk.magenta.datafordeler.cvr.records.CompanyRecord;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * Lookup functionality for finding companys and participants first in local database.
@@ -23,6 +23,9 @@ public class CollectiveCvrLookup {
 
     @Autowired
     private DirectLookup directLookup;
+
+    @Autowired
+    private CompanyEntityManager companyEntityManager;
 
     public void setDirectLookup(DirectLookup directLookup) {
         this.directLookup = directLookup;
@@ -39,7 +42,7 @@ public class CollectiveCvrLookup {
         }
 
         if(!cvrNumbers.isEmpty()) {
-            companyRecords.addAll(directLookup.companyLookup(cvrNumbers));
+            companyRecords.addAll(companyEntityManager.directLookup(new HashSet<String>(cvrNumbers), null, null));
         }
 
         return companyRecords;
