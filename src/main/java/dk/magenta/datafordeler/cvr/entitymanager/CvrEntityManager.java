@@ -310,9 +310,6 @@ public abstract class CvrEntityManager<T extends CvrEntityRecord>
                 jsonNode = jsonNode.get("hits");
             }
             if (jsonNode.isArray()) {
-                if (jsonNode.size() == 0) {
-                    throw new DataStreamException("No input data");
-                }
                 log.debug("Node contains "+jsonNode.size()+" subnodes");
                 for (JsonNode item : jsonNode) {
                     this.parseData(item, importMetadata, session);
