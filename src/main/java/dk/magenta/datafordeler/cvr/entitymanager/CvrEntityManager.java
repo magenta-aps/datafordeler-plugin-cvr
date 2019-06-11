@@ -231,7 +231,7 @@ public abstract class CvrEntityManager<T extends CvrEntityRecord>
                             importMetadata.setTransactionInProgress(true);
                         }
                         try {
-                            this.parseData(this.getObjectMapper().readTree(data), importMetadata, session);
+                            int count = this.parseData(this.getObjectMapper().readTree(data), importMetadata, session);
                         } catch (JsonParseException e) {
                             ImportInterruptedException ex = new ImportInterruptedException(e);
                             session.getTransaction().rollback();
@@ -302,9 +302,21 @@ public abstract class CvrEntityManager<T extends CvrEntityRecord>
      * @return A list of registrations that have been saved to the database
      * @throws ParseException
      */
-    public void parseData(JsonNode jsonNode, ImportMetadata importMetadata, Session session) throws DataFordelerException {
+    public int parseData(JsonNode jsonNode, ImportMetadata importMetadata, Session session) throws DataFordelerException {
+        timer.start(TASK_PARSE);
+        this.checkInterrupt(importMetadata);
+        List<T> items = this.parseNode(jsonNode);
+        timer.measure(TASK_PARSE);
+        for (T item : items) {
+            item.setDafoUpdateOnTree(importMetadata.getImportTime());
+            item.save(session);
+        }
+        return items.size();
+    }
 
+    public List<T> parseNode(JsonNode jsonNode) {
         if (jsonNode.has("hits")) {
+            List<T> items = new ArrayList<T>();
             jsonNode = jsonNode.get("hits");
             if (jsonNode.has("hits")) {
                 jsonNode = jsonNode.get("hits");
@@ -312,14 +324,13 @@ public abstract class CvrEntityManager<T extends CvrEntityRecord>
             if (jsonNode.isArray()) {
                 log.debug("Node contains "+jsonNode.size()+" subnodes");
                 for (JsonNode item : jsonNode) {
-                    this.parseData(item, importMetadata, session);
+                    //this.parseData(item, importMetadata, session);
+                    items.addAll(this.parseNode(item));
                 }
-                return;
+                return items;
             }
         }
 
-        timer.start(TASK_PARSE);
-        this.checkInterrupt(importMetadata);
         if (jsonNode.has("_source")) {
             jsonNode = jsonNode.get("_source");
         }
@@ -327,18 +338,14 @@ public abstract class CvrEntityManager<T extends CvrEntityRecord>
         if (jsonNode.has(jsonTypeName)) {
             jsonNode = jsonNode.get(jsonTypeName);
         }
-        T toplevelRecord;
         try {
-            toplevelRecord = getObjectMapper().treeToValue(jsonNode, this.getRecordClass());
+            return Collections.singletonList(getObjectMapper().treeToValue(jsonNode, this.getRecordClass()));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            return;
+            return Collections.EMPTY_LIST;
         }
-        timer.measure(TASK_PARSE);
-
-        toplevelRecord.setDafoUpdateOnTree(importMetadata.getImportTime());
-        toplevelRecord.save(session);
     }
+
 
     /**
      * Sorts a collection of records into buckets sharing bitemporality

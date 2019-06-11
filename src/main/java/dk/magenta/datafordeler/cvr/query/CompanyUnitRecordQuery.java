@@ -216,8 +216,6 @@ public class CompanyUnitRecordQuery extends BaseQuery {
 
     @Override
     protected Object castFilterParam(Object input, String filter) {
-        Object output = CvrBitemporalRecord.castFilterParam(input, filter);
-        return (output == null) ? super.castFilterParam(input, filter) : output;
+        return super.castFilterParam(input, filter);
     }
-
 }
