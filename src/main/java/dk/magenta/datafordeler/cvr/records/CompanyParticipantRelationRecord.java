@@ -178,7 +178,7 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
     }*/
 /*
     @Override
-    public void populateBaseData(CompanyBaseData baseData, Session session) {
+    public void populateBaseData(CompanyBaseData baseData, Session session, Bitemporality bitemporality) {
         baseData.addParticipantRelation(
                 this.getParticipantIdentification(session),
                 this.getOrganizationIdentifications(session)
@@ -186,7 +186,7 @@ public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {
     }
 
     @Override
-    public void populateBaseData(CompanyUnitBaseData baseData, Session session) {
+    public void populateBaseData(CompanyUnitBaseData baseData, Session session, Bitemporality bitemporality) {
         baseData.addParticipantRelation(
                 this.getParticipantIdentification(session),
                 this.getOrganizationIdentifications(session)
