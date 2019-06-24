@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
-import dk.magenta.datafordeler.cvr.records.unversioned.PostCode;
+import dk.magenta.datafordeler.cvr.records.unversioned.CvrPostCode;
 import org.hibernate.Session;
 
 import javax.persistence.*;
@@ -309,17 +309,17 @@ public class AddressRecord extends CvrBitemporalDataMetaRecord {
     public static final String IO_FIELD_POSTCODE_REF = "post";
 
     @XmlElement(name = IO_FIELD_POSTCODE_REF)
-    @ManyToOne(targetEntity = PostCode.class)
+    @ManyToOne(targetEntity = CvrPostCode.class)
     @JoinColumn(name = DB_FIELD_POSTCODE_REF + DatabaseEntry.REF)
     @JsonIgnore
-    private PostCode post;
+    private CvrPostCode post;
 
-    public PostCode getPost() {
+    public CvrPostCode getPost() {
         return this.post;
     }
 
-    public void setPost(PostCode postCode) {
-        this.post = postCode;
+    public void setPost(CvrPostCode cvrPostCode) {
+        this.post = cvrPostCode;
     }
 
     //----------------------------------------------------
@@ -482,7 +482,7 @@ public class AddressRecord extends CvrBitemporalDataMetaRecord {
             this.municipality.wire(session);
         }
         if (this.postnummer != 0 && (this.post == null || this.post.getPostCode() != this.postnummer)) {
-            this.post = PostCode.getPostcode(this.postnummer, this.postdistrikt, session);
+            this.post = CvrPostCode.getPostcode(this.postnummer, this.postdistrikt, session);
         }
     }
 

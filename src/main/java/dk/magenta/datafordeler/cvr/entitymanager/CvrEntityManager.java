@@ -183,7 +183,7 @@ public abstract class CvrEntityManager<T extends CvrEntityRecord>
             CompanyForm.initializeCache(session);
             CompanyStatus.initializeCache(session);
             Municipality.initializeCache(session);
-            PostCode.initializeCache(session);
+            CvrPostCode.initializeCache(session);
         }
         List<File> cacheFiles = null;
         int lines = 0;
