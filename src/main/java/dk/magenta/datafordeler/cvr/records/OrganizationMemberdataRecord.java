@@ -8,6 +8,7 @@ import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import javax.persistence.*;
 import java.util.*;
 
+
 @Entity
 @Table(name = OrganizationMemberdataRecord.TABLE_NAME, indexes = {
         @Index(name = OrganizationMemberdataRecord.TABLE_NAME + "__organization", columnList = OrganizationMemberdataRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF)

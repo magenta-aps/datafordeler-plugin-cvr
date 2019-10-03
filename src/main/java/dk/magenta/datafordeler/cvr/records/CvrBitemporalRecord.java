@@ -36,12 +36,19 @@ public abstract class CvrBitemporalRecord extends CvrNontemporalRecord implement
 
     public static final String FILTERPARAMTYPE_REGISTRATIONFROM = "java.time.OffsetDateTime";
     public static final String FILTERPARAMTYPE_REGISTRATIONTO = "java.time.OffsetDateTime";
-    public static final String FILTERPARAMTYPE_EFFECTFROM = "java.time.LocalDate";
-    public static final String FILTERPARAMTYPE_EFFECTTO = "java.time.LocalDate";
+
+    public static final String FILTERPARAMTYPE_EFFECTFROM = "java.time.OffsetDateTime";
+    public static final String FILTERPARAMTYPE_EFFECTTO = "java.time.OffsetDateTime";
+
     public static final String FILTERPARAMTYPE_LASTUPDATED = "java.time.OffsetDateTime";
 
-
-
+    /**
+     * We do not want to use any timestamps of type LocalDate
+     * @param input
+     * @param filter
+     * @return
+     */
+    @Deprecated
     public static Object castFilterParam(Object input, String filter) {
         switch (filter) {
             case Bitemporal.FILTER_EFFECTFROM_AFTER:

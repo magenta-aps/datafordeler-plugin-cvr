@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import static dk.magenta.datafordeler.cvr.records.unversioned.PostCode.DB_FIELD_CODE;
+import static dk.magenta.datafordeler.cvr.records.unversioned.CvrPostCode.DB_FIELD_CODE;
 
 /**
  * Nontemporal storage of a postcode (code + name)
@@ -25,9 +25,9 @@ import static dk.magenta.datafordeler.cvr.records.unversioned.PostCode.DB_FIELD_
 @Table(name = "cvr_postcode", indexes = {
         @Index(name = "companyPostalCode", columnList = DB_FIELD_CODE)
 })
-public class PostCode extends DatabaseEntry {
+public class CvrPostCode extends DatabaseEntry {
 
-    private static Logger log = LogManager.getLogger(PostCode.class.getSimpleName());
+    private static Logger log = LogManager.getLogger(CvrPostCode.class.getSimpleName());
 
     public static final String DB_FIELD_CODE = "postCode";
     public static final String IO_FIELD_CODE = "postnummer";
@@ -70,7 +70,7 @@ public class PostCode extends DatabaseEntry {
     //----------------------------------------------------
 
     /**
-     * To avoid hitting the database every time we need a reference to a PostCode, we keep
+     * To avoid hitting the database every time we need a reference to a CvrPostCode, we keep
      * a cache of references. This cache is used to get a pointer to the L1 cache, for quick
      * lookup, and avoids the dreaded "duplicate object" issue in Hibernate (where two queries
      * return to equal objects, and saving one makes Hibernate complain that there's another
@@ -85,41 +85,41 @@ public class PostCode extends DatabaseEntry {
     public static void initializeCache(Session session) {
         if (postCodeCache.isEmpty()) {
             log.debug("Prepopulating postCode cache");
-            List<PostCode> municipalities = QueryManager.getAllItems(session, PostCode.class);
-            for (PostCode postCode : municipalities) {
-                postCodeCache.put(postCode.postCode, postCode.getId());
+            List<CvrPostCode> municipalities = QueryManager.getAllItems(session, CvrPostCode.class);
+            for (CvrPostCode cvrPostCode : municipalities) {
+                postCodeCache.put(cvrPostCode.postCode, cvrPostCode.getId());
             }
             log.debug("postCode cache contains " + postCodeCache.size() + " nodes");
         }
     }
 
     /**
-     * Obtain a PostCode object, either from cache or from database, if it exists, or creates one if it doesn't.
+     * Obtain a CvrPostCode object, either from cache or from database, if it exists, or creates one if it doesn't.
      * @param code
      * @param postDistrict
      * @param session
      * @return
      */
-    public static PostCode getPostcode(int code, String postDistrict, Session session) {
+    public static CvrPostCode getPostcode(int code, String postDistrict, Session session) {
         if (code > 0) {
             initializeCache(session);
-            PostCode post = null;
+            CvrPostCode post = null;
             Long id = postCodeCache.get(code);
             if (id != null) {
-                post = session.get(PostCode.class, id);
+                post = session.get(CvrPostCode.class, id);
             }
             if (post == null) {
-                log.debug("PostCode code "+code+" not found in cache, querying database");
-                post = QueryManager.getItem(session, PostCode.class, Collections.singletonMap(DB_FIELD_CODE, code));
+                log.debug("CvrPostCode code "+code+" not found in cache, querying database");
+                post = QueryManager.getItem(session, CvrPostCode.class, Collections.singletonMap(DB_FIELD_CODE, code));
             }
             if (post == null) {
-                log.debug("PostCode " + code + " not found; creating new");
-                post = new PostCode();
+                log.debug("CvrPostCode " + code + " not found; creating new");
+                post = new CvrPostCode();
                 post.setPostCode(code);
                 post.setPostDistrict(postDistrict);
                 session.save(post);
             } else {
-                log.debug("PostCode " + code + " found (" + post.getId() + ")");
+                log.debug("CvrPostCode " + code + " found (" + post.getId() + ")");
             }
             postCodeCache.put(code, post.getId());
             return post;
@@ -128,7 +128,7 @@ public class PostCode extends DatabaseEntry {
         }
     }
 
-    public static PostCode getPostcode(PostCode old, Session session) {
+    public static CvrPostCode getPostcode(CvrPostCode old, Session session) {
         return getPostcode(old.getPostCode(), old.getPostDistrict(), session);
     }
 }
