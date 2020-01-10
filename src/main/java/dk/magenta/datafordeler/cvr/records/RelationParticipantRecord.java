@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 import org.hibernate.Session;
 
 import javax.persistence.*;
@@ -13,7 +14,7 @@ import java.util.*;
  * Record for one participant on a Company or CompanyUnit
  */
 @Entity
-@Table(name = RelationParticipantRecord.TABLE_NAME)
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + RelationParticipantRecord.TABLE_NAME)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RelationParticipantRecord extends CvrBitemporalRecord {
 

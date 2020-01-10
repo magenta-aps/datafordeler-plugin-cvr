@@ -3,15 +3,16 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = MetadataContactRecord.TABLE_NAME, indexes = {
-        @Index(name = MetadataContactRecord.TABLE_NAME + "__companymetadata", columnList = MetadataContactRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
-        @Index(name = MetadataContactRecord.TABLE_NAME + "__unitmetadata", columnList = MetadataContactRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
-        @Index(name = MetadataContactRecord.TABLE_NAME + "__participantmetadata", columnList = MetadataContactRecord.DB_FIELD_PARTICIPANT_METADATA + DatabaseEntry.REF)
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + MetadataContactRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + MetadataContactRecord.TABLE_NAME + "__companymetadata", columnList = MetadataContactRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + MetadataContactRecord.TABLE_NAME + "__unitmetadata", columnList = MetadataContactRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + MetadataContactRecord.TABLE_NAME + "__participantmetadata", columnList = MetadataContactRecord.DB_FIELD_PARTICIPANT_METADATA + DatabaseEntry.REF)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MetadataContactRecord extends CvrNontemporalRecord {

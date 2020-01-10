@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records.unversioned;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.QueryManager;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
@@ -22,7 +23,7 @@ import static dk.magenta.datafordeler.cvr.records.unversioned.CvrPostCode.DB_FIE
  * Nontemporal storage of a postcode (code + name)
  */
 @Entity
-@Table(name = "cvr_postcode", indexes = {
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + "cvr_postcode", indexes = {
         @Index(name = "companyPostalCode", columnList = DB_FIELD_CODE)
 })
 public class CvrPostCode extends DatabaseEntry {

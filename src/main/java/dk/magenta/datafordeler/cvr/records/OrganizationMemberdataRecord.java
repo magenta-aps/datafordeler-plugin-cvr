@@ -4,14 +4,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 
 import javax.persistence.*;
 import java.util.*;
 
 
 @Entity
-@Table(name = OrganizationMemberdataRecord.TABLE_NAME, indexes = {
-        @Index(name = OrganizationMemberdataRecord.TABLE_NAME + "__organization", columnList = OrganizationMemberdataRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF)
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + OrganizationMemberdataRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + OrganizationMemberdataRecord.TABLE_NAME + "__organization", columnList = OrganizationMemberdataRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrganizationMemberdataRecord extends CvrRecord {

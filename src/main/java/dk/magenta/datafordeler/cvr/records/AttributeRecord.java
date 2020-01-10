@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.*;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.Filters;
 
@@ -17,14 +18,14 @@ import java.util.*;
  * kept in {@link dk.magenta.datafordeler.cvr.records.AttributeValueRecord}
  */
 @Entity
-@Table(name = AttributeRecord.TABLE_NAME, indexes = {
-        @Index(name = AttributeRecord.TABLE_NAME + "__company", columnList = AttributeRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = AttributeRecord.TABLE_NAME + "__unit", columnList = AttributeRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        @Index(name = AttributeRecord.TABLE_NAME + "__participant", columnList = AttributeRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
-        @Index(name = AttributeRecord.TABLE_NAME + "__organization", columnList = AttributeRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF),
-        @Index(name = AttributeRecord.TABLE_NAME + "__organization_memberdata", columnList = AttributeRecord.DB_FIELD_ORGANIZATION_MEMBERDATA + DatabaseEntry.REF),
-        @Index(name = AttributeRecord.TABLE_NAME + "__fusion", columnList = AttributeRecord.DB_FIELD_FUSION + DatabaseEntry.REF),
-        @Index(name = AttributeRecord.TABLE_NAME + "__office", columnList = AttributeRecord.DB_FIELD_OFFICE + DatabaseEntry.REF)
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + AttributeRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + AttributeRecord.TABLE_NAME + "__company", columnList = AttributeRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + AttributeRecord.TABLE_NAME + "__unit", columnList = AttributeRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + AttributeRecord.TABLE_NAME + "__participant", columnList = AttributeRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + AttributeRecord.TABLE_NAME + "__organization", columnList = AttributeRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + AttributeRecord.TABLE_NAME + "__organization_memberdata", columnList = AttributeRecord.DB_FIELD_ORGANIZATION_MEMBERDATA + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + AttributeRecord.TABLE_NAME + "__fusion", columnList = AttributeRecord.DB_FIELD_FUSION + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + AttributeRecord.TABLE_NAME + "__office", columnList = AttributeRecord.DB_FIELD_OFFICE + DatabaseEntry.REF)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AttributeRecord extends CvrNontemporalDataRecord {

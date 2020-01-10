@@ -12,7 +12,7 @@
     "hits": [
       {
         "_index": "cvr-permanent-prod-20170205",
-        "_type": "virksomhed",
+        "_type": "_doc",
         "_id": "4001248508",
         "_score": 17.219288,
         "_source": {

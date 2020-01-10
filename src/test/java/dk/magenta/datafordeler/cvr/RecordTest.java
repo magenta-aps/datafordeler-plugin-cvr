@@ -68,7 +68,7 @@ public class RecordTest {
 
     private static HashMap<String, String> schemaMap = new HashMap<>();
     static {
-        schemaMap.put("virksomhed", CompanyRecord.schema);
+        schemaMap.put("_doc", CompanyRecord.schema);
         schemaMap.put("produktionsenhed", CompanyUnitRecord.schema);
         schemaMap.put("deltager", ParticipantRecord.schema);
     }
@@ -147,8 +147,7 @@ public class RecordTest {
         return companies;
     }
 
-    //@Test
-    //The tests fails and they have not been touched for a long time
+    @Test
     public void testCompany() throws DataFordelerException, IOException {
         this.loadCompany();
         this.loadCompany();
@@ -400,8 +399,7 @@ public class RecordTest {
         return units;
     }
 
-    //@Test
-    //The tests fails and they have not been touched for a long time
+    @Test
     public void testCompanyUnit() throws DataFordelerException, IOException {
         this.loadUnit("/unit.json");
         this.loadUnit("/unit.json");
@@ -576,8 +574,7 @@ public class RecordTest {
         return persons;
     }
 
-    //@Test
-    //The tests fails and they have not been touched for a long time
+    @Test
     public void testParticipant() throws DataFordelerException, IOException {
         loadParticipant("/person.json");
         loadParticipant("/person.json");

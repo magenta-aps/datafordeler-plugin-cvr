@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 import dk.magenta.datafordeler.cvr.records.unversioned.CvrPostCode;
 import org.hibernate.Session;
 
@@ -18,18 +19,18 @@ import java.util.UUID;
  * Record for Company, CompanyUnit and Participant address data.
  */
 @Entity
-@Table(name = AddressRecord.TABLE_NAME, indexes = {
-        @Index(name = AddressRecord.TABLE_NAME + "__company", columnList = AddressRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = AddressRecord.TABLE_NAME + "__unit", columnList = AddressRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        @Index(name = AddressRecord.TABLE_NAME + "__participant", columnList = AddressRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
-        @Index(name = AddressRecord.TABLE_NAME + "__companymetadata", columnList = AddressRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
-        @Index(name = AddressRecord.TABLE_NAME + "__unitmetadata", columnList = AddressRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
-        @Index(name = AddressRecord.TABLE_NAME + "__participantmetadata", columnList = AddressRecord.DB_FIELD_PARTICIPANT_METADATA + DatabaseEntry.REF),
-        @Index(name = AddressRecord.TABLE_NAME + "__officeunit", columnList = AddressRecord.DB_FIELD_OFFICE_UNIT + DatabaseEntry.REF),
-        @Index(name = AddressRecord.TABLE_NAME + "__participantrelation", columnList = AddressRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF),
-        @Index(name = AddressRecord.TABLE_NAME + "__type", columnList = AddressRecord.DB_FIELD_TYPE),
-        @Index(name = AddressRecord.TABLE_NAME + "__municipality", columnList = AddressRecord.DB_FIELD_MUNICIPALITY + DatabaseEntry.REF),
-        @Index(name = AddressRecord.TABLE_NAME + "__postcode", columnList = AddressRecord.DB_FIELD_POSTCODE_REF + DatabaseEntry.REF),
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + AddressRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + AddressRecord.TABLE_NAME + "__company", columnList = AddressRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + AddressRecord.TABLE_NAME + "__unit", columnList = AddressRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + AddressRecord.TABLE_NAME + "__participant", columnList = AddressRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + AddressRecord.TABLE_NAME + "__companymetadata", columnList = AddressRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + AddressRecord.TABLE_NAME + "__unitmetadata", columnList = AddressRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + AddressRecord.TABLE_NAME + "__participantmetadata", columnList = AddressRecord.DB_FIELD_PARTICIPANT_METADATA + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + AddressRecord.TABLE_NAME + "__officeunit", columnList = AddressRecord.DB_FIELD_OFFICE_UNIT + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + AddressRecord.TABLE_NAME + "__participantrelation", columnList = AddressRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + AddressRecord.TABLE_NAME + "__type", columnList = AddressRecord.DB_FIELD_TYPE),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + AddressRecord.TABLE_NAME + "__municipality", columnList = AddressRecord.DB_FIELD_MUNICIPALITY + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + AddressRecord.TABLE_NAME + "__postcode", columnList = AddressRecord.DB_FIELD_POSTCODE_REF + DatabaseEntry.REF),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AddressRecord extends CvrBitemporalDataMetaRecord {

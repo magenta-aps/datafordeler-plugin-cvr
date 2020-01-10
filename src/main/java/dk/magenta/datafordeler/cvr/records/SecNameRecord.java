@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,11 +16,11 @@ import java.util.Objects;
  * Record for Company, CompanyUnit or Participant name.
  */
 @Entity
-@Table(name = SecNameRecord.TABLE_NAME, indexes = {
-        @Index(name = SecNameRecord.TABLE_NAME + "__company", columnList = SecNameRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = SecNameRecord.TABLE_NAME + "__companyunit", columnList = SecNameRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        @Index(name = SecNameRecord.TABLE_NAME + "__participant", columnList = SecNameRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
-        @Index(name = SecNameRecord.TABLE_NAME + "__data", columnList = SecNameRecord.DB_FIELD_NAME),
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + SecNameRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + SecNameRecord.TABLE_NAME + "__company", columnList = SecNameRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + SecNameRecord.TABLE_NAME + "__companyunit", columnList = SecNameRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + SecNameRecord.TABLE_NAME + "__participant", columnList = SecNameRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + SecNameRecord.TABLE_NAME + "__data", columnList = SecNameRecord.DB_FIELD_NAME),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SecNameRecord extends CvrBitemporalDataRecord {

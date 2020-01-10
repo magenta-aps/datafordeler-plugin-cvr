@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Nontemporal;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 import org.hibernate.Session;
 
 import javax.persistence.*;
@@ -14,9 +15,9 @@ import java.util.*;
  * Record for one participant on a Company or CompanyUnit
  */
 @Entity
-@Table(name = OfficeRelationRecord.TABLE_NAME, indexes = {
-        @Index(name = OfficeRelationRecord.TABLE_NAME + "__relation", columnList = OfficeRelationRecord.DB_FIELD_COMPANY_RELATION + DatabaseEntry.REF),
-        @Index(name = OfficeRelationRecord.TABLE_NAME + "__unit", columnList = OfficeRelationRecord.DB_FIELD_UNIT + DatabaseEntry.REF),
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + OfficeRelationRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + OfficeRelationRecord.TABLE_NAME + "__relation", columnList = OfficeRelationRecord.DB_FIELD_COMPANY_RELATION + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + OfficeRelationRecord.TABLE_NAME + "__unit", columnList = OfficeRelationRecord.DB_FIELD_UNIT + DatabaseEntry.REF),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OfficeRelationRecord extends CvrNontemporalRecord {

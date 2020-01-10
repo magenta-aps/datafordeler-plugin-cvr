@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 
 import javax.persistence.*;
 
@@ -10,8 +11,8 @@ import javax.persistence.*;
  * Record for Company, CompanyUnit or Participant attribute values.
  */
 @Entity
-@Table(name = AttributeValueRecord.TABLE_NAME, indexes = {
-        @Index(name = AttributeValueRecord.TABLE_NAME + "__attribute", columnList = AttributeValueRecord.DB_FIELD_ATTRIBUTE + DatabaseEntry.REF)
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + AttributeValueRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + AttributeValueRecord.TABLE_NAME + "__attribute", columnList = AttributeValueRecord.DB_FIELD_ATTRIBUTE + DatabaseEntry.REF)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AttributeValueRecord extends BaseAttributeValueRecord {

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.Effect;
 import dk.magenta.datafordeler.core.database.Nontemporal;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.Filters;
 import org.hibernate.annotations.Where;
@@ -17,8 +18,8 @@ import java.util.*;
  * Record for Company status data.
  */
 @Entity
-@Table(name = FusionSplitRecord.TABLE_NAME, indexes = {
-        @Index(name = FusionSplitRecord.TABLE_NAME + "__company", columnList = FusionSplitRecord.DB_FIELD_COMPANY + DatabaseEntry.REF + "," + FusionSplitRecord.DB_FIELD_SPLIT),
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + FusionSplitRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + FusionSplitRecord.TABLE_NAME + "__company", columnList = FusionSplitRecord.DB_FIELD_COMPANY + DatabaseEntry.REF + "," + FusionSplitRecord.DB_FIELD_SPLIT),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FusionSplitRecord extends CvrNontemporalDataRecord {

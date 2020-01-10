@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 import org.hibernate.Session;
 
 import javax.persistence.*;
@@ -14,8 +15,8 @@ import java.util.*;
  * Record for one participating organization on a Company or CompanyUnit
  */
 @Entity
-@Table(name = OrganizationRecord.TABLE_NAME, indexes = {
-        @Index(name = OrganizationRecord.TABLE_NAME + "__relation", columnList = OrganizationRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF)
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + OrganizationRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + OrganizationRecord.TABLE_NAME + "__relation", columnList = OrganizationRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrganizationRecord extends CvrRecord {
