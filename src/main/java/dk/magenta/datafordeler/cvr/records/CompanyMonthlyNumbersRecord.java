@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,11 +15,11 @@ import java.util.Objects;
  * Record for Company and CompanyUnit monthly employee numbers.
  */
 @Entity
-@Table(name = CompanyMonthlyNumbersRecord.TABLE_NAME, indexes = {
-        @Index(name = CompanyMonthlyNumbersRecord.TABLE_NAME + "__company", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = CompanyMonthlyNumbersRecord.TABLE_NAME + "__unit", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        @Index(name = CompanyMonthlyNumbersRecord.TABLE_NAME + "__year", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_YEAR),
-        @Index(name = CompanyMonthlyNumbersRecord.TABLE_NAME + "__month", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_MONTH),
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyMonthlyNumbersRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyMonthlyNumbersRecord.TABLE_NAME + "__company", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyMonthlyNumbersRecord.TABLE_NAME + "__unit", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyMonthlyNumbersRecord.TABLE_NAME + "__year", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_YEAR),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyMonthlyNumbersRecord.TABLE_NAME + "__month", columnList = CompanyMonthlyNumbersRecord.DB_FIELD_MONTH),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyMonthlyNumbersRecord extends CompanyNumbersRecord {

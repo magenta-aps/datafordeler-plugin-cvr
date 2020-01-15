@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,12 +17,12 @@ import java.util.Objects;
  * Record for Company and CompanyUnit industry.
  */
 @Entity
-@Table(name = CompanyIndustryRecord.TABLE_NAME, indexes = {
-        @Index(name = CompanyIndustryRecord.TABLE_NAME + "__company", columnList = CompanyIndustryRecord.DB_FIELD_COMPANY + DatabaseEntry.REF + "," + CompanyIndustryRecord.DB_FIELD_INDEX),
-        @Index(name = CompanyIndustryRecord.TABLE_NAME + "__companyunit", columnList = CompanyIndustryRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF + "," + CompanyIndustryRecord.DB_FIELD_INDEX),
-        @Index(name = CompanyIndustryRecord.TABLE_NAME + "__companymetadata", columnList = CompanyIndustryRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
-        @Index(name = CompanyIndustryRecord.TABLE_NAME + "__unitmetadata", columnList = CompanyIndustryRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
-        @Index(name = CompanyIndustryRecord.TABLE_NAME + "__code", columnList = CompanyIndustryRecord.DB_FIELD_CODE)
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyIndustryRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyIndustryRecord.TABLE_NAME + "__company", columnList = CompanyIndustryRecord.DB_FIELD_COMPANY + DatabaseEntry.REF + "," + CompanyIndustryRecord.DB_FIELD_INDEX),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyIndustryRecord.TABLE_NAME + "__companyunit", columnList = CompanyIndustryRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF + "," + CompanyIndustryRecord.DB_FIELD_INDEX),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyIndustryRecord.TABLE_NAME + "__companymetadata", columnList = CompanyIndustryRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyIndustryRecord.TABLE_NAME + "__unitmetadata", columnList = CompanyIndustryRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyIndustryRecord.TABLE_NAME + "__code", columnList = CompanyIndustryRecord.DB_FIELD_CODE)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyIndustryRecord extends CvrBitemporalDataMetaRecord {

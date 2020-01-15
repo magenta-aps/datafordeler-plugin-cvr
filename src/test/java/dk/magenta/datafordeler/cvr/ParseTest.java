@@ -41,7 +41,7 @@ public class ParseTest {
 
     private static HashMap<String, String> schemaMap = new HashMap<>();
     static {
-        schemaMap.put("virksomhed", CompanyRecord.schema);
+        schemaMap.put("_doc", CompanyRecord.schema);
         schemaMap.put("produktionsenhed", CompanyUnitRecord.schema);
         schemaMap.put("deltager", ParticipantRecord.schema);
     }

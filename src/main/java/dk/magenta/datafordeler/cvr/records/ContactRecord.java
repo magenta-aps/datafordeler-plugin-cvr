@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,11 +16,11 @@ import java.util.Objects;
  * Record for Company, CompanyUnit and Participant contact information.
  */
 @Entity
-@Table(name = ContactRecord.TABLE_NAME, indexes = {
-        @Index(name = ContactRecord.TABLE_NAME + "__company", columnList = ContactRecord.DB_FIELD_COMPANY + DatabaseEntry.REF + "," + ContactRecord.DB_FIELD_TYPE),
-        @Index(name = ContactRecord.TABLE_NAME + "__companyunit", columnList = ContactRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF + "," + ContactRecord.DB_FIELD_TYPE),
-        @Index(name = ContactRecord.TABLE_NAME + "__participant", columnList = ContactRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF + "," + ContactRecord.DB_FIELD_TYPE),
-        @Index(name = ContactRecord.TABLE_NAME + "__data", columnList = ContactRecord.DB_FIELD_DATA),
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + ContactRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + ContactRecord.TABLE_NAME + "__company", columnList = ContactRecord.DB_FIELD_COMPANY + DatabaseEntry.REF + "," + ContactRecord.DB_FIELD_TYPE),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + ContactRecord.TABLE_NAME + "__companyunit", columnList = ContactRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF + "," + ContactRecord.DB_FIELD_TYPE),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + ContactRecord.TABLE_NAME + "__participant", columnList = ContactRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF + "," + ContactRecord.DB_FIELD_TYPE),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + ContactRecord.TABLE_NAME + "__data", columnList = ContactRecord.DB_FIELD_DATA),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ContactRecord extends CvrBitemporalDataRecord {

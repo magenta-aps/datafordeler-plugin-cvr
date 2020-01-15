@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,10 +15,10 @@ import java.util.Objects;
  * Record for Company and CompanyUnit yearly employee numbers.
  */
 @Entity
-@Table(name = CompanyYearlyNumbersRecord.TABLE_NAME, indexes = {
-        @Index(name = CompanyYearlyNumbersRecord.TABLE_NAME + "__company", columnList = CompanyYearlyNumbersRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = CompanyYearlyNumbersRecord.TABLE_NAME + "__unit", columnList = CompanyYearlyNumbersRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        @Index(name = CompanyYearlyNumbersRecord.TABLE_NAME + "__year", columnList = CompanyYearlyNumbersRecord.DB_FIELD_YEAR),
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyYearlyNumbersRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyYearlyNumbersRecord.TABLE_NAME + "__company", columnList = CompanyYearlyNumbersRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyYearlyNumbersRecord.TABLE_NAME + "__unit", columnList = CompanyYearlyNumbersRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyYearlyNumbersRecord.TABLE_NAME + "__year", columnList = CompanyYearlyNumbersRecord.DB_FIELD_YEAR),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyYearlyNumbersRecord extends CompanyNumbersRecord {

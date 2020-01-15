@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,11 +14,11 @@ import java.util.Objects;
  * Record for Company and CompanyUnit quarterly employee numbers.
  */
 @Entity
-@Table(name = CompanyQuarterlyNumbersRecord.TABLE_NAME, indexes = {
-        @Index(name = CompanyQuarterlyNumbersRecord.TABLE_NAME + "__company", columnList = CompanyQuarterlyNumbersRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = CompanyQuarterlyNumbersRecord.TABLE_NAME + "__unit", columnList = CompanyQuarterlyNumbersRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        @Index(name = CompanyQuarterlyNumbersRecord.TABLE_NAME + "__year", columnList = CompanyQuarterlyNumbersRecord.DB_FIELD_YEAR),
-        @Index(name = CompanyQuarterlyNumbersRecord.TABLE_NAME + "__quarter", columnList = CompanyQuarterlyNumbersRecord.DB_FIELD_QUARTER),
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyQuarterlyNumbersRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyQuarterlyNumbersRecord.TABLE_NAME + "__company", columnList = CompanyQuarterlyNumbersRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyQuarterlyNumbersRecord.TABLE_NAME + "__unit", columnList = CompanyQuarterlyNumbersRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyQuarterlyNumbersRecord.TABLE_NAME + "__year", columnList = CompanyQuarterlyNumbersRecord.DB_FIELD_YEAR),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyQuarterlyNumbersRecord.TABLE_NAME + "__quarter", columnList = CompanyQuarterlyNumbersRecord.DB_FIELD_QUARTER),
 })
 public class CompanyQuarterlyNumbersRecord extends CompanyNumbersRecord {
 

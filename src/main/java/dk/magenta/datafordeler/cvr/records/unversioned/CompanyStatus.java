@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records.unversioned;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.QueryManager;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
@@ -22,7 +23,7 @@ import static dk.magenta.datafordeler.cvr.records.unversioned.CompanyStatus.DB_F
  * Nontemporal storage of a company status.
  */
 @Entity
-@Table(name = "cvr_status", indexes = {@Index(name = "cvrStatus", columnList = DB_FIELD_NAME)})
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + "cvr_status", indexes = {@Index(name = "cvrStatus", columnList = DB_FIELD_NAME)})
 public class CompanyStatus extends DatabaseEntry {
 
     private static Logger log = LogManager.getLogger(CompanyStatus.class.getSimpleName());

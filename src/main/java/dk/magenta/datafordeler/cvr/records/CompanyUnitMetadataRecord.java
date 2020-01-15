@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.*;
 import dk.magenta.datafordeler.core.database.*;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 import org.hibernate.Session;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.Filters;
@@ -12,8 +13,8 @@ import javax.persistence.Entity;
 import java.util.*;
 
 @Entity
-@Table(name = CompanyUnitMetadataRecord.TABLE_NAME, indexes = {
-        @Index(name = CompanyUnitMetadataRecord.TABLE_NAME + "__unit", columnList = MetadataRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF, unique = true),
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyUnitMetadataRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyUnitMetadataRecord.TABLE_NAME + "__unit", columnList = MetadataRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF, unique = true),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyUnitMetadataRecord extends MetadataRecord {

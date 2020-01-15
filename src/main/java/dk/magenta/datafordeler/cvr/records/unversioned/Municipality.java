@@ -3,6 +3,7 @@ package dk.magenta.datafordeler.cvr.records.unversioned;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
 import dk.magenta.datafordeler.core.database.QueryManager;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
@@ -22,7 +23,7 @@ import static dk.magenta.datafordeler.cvr.records.unversioned.Municipality.DB_FI
  * Nontemporal storage of a municipality (code + name).
  */
 @Entity
-@Table(name = "cvr_municipality", indexes = {
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + "cvr_municipality", indexes = {
         @Index(name = "cvr_municipality_code", columnList = DB_FIELD_CODE)
 })
 public class Municipality extends DatabaseEntry {
