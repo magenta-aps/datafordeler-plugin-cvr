@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -12,10 +13,10 @@ import java.util.Objects;
  * Record for Company statusText data.
  */
 @Entity
-@Table(name = StatusRecord.TABLE_NAME, indexes = {
-        @Index(name = StatusRecord.TABLE_NAME + "__company", columnList = StatusRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = StatusRecord.TABLE_NAME + "__unit", columnList = StatusRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        @Index(name = StatusRecord.TABLE_NAME + "__relation", columnList = StatusRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + StatusRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + StatusRecord.TABLE_NAME + "__company", columnList = StatusRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + StatusRecord.TABLE_NAME + "__unit", columnList = StatusRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + StatusRecord.TABLE_NAME + "__relation", columnList = StatusRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StatusRecord extends CvrBitemporalDataRecord {

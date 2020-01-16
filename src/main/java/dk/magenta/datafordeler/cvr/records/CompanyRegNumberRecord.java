@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -12,10 +13,10 @@ import java.util.Objects;
  * Record for Company, CompanyUnit or Participant name.
  */
 @Entity
-@Table(name = CompanyRegNumberRecord.TABLE_NAME, indexes = {
-        @Index(name = CompanyRegNumberRecord.TABLE_NAME + "__company", columnList = CompanyRegNumberRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = CompanyRegNumberRecord.TABLE_NAME + "__participant_company_relation", columnList = CompanyRegNumberRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
-        @Index(name = CompanyRegNumberRecord.TABLE_NAME + "__data", columnList = CompanyRegNumberRecord.DB_FIELD_REGNUMBER),
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyRegNumberRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyRegNumberRecord.TABLE_NAME + "__company", columnList = CompanyRegNumberRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyRegNumberRecord.TABLE_NAME + "__participant_company_relation", columnList = CompanyRegNumberRecord.DB_FIELD_PARTICIPANT_COMPANY_RELATION + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyRegNumberRecord.TABLE_NAME + "__data", columnList = CompanyRegNumberRecord.DB_FIELD_REGNUMBER),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyRegNumberRecord extends CvrBitemporalDataRecord {

@@ -28,6 +28,8 @@ import javax.annotation.PostConstruct;
 @Component
 public class CvrPlugin extends Plugin {
 
+    public static final String DEBUG_TABLE_PREFIX = "";
+
     @Autowired
     private CvrConfigurationManager configurationManager;
 

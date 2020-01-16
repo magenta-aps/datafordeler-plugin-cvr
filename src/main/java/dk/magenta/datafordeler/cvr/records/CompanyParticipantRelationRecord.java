@@ -18,10 +18,10 @@ import java.util.*;
  */
 
 @Entity
-@Table(name = CompanyParticipantRelationRecord.TABLE_NAME, indexes = {
-        @Index(name = CompanyParticipantRelationRecord.TABLE_NAME + "__company", columnList = CompanyParticipantRelationRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
-        @Index(name = CompanyParticipantRelationRecord.TABLE_NAME + "__unit", columnList = CompanyParticipantRelationRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
-        @Index(name = CompanyParticipantRelationRecord.TABLE_NAME + "__participant", columnList = CompanyParticipantRelationRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyParticipantRelationRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyParticipantRelationRecord.TABLE_NAME + "__company", columnList = CompanyParticipantRelationRecord.DB_FIELD_COMPANY + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyParticipantRelationRecord.TABLE_NAME + "__unit", columnList = CompanyParticipantRelationRecord.DB_FIELD_COMPANYUNIT + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyParticipantRelationRecord.TABLE_NAME + "__participant", columnList = CompanyParticipantRelationRecord.DB_FIELD_PARTICIPANT + DatabaseEntry.REF),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyParticipantRelationRecord extends CvrBitemporalDataRecord {

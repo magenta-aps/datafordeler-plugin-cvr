@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.*;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 import dk.magenta.datafordeler.cvr.service.CompanyUnitRecordService;
 import org.hibernate.Session;
 import org.hibernate.annotations.*;
@@ -20,9 +21,9 @@ import java.util.*;
  * with this class at the base.
  */
 @Entity
-@Table(name = CompanyUnitRecord.TABLE_NAME, indexes = {
-        @Index(name = CompanyUnitRecord.TABLE_NAME + "__pnumber", columnList = CompanyUnitRecord.DB_FIELD_P_NUMBER, unique = true),
-        @Index(name = CompanyUnitRecord.TABLE_NAME + "__unitnumber", columnList = CompanyUnitRecord.DB_FIELD_UNITNUMBER, unique = true),
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyUnitRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyUnitRecord.TABLE_NAME + "__pnumber", columnList = CompanyUnitRecord.DB_FIELD_P_NUMBER, unique = true),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyUnitRecord.TABLE_NAME + "__unitnumber", columnList = CompanyUnitRecord.DB_FIELD_UNITNUMBER, unique = true),
 })
 @FilterDefs({
         @FilterDef(name = Bitemporal.FILTER_EFFECTFROM_AFTER, parameters = @ParamDef(name = Bitemporal.FILTERPARAM_EFFECTFROM_AFTER, type = CvrBitemporalRecord.FILTERPARAMTYPE_EFFECTFROM)),

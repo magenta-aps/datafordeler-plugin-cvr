@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.Bitemporal;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 import dk.magenta.datafordeler.cvr.records.unversioned.Municipality;
 import org.hibernate.Session;
 
@@ -14,8 +15,8 @@ import javax.persistence.*;
  * Record for Company form.
  */
 @Entity
-@Table(name = AddressMunicipalityRecord.TABLE_NAME, indexes = {
-        @Index(name = AddressMunicipalityRecord.TABLE_NAME + "__municipality", columnList = AddressMunicipalityRecord.DB_FIELD_MUNICIPALITY + DatabaseEntry.REF)
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + AddressMunicipalityRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + AddressMunicipalityRecord.TABLE_NAME + "__municipality", columnList = AddressMunicipalityRecord.DB_FIELD_MUNICIPALITY + DatabaseEntry.REF)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AddressMunicipalityRecord extends CvrBitemporalRecord {

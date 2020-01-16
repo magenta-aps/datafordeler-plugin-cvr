@@ -19,8 +19,8 @@ import java.util.UUID;
  * Record for Company Unit references.
  */
 @Entity
-@Table(name = CompanyUnitLinkRecord.TABLE_NAME, indexes = {
-        @Index(name = CompanyUnitLinkRecord.TABLE_NAME + "__company", columnList = CompanyLinkRecord.DB_FIELD_COMPANY + DatabaseEntry.REF)
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyUnitLinkRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyUnitLinkRecord.TABLE_NAME + "__company", columnList = CompanyLinkRecord.DB_FIELD_COMPANY + DatabaseEntry.REF)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyUnitLinkRecord extends CvrBitemporalDataRecord {

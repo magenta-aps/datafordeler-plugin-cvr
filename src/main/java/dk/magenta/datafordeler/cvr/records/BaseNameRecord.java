@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dk.magenta.datafordeler.core.database.DatabaseEntry;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -12,15 +13,15 @@ import java.util.Objects;
  * Record for Company, CompanyUnit or Participant name.
  */
 @Entity
-@Table(name = BaseNameRecord.TABLE_NAME, indexes = {
-        @Index(name = BaseNameRecord.TABLE_NAME + "__companymetadata", columnList = BaseNameRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
-        @Index(name = BaseNameRecord.TABLE_NAME + "__unitmetadata", columnList = BaseNameRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
-        @Index(name = BaseNameRecord.TABLE_NAME + "__company_participant_relation", columnList = BaseNameRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF),
-        @Index(name = BaseNameRecord.TABLE_NAME + "__organization", columnList = BaseNameRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF),
-        @Index(name = BaseNameRecord.TABLE_NAME + "__office", columnList = BaseNameRecord.DB_FIELD_OFFICE_UNIT + DatabaseEntry.REF),
-        @Index(name = BaseNameRecord.TABLE_NAME + "__fusion", columnList = BaseNameRecord.DB_FIELD_FUSION + DatabaseEntry.REF),
-        @Index(name = BaseNameRecord.TABLE_NAME + "__participant_company_relation", columnList = BaseNameRecord.DB_FIELD_COMPANY_RELATION + DatabaseEntry.REF),
-        @Index(name = BaseNameRecord.TABLE_NAME + "__data", columnList = BaseNameRecord.DB_FIELD_NAME),
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + BaseNameRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + BaseNameRecord.TABLE_NAME + "__companymetadata", columnList = BaseNameRecord.DB_FIELD_COMPANY_METADATA + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + BaseNameRecord.TABLE_NAME + "__unitmetadata", columnList = BaseNameRecord.DB_FIELD_UNIT_METADATA + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + BaseNameRecord.TABLE_NAME + "__company_participant_relation", columnList = BaseNameRecord.DB_FIELD_PARTICIPANT_RELATION + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + BaseNameRecord.TABLE_NAME + "__organization", columnList = BaseNameRecord.DB_FIELD_ORGANIZATION + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + BaseNameRecord.TABLE_NAME + "__office", columnList = BaseNameRecord.DB_FIELD_OFFICE_UNIT + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + BaseNameRecord.TABLE_NAME + "__fusion", columnList = BaseNameRecord.DB_FIELD_FUSION + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + BaseNameRecord.TABLE_NAME + "__participant_company_relation", columnList = BaseNameRecord.DB_FIELD_COMPANY_RELATION + DatabaseEntry.REF),
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + BaseNameRecord.TABLE_NAME + "__data", columnList = BaseNameRecord.DB_FIELD_NAME),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BaseNameRecord extends CvrBitemporalMetaRecord {

@@ -2,6 +2,7 @@ package dk.magenta.datafordeler.cvr.records;
 
 import com.fasterxml.jackson.annotation.*;
 import dk.magenta.datafordeler.core.database.*;
+import dk.magenta.datafordeler.cvr.CvrPlugin;
 import org.hibernate.Session;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.Filters;
@@ -13,8 +14,8 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Entity
-@Table(name = CompanyMetadataRecord.TABLE_NAME, indexes = {
-        @Index(name = CompanyMetadataRecord.TABLE_NAME + "__company", columnList = MetadataRecord.DB_FIELD_COMPANY + DatabaseEntry.REF, unique = true),
+@Table(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyMetadataRecord.TABLE_NAME, indexes = {
+        @Index(name = CvrPlugin.DEBUG_TABLE_PREFIX + CompanyMetadataRecord.TABLE_NAME + "__company", columnList = MetadataRecord.DB_FIELD_COMPANY + DatabaseEntry.REF, unique = true),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyMetadataRecord extends MetadataRecord {
