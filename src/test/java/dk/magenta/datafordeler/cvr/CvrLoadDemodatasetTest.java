@@ -5,14 +5,12 @@ import dk.magenta.datafordeler.core.database.QueryManager;
 import dk.magenta.datafordeler.core.database.SessionManager;
 import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.io.ImportMetadata;
-import dk.magenta.datafordeler.core.user.DafoUserManager;
 import dk.magenta.datafordeler.cvr.entitymanager.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.query.CompanyRecordQuery;
 import dk.magenta.datafordeler.cvr.records.CompanyRecord;
 import dk.magenta.datafordeler.cvr.records.CompanyUnitRecord;
 import dk.magenta.datafordeler.cvr.records.ParticipantRecord;
 import org.hibernate.Session;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -20,7 +18,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -57,16 +54,6 @@ public class CvrLoadDemodatasetTest {
         schemaMap.put("_doc", CompanyRecord.schema);
         schemaMap.put("produktionsenhed", CompanyUnitRecord.schema);
         schemaMap.put("deltager", ParticipantRecord.schema);
-    }
-
-    @SpyBean
-    private DafoUserManager dafoUserManager;
-
-
-    @After
-    public void clean() {
-        Session session = sessionManager.getSessionFactory().openSession();
-        session.close();
     }
 
     /**
@@ -139,6 +126,7 @@ public class CvrLoadDemodatasetTest {
     public void test_C_ClearingDemoDataset() throws URISyntaxException {
         try (Session session = sessionManager.getSessionFactory().openSession()) {
             entityManager = (CvrEntityManager) this.registerManager.getEntityManagers().get(0);
+            entityManager.setCvrDemoList("88888881,88888882,88888883,88888884");
             URL testData = ParseTest.class.getResource("/GLBASETEST.json");
             String testDataPath = testData.toURI().toString();
             registerManager.setCvrDemoFile(testDataPath);

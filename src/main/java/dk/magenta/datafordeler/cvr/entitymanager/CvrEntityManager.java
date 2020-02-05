@@ -91,6 +91,10 @@ public abstract class CvrEntityManager<T extends CvrEntityRecord>
         this.objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
     }
 
+    public void setCvrDemoList(String cvrDemoList) {
+        this.cvrDemoList = cvrDemoList;
+    }
+
     /**
      * Set the associated RegisterManager (called as part of Plugin initialization), setting up
      * the service paths listened on in the process
