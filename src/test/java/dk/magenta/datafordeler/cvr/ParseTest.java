@@ -9,6 +9,7 @@ import dk.magenta.datafordeler.core.exception.DataFordelerException;
 import dk.magenta.datafordeler.core.io.ImportMetadata;
 import dk.magenta.datafordeler.cvr.entitymanager.CompanyEntityManager;
 import dk.magenta.datafordeler.cvr.entitymanager.CompanyUnitEntityManager;
+import dk.magenta.datafordeler.cvr.entitymanager.CvrEntityManager;
 import dk.magenta.datafordeler.cvr.entitymanager.ParticipantEntityManager;
 import dk.magenta.datafordeler.cvr.query.CompanyRecordQuery;
 import dk.magenta.datafordeler.cvr.records.CompanyRecord;
@@ -26,6 +27,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +46,11 @@ public class ParseTest {
 
     @Autowired
     private CvrPlugin plugin;
+
+    @Autowired
+    private CvrRegisterManager registerManager;
+
+    private CvrEntityManager entityManager;
 
     private static HashMap<String, String> schemaMap = new HashMap<>();
     static {
@@ -75,23 +83,16 @@ public class ParseTest {
     }
 
     @Test
-    public void testParseCompanyDemoFile() throws DataFordelerException, IOException {
+    public void testParseCompanyDemoFile() throws DataFordelerException, URISyntaxException {
         ImportMetadata importMetadata = new ImportMetadata();
 
-        try(Session session = sessionManager.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
-            importMetadata.setSession(session);
-            InputStream input = ParseTest.class.getResourceAsStream("/GLBASETEST.json");
-            JsonNode root = objectMapper.readTree(input);
-            JsonNode itemList = root.get("hits").get("hits");
-            Assert.assertTrue(itemList.isArray());
-            for (JsonNode item : itemList) {
-                String type = item.get("_type").asText();
-                CompanyEntityManager entityManager = (CompanyEntityManager) plugin.getRegisterManager().getEntityManager(schemaMap.get(type));
-                entityManager.parseData(item.get("_source").get("Vrvirksomhed"), importMetadata, session);
-            }
-            transaction.commit();
-        }
+        URL testData = ParseTest.class.getResource("/GLBASETEST.json");
+        String testDataPath = testData.toURI().toString();
+        registerManager.setCvrDemoFile(testDataPath);
+
+        entityManager = (CvrEntityManager) this.registerManager.getEntityManagers().get(0);
+        InputStream stream = this.registerManager.pullRawData(this.registerManager.getEventInterface(entityManager), entityManager, importMetadata);
+        entityManager.parseData(stream, importMetadata);
 
         try(Session session = sessionManager.getSessionFactory().openSession()) {
 
@@ -105,20 +106,7 @@ public class ParseTest {
 
             List<CompanyRecord> companyList = QueryManager.getAllEntities(session, query, CompanyRecord.class);
 
-            for(CompanyRecord company : companyList) {
-
-                System.out.println("CVR "+company.getCvrNumber());
-                System.out.println("METANAME "+company.getMetadata().getNewestName().iterator().next().getName());
-                System.out.println("NAME "+company.getNames().iterator().next().getName());
-
-                if(company.getCompanyStatus().size()>0) {
-                    System.out.println(company.getCompanyStatus().iterator().next().getStatus());
-                }
-                if(company.getPostalAddress().size()>0) {
-                    System.out.println(company.getPostalAddress().iterator().next().getMunicipality().getMunicipalityCode());
-                }
-                System.out.println();
-            }
+            Assert.assertEquals(4, companyList.size());
         }
     }
 
