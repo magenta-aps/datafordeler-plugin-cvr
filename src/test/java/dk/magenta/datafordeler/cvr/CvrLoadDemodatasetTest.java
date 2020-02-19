@@ -175,6 +175,11 @@ public class CvrLoadDemodatasetTest {
     public void testCleanTestdataThroughPull() throws Exception {
 
         when(plugin.getRegisterManager(), registerManager, "/EMPTYGLBASETEST.json");
+
+        entityManager = (CvrEntityManager) this.registerManager.getEntityManagers().get(0);
+        entityManager.setCvrDemoList("88888881,88888882,88888883,88888884");
+
+
         //Clean the testdata
         ObjectNode config = (ObjectNode) objectMapper.readTree("{\"plugin\":\"cpr\",\"remote\":false,\"cleantestdatafirst\":true}");
         Pull pull = new Pull(engine, plugin, config);
