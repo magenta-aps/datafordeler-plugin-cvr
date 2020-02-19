@@ -304,9 +304,6 @@ public abstract class CvrEntityManager<T extends CvrEntityRecord>
      * democompanys is used on the demoenvironment for demo and education purposes
      */
     public void cleanDemoData(Session session) {
-
-        cvrDemoList = "88888881,88888882,88888883,88888884";
-
         CompanyRecordQuery personQuery = new CompanyRecordQuery();
         List<String> testCompanyList = Arrays.asList(cvrDemoList.split(","));
         for(String testCompany : testCompanyList) {
@@ -315,9 +312,9 @@ public abstract class CvrEntityManager<T extends CvrEntityRecord>
         session.beginTransaction();
         personQuery.setPageSize(1000);
         personQuery.applyFilters(session);
-        List<CompanyRecord> personEntities = QueryManager.getAllEntities(session, personQuery, CompanyRecord.class);
-        for(CompanyRecord personForDeletion : personEntities) {
-            session.delete(personForDeletion);
+        List<CompanyRecord> companyEntities = QueryManager.getAllEntities(session, personQuery, CompanyRecord.class);
+        for(CompanyRecord companyForDeletion : companyEntities) {
+            session.delete(companyForDeletion);
         }
         session.getTransaction().commit();
     }
